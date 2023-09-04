@@ -7,7 +7,6 @@
     </section>
 @endsection
 @section('content2')
-
     <section class="content">
         <div class="box box-success">
             <form id="ors_form">
@@ -114,12 +113,12 @@
                                         'label' => 'Budget Cert.:',
                                         'cols' => 6,
                                         'list' => 'certified_budget_by',
-                                    ], 'HELEN P. BALO') !!}
+                                    ], \App\Swep\Helpers\Defaults::budgetCertified()) !!}
                                     {!! \App\Swep\ViewHelpers\__form2::textbox('certified_budget_by_position',[
                                         'label' => 'Position:',
                                         'cols' => 6,
                                         'list' => 'certified_budget_by_position',
-                                    ], 'BUDGET OFFICER IV') !!}
+                                    ], \App\Swep\Helpers\Defaults::budgetCertifiedPosition()) !!}
                                 </div>
                             </div>
                         </div>
