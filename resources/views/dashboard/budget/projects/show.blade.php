@@ -216,6 +216,9 @@
                 { "data": "action"},
 
             ],
+            'rowGroup': {
+                'dataSrc': 'mill_district'
+            },
             "buttons": [
                 {!! __js::dt_buttons() !!}
             ],

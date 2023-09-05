@@ -37,14 +37,16 @@ class TreeComposer
 
         foreach ($dtr_menus as $dtr_menu){
             $tree[$dtr_menu->category][$dtr_menu->menu_id]['menu_obj'] = $dtr_menu;
-            foreach (
-                $dtr_menu->submenu->
-                where('is_nav','=',1)
-                    ->where('route','!=','dashboard.dtr.extract')
-                    ->where('route','!=','dashboard.dtr.index')
-                    ->where('route','!=','dashboard.mis_requests.index')
-                as $submenu){
-                $tree[$dtr_menu->category][$dtr_menu->menu_id]['submenus'][$submenu->submenu_id] = $submenu;
+            if(Auth::user()->project_id != 2){
+                foreach (
+                    $dtr_menu->submenu->
+                    where('is_nav','=',1)
+                        ->where('route','!=','dashboard.dtr.extract')
+                        ->where('route','!=','dashboard.dtr.index')
+                        ->where('route','!=','dashboard.mis_requests.index')
+                    as $submenu){
+                    $tree[$dtr_menu->category][$dtr_menu->menu_id]['submenus'][$submenu->submenu_id] = $submenu;
+                }
             }
         }
 

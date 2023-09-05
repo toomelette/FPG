@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Html\Builder;
 
 class ProjectsController extends Controller
 {
@@ -27,6 +28,8 @@ class ProjectsController extends Controller
     }
 
     public function index(Request $request){
+
+
         if(request()->ajax() && request()->has('draw')){
             return $this->dataTable($request);
         }
@@ -158,14 +161,15 @@ class ProjectsController extends Controller
         abort(503,'Error deleting PAP');
     }
 
-    public function show($slug, Request $request){
+    public function show($slug, Request $request, Builder $builder){
+
 
         if($request->has('draw') && $request->table == 'ors'){
             return $this->orsDatatable($slug, $request);
         }
 
         if($request->has('draw') && $request->table == 'procurements'){
-            return $this->procurementsDatatable($slug, $request);
+            return $this->procurementsDatatable($slug, $request, $builder);
         }
 
         $pap = $this->papService->findBySlug($slug);
@@ -226,6 +230,7 @@ class ProjectsController extends Controller
     }
 
     private function procurementsDatatable($slug, Request $request){
+
         $pap = $this->papService->findBySlug($slug);
         $pap_code = $pap->pap_code;
         $transactions = Transactions::query()
