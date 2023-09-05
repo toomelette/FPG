@@ -38,7 +38,7 @@
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             @if(!empty(Auth::user()->employee))
-              @if(!file_exists(public_path('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')))
+              @if(file_exists(public_path('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')))
                 <img src="{{asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')}}" class="user-image" alt="User Image">
               @else
                 <img src="{{asset('images/avatar.jpeg')}}" class="user-image" alt="User Image">
