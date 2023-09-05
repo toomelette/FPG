@@ -19,9 +19,13 @@
     <div class="user-panel">
       <div class="pull-left image">
           @if(!empty(Auth::user()->employee))
-            <img src="{{asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')}}" class="img-circle" alt="User Image">
+              @if(!file_exists(asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')))
+                    <img src="{{asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')}}" class="img-circle" alt="User Image">
+              @else
+                  <img src="{{asset('images/avatar.jpeg')}}" class="img-circle" alt="User Image">
+              @endif
             @else
-          <img src="{{asset('images/avatar.jpeg')}}" class="img-circle" alt="User Image">
+            <img src="{{asset('images/avatar.jpeg')}}" class="img-circle" alt="User Image">
           @endif
       </div>
       <div class="pull-left info">
