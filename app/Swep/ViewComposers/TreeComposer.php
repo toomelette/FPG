@@ -28,16 +28,15 @@ class TreeComposer
 
         $user_submenus = $user_submenus->get();
 
-        $dtr_menus = Menu::query()->with(['submenu']);
-        if(Helper::dtrMenuOn() == true){
-            $dtr_menus = $dtr_menus->where('slug','=','OjM6liSKVeDpwZQc');
-        }
-        $dtr_menus = $dtr_menus->orWhere('slug','=','ptQX7MfbtJR2EtIf')
-            ->get();
-
-        foreach ($dtr_menus as $dtr_menu){
-            $tree[$dtr_menu->category][$dtr_menu->menu_id]['menu_obj'] = $dtr_menu;
-            if(Auth::user()->project_id != 2){
+        if(Auth::user()->project_id != 2){
+            $dtr_menus = Menu::query()->with(['submenu']);
+            if(Helper::dtrMenuOn() == true){
+                $dtr_menus = $dtr_menus->where('slug','=','OjM6liSKVeDpwZQc');
+            }
+            $dtr_menus = $dtr_menus->orWhere('slug','=','ptQX7MfbtJR2EtIf')
+                ->get();
+            foreach ($dtr_menus as $dtr_menu){
+                $tree[$dtr_menu->category][$dtr_menu->menu_id]['menu_obj'] = $dtr_menu;
                 foreach (
                     $dtr_menu->submenu->
                     where('is_nav','=',1)
