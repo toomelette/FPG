@@ -134,7 +134,7 @@
                 alert('Error '+xhr.status+': '+xhr.responseJSON.message);
             }
         }).DataTable({
-            'dom' : 'lBfrtip',
+            'dom' : 'lfrtip',
             "processing": true,
             "serverSide": true,
             "ajax" : '{{route('dashboard.ors.index')}}',

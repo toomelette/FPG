@@ -216,11 +216,36 @@
                 { "data": "action"},
 
             ],
-            'rowGroup': {
-                'dataSrc': 'mill_district'
-            },
             "buttons": [
-                {!! __js::dt_buttons() !!}
+                {
+                    extend : 'excel',
+                    text: '<i class="fa fa-file-excel-o fa-fw"></i> Excel',
+                    className : 'buttons-excel btn-sm',
+                    action : function (e, dt, button, config){
+                        var self = this;
+                        let val = ors_tbl.page.len();
+                        let swal = Swal.fire({
+                            title: '<strong> Processing </strong>',
+                            icon: 'info',
+                            html:
+                                '<p><i class="fa fa-spinner fa-spin"></i> Please wait...</p>',
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            focusConfirm: false,
+                        })
+
+                        ors_tbl.page.len(-1).draw();
+                        ors_tbl.one('draw',function (){
+                            $.fn.DataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config);
+                            swal.close();
+                            ors_tbl.page.len(val).draw();
+                        });
+                    },
+                    exportOptions: {
+                        columns: [ 0,1,2,3,5 ]
+                    }
+                }
             ],
             "columnDefs":[
                 {

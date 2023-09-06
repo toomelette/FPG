@@ -27,13 +27,15 @@ class ProjectsController extends Controller
         $this->papService = $papService;
     }
 
-    public function index(Request $request){
+    public function index(Request $request, Builder $builder){
 
-
+        $html = $builder->parameters([
+            'buttons' => ['excel']
+        ]);
         if(request()->ajax() && request()->has('draw')){
             return $this->dataTable($request);
         }
-        return view('dashboard.budget.projects.index');
+        return view('dashboard.budget.projects.index', compact('html'));
     }
 
 

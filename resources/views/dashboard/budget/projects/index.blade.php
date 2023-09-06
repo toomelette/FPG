@@ -43,6 +43,7 @@
                     </div>
                 </div>
 
+
                 <div id="pap_table_container" style="display: none">
                     <table class="table table-bordered table-striped table-hover" id="pap_table" style="width: 100% !important">
                         <thead>
@@ -197,7 +198,6 @@
         })
 
 
-
         $(document).ready(function () {
             //-----DATATABLES-----//
             modal_loader = $("#modal_loader").parent('div').html();
@@ -214,9 +214,6 @@
                     { "data": "totalBudget" },
                     { "data": "procurements" },
                     { "data": "action" }
-                ],
-                "buttons": [
-                    {!! __js::dt_buttons() !!}
                 ],
                 "columnDefs":[
                     {
@@ -238,7 +235,7 @@
                     },
                 ],
                 "responsive": false,
-                'dom' : 'lBfrtip',
+                'dom' : 'lfrtip',
                 "processing": true,
                 "serverSide": true,
                 "initComplete": function( settings, json ) {
