@@ -587,7 +587,7 @@ class Helper
         return $a;
     }
     public static function wrapForSelect2($array,$paginate = true,$request = null){
-        if($request->add_null == true && $request->page < 2){
+        if(($request->add_null ?? false) == true && $request->page < 2){
 
             array_unshift($array,[
                 'id' => 'NULL',
