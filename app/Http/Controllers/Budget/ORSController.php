@@ -72,9 +72,15 @@ class ORSController extends Controller
             $ors = $ors->where('payee','=',$request->payee);
         }
 
-        if($request->has('applied_projects') && $request->applied_projects != ''){
+        if($request->has('applied_projects') && ($request->applied_projects != 'NULL' && $request->applied_projects != '')){
             $ors = $ors->whereHas('projectsApplied',function ($q) use($request){
                 return $q->where('pap_code','=',$request->applied_projects);
+            });
+        }
+
+        if($request->has('account_entry') && ($request->account_entry != 'NULL' && $request->account_entry != '')){
+            $ors = $ors->whereHas('accountEntries',function ($q) use($request){
+                return $q->where('account_code','=',$request->account_entry);
             });
         }
 
@@ -87,7 +93,6 @@ class ORSController extends Controller
             ->addColumn('details',function($data) use($request){
                 return view('dashboard.budget.ors.dtDetails')->with([
                     'data' => $data,
-                ])->with([
                     'request' => $request,
                 ]);
             })
@@ -102,9 +107,10 @@ class ORSController extends Controller
                     'data' => $data,
                 ]);
             })
-            ->addColumn('account_entries',function($data){
+            ->addColumn('account_entries',function($data) use ($request){
                 return view('dashboard.budget.ors.dtAccountEntries')->with([
                     'data' => $data,
+                    'request' => $request,
                 ]);
             })
             ->escapeColumns([])

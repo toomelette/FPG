@@ -586,7 +586,15 @@ class Helper
             ->first();
         return $a;
     }
-    public static function wrapForSelect2($array,$paginate = true){
+    public static function wrapForSelect2($array,$paginate = true,$request = null){
+        if($request->add_null == true && $request->page < 2){
+
+            array_unshift($array,[
+                'id' => 'NULL',
+                'text' => 'Select',
+            ]);
+
+        }
         return [
             'results' => $array,
             "pagination" => [

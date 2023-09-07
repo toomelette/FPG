@@ -211,7 +211,7 @@
         datatable_object.ajax.url("{{Request::url()}}"+"?"+data).load();
 
         $(".dt_filter").each(function (index,el) {
-          if ($(this).val() != ''){
+          if ($(this).val() != '' && $(this).val() != 'NULL'){
             $(this).parent("div").addClass('has-success');
             $(this).siblings('label').addClass('text-green');
           } else {

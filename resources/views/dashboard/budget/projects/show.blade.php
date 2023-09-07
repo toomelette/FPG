@@ -117,7 +117,72 @@
 {{--                <li><a href="#tab_3" data-toggle="tab">Tab 3</a></li>--}}
             </ul>
             <div class="tab-content">
+
                 <div class="tab-pane active" id="tab_1">
+                    <div class="panel">
+                        <div class="box box-sm box-default box-solid collapsed-box">
+                            <div class="box-header with-border">
+                                <p class="no-margin"><i class="fa fa-filter"></i> Advanced Filters <small id="filter-notifier" class="label bg-blue blink"></small></p>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool advanced_filters_toggler" data-widget="collapse"><i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="box-body" style="display: none">
+                                <form id="filter_form">
+                                    <div class="row">
+                                        <div class="col-md-2 dt_filter-parent-div">
+                                            <label>Fund Source:</label>
+                                            <select name="funds"  class="form-control dt_filter filters">
+                                                <option value="">Don't filter</option>
+                                                {!! \App\Swep\Helpers\Helper::populateOptionsFromArray(\App\Swep\Helpers\Arrays::orsFunds()) !!}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 dt_filter-parent-div">
+                                            <label>Ref Book:</label>
+                                            <select name="ref_book"  class="form-control dt_filter filters">
+                                                <option value="">Don't filter</option>
+                                                {!! \App\Swep\Helpers\Helper::populateOptionsFromArray(\App\Swep\Helpers\Arrays::orsBooks()) !!}
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-4 dt_filter-parent-div">
+                                            <label>Payee:</label>
+                                            @php
+                                                $payees = \App\Models\Budget\ORS::query()
+                                                        ->select('payee')
+                                                        ->groupBy('payee')
+                                                        ->orderBy('payee','asc')
+                                                        ->get();
+                                                $payees = $payees->pluck('payee')->map(function ($key,$value){
+                                                    return $key;
+                                                });
+                                            @endphp
+                                            {!! \App\Swep\ViewHelpers\__form2::selectOnly('payee',[
+                                                'class' => 'dt_filter filters',
+                                                'container_class' => 'select2-md',
+                                                'options' => \App\Swep\Helpers\Helper::flattenArray(array_values($payees->toArray())),
+                                                'id' => 'select2_payee',
+                                            ],'') !!}
+                                        </div>
+
+                                        <div class="col-md-4 dt_filter-parent-div">
+                                            <label>Account Entries:</label>
+                                            {!! \App\Swep\ViewHelpers\__form2::selectOnly('account_entry',[
+                                                'class' => 'select2_clear select2_account_entry dt_filter filters',
+                                                'container_class' => 'select2-md',
+                                                'options' => [],
+                                                'select2_preSelected' => '' ,
+                                            ],$data->pap_code ?? null) !!}
+                                        </div>
+
+
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
                     <div id="ors_table_container" style="display: none">
                         <table class="table table-bordered table-striped table-hover" id="ors_table" style="width: 100%">
                             <thead>
@@ -441,5 +506,35 @@
             }
         })
 
+        $("#select2_payee").select2();
+
+        $(".select2_account_entry").select2({
+            ajax: {
+                url: "{{route('dashboard.ajax.get','account')}}?add_null=true",
+            },
+            placeholder: 'Select item',
+        });
+
+        $(".dt_filter").change(function (){
+            let datatable_object = ors_tbl;
+            let data = $("#filter_form").serialize();
+            datatable_object.ajax.url("{{Request::url()}}"+"?table=ors&"+data).load();
+
+            $(".dt_filter").each(function (index,el) {
+                if ($(this).val() != '' && $(this).val() != 'NULL'){
+                    $(this).parent("div").addClass('has-success');
+                    $(this).siblings('label').addClass('text-green');
+                } else {
+                    $(this).parent("div").removeClass('has-success');
+                    $(this).siblings('label').removeClass('text-green');
+                }
+            });
+            let withSuccess = $('.dt_filter-parent-div.has-success');
+            if(withSuccess.length > 0){
+                $("#filter-notifier").html(withSuccess.length+' filter(s) currently active');
+            }else{
+                $("#filter-notifier").html('');
+            }
+        })
     </script>
 @endsection

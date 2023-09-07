@@ -121,7 +121,9 @@ class AjaxController extends Controller
                     ]);
                 }
             }
-            return Helper::wrapForSelect2($arr);
+
+
+            return Helper::wrapForSelect2($arr,true,$r);
         }
 
         if($for == 'ors_certified_by'){
@@ -199,9 +201,9 @@ class AjaxController extends Controller
                 }
             }
             if($paps->count() >= 10){
-                return Helper::wrapForSelect2($arr);
+                return Helper::wrapForSelect2($arr,true,$r);
             }else{
-                return Helper::wrapForSelect2($arr,false);
+                return Helper::wrapForSelect2($arr,false,$r);
             }
         }
 

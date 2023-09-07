@@ -184,7 +184,7 @@ class ProjectsController extends Controller
     private function orsDatatable($slug, Request $request){
         $pap = $this->papService->findBySlug($slug);
         $pap_code = $pap->pap_code;
-        $ors = ORS::query()->with(['projectsApplied'])
+        $ors = ORS::query()->with(['projectsApplied','accountEntries'])
             ->whereIn('slug',function ($q) use ($pap_code){
                 $q->select('ors_slug')
                     ->from(with(new ORSProjectsApplied())->getTable())
@@ -200,11 +200,17 @@ class ProjectsController extends Controller
             $ors = $ors->where('ref_book','=',$request->ref_book);
         }
 
-        if($request->has('applied_projects') && $request->applied_projects != ''){
-            $ors = $ors->whereHas('projectsApplied',function ($q) use($request){
-                return $q->where('pap_code','=',$request->applied_projects);
+        if($request->has('payee') && $request->payee != ''){
+            $ors = $ors->where('payee','=',$request->payee);
+        }
+
+        if($request->has('account_entry') && ($request->account_entry != 'NULL' && $request->account_entry != '')){
+
+            $ors = $ors->whereHas('accountEntries',function ($q) use($request){
+                return $q->where('account_code','=',$request->account_entry);
             });
         }
+
         $request->applied_projects = $pap->pap_code;
         return DataTables::of($ors)
             ->addColumn('action',function($data) use ($pap_code){
