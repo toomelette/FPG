@@ -128,34 +128,39 @@ $rand = \Illuminate\Support\Str::random();
             </tr>
             <tr>
                 <td class="text-strong">POTENTIAL/APTITUDE</td>
-                @for($x = 0; $x < $chunkBy ; $x++)
+                @forelse($applicants as $applicant)
                     <td>
 
                     </td>
-                @endfor
+                @empty
+                @endforelse
             </tr>
             <tr>
                 <td class="text-strong">Performance Appraisal Report (Evaluation)</td>
-                @for($x = 0; $x < $chunkBy ; $x++)
+                @forelse($applicants as $applicant)
                     <td>
 
                     </td>
-                @endfor
+                @empty
+                @endforelse
             </tr>
             <tr>
                 <td class="text-strong">Average Point Score</td>
-                @for($x = 0; $x < $chunkBy ; $x++)
+                @forelse($applicants as $applicant)
                     <td>
+
                     </td>
-                @endfor
+                @empty
+                @endforelse
             </tr>
             <tr>
                 <td class="text-strong">Remarks</td>
-                @for($x = 0; $x < $chunkBy ; $x++)
+                @forelse($applicants as $applicant)
                     <td>
-                        <br><br>
+
                     </td>
-                @endfor
+                @empty
+                @endforelse
             </tr>
             </tbody>
         </table>
