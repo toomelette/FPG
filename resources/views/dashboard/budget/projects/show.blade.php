@@ -191,6 +191,7 @@
                                 <th class="th-20">Date</th>
                                 <th class="th-20">Payee</th>
                                 <th >Particulars</th>
+                                <th >Account Entries</th>
                                 <th >Applied Projects</th>
                                 <th >Amount</th>
                                 <th >Action</th>
@@ -276,6 +277,7 @@
                 { "data": "ors_date" },
                 { "data": "payee" },
                 { "data": "particulars" },
+                { "data": "account_entries" },
                 { "data": "details" },
                 { "data": "amount"},
                 { "data": "action"},
@@ -314,7 +316,7 @@
             ],
             "columnDefs":[
                 {
-                    "targets" : 6,
+                    "targets" : 7,
                     "orderable" : false,
                     "class" : 'action2'
                 },
@@ -327,11 +329,11 @@
                     'class' : 'w-8p',
                 },
                 {
-                    'targets' : 5,
+                    'targets' : 6,
                     'class' : 'w-8p text-right',
                 },
                 {
-                    'targets' : 4,
+                    'targets' : [4,5],
                     'class' : 'w-16p',
                 },
 

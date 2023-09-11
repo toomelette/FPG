@@ -363,6 +363,15 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     /** Payroll Template **/
     Route::resource('payroll_template',\App\Http\Controllers\HRU\PayrollTemplateController::class);
+
+
+
+
+    /** ACCOUNTING **/
+    /* Cash Receipts */
+    Route::resource('cash_receipts',\App\Http\Controllers\Accounting\CashReceiptsController::class);
+
+
 });
 
 

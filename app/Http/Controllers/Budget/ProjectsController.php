@@ -223,6 +223,13 @@ class ProjectsController extends Controller
                     'request' => $request,
                 ]);
             })
+            ->addColumn('account_entries',function($data) use($request){
+                return view('dashboard.budget.ors.dtAccountEntries')->with([
+                    'data' => $data,
+                ])->with([
+                    'request' => $request,
+                ]);
+            })
             ->editColumn('amount',function($data){
                 return number_format($data->amount,2);
             })

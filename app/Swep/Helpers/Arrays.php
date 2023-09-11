@@ -571,4 +571,18 @@ class Arrays
             'GRADUATE STUDIES' => 'GRADUATE STUDIES',
         ];
     }
+
+    public static function acctgFundSources(){
+        return [
+            'ACEF' => 'LBP ACEF',
+            'SIDA' => 'SIDA',
+        ];
+    }
+
+    public static function collectingOfficers(){
+        return [
+            'OFFICER 1' => 'OFFICER 1',
+            'OFFICER 2' => 'OFFICER 2',
+        ];
+    }
 }
