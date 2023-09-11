@@ -177,6 +177,9 @@ class PublicationController extends Controller
 
         $item = PublicationDetails::query()->with([
             'publication',
+            'applicants' => function($q){
+                return $q->finalized();
+            },
             'applicants.educationalBackground' => function($q){
                 return $q->selected();
             },
@@ -190,8 +193,8 @@ class PublicationController extends Controller
                 return $q->selected();
             },
         ])
-            ->where('slug','=',$slug)
-            ->first();
+        ->where('slug','=',$slug)
+        ->first();
         return view('printables.hru.items.print')->with([
             'item' => $item,
         ]);

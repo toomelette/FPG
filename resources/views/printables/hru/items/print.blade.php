@@ -32,7 +32,7 @@ $rand = \Illuminate\Support\Str::random();
                 <th>Name & Age</th>
                 @forelse($applicants as $applicant)
                     <th style="width: 25%">
-                        {{strtoupper($applicant->lastname)}}, {{strtoupper($applicant->firstname)}} {{strtoupper($applicant->middlename)}}
+                        {{strtoupper($applicant->lastname)}}, {{strtoupper($applicant->firstname)}} {{strtoupper($applicant->middlename)}} | {{Carbon::parse($applicant->date_of_birth)->age}} y/o
                     </th>
                 @empty
                 @endforelse
