@@ -2,25 +2,39 @@
 
 namespace App\Http\Controllers\Accounting;
 
+use App\Enums\AccountingRefBooks;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CashReceipts\CashReceiptsFormRequest;
 use App\Models\Accounting\JEV;
 use App\Models\Accounting\JEVDetails;
 use App\Swep\Helpers\Helper;
+use App\Swep\Services\Accounting\CashReceiptsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Yajra\DataTables\DataTables;
 
 class CashReceiptsController extends Controller
 {
+    public function __construct(
+        protected CashReceiptsService $cashReceiptsService,
+    )
+    {
+
+    }
+
     public function create(){
         return view('dashboard.accounting.cash_receipts.create');
     }
 
-    public function store(Request $request){
+    public function store(CashReceiptsFormRequest $request){
+
         $project_id = Auth::user()->project_id;
         $jev = new JEV();
         $jev->project_id = $project_id;
+        $jev->ref_book = AccountingRefBooks::CashReceipt;
         $jev->slug = Str::random(30);
+        $jev->jev_no = $this->cashReceiptsService->newJevNo(AccountingRefBooks::CashReceipt->value,$request->date);
         $jev->date = $request->date;
         $jev->fund_source = $request->fund_source;
         $jev->collecting_officer = $request->collecting_officer;
@@ -28,7 +42,6 @@ class CashReceiptsController extends Controller
         $jev->remarks = $request->remarks;
         $arr = [];
         if(count($request->jev_details) > 0){
-
             foreach ($request->jev_details as $jev_detail){
                 array_push($arr,[
                     'project_id' => $project_id,
@@ -42,9 +55,7 @@ class CashReceiptsController extends Controller
                 ]);
             }
         }
-
-
-        if(count($request->corollary_accounts) > 0){
+        if(!empty($request->corollary_accounts) && count($request->corollary_accounts) > 0){
             foreach ($request->corollary_accounts as $corollary_account){
                 array_push($arr,[
                     'project_id' => $project_id,
@@ -64,5 +75,33 @@ class CashReceiptsController extends Controller
             }
         }
         abort(503,'Error saving Cash Receipt');
+    }
+
+    public function index(Request $request){
+        if($request->ajax() && $request->has('draw')){
+            $cashReceipts = JEV::query()->cashReceiptsOnly();
+            return DataTables::of($cashReceipts)
+                ->addColumn('details',function($data){
+
+                })
+                ->addColumn('action',function($data){
+                    return view('dashboard.accounting.cash_receipts.dtActions')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->editColumn('date',function($data){
+                    return Helper::dateFormat($data->date,'m/d/Y');
+                })
+                ->escapeColumns([])
+                ->setRowId('slug')
+                ->toJson();
+        }
+        return view('dashboard.accounting.cash_receipts.index');
+    }
+
+    public function edit($slug){
+        return view('dashboard.accounting.cash_receipts.edit')->with([
+            'cashReceipt' => $this->cashReceiptsService->findBySlug($slug),
+        ]);
     }
 }

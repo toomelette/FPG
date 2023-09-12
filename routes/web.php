@@ -369,6 +369,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     /** ACCOUNTING **/
     /* Cash Receipts */
+    Route::get('cash_receipts/{slug}/print', 'Accounting\CashReceiptsController@print')->name('cash_receipts.print');
     Route::resource('cash_receipts',\App\Http\Controllers\Accounting\CashReceiptsController::class);
 
 
