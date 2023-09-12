@@ -7,6 +7,7 @@ $rand = \Illuminate\Support\Str::random();
 
 @php
     $applicants = $item->applicants;
+    $applicants = $applicants->sortBy('lastname');
     $chunkBy = 3;
     $chunkedApplicants = $applicants->chunk($chunkBy);
 @endphp
