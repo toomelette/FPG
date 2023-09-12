@@ -78,7 +78,7 @@ $rand = \Illuminate\Support\Str::random();
             </tr>
             <tr>
                 <td>
-                    Education
+                    Training
                     <br>
                     {{$item->qs_training}}
                 </td>
@@ -103,7 +103,9 @@ $rand = \Illuminate\Support\Str::random();
                 @forelse($applicants as $applicant)
                     <td>
                         @forelse($applicant->workExperiences as $workExperience)
-                            <b>{{$workExperience->position}}</b> {{$workExperience->from}} to {{$workExperience->to}} - {{$workExperience->company}}<hr class="no-margin">
+                            <b>{{$workExperience->position}}</b> {{$workExperience->from}} to {{$workExperience->to}} - {{$workExperience->company}},
+                            {{\Illuminate\Support\Str::remove('before',\Illuminate\Support\Carbon::parse($workExperience->from)->diffForHumans(\Illuminate\Support\Carbon::parse($workExperience->to),null,true))}}
+                            <hr class="no-margin">
                         @empty
                         @endforelse
                     </td>
