@@ -18,6 +18,7 @@ use App\Models\PPU\Pap;
 use App\Models\PPU\RCDesc;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Get;
+use App\Swep\Traits\Budget\PapCodeMonitoring;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +26,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ORSReportsService
 {
+
     public function summaryOfORS(Request $request){
         if(empty($request->date_from) || empty($request->date_to)){
             abort(504,'Please select a date range.');
@@ -477,4 +479,6 @@ class ORSReportsService
         ]);
 
     }
+
+
 }

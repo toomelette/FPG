@@ -24,6 +24,7 @@
                                         <li role="presentation" class=""><a href="#subsidiary_ledger" data-toggle="tab" aria-expanded="true">Subsidiary Ledger</a></li>
                                         <li role="presentation" class=""><a href="#subsidiary_ledger_2" data-toggle="tab" aria-expanded="true">Subsidiary Ledger 2</a></li>
                                         <li role="presentation" class=""><a href="#budget_proposal_monitoring" data-toggle="tab" aria-expanded="true">Budget Proposal - (Monitoring)</a></li>
+                                        <li role="presentation" class=""><a href="#pap_code_monitoring_per_account" data-toggle="tab" aria-expanded="true">PAP Code Monitoring (Per Account)</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -52,6 +53,9 @@
                                 </div>
                                 <div class="tab-pane" id="budget_proposal_monitoring">
                                     @include('dashboard.budget.ors.reports.budget_proposal_monitoring')
+                                </div>
+                                <div class="tab-pane" id="pap_code_monitoring_per_account">
+                                    @include('dashboard.budget.ors.reports.pap_code_monitoring_per_account')
                                 </div>
                             </div>
                         </div>
@@ -109,5 +113,22 @@
 
         $("#sl_accounts").select2();
         $("#sl2_accounts").select2();
+
+        $(".select2_account_code").select2({
+            ajax: {
+                url: '{{route("dashboard.ajax.get","account")}}',
+                dataType: 'json',
+                delay : 250,
+            },
+
+            placeholder: 'Select item',
+        });
+
+        $(".select2_pap_code").select2({
+            ajax: {
+                url: "{{route('dashboard.ajax.get','pap')}}",
+            },
+            placeholder: 'Select item',
+        });
     </script>
 @endsection

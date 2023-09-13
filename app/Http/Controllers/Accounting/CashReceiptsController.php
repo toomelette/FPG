@@ -9,6 +9,7 @@ use App\Models\Accounting\JEV;
 use App\Models\Accounting\JEVDetails;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\Accounting\CashReceiptsService;
+use App\Swep\Traits\CashReceiptsTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -16,6 +17,7 @@ use Yajra\DataTables\DataTables;
 
 class CashReceiptsController extends Controller
 {
+    use CashReceiptsTrait;
     public function __construct(
         protected CashReceiptsService $cashReceiptsService,
     )
@@ -24,6 +26,7 @@ class CashReceiptsController extends Controller
     }
 
     public function create(){
+        $this->newJevNo('CD','2023-03-03');
         return view('dashboard.accounting.cash_receipts.create');
     }
 
@@ -103,5 +106,9 @@ class CashReceiptsController extends Controller
         return view('dashboard.accounting.cash_receipts.edit')->with([
             'cashReceipt' => $this->cashReceiptsService->findBySlug($slug),
         ]);
+    }
+
+    public function print(){
+
     }
 }

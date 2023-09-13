@@ -22,6 +22,7 @@ use App\Swep\Helpers\Get;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\Budget\ORSReportsService;
 use App\Swep\Services\Budget\ORSService;
+use App\Swep\Traits\Budget\PapCodeMonitoring;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +33,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ORSController extends Controller
 {
-
+    use PapCodeMonitoring;
     public function __construct(
         protected ORSService $orsService,
         protected ORSReportsService $orsReportsService,
@@ -300,6 +301,9 @@ class ORSController extends Controller
                 return  $this->orsReportsService->budgetProposalMonitoring($request);
             case 'subsidiary_ledger_2':
                 return  $this->orsReportsService->subsidiaryLedger2($request);
+            case 'pap_code_monitoring':
+                return  $this->papCodeMonitoring($request);
+
             default:
                 return 'default';
                 break;
