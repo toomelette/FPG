@@ -3,7 +3,7 @@
 @section('content')
 
     <section class="content-header">
-        <h1>Cash Receipts <small>Journal Entry Voucher</small></h1>
+        <h1>General Journal <small>Journal Entry Voucher</small></h1>
     </section>
 @endsection
 @section('content2')
@@ -31,15 +31,8 @@
                                     'options' => \App\Swep\Helpers\Arrays::acctgFundSources(),
                                 ])   !!}
 
-                                {!! \App\Swep\ViewHelpers\__form2::select('collecting_officer',[
-                                    'label' => 'Collecting Officer:',
-                                    'cols' => 4,
-                                    'options' => \App\Swep\Helpers\Arrays::collectingOfficers(),
-                                ])   !!}
-                            </div>
-                            <div class="row">
-                                {!! \App\Swep\ViewHelpers\__form2::textbox('rcd_no',[
-                                    'label' => 'RCD No.:',
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('payee',[
+                                    'label' => 'Liquidation No.:',
                                     'cols' => 4,
                                 ])   !!}
                             </div>
@@ -59,7 +52,7 @@
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
                             <li class="active text-strong"><a href="#tab_1" data-toggle="tab">JEV Details</a></li>
-                            <li class="text-strong"><a href="#tab_2" data-toggle="tab">Corollary Accounts</a></li>
+                            <li class="text-strong hidden"><a href="#tab_2" data-toggle="tab">Corollary Accounts</a></li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab_1">
@@ -301,7 +294,7 @@
             let form = $(this);
             loading_btn(form);
             $.ajax({
-                url : '{{route("dashboard.cash_receipts.store")}}',
+                url : '{{route("dashboard.general_journal.store")}}',
                 data : form.serialize(),
                 type: 'POST',
                 headers: {

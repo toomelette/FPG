@@ -6,15 +6,14 @@ use App\Models\Accounting\JEV;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
-trait CashReceiptsTrait
+trait JEVTrait
 {
-    public function newJevNo($ref_book, $date){
-        $cashReceipts = JEV::query()
+    public function newJevNo($date){
+        $jevs = JEV::query()
             ->where('jev_no','like',Carbon::parse($date)->format('y').'%')
-            ->orderBy('ref_book','desc')
-            ->cashReceiptsOnly()
+            ->orderBy('jev_no','desc')
             ->first();
-        $lastFourDigits = Str::substr($cashReceipts->jev_no ?? Carbon::parse($date)->format('y-m-0000'),6,4) ?? 0;
+        $lastFourDigits = Str::substr($jevs->jev_no ?? Carbon::parse($date)->format('y-m-0000'),6,4) ?? 0;
         $lastFourDigits = $lastFourDigits + 1;
 
         $newLastFourDigits = str_pad($lastFourDigits,4,'0',STR_PAD_LEFT);

@@ -25,6 +25,7 @@ var autonum_settings = {
     decimalCharacter : '.',
     digitGroupSeparator : ',',
     emptyInputBehavior : 'null',
+    modifyValueOnWheel: false,
 };
 
 
@@ -509,4 +510,16 @@ function makeId(length) {
         counter += 1;
     }
     return result;
+}
+
+function sanitizeAutonum(number){
+    number = number.replaceAll(' ','');
+    number = number.replaceAll('₱','');
+    number = number.replaceAll(',','');
+    number = parseFloat(number);
+    if (isNaN(number)) {
+        return 0;
+    }else{
+        return number;
+    }
 }

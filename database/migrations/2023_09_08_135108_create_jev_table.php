@@ -48,15 +48,15 @@ return new class extends Migration
 
         Schema::create('acctg_jev_details',function (Blueprint $table){
             $table->id();
-            $table->integer('project_id');
-            $table->string('jev_slug');
-            $table->string('slug');
-            $table->boolean('is_corollary');
-            $table->integer('seq_no');
-            $table->string('resp_center');
-            $table->string('account_code');
-            $table->decimal('jev_debit',20,2);
-            $table->decimal('jev_credit',20,2);
+            $table->integer('project_id')->nullable();
+            $table->string('jev_slug')->nullable();
+            $table->string('slug')->nullable();
+            $table->boolean('is_corollary')->nullable();
+            $table->integer('seq_no')->nullable();
+            $table->string('resp_center')->nullable();
+            $table->string('account_code')->nullable();
+            $table->decimal('jev_debit',20,2)->nullable();
+            $table->decimal('jev_credit',20,2)->nullable();
         });
     }
 

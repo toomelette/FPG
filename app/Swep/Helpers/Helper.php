@@ -286,7 +286,11 @@ class Helper
 
     public static function sanitizeAutonum($num){
         $num = str_replace('₱','',$num);
-        return str_replace(',','',$num);
+        $num = str_replace(',','',$num);
+        if ($num == ''){
+            return null;
+        }
+        return $num;
     }
 
     public static function mis_request_nature(){

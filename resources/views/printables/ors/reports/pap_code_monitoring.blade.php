@@ -38,25 +38,34 @@
             $total = 0;
         @endphp
         @forelse($ors as $or)
+            @php
+                $orsEntries = $or->orsEntries->where('account_code',$account_code)
+            @endphp
+            @forelse($orsEntries as $orsEntry)
+                @php
+                    $total += $orsEntry->debit;
+                @endphp
+                @if($loop->iteration > 1)
+                    <tr>
+                        <td class="text-right">
+                            {{number_format($orsEntry->debit,2)}}
+                        </td>
+                    </tr>
+                @else
+                    <tr>
+                        <td rowspan="{{count($orsEntries)}}">{{$or->ors_no}}</td>
+                        <td rowspan="{{count($orsEntries)}}">{{Helper::dateFormat($or->ors_date,'m/d/Y')}}</td>
+                        <td rowspan="{{count($orsEntries)}}">{{$or->payee}}</td>
+                        <td rowspan="{{count($orsEntries)}}">{{$or->particulars}}</td>
+                        <td class="text-right">
+                            {{number_format($orsEntry->debit,2)}}
+                        </td>
+                    </tr>
+                @endif
 
-            <tr>
-                <td>{{$or->ors_no}}</td>
-                <td>{{Helper::dateFormat($or->ors_date,'m/d/Y')}}</td>
-                <td>{{$or->payee}}</td>
-                <td>{{$or->particulars}}</td>
-                <td class="text-right">
-                    @php
-                        $orsEntries = $or->orsEntries->where('account_code',$account_code)
-                    @endphp
-                    @forelse($orsEntries as $orsEntry)
-                        @php
-                            $total = $total + $orsEntry->debit;
-                        @endphp
-                        {{Helper::toNumber($orsEntry->debit,2)}}
-                    @empty
-                    @endforelse
-                </td>
-            </tr>
+            @empty
+            @endforelse
+
         @empty
         @endforelse
         </tbody>

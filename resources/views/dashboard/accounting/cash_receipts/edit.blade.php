@@ -11,7 +11,7 @@
 @section('content2')
 
     <section class="content">
-        <form id="add_jev_form">
+        <form id="edit_jev_form">
             <div class="box box-solid">
                 <div class="box-header with-border">
                     <h3 class="box-title"></h3>
@@ -20,31 +20,41 @@
 
                 <div class="box-body">
                     <div class="row">
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('date',[
-                            'label' => 'Date:',
-                            'cols' => 2,
-                            'type' => 'date',
-                        ],$cashReceipt ?? null)   !!}
-                        {!! \App\Swep\ViewHelpers\__form2::select('fund_source',[
-                            'label' => 'Fund Source:',
-                            'cols' => 2,
-                            'options' => \App\Swep\Helpers\Arrays::acctgFundSources(),
-                        ],$cashReceipt ?? null)   !!}
+                        <div class="col-md-6">
+                            <div class="row">
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('date',[
+                                    'label' => 'Date:',
+                                    'cols' => 4,
+                                    'type' => 'date',
+                                ],$cashReceipt ?? null)   !!}
+                                {!! \App\Swep\ViewHelpers\__form2::select('fund_source',[
+                                    'label' => 'Fund Source:',
+                                    'cols' => 4,
+                                    'options' => \App\Swep\Helpers\Arrays::acctgFundSources(),
+                                ],$cashReceipt ?? null)   !!}
 
-                        {!! \App\Swep\ViewHelpers\__form2::select('collecting_officer',[
-                            'label' => 'Collecting Officer:',
-                            'cols' => 2,
-                            'options' => \App\Swep\Helpers\Arrays::collectingOfficers(),
-                        ],$cashReceipt ?? null)   !!}
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('rcd_no',[
-                            'label' => 'RCD No.:',
-                            'cols' => 2,
-                        ],$cashReceipt ?? null)   !!}
-
-                        {!! \App\Swep\ViewHelpers\__form2::textarea('remarks',[
-                            'label' => 'Explanation:',
-                            'cols' => 4,
-                        ],$cashReceipt ?? null)   !!}
+                                {!! \App\Swep\ViewHelpers\__form2::select('collecting_officer',[
+                                    'label' => 'Collecting Officer:',
+                                    'cols' => 4,
+                                    'options' => \App\Swep\Helpers\Arrays::collectingOfficers(),
+                                ],$cashReceipt ?? null)   !!}
+                            </div>
+                            <div class="row">
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('rcd_no',[
+                                    'label' => 'RCD No.:',
+                                    'cols' => 4,
+                                ],$cashReceipt ?? null)   !!}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                {!! \App\Swep\ViewHelpers\__form2::textarea('remarks',[
+                                    'label' => 'Explanation:',
+                                    'cols' => 12,
+                                    'rows' => 5,
+                                ],$cashReceipt ?? null)   !!}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="nav-tabs-custom">
@@ -96,15 +106,15 @@
                                                 </td>
                                                 <td>
                                                     {!! \App\Swep\ViewHelpers\__form2::textboxOnly('jev_details['.$jevDetail->slug.'][debit]',[
-                                                        'class' => 'input-sm text-right autonum',
+                                                        'class' => 'input-sm text-right autonum debit debit_credit',
                                                         'copyNameToClass' => 1,
-                                                    ],$jevDetail->debit ?? null) !!}
+                                                    ],$jevDetail->jev_debit ?? null) !!}
                                                 </td>
                                                 <td>
                                                     {!! \App\Swep\ViewHelpers\__form2::textboxOnly('jev_details['.$jevDetail->slug.'][credit]',[
-                                                        'class' => 'input-sm text-right autonum',
+                                                        'class' => 'input-sm text-right autonum credit debit_credit',
                                                         'copyNameToClass' => 1,
-                                                    ],$jevDetail->credit ?? null) !!}
+                                                    ],$jevDetail->jev_credit ?? null) !!}
                                                 </td>
                                                 <td>
                                                     <button class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
@@ -113,6 +123,13 @@
                                         @empty
                                         @endforelse
                                     </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="3" class="text-right">TOTAL</th>
+                                        <th class="totals debit_total text-right">{{number_format($cashReceipt->details->sum('jev_debit'),2)}}</th>
+                                        <th class="totals credit_total text-right">{{number_format($cashReceipt->details->sum('jev_credit'),2)}}</th>
+                                    </tr>
+                                    </tfoot>
                                 </table>
                             </div>
 
@@ -160,13 +177,13 @@
                                                 {!! \App\Swep\ViewHelpers\__form2::textboxOnly('corollary_accounts[slug][debit]',[
                                                     'class' => 'input-sm text-right autonum',
                                                     'copyNameToClass' => 1,
-                                                ],$corollaryDetail->debit ?? null) !!}
+                                                ],$corollaryDetail->jev_debit ?? null) !!}
                                             </td>
                                             <td>
                                                 {!! \App\Swep\ViewHelpers\__form2::textboxOnly('corollary_accounts[slug][credit]',[
                                                     'class' => 'input-sm text-right autonum',
                                                     'copyNameToClass' => 1,
-                                                ],$corollaryDetail->credit ?? null) !!}
+                                                ],$corollaryDetail->jev_credit ?? null) !!}
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
@@ -219,13 +236,13 @@
             </td>
             <td>
                 {!! \App\Swep\ViewHelpers\__form2::textboxOnly('jev_details[slug][debit]',[
-                    'class' => 'input-sm text-right autonum',
+                    'class' => 'input-sm text-right autonum debit debit_credit',
                     'copyNameToClass' => 1,
                 ]) !!}
             </td>
             <td>
                 {!! \App\Swep\ViewHelpers\__form2::textboxOnly('jev_details[slug][credit]',[
-                    'class' => 'input-sm text-right autonum',
+                    'class' => 'input-sm text-right autonum credit debit_credit',
                     'copyNameToClass' => 1,
                 ]) !!}
             </td>
@@ -261,13 +278,13 @@
             </td>
             <td>
                 {!! \App\Swep\ViewHelpers\__form2::textboxOnly('corollary_accounts[slug][debit]',[
-                    'class' => 'input-sm text-right autonum',
+                    'class' => 'input-sm text-right autonum debit debit_credit',
                     'copyNameToClass' => 1,
                 ]) !!}
             </td>
             <td>
                 {!! \App\Swep\ViewHelpers\__form2::textboxOnly('corollary_accounts[slug][credit]',[
-                    'class' => 'input-sm text-right autonum',
+                    'class' => 'input-sm text-right autonum credit debit_credit',
                     'copyNameToClass' => 1,
                 ]) !!}
             </td>
@@ -359,6 +376,56 @@
             },
 
             placeholder: 'Select item',
+        })
+
+        $("#edit_jev_form").submit(function (e) {
+            e.preventDefault()
+            let form = $(this);
+            loading_btn(form);
+            $.ajax({
+                url : '{{route("dashboard.cash_receipts.update",$cashReceipt->slug)}}',
+                data : form.serialize(),
+                type: 'PATCH',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    succeed(form,true,true);
+                    $("#jev_details_table tbody").html("");
+                    $("#corollary_accounts_table tbody").html("");
+                    $(".add_btn").each(function (){
+                        $(this).trigger('click');
+                    })
+                    markTabs(form);
+                    $('.totals').each(function (){
+                        $(this).html('0.00');
+                    })
+                },
+                error: function (res) {
+                    errored(form,res);
+                    markTabs(form);
+                }
+            })
+        })
+
+        $("body").on('change keyup','.debit_credit',function (){
+            let table = $(this).parents('table');
+            let allDebitFields = table.find('.debit');
+            let allCreditFields = table.find('.credit');
+            let totalDebit = 0;
+            let totalCredit = 0;
+
+            allDebitFields.each(function (){
+                let amt = sanitizeAutonum($(this).val());
+                totalDebit = totalDebit + amt;
+            })
+            allCreditFields.each(function (){
+                let amt = sanitizeAutonum($(this).val());
+                totalCredit = totalCredit + amt;
+            })
+            table.find('.debit_total').html($.number(totalDebit,2));
+            table.find('.credit_total').html($.number(totalCredit,2))
+
         })
     </script>
 @endsection

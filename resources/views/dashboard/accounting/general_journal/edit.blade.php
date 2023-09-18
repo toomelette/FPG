@@ -3,7 +3,9 @@
 @section('content')
 
     <section class="content-header">
-        <h1>Cash Receipts <small>Journal Entry Voucher</small></h1>
+        <h1>General Journal <small>Journal Entry Voucher</small>
+            <span class="pull-right">JEV: {{$jev->jev_no}}</span>
+        </h1>
     </section>
 @endsection
 @section('content2')
@@ -24,24 +26,17 @@
                                     'label' => 'Date:',
                                     'cols' => 4,
                                     'type' => 'date',
-                                ])   !!}
+                                ],$jev ?? null)   !!}
                                 {!! \App\Swep\ViewHelpers\__form2::select('fund_source',[
                                     'label' => 'Fund Source:',
                                     'cols' => 4,
                                     'options' => \App\Swep\Helpers\Arrays::acctgFundSources(),
-                                ])   !!}
+                                ],$jev ?? null)   !!}
 
-                                {!! \App\Swep\ViewHelpers\__form2::select('collecting_officer',[
-                                    'label' => 'Collecting Officer:',
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('payee',[
+                                    'label' => 'Liquidation No.:',
                                     'cols' => 4,
-                                    'options' => \App\Swep\Helpers\Arrays::collectingOfficers(),
-                                ])   !!}
-                            </div>
-                            <div class="row">
-                                {!! \App\Swep\ViewHelpers\__form2::textbox('rcd_no',[
-                                    'label' => 'RCD No.:',
-                                    'cols' => 4,
-                                ])   !!}
+                                ],$jev ?? null)   !!}
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -50,16 +45,15 @@
                                     'label' => 'Explanation:',
                                     'cols' => 12,
                                     'rows' => 5,
-                                ])   !!}
+                                ],$jev ?? null)   !!}
                             </div>
                         </div>
                     </div>
 
-
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
                             <li class="active text-strong"><a href="#tab_1" data-toggle="tab">JEV Details</a></li>
-                            <li class="text-strong"><a href="#tab_2" data-toggle="tab">Corollary Accounts</a></li>
+                            <li class="text-strong hidden"><a href="#tab_2" data-toggle="tab">Corollary Accounts</a></li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab_1">
@@ -77,13 +71,57 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    @forelse($jev->details as $jevDetail)
+                                        <tr id="row_slug">
+                                            <td>
+                                                {!! \App\Swep\ViewHelpers\__form2::textboxOnly('jev_details['.$jevDetail->slug.'][account]',[
+                                                    'class' => 'input-sm account',
+                                                    'readonly' => 'readonly',
+                                                    'copyNameToClass' => 1,
+                                                ],$jevDetail->account_code ?? null) !!}
+                                            </td>
+                                            <td>
+                                                {!! \App\Swep\ViewHelpers\__form2::selectOnly('jev_details['.$jevDetail->slug.'][account_code]',[
+                                                    'class' => 'input-sm select2_account_code init_select2_account_code',
+                                                    'options' => [],
+                                                    'container_class' => 'select2-sm',
+                                                    'copyNameToClass' => 1,
+                                                    'select2_preSelected' => ($jevDetail->chartOfAccount->account_title ?? '').' - '.$jevDetail->account_code,
+                                                ],$jevDetail->account_code ?? null) !!}
+                                            </td>
+                                            <td>
+                                                {!! \App\Swep\ViewHelpers\__form2::selectOnly('jev_details['.$jevDetail->slug.'][resp_center]',[
+                                                    'class' => 'input-sm select2-sm select2_resp_center init_select2_resp_center',
+                                                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                                                    'container_class' => 'select2-sm',
+                                                    'copyNameToClass' => 1,
+                                                ],$jevDetail->resp_center ?? null) !!}
+                                            </td>
+                                            <td>
+                                                {!! \App\Swep\ViewHelpers\__form2::textboxOnly('jev_details['.$jevDetail->slug.'][debit]',[
+                                                    'class' => 'input-sm text-right autonum debit debit_credit',
+                                                    'copyNameToClass' => 1,
+                                                ],$jevDetail->jev_debit ?? null) !!}
+                                            </td>
+                                            <td>
+                                                {!! \App\Swep\ViewHelpers\__form2::textboxOnly('jev_details['.$jevDetail->slug.'][credit]',[
+                                                    'class' => 'input-sm text-right autonum credit debit_credit',
+                                                    'copyNameToClass' => 1,
+                                                ],$jevDetail->jev_credit ?? null) !!}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                    @endforelse
 
                                     </tbody>
                                     <tfoot>
                                     <tr>
                                         <th colspan="3" class="text-right">TOTAL</th>
-                                        <th class="totals debit_total text-right">0.00</th>
-                                        <th class="totals credit_total text-right">0.00</th>
+                                        <th class="totals debit_total text-right">{{number_format($jev->details->sum('jev_debit'),2)}}</th>
+                                        <th class="totals credit_total text-right">{{number_format($jev->details->sum('jev_credit'),2)}}</th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -290,20 +328,15 @@
             });
         })
 
-        $(document).ready(function (){
-            $(".add_btn").each(function (){
-                $(this).trigger('click');
-            })
-        });
 
         $("#add_jev_form").submit(function (e) {
             e.preventDefault()
             let form = $(this);
             loading_btn(form);
             $.ajax({
-                url : '{{route("dashboard.cash_receipts.store")}}',
+                url : '{{route("dashboard.general_journal.update",$jev->slug)}}',
                 data : form.serialize(),
-                type: 'POST',
+                type: 'PATCH',
                 headers: {
                     {!! __html::token_header() !!}
                 },
@@ -344,6 +377,16 @@
             table.find('.debit_total').html($.number(totalDebit,2));
             table.find('.credit_total').html($.number(totalCredit,2))
 
+        })
+        $(".init_select2_resp_center").select2();
+        $(".init_select2_account_code").select2({
+            ajax: {
+                url: '{{route("dashboard.ajax.get","account")}}',
+                dataType: 'json',
+                delay : 250,
+            },
+
+            placeholder: 'Select item',
         })
     </script>
 

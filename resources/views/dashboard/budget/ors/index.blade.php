@@ -198,7 +198,7 @@
             stateLoadCallback: function(settings) {
                 return JSON.parse( localStorage.getItem( 'DataTables_' + settings.sInstance ) )
             },
-            "order" : [[1, 'desc'],[2,'desc']],
+            "order" : [[1, 'desc'],[0,'desc'],[2,'asc']],
             "responsive": true,
             "initComplete": function( settings, json ) {
                 // console.log(settings);
