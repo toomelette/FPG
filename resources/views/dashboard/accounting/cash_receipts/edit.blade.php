@@ -15,7 +15,11 @@
             <div class="box box-solid">
                 <div class="box-header with-border">
                     <h3 class="box-title"></h3>
-                    <button type="submit" class="btn btn-sm btn-primary pull-right"><i class="fa fa-check"></i> Save</button>
+                    <div class="btn-group pull-right">
+                        <a type="button" class="btn btn-sm btn-default" href="{{route('dashboard.cash_receipts.print',$cashReceipt->slug)}}" target="_blank"><i class="fa fa-print"></i> Print JEV</a>
+                        <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
+                    </div>
+
                 </div>
 
                 <div class="box-body">
@@ -134,6 +138,11 @@
                             </div>
 
                             <div class="tab-pane" id="tab_2">
+                                {!! \App\Swep\ViewHelpers\__form2::textarea('remarks2',[
+                                    'label' => 'Explanation:',
+                                    'cols' => 12,
+                                    'rows' => 2,
+                                ],$cashReceipt ?? null)   !!}
                                 <table id="corollary_accounts_table" class="table table-condensed table-bordered table-striped">
                                     <thead>
                                     <tr class="bg-info">
@@ -149,45 +158,47 @@
                                     </thead>
                                     <tbody>
                                         @forelse($cashReceipt->corollaryDetails as $corollaryDetail)
-                                            <td>
-                                                {!! \App\Swep\ViewHelpers\__form2::textboxOnly('corollary_accounts[slug][account]',[
-                                                    'class' => 'input-sm account',
-                                                    'readonly' => 'readonly',
-                                                    'copyNameToClass' => 1,
-                                                ],$corollaryDetail->account_code ?? null) !!}
-                                            </td>
-                                            <td>
-                                                {!! \App\Swep\ViewHelpers\__form2::selectOnly('corollary_accounts[slug][account_code]',[
-                                                    'class' => 'input-sm select2_account_code init_select2_account_code',
-                                                    'options' => [],
-                                                    'container_class' => 'select2-sm',
-                                                    'copyNameToClass' => 1,
-                                                    'select2_preSelected' => ($corollaryDetail->chartOfAccount->account_title ?? '').' - '.$corollaryDetail->account_code,
-                                                ],$corollaryDetail->account_code ?? null) !!}
-                                            </td>
-                                            <td>
-                                                {!! \App\Swep\ViewHelpers\__form2::selectOnly('corollary_accounts[slug][resp_center]',[
-                                                    'class' => 'input-sm select2-sm select2_resp_center init_select2_resp_center',
-                                                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
-                                                    'container_class' => 'select2-sm',
-                                                    'copyNameToClass' => 1,
-                                                ],$corollaryDetail->resp_center ?? null) !!}
-                                            </td>
-                                            <td>
-                                                {!! \App\Swep\ViewHelpers\__form2::textboxOnly('corollary_accounts[slug][debit]',[
-                                                    'class' => 'input-sm text-right autonum',
-                                                    'copyNameToClass' => 1,
-                                                ],$corollaryDetail->jev_debit ?? null) !!}
-                                            </td>
-                                            <td>
-                                                {!! \App\Swep\ViewHelpers\__form2::textboxOnly('corollary_accounts[slug][credit]',[
-                                                    'class' => 'input-sm text-right autonum',
-                                                    'copyNameToClass' => 1,
-                                                ],$corollaryDetail->jev_credit ?? null) !!}
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
-                                            </td>
+                                            <tr>
+                                                <td>
+                                                    {!! \App\Swep\ViewHelpers\__form2::textboxOnly('corollary_accounts[slug][account]',[
+                                                        'class' => 'input-sm account',
+                                                        'readonly' => 'readonly',
+                                                        'copyNameToClass' => 1,
+                                                    ],$corollaryDetail->account_code ?? null) !!}
+                                                </td>
+                                                <td>
+                                                    {!! \App\Swep\ViewHelpers\__form2::selectOnly('corollary_accounts[slug][account_code]',[
+                                                        'class' => 'input-sm select2_account_code init_select2_account_code',
+                                                        'options' => [],
+                                                        'container_class' => 'select2-sm',
+                                                        'copyNameToClass' => 1,
+                                                        'select2_preSelected' => ($corollaryDetail->chartOfAccount->account_title ?? '').' - '.$corollaryDetail->account_code,
+                                                    ],$corollaryDetail->account_code ?? null) !!}
+                                                </td>
+                                                <td>
+                                                    {!! \App\Swep\ViewHelpers\__form2::selectOnly('corollary_accounts[slug][resp_center]',[
+                                                        'class' => 'input-sm select2-sm select2_resp_center init_select2_resp_center',
+                                                        'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                                                        'container_class' => 'select2-sm',
+                                                        'copyNameToClass' => 1,
+                                                    ],$corollaryDetail->resp_center ?? null) !!}
+                                                </td>
+                                                <td>
+                                                    {!! \App\Swep\ViewHelpers\__form2::textboxOnly('corollary_accounts[slug][debit]',[
+                                                        'class' => 'input-sm text-right autonum',
+                                                        'copyNameToClass' => 1,
+                                                    ],$corollaryDetail->jev_debit ?? null) !!}
+                                                </td>
+                                                <td>
+                                                    {!! \App\Swep\ViewHelpers\__form2::textboxOnly('corollary_accounts[slug][credit]',[
+                                                        'class' => 'input-sm text-right autonum',
+                                                        'copyNameToClass' => 1,
+                                                    ],$corollaryDetail->jev_credit ?? null) !!}
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
+                                                </td>
+                                            </tr>
                                         @empty
                                         @endforelse
                                     </tbody>
@@ -390,16 +401,9 @@
                     {!! __html::token_header() !!}
                 },
                 success: function (res) {
-                    succeed(form,true,true);
-                    $("#jev_details_table tbody").html("");
-                    $("#corollary_accounts_table tbody").html("");
-                    $(".add_btn").each(function (){
-                        $(this).trigger('click');
-                    })
+                    succeed(form,false,false);
                     markTabs(form);
-                    $('.totals').each(function (){
-                        $(this).html('0.00');
-                    })
+                    toast('success','Cash Receipt successfully updated.','Success!');
                 },
                 error: function (res) {
                     errored(form,res);

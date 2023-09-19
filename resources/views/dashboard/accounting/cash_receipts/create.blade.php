@@ -90,6 +90,11 @@
                             </div>
 
                             <div class="tab-pane" id="tab_2">
+                                {!! \App\Swep\ViewHelpers\__form2::textarea('remarks2',[
+                                    'label' => 'Explanation:',
+                                    'cols' => 12,
+                                    'rows' => 2,
+                                ])   !!}
                                 <table id="corollary_accounts_table" class="table table-condensed table-bordered table-striped">
                                     <thead>
                                     <tr class="bg-info">

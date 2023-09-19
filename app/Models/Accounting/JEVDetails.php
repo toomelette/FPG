@@ -3,6 +3,7 @@
 namespace App\Models\Accounting;
 
 use App\Models\Budget\ChartOfAccounts;
+use App\Models\PPU\PPURespCodes;
 use Illuminate\Database\Eloquent\Model;
 
 class JEVDetails extends Model
@@ -15,5 +16,9 @@ class JEVDetails extends Model
 
     public function chartOfAccount(){
         return $this->hasOne(ChartOfAccounts::class,'account_code','account_code');
+    }
+
+    public function responsibilityCenter(){
+        return $this->belongsTo(PPURespCodes::class,'resp_center','rc_code');
     }
 }

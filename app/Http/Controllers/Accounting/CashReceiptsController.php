@@ -78,6 +78,7 @@ class CashReceiptsController extends Controller
                 $seq++;
             }
         }
+
         if(JEVDetails::insert($arr)){
             if($jev->save()){
                 return $jev->only('slug');
@@ -125,6 +126,7 @@ class CashReceiptsController extends Controller
         $jev->collecting_officer = $request->collecting_officer;
         $jev->rcd_no = $request->rcd_no;
         $jev->remarks = $request->remarks;
+        $jev->remarks2 = $request->remarks2;
         $arr = [];
         if(count($request->jev_details) > 0){
             $seq = 1;
@@ -181,7 +183,14 @@ class CashReceiptsController extends Controller
         }
         abort(503,'Error deleting JEV');
     }
-    public function print(){
-
+    public function print($slug){
+        $jev = JEV::query()
+            ->with(['details.chartOfAccount','corollaryDetails.chartOfAccount'])
+            ->where('slug','=',$slug)
+            ->first();
+        $jev ?? abort(503,'JEV not found.');
+        return view('printables.accounting.jev.jev')->with([
+            'jev' => $jev,
+        ]);
     }
 }

@@ -290,6 +290,9 @@ class Helper
         if ($num == ''){
             return null;
         }
+        if ($num == 0){
+            return null;
+        }
         return $num;
     }
 
