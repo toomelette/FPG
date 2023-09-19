@@ -260,7 +260,7 @@ class DocumentController extends Controller{
                 $pdf->Multicell(60,2    ,$document_id,0,"L");
                 $pdf->SetXY($mainX-5,$mainY-15);
                 $pdf->SetFont('Arial', '', '6');
-                $pdf->Multicell(60,2    ,"SUGAR REGULATORY ADMINISTRATION\nRECORDS SECTION\nDOCUMENT ARCHIVING SYSTEM",0,"L");
+                $pdf->Multicell(60,2    ,"SUGAR REGULATORY ADMINISTRATION\nHUMAN RESOURCE & RECORDS SECTION\nDOCUMENT ARCHIVING SYSTEM",0,"L");
 
             }
 

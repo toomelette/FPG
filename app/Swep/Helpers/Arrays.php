@@ -574,15 +574,27 @@ class Arrays
 
     public static function acctgFundSources(){
         return [
-            'ACEF' => 'LBP ACEF',
-            'SIDA' => 'SIDA',
+            'LBP - ACEF, Current' => 'LBP - ACEF, Current',
+            'LBP Bacolod (0422-1248-70)' => 'LBP Bacolod (0422-1248-70)',
+            'LBP Bacolod (ACEF)' => 'LBP Bacolod (ACEF)',
+            'LBP Bacolod (Block Farming)' => 'LBP Bacolod (Block Farming)',
+            'LBP Bacolod (CA# 0422-1234-66) Other Projects' => 'LBP Bacolod (CA# 0422-1234-66) Other Projects',
+            'LBP Bacolod (SIDA)' => 'LBP Bacolod (SIDA)',
+            'LBP-Bacolod (Corporate)' => 'LBP-Bacolod (Corporate)',
         ];
     }
 
     public static function collectingOfficers(){
-        return [
-            'OFFICER 1' => 'OFFICER 1',
-            'OFFICER 2' => 'OFFICER 2',
-        ];
+        $coa = ChartOfAccounts::query()
+            ->select('name_of_collecting_officer')
+            ->where('name_of_collecting_officer','!=',null)
+            ->where('name_of_collecting_officer','!=','')
+            ->orderBy('name_of_collecting_officer','asc')
+            ->get();
+        return $coa->mapWithKeys(function ($data){
+            return [
+                $data->name_of_collecting_officer => $data->name_of_collecting_officer,
+            ];
+        })->toArray();
     }
 }

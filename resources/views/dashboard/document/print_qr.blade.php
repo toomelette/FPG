@@ -38,7 +38,7 @@
             <td style="font-family: Arial; font-size: 10px">
                 SUGAR REGULATORY ADMINISTRATION
                 <br>
-                RECORDS SECTION
+                HUMAN RESOURCE & RECORDS SECTION
                 <br>
                 DOCUMENT ARCHIVING SYSTEM
                 <br>
