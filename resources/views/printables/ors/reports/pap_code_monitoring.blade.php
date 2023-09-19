@@ -39,33 +39,33 @@
         @endphp
         @forelse($ors as $or)
             @php
-                $orsEntries = $or->orsEntries->where('account_code',$account_code)
+                $orsEntries = $or->orsEntries->where('account_code',$account_code);
+                $projects = $or->projectsApplied->where('pap_code',$request->pap_code);
             @endphp
-            @forelse($orsEntries as $orsEntry)
+
+            @forelse($projects as $project)
                 @php
-                    $total += $orsEntry->debit;
+                    $total = $total + $project->total;
                 @endphp
                 @if($loop->iteration > 1)
-                    <tr>
-                        <td class="text-right">
-                            {{number_format($orsEntry->debit,2)}}
-                        </td>
-                    </tr>
+                <tr>
+                    <td class="text-right">
+                        {{Helper::toNumber($project->total,2)}}
+                    </td>
+                </tr>
                 @else
-                    <tr>
-                        <td rowspan="{{count($orsEntries)}}">{{$or->ors_no}}</td>
-                        <td rowspan="{{count($orsEntries)}}">{{Helper::dateFormat($or->ors_date,'m/d/Y')}}</td>
-                        <td rowspan="{{count($orsEntries)}}">{{$or->payee}}</td>
-                        <td rowspan="{{count($orsEntries)}}">{{$or->particulars}}</td>
-                        <td class="text-right">
-                            {{number_format($orsEntry->debit,2)}}
-                        </td>
-                    </tr>
+                <tr>
+                    <td rowspan="{{count($projects)}}">{{$or->ors_no}}</td>
+                    <td rowspan="{{count($projects)}}">{{Helper::dateFormat($or->ors_date,'m/d/Y')}}</td>
+                    <td rowspan="{{count($projects)}}">{{$or->payee}}</td>
+                    <td rowspan="{{count($projects)}}">{{$or->particulars}}</td>
+                    <td class="text-right">
+                        {{Helper::toNumber($project->total,2)}}
+                    </td>
+                </tr>
                 @endif
-
             @empty
             @endforelse
-
         @empty
         @endforelse
         </tbody>

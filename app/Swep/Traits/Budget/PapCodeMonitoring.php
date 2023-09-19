@@ -20,8 +20,9 @@ trait PapCodeMonitoring
 
         $pap = Pap::query()->where('pap_code','=',$request->pap_code)->first();
 
-        $ors = ORS::query()->
-            whereHas('projectsApplied',function ($q) use ($pap){
+        $ors = ORS::query()
+            ->with(['projectsApplied','orsEntries'])
+            ->whereHas('projectsApplied',function ($q) use ($pap){
                 return $q->where('pap_code','=',$pap->pap_code);
             })
             ->whereHas('orsEntries',function ($q) use ($request){
