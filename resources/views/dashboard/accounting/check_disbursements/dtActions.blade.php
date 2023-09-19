@@ -1,7 +1,7 @@
 <div class="btn-group">
-    <button type="button" class="btn btn-default btn-sm show_ors_btn" data="{{$data->slug}}" data-toggle="modal" data-target="#show_ors_modal" title="" data-placement="left" data-original-title="View more">
-        <i class="fa fa-file-text"></i>
-    </button>
+    <a href="{{route('dashboard.check_disbursements.print',$data->slug)}}" target="_blank" class="btn btn-default btn-sm show_ors_btn" title="" data-placement="left" data-original-title="View more">
+        <i class="fa fa-print"></i>
+    </a>
     <a class="btn btn-default btn-sm" data="{{$data->slug}}" target="_self" href="{{route('dashboard.check_disbursements.edit',$data->slug)}}"title="" data-placement="left" data-original-title="Print">
         <i class="fa fa-edit"></i>
     </a>

@@ -3,16 +3,19 @@
 @section('content')
 
     <section class="content-header">
-        <h1>General Journal <small>Journal Entry Voucher</small></h1>
+        @include('dashboard.accounting.jev.tabs-top')
     </section>
 @endsection
 @section('content2')
 
     <section class="content">
+
         <form id="add_jev_form">
             <div class="box box-solid">
                 <div class="box-header with-border">
-                    <h3 class="box-title"></h3>
+                    <h3 class="box-title">
+                        General Journal <small>Journal Entry Voucher</small>
+                    </h3>
                     <button type="submit" class="btn btn-sm btn-primary pull-right"><i class="fa fa-check"></i> Save</button>
                 </div>
 
@@ -144,7 +147,7 @@
             <td>
                 {!! \App\Swep\ViewHelpers\__form2::selectOnly('jev_details[slug][resp_center]',[
                     'class' => 'input-sm select2-sm select2_resp_center',
-                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                    'options' => \App\Swep\Helpers\Arrays::departmentListAbbv(),
                     'container_class' => 'select2-sm',
                     'copyNameToClass' => 1,
                 ]) !!}
@@ -186,7 +189,7 @@
             <td>
                 {!! \App\Swep\ViewHelpers\__form2::selectOnly('corollary_accounts[slug][resp_center]',[
                     'class' => 'input-sm select2-sm select2_resp_center',
-                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                    'options' => \App\Swep\Helpers\Arrays::departmentListAbbv(),
                     'container_class' => 'select2-sm',
                     'copyNameToClass' => 1,
                 ]) !!}

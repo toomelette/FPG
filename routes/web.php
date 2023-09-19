@@ -373,11 +373,11 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::resource('cash_receipts',\App\Http\Controllers\Accounting\CashReceiptsController::class);
 
     /* Check Disbursements */
-    Route::get('check_disbursements/{slug}/print', 'Accounting\CheckDisbursements@print')->name('check_disbursements.print');
+    Route::get('check_disbursements/{slug}/print', 'Accounting\CheckDisbursementsController@print')->name('check_disbursements.print');
     Route::resource('check_disbursements',\App\Http\Controllers\Accounting\CheckDisbursementsController::class);
 
     /* General Journal */
-    Route::get('general_journal/{slug}/print', 'Accounting\CheckDisbursements@print')->name('general_journal.print');
+    Route::get('general_journal/{slug}/print', 'Accounting\GeneralJournalController@print')->name('general_journal.print');
     Route::resource('general_journal',\App\Http\Controllers\Accounting\GeneralJournalController::class);
 });
 

@@ -3,12 +3,17 @@
 @section('content')
 
     <section class="content-header">
+
+
         <h1>General Journal <small>Journal Entry Voucher</small></h1>
     </section>
 @endsection
 @section('content2')
 
+
+
     <section class="content">
+
         <div class="box box-solid">
             {{--            <div class="box-header with-border">--}}
             {{--                <h3 class="box-title">Progress bars</h3>--}}

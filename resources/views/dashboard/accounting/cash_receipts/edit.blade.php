@@ -103,7 +103,7 @@
                                                 <td>
                                                     {!! \App\Swep\ViewHelpers\__form2::selectOnly('jev_details['.$jevDetail->slug.'][resp_center]',[
                                                         'class' => 'input-sm select2-sm select2_resp_center init_select2_resp_center',
-                                                        'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                                                        'options' => \App\Swep\Helpers\Arrays::departmentListAbbv(),
                                                         'container_class' => 'select2-sm',
                                                         'copyNameToClass' => 1,
                                                     ],$jevDetail->resp_center ?? null) !!}
@@ -178,7 +178,7 @@
                                                 <td>
                                                     {!! \App\Swep\ViewHelpers\__form2::selectOnly('corollary_accounts[slug][resp_center]',[
                                                         'class' => 'input-sm select2-sm select2_resp_center init_select2_resp_center',
-                                                        'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                                                        'options' => \App\Swep\Helpers\Arrays::departmentListAbbv(),
                                                         'container_class' => 'select2-sm',
                                                         'copyNameToClass' => 1,
                                                     ],$corollaryDetail->resp_center ?? null) !!}
@@ -240,7 +240,7 @@
             <td>
                 {!! \App\Swep\ViewHelpers\__form2::selectOnly('jev_details[slug][resp_center]',[
                     'class' => 'input-sm select2-sm select2_resp_center',
-                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                    'options' => \App\Swep\Helpers\Arrays::departmentListAbbv(),
                     'container_class' => 'select2-sm',
                     'copyNameToClass' => 1,
                 ]) !!}
@@ -282,7 +282,7 @@
             <td>
                 {!! \App\Swep\ViewHelpers\__form2::selectOnly('corollary_accounts[slug][resp_center]',[
                     'class' => 'input-sm select2-sm select2_resp_center',
-                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                    'options' => \App\Swep\Helpers\Arrays::departmentListAbbv(),
                     'container_class' => 'select2-sm',
                     'copyNameToClass' => 1,
                 ]) !!}

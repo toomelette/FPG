@@ -76,12 +76,14 @@ class GeneralJournalController extends Controller
                 return $jev->only('slug');
             }
         }
-        abort(503,'Error saving General Journal.');
+        abort(510,'Error saving General Journal.');
     }
 
     public function edit($slug){
-        $jev = JEV::query()->where('slug','=',$slug)->first();
-        $jev ?? abort(503,'GJ not found.');
+        $jev = JEV::query()->where('slug','=',$slug)
+            ->generalJournalOnly()
+            ->first();
+        $jev ?? abort(510,'GJ not found.');
 
         return view('dashboard.accounting.general_journal.edit')->with([
             'jev' => $jev,
@@ -89,8 +91,10 @@ class GeneralJournalController extends Controller
     }
 
     public function update(GeneralJournalFormRequest $request,$slug){
-        $jev = JEV::query()->where('slug','=',$slug)->first();
-            $jev ?? abort(503,'GJ not found.');
+        $jev = JEV::query()->where('slug','=',$slug)
+            ->generalJournalOnly()
+            ->first();
+            $jev ?? abort(510,'GJ not found.');
 
         $project_id = Auth::user()->project_id;
         $jev->project_id = $project_id;
@@ -126,18 +130,32 @@ class GeneralJournalController extends Controller
                 return $jev->only('slug');
             }
         }
-        abort(503,'Error saving Check Disbursement.');
+        abort(510,'Error saving Check Disbursement.');
     }
 
     public function destroy($slug){
-        $jev = JEV::query()->where('slug','=',$slug)->first();
-            $jev ?? abort(503,'JEV not found.');
+        $jev = JEV::query()->where('slug','=',$slug)
+            ->generalJournalOnly()
+            ->first();
+            $jev ?? abort(510,'JEV not found.');
 
         if($jev->delete()){
             $jev->details()->delete();
             return 1;
         }
-        abort(503,'Error deleting JEV');
+        abort(510,'Error deleting JEV');
+    }
+
+    public function print($slug){
+        $jev = JEV::query()
+            ->with(['details.chartOfAccount','corollaryDetails.chartOfAccount','details.department','corollaryDetails.department'])
+            ->where('slug','=',$slug)
+            ->generalJournalOnly()
+            ->first();
+            $jev ?? abort(510,'JEV not found.');
+        return view('printables.accounting.jev.jev')->with([
+            'jev' => $jev,
+        ]);
     }
 
 }

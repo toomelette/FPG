@@ -2,6 +2,7 @@
 
 namespace App\Models\Accounting;
 
+use App\Models\PPU\RCDesc;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,12 +20,14 @@ class JEV extends Model
 
 
 
+
+
     /*SCOPES*/
     public function scopeCashReceiptsOnly(Builder $query){
         $query->where('ref_book','=','CR');
     }
 
-    public function scopeCheckDisburmentsOnly(Builder $query){
+    public function scopeCheckDisbursementsOnly(Builder $query){
         $query->where('ref_book','=','CD');
     }
 

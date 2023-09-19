@@ -15,7 +15,10 @@
             <div class="box box-solid">
                 <div class="box-header with-border">
                     <h3 class="box-title"></h3>
-                    <button type="submit" class="btn btn-sm btn-primary pull-right"><i class="fa fa-check"></i> Save</button>
+                    <div class="btn-group pull-right">
+                        <a type="button" class="btn btn-sm btn-default" href="{{route('dashboard.check_disbursements.print',$checkDisbursement->slug)}}" target="_blank"><i class="fa fa-print"></i> Print JEV</a>
+                        <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
+                    </div>
                 </div>
 
                 <div class="box-body">
@@ -107,7 +110,7 @@
                                             <td>
                                                 {!! \App\Swep\ViewHelpers\__form2::selectOnly('jev_details['.$jevDetail->slug.'][resp_center]',[
                                                     'class' => 'input-sm select2-sm select2_resp_center init_select2_resp_center',
-                                                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                                                    'options' => \App\Swep\Helpers\Arrays::departmentListAbbv(),
                                                     'container_class' => 'select2-sm',
                                                     'copyNameToClass' => 1,
                                                 ],$jevDetail->resp_center ?? null) !!}
@@ -204,7 +207,7 @@
             <td>
                 {!! \App\Swep\ViewHelpers\__form2::selectOnly('jev_details[slug][resp_center]',[
                     'class' => 'input-sm select2-sm select2_resp_center',
-                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                    'options' => \App\Swep\Helpers\Arrays::departmentListAbbv(),
                     'container_class' => 'select2-sm',
                     'copyNameToClass' => 1,
                 ]) !!}
@@ -246,7 +249,7 @@
             <td>
                 {!! \App\Swep\ViewHelpers\__form2::selectOnly('corollary_accounts[slug][resp_center]',[
                     'class' => 'input-sm select2-sm select2_resp_center',
-                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                    'options' => \App\Swep\Helpers\Arrays::departmentListAbbv(),
                     'container_class' => 'select2-sm',
                     'copyNameToClass' => 1,
                 ]) !!}
@@ -356,16 +359,9 @@
                     {!! __html::token_header() !!}
                 },
                 success: function (res) {
-                    succeed(form,true,true);
-                    $("#jev_details_table tbody").html("");
-                    $("#corollary_accounts_table tbody").html("");
-                    $(".add_btn").each(function (){
-                        $(this).trigger('click');
-                    })
+                    succeed(form,false,false);
                     markTabs(form);
-                    $('.totals').each(function (){
-                        $(this).html('0.00');
-                    })
+                    toast('success','Check Disbursement successfully updated.','Success!');
                 },
                 error: function (res) {
                     errored(form,res);

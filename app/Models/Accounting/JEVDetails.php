@@ -4,6 +4,7 @@ namespace App\Models\Accounting;
 
 use App\Models\Budget\ChartOfAccounts;
 use App\Models\PPU\PPURespCodes;
+use App\Models\PPU\RCDesc;
 use Illuminate\Database\Eloquent\Model;
 
 class JEVDetails extends Model
@@ -20,5 +21,9 @@ class JEVDetails extends Model
 
     public function responsibilityCenter(){
         return $this->belongsTo(PPURespCodes::class,'resp_center','rc_code');
+    }
+
+    public function department(){
+        return $this->hasOne(RCDesc::class,'rc','resp_center');
     }
 }

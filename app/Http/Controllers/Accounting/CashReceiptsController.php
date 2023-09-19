@@ -84,7 +84,7 @@ class CashReceiptsController extends Controller
                 return $jev->only('slug');
             }
         }
-        abort(503,'Error saving Cash Receipt');
+        abort(510,'Error saving Cash Receipt');
     }
 
     public function index(Request $request){
@@ -116,8 +116,10 @@ class CashReceiptsController extends Controller
     }
 
     public function update(CashReceiptsFormRequest $request, $slug){
-        $jev = JEV::query()->where('slug','=',$slug)->first();
-        $jev ?? abort(503,'JEV not found.');
+        $jev = JEV::query()->where('slug','=',$slug)
+            ->cashReceiptsOnly()
+            ->first();
+        $jev ?? abort(510,'JEV not found.');
 
         $project_id = Auth::user()->project_id;
         $jev->project_id = $project_id;
@@ -170,25 +172,28 @@ class CashReceiptsController extends Controller
                 return $jev->only('slug');
             }
         }
-        abort(503,'Error saving Cash Receipt');
+        abort(510,'Error saving Cash Receipt');
     }
 
     public function destroy($slug){
-        $jev = JEV::query()->where('slug','=',$slug)->first();
-            $jev ?? abort(503,'JEV not found.');
+        $jev = JEV::query()->where('slug','=',$slug)
+            ->cashReceiptsOnly()
+            ->first();
+            $jev ?? abort(510,'JEV not found.');
 
         if($jev->delete()){
             $jev->details()->delete();
             return 1;
         }
-        abort(503,'Error deleting JEV');
+        abort(510,'Error deleting JEV');
     }
     public function print($slug){
         $jev = JEV::query()
             ->with(['details.chartOfAccount','corollaryDetails.chartOfAccount'])
             ->where('slug','=',$slug)
+            ->cashReceiptsOnly()
             ->first();
-        $jev ?? abort(503,'JEV not found.');
+        $jev ?? abort(510,'JEV not found.');
         return view('printables.accounting.jev.jev')->with([
             'jev' => $jev,
         ]);

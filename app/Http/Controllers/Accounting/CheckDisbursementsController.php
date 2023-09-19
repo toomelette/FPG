@@ -58,11 +58,11 @@ class CheckDisbursementsController extends Controller
                 return $jev->only('slug');
             }
         }
-        abort(503,'Error saving Check Disbursement.');
+        abort(510,'Error saving Check Disbursement.');
     }
     public function index(Request $request){
         if($request->ajax() && $request->has('draw')){
-            $cashReceipts = JEV::query()->checkDisburmentsOnly();
+            $cashReceipts = JEV::query()->checkDisbursementsOnly();
             return DataTables::of($cashReceipts)
                 ->addColumn('details',function($data){
 
@@ -83,16 +83,22 @@ class CheckDisbursementsController extends Controller
     }
 
     public function edit($slug){
-        $checkDisbursement = JEV::query()->where('slug','=',$slug)->first();
-        $checkDisbursement ?? abort(503,'Check Disbursement not found.');
+        $checkDisbursement = JEV::query()
+            ->where('slug','=',$slug)
+            ->checkDisbursementsOnly()
+            ->first();
+        $checkDisbursement ?? abort(510,'Check Disbursement not found.');
         return view('dashboard.accounting.check_disbursements.edit')->with([
             'checkDisbursement' => $checkDisbursement,
         ]);
     }
 
     public function update(Request $request,$slug){
-        $jev = JEV::query()->where('slug','=',$slug)->first();
-        $jev ?? abort(503,'Check Disbursement not found.');
+        $jev = JEV::query()
+            ->where('slug','=',$slug)
+            ->checkDisbursementsOnly()
+            ->first();
+        $jev ?? abort(510,'Check Disbursement not found.');
 
         $project_id = Auth::user()->project_id;
         $jev->project_id = $project_id;
@@ -128,17 +134,31 @@ class CheckDisbursementsController extends Controller
                 return $jev->only('slug');
             }
         }
-        abort(503,'Error saving Check Disbursement.');
+        abort(510,'Error saving Check Disbursement.');
     }
 
     public function destroy($slug){
-        $jev = JEV::query()->where('slug','=',$slug)->first();
-        $jev ?? abort(503,'JEV not found.');
+        $jev = JEV::query()->where('slug','=',$slug)
+            ->checkDisbursementsOnly()
+            ->first();
+        $jev ?? abort(510,'JEV not found.');
 
         if($jev->delete()){
             $jev->details()->delete();
             return 1;
         }
-        abort(503,'Error deleting JEV');
+        abort(510,'Error deleting JEV');
+    }
+
+    public function print($slug){
+        $jev = JEV::query()
+            ->with(['details.chartOfAccount','corollaryDetails.chartOfAccount','details.department','corollaryDetails.department'])
+            ->where('slug','=',$slug)
+            ->checkDisbursementsOnly()
+            ->first();
+            $jev ?? abort(510,'JEV not found.');
+        return view('printables.accounting.jev.jev')->with([
+            'jev' => $jev,
+        ]);
     }
 }
