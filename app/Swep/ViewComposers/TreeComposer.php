@@ -14,9 +14,9 @@ class TreeComposer
     public function compose($view){
 
         $tree = [];
-        $menus = Menu::with('submenu')->where('portal','=',Auth::user()->portal)->where('portal','!=','PPU')->get();
 
-        $user_submenus = UserSubmenu::with(['submenu.menu'])->where('user_id', Auth::user()->user_id)
+        $user_submenus = UserSubmenu::with(['submenu.menu'])
+            ->where('user_id', Auth::user()->user_id)
             ->whereHas('submenu', function ($query) {
                 return $query->where('is_nav', '=', 1);
             });
@@ -51,16 +51,27 @@ class TreeComposer
 
 
 
-
         foreach ($user_submenus as $user_submenu){
+
             if($user_submenu->submenu->menu->portal != 'PPU'){
             $tree[$user_submenu->submenu->menu->category][$user_submenu->submenu->menu->menu_id]['menu_obj'] = $user_submenu->submenu->menu;
-            $tree[$user_submenu->submenu->menu->category][$user_submenu->submenu->menu->menu_id]['submenus'][$user_submenu->submenu_id] = $user_submenu->submenu;
+            $tree[$user_submenu->submenu->menu->category][$user_submenu->submenu->menu->menu_id]['submenus'][$user_submenu->submenu->sort.$user_submenu->submenu_id] = $user_submenu->submenu;
             }
         }
 
-
-
+        foreach ($tree as $group => $menus){
+            if(is_array($menus)){
+                foreach ($menus as $menu_id => $submenus){
+                    if(isset($submenus['submenus'])){
+                        if(is_array($submenus['submenus'])){
+                            $values = $submenus['submenus'];
+                            ksort($values);
+                            $tree[$group][$menu_id]['submenus'] = $values;
+                        }
+                    }
+                }
+            }
+        }
         $view->with(['tree' => $tree]);
 
     }
