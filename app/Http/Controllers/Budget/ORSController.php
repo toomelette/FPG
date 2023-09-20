@@ -51,7 +51,6 @@ class ORSController extends Controller
     }
 
     public function index(Request $request){
-        $this->orsService->checkUserProjectCode();
         if($request->ajax() && $request->has('draw')){
             return $this->dataTable($request);
         }
@@ -120,7 +119,6 @@ class ORSController extends Controller
     }
 
     public function create(){
-        $this->orsService->checkUserProjectCode();
         return view('dashboard.budget.ors.create');
     }
 
@@ -202,7 +200,6 @@ class ORSController extends Controller
     }
 
     public function edit($slug){
-        $this->orsService->checkUserProjectCode();
         return view('dashboard.budget.ors.edit')->with([
             'ors' => $this->orsService->findBySlug($slug),
         ]);
@@ -278,12 +275,10 @@ class ORSController extends Controller
     }
 
     public function reports(){
-        $this->orsService->checkUserProjectCode();
         return view('dashboard.budget.ors.reports');
     }
 
     public function reportGenerate($type){
-        $this->orsService->checkUserProjectCode();
         $request = Request::capture();
 
         switch ($type){

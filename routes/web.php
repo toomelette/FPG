@@ -327,11 +327,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::resource('ppdo', 'PPU\PPDOController');
 
 
-    /** ORS **/
-    Route::get('ors/{slug}/print','Budget\ORSController@print')->name('ors.print');
-    Route::get('ors/reports','Budget\ORSController@reports')->name('ors.reports');
-    Route::get('ors/report_generate/{type}','Budget\ORSController@reportGenerate')->name('ors.report_generate');
-    Route::resource('ors','Budget\ORSController');
+
 
     /** Projects **/
     Route::resource('projects','Budget\ProjectsController');
@@ -365,7 +361,17 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::resource('payroll_template',\App\Http\Controllers\HRU\PayrollTemplateController::class);
 
 
+});
 
+/** ADMIN LEVEL ROUTES REQUIRING PROJECT ID **/
+Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
+    'middleware' => ['check.user_status', 'check.user_route', 'last_activity','verify.email','ensureUserHasProjectId']
+], function () {
+    /** ORS **/
+    Route::get('ors/{slug}/print','Budget\ORSController@print')->name('ors.print');
+    Route::get('ors/reports','Budget\ORSController@reports')->name('ors.reports');
+    Route::get('ors/report_generate/{type}','Budget\ORSController@reportGenerate')->name('ors.report_generate');
+    Route::resource('ors','Budget\ORSController');
 
     /** ACCOUNTING **/
     /* Cash Receipts */
