@@ -35,5 +35,9 @@ class JEV extends Model
         $query->where('ref_book','=','GJ');
     }
 
+    public function scopeCashDisbursementsOnly(Builder $query){
+        $query->where('ref_book','=','CADJ');
+    }
+
 
 }

@@ -379,6 +379,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     /* General Journal */
     Route::get('general_journal/{slug}/print', 'Accounting\GeneralJournalController@print')->name('general_journal.print');
     Route::resource('general_journal',\App\Http\Controllers\Accounting\GeneralJournalController::class);
+
+    /* Cash Disbursements Journal */
+    Route::get('cash_disbursements/{slug}/print', 'Accounting\CashDisbursementsController@print')->name('cash_disbursements.print');
+    Route::resource('cash_disbursements',\App\Http\Controllers\Accounting\CashDisbursementsController::class);
 });
 
 

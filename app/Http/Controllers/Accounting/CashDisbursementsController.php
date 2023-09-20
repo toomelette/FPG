@@ -4,28 +4,28 @@ namespace App\Http\Controllers\Accounting;
 
 use App\Enums\AccountingRefBooks;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CheckDisbursements\CheckDisbursementsFormRequest;
+use App\Http\Requests\CashDisbursements\CashDisbursementsFormRequest;
 use App\Models\Accounting\JEV;
 use App\Models\Accounting\JEVDetails;
-use App\Swep\Helpers\Helper;
 use App\Swep\Traits\JEVTrait;
+use Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
-class CheckDisbursementsController extends Controller
+class CashDisbursementsController extends Controller
 {
     use JEVTrait;
     public function create(){
-        return view('dashboard.accounting.check_disbursements.create');
+        return view('dashboard.accounting.cash_disbursements.create');
     }
 
-    public function store(CheckDisbursementsFormRequest $request){
+    public function store(CashDisbursementsFormRequest $request){
         $project_id = Auth::user()->project_id;
         $jev = new JEV();
         $jev->project_id = $project_id;
-        $jev->ref_book = AccountingRefBooks::CheckDisbursement;
+        $jev->ref_book = AccountingRefBooks::CashDisbursements;
         $jev->slug = Str::random(30);
         $jev->jev_no = $this->newJevNo($request->date);
         $jev->date = $request->date;
@@ -58,17 +58,18 @@ class CheckDisbursementsController extends Controller
                 return $jev->only('slug');
             }
         }
-        abort(510,'Error saving Check Disbursement.');
+        abort(510,'Error saving Cash Disbursement.');;
     }
+
     public function index(Request $request){
         if($request->ajax() && $request->has('draw')){
-            $cashReceipts = JEV::query()->checkDisbursementsOnly();
+            $cashReceipts = JEV::query()->cashDisbursementsOnly();
             return DataTables::of($cashReceipts)
                 ->addColumn('details',function($data){
 
                 })
                 ->addColumn('action',function($data){
-                    return view('dashboard.accounting.check_disbursements.dtActions')->with([
+                    return view('dashboard.accounting.cash_disbursements.dtActions')->with([
                         'data' => $data,
                     ]);
                 })
@@ -79,26 +80,26 @@ class CheckDisbursementsController extends Controller
                 ->setRowId('slug')
                 ->toJson();
         }
-        return view('dashboard.accounting.check_disbursements.index');
+        return view('dashboard.accounting.cash_disbursements.index');
     }
 
     public function edit($slug){
-        $checkDisbursement = JEV::query()
+        $cashDisbursement = JEV::query()
             ->where('slug','=',$slug)
-            ->checkDisbursementsOnly()
+            ->cashDisbursementsOnly()
             ->first();
-        $checkDisbursement ?? abort(510,'Check Disbursement not found.');
-        return view('dashboard.accounting.check_disbursements.edit')->with([
-            'checkDisbursement' => $checkDisbursement,
+            $cashDisbursement ?? abort(510,'Cash Disbursement not found.');
+        return view('dashboard.accounting.cash_disbursements.edit')->with([
+            'cashDisbursement' => $cashDisbursement,
         ]);
     }
 
-    public function update(CheckDisbursementsFormRequest $request,$slug){
+    public function update(CashDisbursementsFormRequest $request,$slug){
         $jev = JEV::query()
             ->where('slug','=',$slug)
-            ->checkDisbursementsOnly()
+            ->cashDisbursementsOnly()
             ->first();
-        $jev ?? abort(510,'Check Disbursement not found.');
+            $jev ?? abort(510,'Cash Disbursement not found.');
 
         $project_id = Auth::user()->project_id;
         $jev->project_id = $project_id;
@@ -134,14 +135,14 @@ class CheckDisbursementsController extends Controller
                 return $jev->only('slug');
             }
         }
-        abort(510,'Error saving Check Disbursement.');
+        abort(510,'Error saving Cash Disbursement.');
     }
 
     public function destroy($slug){
         $jev = JEV::query()->where('slug','=',$slug)
-            ->checkDisbursementsOnly()
+            ->cashDisbursementsOnly()
             ->first();
-        $jev ?? abort(510,'JEV not found.');
+            $jev ?? abort(510,'JEV not found.');
 
         if($jev->delete()){
             $jev->details()->delete();
@@ -154,11 +155,12 @@ class CheckDisbursementsController extends Controller
         $jev = JEV::query()
             ->with(['details.chartOfAccount','corollaryDetails.chartOfAccount','details.department','corollaryDetails.department'])
             ->where('slug','=',$slug)
-            ->checkDisbursementsOnly()
+            ->cashDisbursementsOnly()
             ->first();
             $jev ?? abort(510,'JEV not found.');
         return view('printables.accounting.jev.jev')->with([
             'jev' => $jev,
         ]);
     }
+
 }
