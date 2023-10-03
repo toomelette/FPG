@@ -12,7 +12,7 @@
                 <h3 class="box-title">Projects Activities and Programs</h3>
                 <div class="pull-right">
                     <div class="btn-group">
-                        <button class="btn btn-default btn-sm" data-target="#adjustment_modal" data-toggle="modal"> Budget Adjustment</button>
+                        <button class="btn btn-default btn-sm hidden" data-target="#adjustment_modal" data-toggle="modal"> Budget Adjustment</button>
                         <button class="btn btn-primary btn-sm" data-target="#add_modal" data-toggle="modal"><i class="fa fa-plus"></i> Add PAP</button>
                     </div>
                 </div>
