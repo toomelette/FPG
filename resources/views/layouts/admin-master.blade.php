@@ -12,7 +12,7 @@
     @yield('extras')
 
     <meta property="og:title" content="SRA Web Portal"/>
-    <meta property="og:image" content="{{asset('/images/og.png')}}"/>
+    <meta property="og:image" content="{{asset('/images/ogg.png')}}"/>
     <meta property="og:description" content="HRRS"/>
     <meta property="og:url" content="http://hris.sra.gov.ph/"/>
     <meta property="og:image:width" content="1200" />
