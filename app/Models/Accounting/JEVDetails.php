@@ -26,4 +26,8 @@ class JEVDetails extends Model
     public function department(){
         return $this->hasOne(RCDesc::class,'rc','resp_center');
     }
+
+    public function subsidiaryLedgers(){
+        return $this->hasMany(SubsidiaryLedger::class,'jev_detail_slug','slug');
+    }
 }

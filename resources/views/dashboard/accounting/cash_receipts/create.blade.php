@@ -8,6 +8,7 @@
 @endsection
 @section('content2')
 
+
     <section class="content">
         <form id="add_jev_form">
             <div class="box box-solid">
@@ -73,7 +74,7 @@
                                         <th>Resp Center</th>
                                         <th style="width: 10%;">Debit</th>
                                         <th style="width: 10%;">Credit</th>
-                                        <th style="width: 60px">
+                                        <th style="width: 110px">
                                             <button type="button" id="add_jev_details_btn" class="btn btn-success btn-xs add_btn"><i class="fa fa-plus"></i> Add</button>
                                         </th>
                                     </tr>
@@ -118,6 +119,7 @@
                                         <th colspan="3" class="text-right">TOTAL</th>
                                         <th class="totals debit_total text-right">0.00</th>
                                         <th class="totals credit_total text-right">0.00</th>
+                                        <th></th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -139,46 +141,10 @@
 
     <table  class="table table-condensed table-bordered table-striped" style="display: none">
         <tbody id="jev_details_row_template">
-        <tr id="row_slug">
-            <td>
-                {!! \App\Swep\ViewHelpers\__form2::textboxOnly('jev_details[slug][account]',[
-                    'class' => 'input-sm account',
-                    'readonly' => 'readonly',
-                    'copyNameToClass' => 1,
-                ]) !!}
-            </td>
-            <td>
-                {!! \App\Swep\ViewHelpers\__form2::selectOnly('jev_details[slug][account_code]',[
-                    'class' => 'input-sm select2_account_code',
-                    'options' => [],
-                    'container_class' => 'select2-sm',
-                    'copyNameToClass' => 1,
-                ]) !!}
-            </td>
-            <td>
-                {!! \App\Swep\ViewHelpers\__form2::selectOnly('jev_details[slug][resp_center]',[
-                    'class' => 'input-sm select2-sm select2_resp_center',
-                    'options' => \App\Swep\Helpers\Arrays::departmentListAbbv(),
-                    'container_class' => 'select2-sm',
-                    'copyNameToClass' => 1,
-                ]) !!}
-            </td>
-            <td>
-                {!! \App\Swep\ViewHelpers\__form2::textboxOnly('jev_details[slug][debit]',[
-                    'class' => 'input-sm text-right autonum debit debit_credit',
-                    'copyNameToClass' => 1,
-                ]) !!}
-            </td>
-            <td>
-                {!! \App\Swep\ViewHelpers\__form2::textboxOnly('jev_details[slug][credit]',[
-                    'class' => 'input-sm text-right autonum credit debit_credit',
-                    'copyNameToClass' => 1,
-                ]) !!}
-            </td>
-            <td>
-                <button class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
-            </td>
-        </tr>
+        @include('dashboard.accounting.jev.jev_detail_template',[
+            'slug' => 'slug',
+            'jevDetail' => null,
+        ])
         </tbody>
         <tbody id="corollary_account_row_template">
         <tr id="row_slug">
@@ -218,52 +184,55 @@
                 ]) !!}
             </td>
             <td>
-                <button type="button" class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
+                <button type="button" class="btn btn-sm btn-danger remove_row_btn" tabindex="-1"><i class="fa fa-times"></i> </button>
             </td>
         </tr>
         </tbody>
+        <tbody id="sl_row_template">
+        @include('dashboard.accounting.jev.sl_row_template',[
+            'parentSlug' => 'slug',
+            'rowSlug' => 'newRand',
+            'jevDetail' => null,
+            'subsidiaryLedger' => null,
+        ])
+        </tbody>
+
     </table>
 
+    <div id="subsidiary_ledgers_container">
+        <table>
+            <tbody>
+                <tr>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
 @endsection
 
 
 @section('modals')
+    <div id="sl_modals">
 
+    </div>
+    <div id="sl_modal_template">
+        @include('dashboard.accounting.jev.sl_modal_template',[
+            'slug' => 'slug',
+        ])
+    </div>
 @endsection
 
 @section('scripts')
     <script type="text/javascript">
-        $("#add_jev_details_btn").click(function (){
-            let jevTbl = $("#jev_details_table");
-            let rand = makeId(10);
-            let jevDetailsRowTemplate = $("#jev_details_row_template").html().replaceAll('slug',rand);
+        const ajaxUrlForSelect2AccountCode = '{{route("dashboard.ajax.get","account")}}';
+    </script>
+    <script type="text/javascript" src="{{asset('js/jev.js')}}"></script>
+    <script type="text/javascript">
+        const saAccounts = JSON.parse('{!! json_encode(\App\Swep\Helpers\Arrays::groupedSubsidiaryAccounts()) !!}');
+        const saAccountsAsOptions = makeSelectOptions(saAccounts);
+    </script>
+    <script type="text/javascript">
 
-            jevTbl.find('tbody').append(jevDetailsRowTemplate);
-            let newRow = jevTbl.find('#row_'+rand);
-            newRow.find('.select2_resp_center').select2();
-
-            //initialize autonum on new inputs
-            newRow.find(".autonum").each(function(){
-                new AutoNumeric(this, autonum_settings);
-            });
-
-            //initialize select2 on account code
-            newRow.find(".select2_account_code").select2({
-                ajax: {
-                    url: '{{route("dashboard.ajax.get","account")}}',
-                    dataType: 'json',
-                    delay : 250,
-                },
-
-                placeholder: 'Select item',
-            });
-
-            //populate readonly account code
-            $('#row_'+rand+' .select2_account_code').on('select2:select', function (e) {
-                let data = e.params.data;
-                newRow.find('.account').val(data.id);
-            });
-        })
 
         $("#add_corollary_account_btn").click(function (){
             let jevTbl = $("#corollary_accounts_table");
@@ -307,9 +276,19 @@
             e.preventDefault()
             let form = $(this);
             loading_btn(form);
+            formData = form.serializeArray();
+
+            //INCLUDE SUBSIDIARY LEDGERS IN SERIALIZED ARRAY
+            $(".sl_form").each(function (){
+                let t = $(this);
+                let data = $(this).serializeArray();
+                $.each(data,function (index,value){
+                   formData.push(value);
+                });
+            });
             $.ajax({
                 url : '{{route("dashboard.cash_receipts.store")}}',
-                data : form.serialize(),
+                data : formData,
                 type: 'POST',
                 headers: {
                     {!! __html::token_header() !!}
@@ -322,9 +301,7 @@
                         $(this).trigger('click');
                     })
                     markTabs(form);
-                    $('.totals').each(function (){
-                        $(this).html('0.00');
-                    })
+                    jevSuccessfullySubmitted();
                 },
                 error: function (res) {
                     errored(form,res);
@@ -333,25 +310,20 @@
             })
         })
 
+
+
         $("body").on('change keyup','.debit_credit',function (){
             let table = $(this).parents('table');
-            let allDebitFields = table.find('.debit');
-            let allCreditFields = table.find('.credit');
-            let totalDebit = 0;
-            let totalCredit = 0;
-
-            allDebitFields.each(function (){
-                let amt = sanitizeAutonum($(this).val());
-                totalDebit = totalDebit + amt;
-            })
-            allCreditFields.each(function (){
-                let amt = sanitizeAutonum($(this).val());
-                totalCredit = totalCredit + amt;
-            })
-            table.find('.debit_total').html($.number(totalDebit,2));
-            table.find('.credit_total').html($.number(totalCredit,2))
-
+            sumDebitAndCreditToFooter(table);
         })
+        $("body").on("click",".remove_row_btn",function (){
+            let t = $(this);
+            let tr = t.parents('tr');
+            let id = tr.attr('id');
+            let slug = id.replaceAll('row_','');
+            $("#sl_modal_"+slug).remove();
+        });
+
     </script>
 
 

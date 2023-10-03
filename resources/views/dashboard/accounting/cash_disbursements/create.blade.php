@@ -167,7 +167,7 @@
                 ]) !!}
             </td>
             <td>
-                <button class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
+                <button class="btn btn-sm btn-danger remove_row_btn" tabindex="-1"><i class="fa fa-times"></i> </button>
             </td>
         </tr>
         </tbody>
@@ -209,7 +209,7 @@
                 ]) !!}
             </td>
             <td>
-                <button type="button" class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
+                <button type="button" class="btn btn-sm btn-danger remove_row_btn" tabindex="-1"><i class="fa fa-times"></i> </button>
             </td>
         </tr>
         </tbody>
@@ -343,6 +343,9 @@
             table.find('.credit_total').html($.number(totalCredit,2))
 
         })
+
+        makeSubmenuActive('{{\Illuminate\Support\Facades\URL::route('dashboard.cash_receipts.create')}}');
+
     </script>
 
 

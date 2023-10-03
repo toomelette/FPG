@@ -523,3 +523,11 @@ function sanitizeAutonum(number){
         return number;
     }
 }
+
+function makeSubmenuActive(url){
+    let activePath = url;
+    let targetA = $("a[href='"+activePath+"']");
+    targetA.parent('li').addClass('active');
+    targetA.parents('.treeview').addClass('menu-open');
+    targetA.parents('.treeview-menu').css('display','block');
+}

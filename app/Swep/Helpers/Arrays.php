@@ -4,11 +4,13 @@
 namespace App\Swep\Helpers;
 
 
+use App\Models\Accounting\SubsidiaryAccounts;
 use App\Models\Applicant;
 use App\Models\ApplicantPositionApplied;
 use App\Models\Budget\ChartOfAccounts;
 use App\Models\HRPayPlanitilla;
 use App\Models\MDDC;
+use App\Models\PPU\Pap;
 use App\Models\PPU\PPURespCodes;
 use App\Models\PPU\RCDesc;
 use App\Models\SuOptions;
@@ -594,6 +596,39 @@ class Arrays
         return $coa->mapWithKeys(function ($data){
             return [
                 $data->name_of_collecting_officer => $data->name_of_collecting_officer,
+            ];
+        })->toArray();
+    }
+
+    public static function groupedSubsidiaryAccounts(){
+        $sa = SubsidiaryAccounts::query()->select('sa_account_code_header','sa_account_code','sa_name')->get();
+        $arr = [];
+        foreach ($sa as $s){
+            $arr[$s->sa_account_code_header][$s->sa_account_code] = $s->sa_account_code.' - '. $s->sa_name;
+        }
+        return $arr;
+    }
+
+    public static function budgetMovements(){
+        return [
+            'REALIGNMENT',
+            'SUPPLEMENTAL',
+        ];
+    }
+
+    public static function budgetTypes(){
+        return [
+            'PS' => 'PS',
+            'MOOE' => 'MOOE',
+            'CO' => 'CO',
+        ];
+    }
+
+    public static function papCodes(){
+        $paps = Pap::query()->get();
+        return $paps->mapWithKeys(function ($data){
+            return [
+                $data->slug => $data->pap_code.' - '.$data->pap_title,
             ];
         })->toArray();
     }

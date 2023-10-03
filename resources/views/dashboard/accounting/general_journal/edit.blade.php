@@ -113,7 +113,7 @@
                                                 ],$jevDetail->jev_credit ?? null) !!}
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
+                                                <button class="btn btn-sm btn-danger remove_row_btn" tabindex="-1"><i class="fa fa-times"></i> </button>
                                             </td>
                                         </tr>
                                     @empty
@@ -210,7 +210,7 @@
                 ]) !!}
             </td>
             <td>
-                <button class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
+                <button class="btn btn-sm btn-danger remove_row_btn" tabindex="-1"><i class="fa fa-times"></i> </button>
             </td>
         </tr>
         </tbody>
@@ -252,7 +252,7 @@
                 ]) !!}
             </td>
             <td>
-                <button type="button" class="btn btn-sm btn-danger remove_row_btn"><i class="fa fa-times"></i> </button>
+                <button type="button" class="btn btn-sm btn-danger remove_row_btn" tabindex="-1"><i class="fa fa-times"></i> </button>
             </td>
         </tr>
         </tbody>

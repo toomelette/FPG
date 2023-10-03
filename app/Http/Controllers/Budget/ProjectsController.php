@@ -6,11 +6,14 @@ namespace App\Http\Controllers\Budget;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Budget\PapFormRequest;
+use App\Http\Requests\Budget\RealignmentFormRequest;
 use App\Models\Budget\ORS;
 use App\Models\Budget\ORSProjectsApplied;
+use App\Models\Budget\PapAdjustments;
 use App\Models\PPBTMS\Transactions;
 use App\Models\PPU\Pap;
 use App\Models\PPU\PPURespCodes;
+use App\Models\Project;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\Budget\PapService;
 use Illuminate\Http\Request;
@@ -35,7 +38,9 @@ class ProjectsController extends Controller
         if(request()->ajax() && request()->has('draw')){
             return $this->dataTable($request);
         }
-        return view('dashboard.budget.projects.index', compact('html'));
+        return view('dashboard.budget.projects.index', compact('html'))->with([
+            'papCodes' => \App\Swep\Helpers\Arrays::papCodes(),
+        ]);
     }
 
 
@@ -176,6 +181,8 @@ class ProjectsController extends Controller
 
         $pap = $this->papService->findBySlug($slug);
         $pap_code = $pap->pap_code;
+
+
         return view('dashboard.budget.projects.show')->with([
             'pap' => $pap,
         ]);
@@ -278,5 +285,31 @@ class ProjectsController extends Controller
             ->escapeColumns([])
             ->setRowId('slug')
             ->toJson();
+    }
+
+    public function realigmentAndSupplemental($projectSlug){
+        $project = Pap::query()->where('slug','=',$projectSlug)->first();
+        $project ?? abort(503,'Project not found.');
+        return view('dashboard.budget.projects.realignment_and_supplemental')->with([
+            'project' => $project,
+        ]);
+    }
+
+    public function adjustment($type,RealignmentFormRequest $request){
+
+        if($type != 'realignment' && $type != 'supplemental'){
+            abort(503,'Invalid budget adjustment type.');
+        }
+
+        $papAdj = new PapAdjustments();
+        $papAdj->slug = Str::random();
+        $papAdj->{strtolower($request->type)} = Helper::sanitizeAutonum($request->amount);
+        $papAdj->type = strtoupper($type);
+        $papAdj->source_slug = $request->source_pap;
+        $papAdj->destination_slug = $request->destination_pap;
+        if($papAdj->save()){
+            return 1;
+        }
+        abort(503,'Error saving realignment');
     }
 }
