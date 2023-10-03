@@ -1,16 +1,12 @@
 <div class="box box-sm box-default box-solid">
     <div class="box-header with-border">
-        <p class="no-margin">Subsidiary Ledger</p>
+        <p class="no-margin">CO Purchases per account</p>
     </div>
 
     <div class="box-body" style="">
-        <form class="generate_report_form" id="summary_of_budget_utilization_form" url="{{route('dashboard.ors.report_generate','summary_of_budget_utilization')}}" target="#summary_of_budget_utilization_frame">
+        <form class="generate_report_form" id="co_purchases_per_account_entries_form" url="{{route('dashboard.ors.report_generate','co_purchases_per_account_entries')}}" target="#co_purchases_per_account_entries_frame">
             <div class="row">
-                {!! \App\Swep\ViewHelpers\__form2::select('dept',[
-                    'label' => 'Resp Center:',
-                    'cols' => 5,
-                    'options' => \App\Swep\Helpers\Arrays::departmentList(),
-                ]) !!}
+
             </div>
             <div class="row">
                 <div class="col-md-12" style="margin-bottom: 10px">
@@ -35,7 +31,7 @@
                     </div>
                 </div>
                 <div class="embed-responsive embed-responsive-16by9" style="height: 1019.938px;">
-                    <iframe id="summary_of_budget_utilization_frame" class="embed-responsive-item" src=""></iframe>
+                    <iframe id="co_purchases_per_account_entries_frame" class="embed-responsive-item" src=""></iframe>
                 </div>
             </div>
         </div>

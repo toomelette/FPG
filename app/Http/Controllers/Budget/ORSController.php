@@ -23,6 +23,7 @@ use App\Swep\Helpers\Helper;
 use App\Swep\Services\Budget\ORSReportsService;
 use App\Swep\Services\Budget\ORSService;
 use App\Swep\Traits\Budget\BudgetUtilizationPerProject;
+use App\Swep\Traits\Budget\CoPurchasesPerAccountEntries;
 use App\Swep\Traits\Budget\PapCodeMonitoring;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -34,7 +35,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ORSController extends Controller
 {
-    use PapCodeMonitoring, BudgetUtilizationPerProject;
+    use PapCodeMonitoring, BudgetUtilizationPerProject, CoPurchasesPerAccountEntries;
     public function __construct(
         protected ORSService $orsService,
         protected ORSReportsService $orsReportsService,
@@ -301,6 +302,8 @@ class ORSController extends Controller
                 return  $this->papCodeMonitoring($request);
             case 'summary_of_budget_utilization':
                 return  $this->budgetUtilizationPerProject($request);
+            case 'co_purchases_per_account_entries':
+                return  $this->coPurchasesPerAccountEntries($request);
             default:
                 return 'default';
                 break;
