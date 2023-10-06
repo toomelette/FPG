@@ -38,7 +38,7 @@
                             <dd><table style="width: 100%;">
                                     <tr>
                                         <td>Amount: </td>
-                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($pap->co,2,'0.00')}}</td>
+                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($totalCo = $pap->totalBudgetWithAdjustments()['co'],2,'0.00')}}</td>
                                     </tr>
                                     <tr>
                                         <td>Utilized: </td>
@@ -46,7 +46,7 @@
                                     </tr>
                                     <tr>
                                         <td class="b-top">Balance: </td>
-                                        <td class="text-right text-strong b-top" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($pap->co - $pap->orsAppliedProjects->sum('co'),2,'0.00')}}</td>
+                                        <td class="text-right text-strong b-top" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($totalCo - $pap->orsAppliedProjects->sum('co'),2,'0.00')}}</td>
                                     </tr>
                                 </table></dd>
                         </dl>
@@ -58,7 +58,7 @@
                                 <table style="width: 100%;">
                                     <tr>
                                         <td>Amount: </td>
-                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($pap->mooe,2,'0.00')}}</td>
+                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($totalMooe = $pap->totalBudgetWithAdjustments()['mooe'],2,'0.00')}}</td>
                                     </tr>
                                     <tr>
                                         <td>Utilized: </td>
@@ -66,7 +66,7 @@
                                     </tr>
                                     <tr>
                                         <td class="b-top">Balance: </td>
-                                        <td class="text-right text-strong b-top" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($pap->mooe - $pap->orsAppliedProjects->sum('mooe'),2,'0.00')}}</td>
+                                        <td class="text-right text-strong b-top" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($totalMooe - $pap->orsAppliedProjects->sum('mooe'),2,'0.00')}}</td>
                                     </tr>
                                 </table>
                             </dd>
@@ -80,7 +80,7 @@
                                 <table style="width: 100%;">
                                     <tr>
                                         <td>Total budget: </td>
-                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($totalBudget = $pap->co + $pap->mooe,2,'0.00')}}</td>
+                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($totalBudget = $totalCo + $totalMooe,2,'0.00')}}</td>
                                     </tr>
                                     <tr>
                                         <td>PR: </td>
@@ -113,8 +113,8 @@
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab_1" data-toggle="tab">ORS</a></li>
-                <li><a href="#tab_2" data-toggle="tab">Procurements</a></li>
-{{--                <li><a href="#tab_3" data-toggle="tab">Tab 3</a></li>--}}
+                <li><a href="#tab_2" data-toggle="tab">Procurement</a></li>
+                <li><a href="#tab_3" data-toggle="tab">Budget Adjustments</a></li>
             </ul>
             <div class="tab-content">
 
@@ -234,13 +234,88 @@
                 </div>
 
                 <div class="tab-pane" id="tab_3">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                    when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                    It has survived not only five centuries, but also the leap into electronic typesetting,
-                    remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
-                    sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
-                    like Aldus PageMaker including versions of Lorem Ipsum.
+                    @php
+                        $increases = $pap->increaseInBudget;
+                        $decreases = $pap->decreaseInBudget;
+                        $merged = $increases->merge($decreases)->sortBy('created_at');
+                    @endphp
+
+                    <table class="table table-bordered table-condensed table-striped">
+                        <thead>
+                        <th style="width: 150px">Type</th>
+                        <th>PAP</th>
+                        <th style="width: 150px">CO</th>
+                        <th style="width: 150px">MOOE</th>
+                        </thead>
+
+
+                        <tbody>
+                        @php
+                            $co = $pap->co;
+                            $mooe = $pap->mooe
+                        @endphp
+
+                        <tr>
+                            <td class="text-strong text-info">
+                                Type
+                            </td>
+                            <td class="text-strong text-info">
+                                ORIGINAL BUDGET
+                            </td>
+                            <td class="text-right text-strong text-info">
+                                {{number_format($co,2)}}
+                            </td>
+                            <td class="text-right text-strong text-info">
+                                {{number_format($mooe,2)}}
+                            </td>
+                        </tr>
+
+                        @forelse($merged as $adjustment)
+                            <tr>
+                                @if($pap->slug == $adjustment->source_slug)
+                                {{--DECREASE IN BUDGET--}}
+                                    @php
+                                    $co = $co - $adjustment->co;
+                                    $mooe = $mooe - $adjustment->mooe;
+                                    @endphp
+                                    <td>Realignment to: </td>
+                                    <td>{{$adjustment->destinationPap->pap_code ?? '-'}} - {{$adjustment->destinationPap->pap_title ?? '-'}}</td>
+                                    <td class="text-right text-danger">
+                                        @if(!empty($adjustment->co))
+                                        ({{ Helper::toNumber($adjustment->co,2)}})
+                                        @endif
+                                    </td>
+                                    <td class="text-right text-danger">
+                                        @if(!empty($adjustment->mooe))
+                                        ({{ Helper::toNumber($adjustment->mooe,2) }})
+                                        @endif
+                                    </td>
+                                @else
+                                {{--INCREASE IN BUDGET--}}
+                                    @php
+                                        $co = $co + $adjustment->co;
+                                        $mooe = $mooe + $adjustment->mooe;
+                                    @endphp
+                                    <td> {{$adjustment->type == 'REALIGNMENT' ? 'Realignment from:' : 'Supplemental'}} </td>
+                                    <td>{{$adjustment->sourcePap->pap_code ?? '-'}} - {{$adjustment->sourcePap->pap_title ?? '-'}}</td>
+                                    <td class="text-right">{{Helper::toNumber($adjustment->co,2)}}</td>
+                                    <td class="text-right">{{Helper::toNumber($adjustment->mooe,2)}}</td>
+                                @endif
+
+
+                            </tr>
+                        @empty
+                        @endforelse
+                        </tbody>
+                        <tfoot>
+                        <tr class="bg-success">
+                            <th></th>
+                            <th>TOTAL</th>
+                            <th class="text-right">{{number_format($co,2)}}</th>
+                            <th class="text-right">{{number_format($mooe,2)}}</th>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
 
             </div>

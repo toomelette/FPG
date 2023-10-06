@@ -60,6 +60,8 @@ class PapService
                 'procurementsJr' => function($q){
                     return $q->receivedAndNotCancelled();
                 },
+                'increaseInBudget',
+                'decreaseInBudget',
             ])
             ->where('slug','=',$slug)->first();
         return $pap ?? abort(503,'PAP not found.');

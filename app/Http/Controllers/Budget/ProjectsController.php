@@ -27,11 +27,12 @@ class ProjectsController extends Controller
     protected $papService;
     public function __construct(PapService $papService)
     {
+
         $this->papService = $papService;
     }
 
     public function index(Request $request, Builder $builder){
-
+        return view('dashboard.budget.moved');
         $html = $builder->parameters([
             'buttons' => ['excel']
         ]);
@@ -133,6 +134,7 @@ class ProjectsController extends Controller
     }
 
     public function edit($slug){
+        return view('dashboard.budget.moved');
         return view('dashboard.budget.projects.edit')->with([
             'pap' => $this->papService->findBySlug($slug),
         ]);
@@ -169,7 +171,7 @@ class ProjectsController extends Controller
     }
 
     public function show($slug, Request $request, Builder $builder){
-
+        return view('dashboard.budget.moved');
 
         if($request->has('draw') && $request->table == 'ors'){
             return $this->orsDatatable($slug, $request);

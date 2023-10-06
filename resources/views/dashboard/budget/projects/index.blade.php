@@ -12,7 +12,7 @@
                 <h3 class="box-title">Projects Activities and Programs</h3>
                 <div class="pull-right">
                     <div class="btn-group">
-                        <button class="btn btn-default btn-sm hidden" data-target="#adjustment_modal" data-toggle="modal"> Budget Adjustment</button>
+                        <button class="btn btn-default btn-sm" data-target="#adjustment_modal" data-toggle="modal"> Budget Adjustment</button>
                         <button class="btn btn-primary btn-sm" data-target="#add_modal" data-toggle="modal"><i class="fa fa-plus"></i> Add PAP</button>
                     </div>
                 </div>
@@ -414,6 +414,7 @@
                 success: function (res) {
                     pap_tbl.draw(false);
                     succeed(form,true,false);
+                    toast('success','Realignment successful.','Success!');
                 },
                 error: function (res) {
                     errored(form,res);
@@ -435,6 +436,7 @@
                 success: function (res) {
                     pap_tbl.draw(false);
                     succeed(form,true,false);
+                    toast('success','Supplemental budget successfully added.','Success!');
                 },
                 error: function (res) {
                     errored(form,res);

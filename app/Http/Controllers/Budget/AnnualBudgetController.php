@@ -23,6 +23,8 @@ class AnnualBudgetController extends Controller
     }
 
     public function index(Request $request){
+        abort(503);
+        return view('dashboard.budget.moved');
         if($request->ajax() && $request->has('draw')){
 
             $abs = AnnualBudget::query()

@@ -2,6 +2,7 @@
 
 namespace App\Models\Budget;
 
+use App\Models\PPU\Pap;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,4 +24,11 @@ class PapAdjustments extends Model
         });
     }
     protected $table = 'budget_pap_adjustments';
+
+    public function sourcePap(){
+        return $this->belongsTo(Pap::class,'source_slug','slug');
+    }
+    public function destinationPap(){
+        return $this->belongsTo(Pap::class,'destination_slug','slug');
+    }
 }

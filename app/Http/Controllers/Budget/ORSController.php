@@ -53,6 +53,7 @@ class ORSController extends Controller
     }
 
     public function index(Request $request){
+        return view('dashboard.budget.moved');
         if($request->ajax() && $request->has('draw')){
             return $this->dataTable($request);
         }
@@ -121,6 +122,7 @@ class ORSController extends Controller
     }
 
     public function create(){
+        return view('dashboard.budget.moved');
         return view('dashboard.budget.ors.create');
     }
 
@@ -190,7 +192,7 @@ class ORSController extends Controller
     }
 
     public function print($slug, Request $request){
-
+        return view('dashboard.budget.moved');
         if($request->has('attachment') && $request->attachment != null){
             return view('printables.ors.ors_attachment')->with([
                 'ors' => $this->orsService->findBySlug($slug),
@@ -202,6 +204,7 @@ class ORSController extends Controller
     }
 
     public function edit($slug){
+        return view('dashboard.budget.moved');
         return view('dashboard.budget.ors.edit')->with([
             'ors' => $this->orsService->findBySlug($slug),
         ]);
@@ -277,6 +280,7 @@ class ORSController extends Controller
     }
 
     public function reports(){
+        return view('dashboard.budget.moved');
         return view('dashboard.budget.ors.reports');
     }
 
