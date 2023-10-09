@@ -541,7 +541,7 @@ class DocumentController extends Controller{
         $storage = $this->getStorage();
         $this->makeQR($document,$document->document_id);
         $path = '/QRCODE_TEMP/'.$document->document_id.'.png';
-        $image1 = $storage->path($path);
+
 
         return view('dashboard.document.print_qr')->with([
             'document' => $document,

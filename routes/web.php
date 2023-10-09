@@ -34,6 +34,9 @@ Route::get('/dashboard/plantilla/print','PlantillaController@print')->name('plan
 Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     'middleware' => ['check.user_status', 'last_activity','sidenav_mw', 'verify.email']
 ], function () {
+    Route::get('/employee/{slug}/qr','EmployeeController@generateQr')->name('employee.generate_qr');
+
+
     Route::get('/dtr/my_dtr', 'DTRController@myDtr')->name('dtr.my_dtr');
     Route::get('/dtr/download','DTRController@download')->name('dtr.download');
     Route::get('/dtr/fetch_by_user_and_month', 'DTRController@fetchByUserAndMonth')->name('dtr.fetch_by_user_and_month');

@@ -30,7 +30,10 @@ use App\Http\Requests\EmployeeMatrix\EmployeeMatrixPrintRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use Picqer\Barcode\BarcodeGeneratorPNG;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Yajra\DataTables\DataTables;
+use function Ramsey\Uuid\v1;
 
 
 class EmployeeController extends Controller{
@@ -113,6 +116,7 @@ class EmployeeController extends Controller{
                                           <li><a href="#" uri="'.route('dashboard.file201.index').'"  data-toggle="modal" data-target="#file201_modal" class="file201_btn" data="'.$data->slug.'"><i class="fa fa-folder"></i> 201 File</a></li>
                                           <li><a href="#"  employee="'.$data->lastname.', '.$data->firstname.'" class="bm_uid_btn" data="'.$data->slug.'" bm_uid="'.$data->biometric_user_id.'"><i class="fa icon-ico-fingerprint"></i> Biometric User ID</a></li>
                                             <li><a href="#" data-toggle="modal" data-target="#other_hr_actions_modal" class="other_actions_btn" data="'.$data->slug.'"><i class="fa icon-service-record"></i> Other HR Actions</a></li>
+                                            <li><a target="_blank" href="'.route('dashboard.employee.generate_qr',$data->slug).'" class="other_actions_btn" data="'.$data->slug.'"><i class="fa fa-qrcode"></i> Get QR Code</a></li>
                                         </ul>
                                     </div>
                                 </div>';
@@ -859,7 +863,48 @@ class EmployeeController extends Controller{
         ];
     }
 
+    public function generateQr($slug,Request $request){
+        $employee = Employee::query()
+            ->where('slug','=',$slug)
+            ->first();
 
+        if($request->has('get_qr')){
+            $storage = \Storage::disk('local');
+            $path = 'EMP_QR_CODE/'.$employee->employee_no.'.png';
+            if($storage->exists($path)){
+                $file = $storage->get($path);
+                $type = 'png';
+                $response = \Response::make($file, 200);
+                $response->header("Content-Type", $type);
+                return $response;
+            }
+            return  1;
+        }
+
+        $barcode = $employee->employee_no;
+        $home = env('STORAGE_LOCATION','/home/swep_afd_storage/');
+
+        $generator = new BarcodeGeneratorPNG();
+        $temp_barcode_dir = $home.'/EMP_QR_CODE/';
+        if (!is_dir($temp_barcode_dir)) {
+            // dir doesn't exist, make it
+            mkdir($temp_barcode_dir);
+        }
+
+        $image = QrCode::size('200')
+            ->format('png')
+            ->merge('/public/images/sra_only2.png',0.4)
+            ->errorCorrection('H')
+            ->generate($barcode);
+
+
+
+        file_put_contents($temp_barcode_dir.$barcode.'.png', $image);
+
+        return view('dashboard.employee.print_qr')->with([
+            'employee' => $employee,
+        ]);
+    }
 
 
 }
