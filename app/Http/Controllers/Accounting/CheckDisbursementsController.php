@@ -18,6 +18,7 @@ class CheckDisbursementsController extends Controller
 {
     use JEVTrait;
     public function create(){
+        return view('dashboard.accounting.moved');
         return view('dashboard.accounting.check_disbursements.create');
     }
 
@@ -61,6 +62,7 @@ class CheckDisbursementsController extends Controller
         abort(510,'Error saving Check Disbursement.');
     }
     public function index(Request $request){
+        return view('dashboard.accounting.moved');
         if($request->ajax() && $request->has('draw')){
             $cashReceipts = JEV::query()->checkDisbursementsOnly();
             return DataTables::of($cashReceipts)

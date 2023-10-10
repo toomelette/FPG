@@ -18,6 +18,7 @@ class GeneralJournalController extends Controller
 {
     use JEVTrait;
     public function index( Request $request){
+        return view('dashboard.accounting.moved');
         if($request->ajax() && $request->has('draw')){
             $cashReceipts = JEV::query()->generalJournalOnly();
             return DataTables::of($cashReceipts)
@@ -40,6 +41,7 @@ class GeneralJournalController extends Controller
     }
 
     public function create(){
+        return view('dashboard.accounting.moved');
         return view('dashboard.accounting.general_journal.create');
     }
     public function store(GeneralJournalFormRequest $request){

@@ -101,27 +101,47 @@
 
                 <li class="header" id="sidenav_search_header" style="display: none; background-color: #024850; color: white"><i class="fa fa-search"></i> SEARCH:</li>
             @foreach($tree as $category=>$menus)
-                @if(\Illuminate\Support\Facades\Auth::user()->sidenav == '')
-                        @if(count($menus) > 0)
-                            @if($category != 'U')
-                                <li class="header header-group">{!! __html::sidenav_labeler($category) !!}</li>
-                            @endif
-                        @endif
-                        @foreach($menus as $menu_id => $menu_content)
-                            @if($menu_content['menu_obj']->is_menu == true)
-                                @if($menu_content['menu_obj']->is_dropdown == false)
-                                    {{--                                <li class="{!! Route::currentRouteNamed($user_menu->route) ? 'active' : '' !!}">--}}
-                                    {{--                                    <a href="{{ route($user_menu->route) }}">--}}
-                                    {{--                                        <i class="fa {{ $user_menu->icon }}"></i> <span>{{ $user_menu->name }}</span>--}}
-                                    {{--                                    </a>--}}
-                                    {{--                                </li>--}}
-                                @else
+
+                @if(count($menus) > 0)
+                    @if($category != 'U')
+                        <li class="header header-group">{!! __html::sidenav_labeler($category) !!}</li>
+                    @endif
+                @endif
+                @php($done = [])
+                @foreach($menus as $menu_id => $menu_content)
+                    @if($menu_content['menu_obj']->is_menu == true)
+                        @if($menu_content['menu_obj']->is_dropdown == false)
+
+                        @else
+                            @switch($menu_content['menu_obj']->portal)
+                                @case('ACCOUNTING')
+
+                                    @if(!isset($done['ACCOUNTING']))
+                                        <li class="">
+                                            <a href="http://accounting.sra.gov.ph/" target="_blank" searchable="ACCOUNTING">
+                                                <i class="fa fa-external-link"></i>accounting.sra.gov.ph
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @php($done['ACCOUNTING'] = 1)
+                                @break
+                                @case('BUDGET')
+                                    @if(!isset($done['BUDGET']))
+                                        <li class="">
+                                            <a href="http://budget.sra.gov.ph/" target="_blank" searchable="BUDGET ORS">
+                                                <i class="fa fa-external-link"></i>budget.sra.gov.ph
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @php($done['BUDGET'] = 1)
+                                @break
+                                @default
                                     <li class="treeview ">
                                         <a href="#" searchable="{{$menu_content['menu_obj']->name}} {{$menu_content['menu_obj']->tags}} {{$menu_content['menu_obj']->category}} {!! \App\Swep\ViewHelpers\__html::sidenav_labeler($menu_content['menu_obj']->category) !!}">
-                                            <i class="fa {{$menu_content['menu_obj']->icon}}"></i> <span>{{$menu_content['menu_obj']->name}}</span>
-                                            <span class="pull-right-container">
-                                              <i class="fa fa-angle-left pull-right"></i>
-                                            </span>
+                                        <i class="fa {{$menu_content['menu_obj']->icon}}"></i> <span>{{$menu_content['menu_obj']->name}}</span>
+                                        <span class="pull-right-container">
+                                             <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
                                         </a>
                                         <ul class="treeview-menu">
                                             @if(count($menu_content['submenus']) > 0)
@@ -137,53 +157,22 @@
                                         </ul>
 
                                     </li>
-                                @endif
-                            @endif
-                        @endforeach
+                                @break
+                            @endswitch
 
-                @elseif($category == \Illuminate\Support\Facades\Auth::user()->sidenav)
-                            @if(count($menus) > 0)
-                                @if($category != 'U')
-                                    <li class="header">{!! __html::sidenav_labeler($category) !!}</li>
-                                @endif
-                            @endif
-                            @foreach($menus as $menu_id => $menu_content)
-                                @if($menu_content['menu_obj']->is_menu == true)
-                                    @if($menu_content['menu_obj']->is_dropdown == false)
-                                        {{--                                <li class="{!! Route::currentRouteNamed($user_menu->route) ? 'active' : '' !!}">--}}
-                                        {{--                                    <a href="{{ route($user_menu->route) }}">--}}
-                                        {{--                                        <i class="fa {{ $user_menu->icon }}"></i> <span>{{ $user_menu->name }}</span>--}}
-                                        {{--                                    </a>--}}
-                                        {{--                                </li>--}}
-                                    @else
-                                        <li class="treeview ">
-                                            <a href="#" searchable="{{$menu_content['menu_obj']->name}} {{$menu_content['menu_obj']->tags}} {{$menu_content['menu_obj']->category}} {!! \App\Swep\ViewHelpers\__html::sidenav_labeler($menu_content['menu_obj']->category) !!}">
-                                                <i class="fa {{$menu_content['menu_obj']->icon}}"></i> <span>{{$menu_content['menu_obj']->name}}</span>
-                                                <span class="pull-right-container">
-                                              <i class="fa fa-angle-left pull-right"></i>
-                                            </span>
-                                            </a>
+                        @endif
+                    @endif
 
-                                            <ul class="treeview-menu">
-                                                @if(count($menu_content['submenus']) > 0)
+                @endforeach
 
-                                                    @foreach($menu_content['submenus'] as $submenu)
-                                                        @if($submenu->is_nav == true)
 
-                                                            <li class="{!! Route::currentRouteNamed($submenu->route) ? 'active tree_active' : '' !!}">
-                                                                <a href="{{ route($submenu->route) }}"><i class="fa fa-caret-right"></i> {{ $submenu->nav_name }}</a>
-                                                            </li>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </ul>
-
-                                        </li>
-                                    @endif
-                                @endif
-                            @endforeach
-                @endif
             @endforeach
+                <li class="header header-group">PROPERTY AND PROCUREMENT</li>
+                <li class="">
+                    <a href="http://ppbtms.sra.gov.ph/" target="_blank" searchable="PROPERTY AND PROCUREMENT">
+                        <i class="fa fa-external-link"></i>ppbtms.sra.gov.ph
+                    </a>
+                </li>
         @endif
       @endif
 

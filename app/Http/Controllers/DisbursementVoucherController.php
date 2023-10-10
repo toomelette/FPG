@@ -34,7 +34,7 @@ class DisbursementVoucherController extends Controller{
 
     
     public function index(Request $request, $filter_user_only = null){
-
+        return view('dashboard.accounting.moved');
         if($request->ajax() && $request->has('draw')){
 
             return $this->fetchTbl($request);
@@ -140,6 +140,7 @@ class DisbursementVoucherController extends Controller{
 
 
     public function userIndex(DisbursementVoucherFilterRequest $request){
+        return view('dashboard.accounting.moved');
         if($request->ajax() && $request->has('draw')){
             return $this->fetchTbl($request,$user_only = 1);
         }
@@ -150,7 +151,7 @@ class DisbursementVoucherController extends Controller{
 
 
     public function create(){
-
+        return view('dashboard.accounting.moved');
         return view('dashboard.disbursement_voucher.create');
         
     }

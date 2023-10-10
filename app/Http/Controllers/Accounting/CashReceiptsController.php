@@ -27,7 +27,7 @@ class CashReceiptsController extends Controller
     }
 
     public function create(){
-
+        return view('dashboard.accounting.moved');
         return view('dashboard.accounting.cash_receipts.create');
     }
 
@@ -130,6 +130,7 @@ class CashReceiptsController extends Controller
     }
 
     public function index(Request $request){
+        return view('dashboard.accounting.moved');
         if($request->ajax() && $request->has('draw')){
             $cashReceipts = JEV::query()->cashReceiptsOnly();
             return DataTables::of($cashReceipts)

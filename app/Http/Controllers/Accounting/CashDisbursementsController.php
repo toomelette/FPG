@@ -18,6 +18,7 @@ class CashDisbursementsController extends Controller
 {
     use JEVTrait;
     public function create(){
+        return view('dashboard.accounting.moved');
         return view('dashboard.accounting.cash_disbursements.create');
     }
 
@@ -62,6 +63,7 @@ class CashDisbursementsController extends Controller
     }
 
     public function index(Request $request){
+        return view('dashboard.accounting.moved');
         if($request->ajax() && $request->has('draw')){
             $cashReceipts = JEV::query()->cashDisbursementsOnly();
             return DataTables::of($cashReceipts)

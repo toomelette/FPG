@@ -20,11 +20,7 @@ class TreeComposer
             ->whereHas('submenu', function ($query) {
                 return $query->where('is_nav', '=', 1);
             });
-        if(Auth::user()->portal != ''){
-            $user_submenus = $user_submenus->whereHas('submenu.menu', function ($query) {
-                return $query->where('portal', '=', Auth::user()->portal)->where('portal' ,'!=','PPU');
-            });
-        }
+
 
         $user_submenus = $user_submenus->get();
 
@@ -59,19 +55,6 @@ class TreeComposer
             }
         }
 
-        foreach ($tree as $group => $menus){
-            if(is_array($menus)){
-                foreach ($menus as $menu_id => $submenus){
-                    if(isset($submenus['submenus'])){
-                        if(is_array($submenus['submenus'])){
-                            $values = $submenus['submenus'];
-                            ksort($values);
-                            $tree[$group][$menu_id]['submenus'] = $values;
-                        }
-                    }
-                }
-            }
-        }
         $view->with(['tree' => $tree]);
 
     }
