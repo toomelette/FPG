@@ -72,7 +72,7 @@ class EmployeeController extends Controller{
 
     private function dataTable($request){
         $sql_server_is_on = Helper::sqlServerIsOn();
-        $cols = ['fullname','employee_no','position','email','biometric_user_id', 'date_of_birth','sex','civil_status','firstname','slug'];
+        $cols = ['fullname','employee_no','position','email','biometric_user_id', 'date_of_birth','sex','civil_status','firstname','slug','name_ext'];
         $employees = Employee::query()->select($cols);
         if($sql_server_is_on === true){
             $employees = $employees->with('empMaster');
@@ -139,6 +139,7 @@ class EmployeeController extends Controller{
                 return $data->position;
             })
             ->editColumn('fullname',function ($data){
+
                 $bday_mark = '';
                 $bday = 'N/A';
                 if($data->date_of_birth != '' ){
@@ -148,7 +149,7 @@ class EmployeeController extends Controller{
                     $bday = Carbon::parse($data->date_of_birth)->format("M. d, Y");
                 }
 
-                return '<p class="text-strong no-margin">'.$data->fullname.$bday_mark.'</p>'.
+                return '<p class="text-strong no-margin">'.$data->fullname. ' '.$data->name_ext.' '.$bday_mark.'</p>'.
                     '<div class="table-subdetail" style="margin-top: 3px">
                         <table>
                             <tr>

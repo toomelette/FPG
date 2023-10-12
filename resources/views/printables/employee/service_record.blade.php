@@ -92,7 +92,7 @@
                 <tr>
                     <td>NAME</td>
                     <td class="b-bottom text-strong" style="font-size: 15px">{{$employee->lastname}}</td>
-                    <td class="b-bottom text-strong" style="font-size: 15px">{{$employee->firstname}}</td>
+                    <td class="b-bottom text-strong" style="font-size: 15px">{{$employee->firstname}} {{$employee->name_ext}}</td>
                     <td class="b-bottom text-strong" style="font-size: 15px">{{$employee->middlename}}</td>
                 </tr>
                 <tr>

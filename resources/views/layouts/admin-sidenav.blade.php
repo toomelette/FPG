@@ -75,30 +75,6 @@
         @if(count($tree) > 0)
             @php($tree_copy = $tree)
             @php(ksort($tree_copy))
-            @if(count($tree_copy) > 1)
-                    <li class="header header-navigation">NAVIGATION:</li>
-                    <li class="grouper" style="height: 50px;">
-                        <div>
-                            <select class="form-control" id="sidenav_selector" name="abc" style="" data-placeholder="Select a navigation">
-                                @foreach($tree_copy as $category=>$menus)
-                                    @if($category == \Illuminate\Support\Facades\Auth::user()->sidenav)
-                                        <option value="{{$category}}" selected>{!! __html::sidenav_labeler($category) !!}</option>
-                                    @else
-                                        <option value="{{$category}}">{!! __html::sidenav_labeler($category) !!}</option>
-                                    @endif
-                                @endforeach
-                                @if(\Illuminate\Support\Facades\Auth::user()->sidenav == '')
-                                    <option value="" selected>ALL</option>
-                                @else
-                                    <option value="">ALL</option>
-                                @endif
-                            </select>
-                        </div>
-                    </li>
-
-
-            @endif
-
                 <li class="header" id="sidenav_search_header" style="display: none; background-color: #024850; color: white"><i class="fa fa-search"></i> SEARCH:</li>
             @foreach($tree as $category=>$menus)
 
@@ -118,7 +94,7 @@
 
                                     @if(!isset($done['ACCOUNTING']))
                                         <li class="">
-                                            <a href="http://accounting.sra.gov.ph/" target="_blank" searchable="ACCOUNTING">
+                                            <a href="http://accounting.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="ACCOUNTING">
                                                 <i class="fa fa-external-link"></i>accounting.sra.gov.ph
                                             </a>
                                         </li>
@@ -128,7 +104,7 @@
                                 @case('BUDGET')
                                     @if(!isset($done['BUDGET']))
                                         <li class="">
-                                            <a href="http://budget.sra.gov.ph/" target="_blank" searchable="BUDGET ORS">
+                                            <a href="http://budget.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="BUDGET ORS">
                                                 <i class="fa fa-external-link"></i>budget.sra.gov.ph
                                             </a>
                                         </li>
@@ -169,7 +145,7 @@
             @endforeach
                 <li class="header header-group">PROPERTY AND PROCUREMENT</li>
                 <li class="">
-                    <a href="http://ppbtms.sra.gov.ph/" target="_blank" searchable="PROPERTY AND PROCUREMENT">
+                    <a href="http://ppbtms.sra.gov.ph/"  style="color:#9aefff" target="_blank" searchable="PROPERTY AND PROCUREMENT">
                         <i class="fa fa-external-link"></i>ppbtms.sra.gov.ph
                     </a>
                 </li>

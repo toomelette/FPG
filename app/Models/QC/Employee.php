@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\QC;
 
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
+use App\Models\Scopes\QCEmployeeScope;
 use App\Models\SqlServer\EmpMaster;
 use App\Models\SqlServer\IncentiveTemplate;
 use Illuminate\Database\Eloquent\Model;
@@ -16,10 +17,13 @@ class Employee extends Model{
 
 
 
-
+    protected static function booted()
+    {
+        static::addGlobalScope(new QCEmployeeScope());
+    }
 
 	use Sortable, LogsActivity;
-//	protected $connection = 'mysql_qc_server';
+	protected $connection = 'afd_qc';
     protected $table = 'hr_employees';
 
     protected $dates = ['date_of_birth', 'firstday_gov', 'firstday_sra', 'appointment_date', 'adjustment_date', 'created_at', 'updated_at'];
@@ -127,19 +131,19 @@ class Employee extends Model{
 
 
     public function employeeAddress(){
-        return $this->hasOne('App\Models\EmployeeAddress', 'employee_no', 'employee_no');
+        return $this->hasOne('App\Models\QC\EmployeeAddress', 'employee_no', 'employee_no');
     } 
 
     public function employeeFamilyDetail(){
-        return $this->hasOne('App\Models\EmployeeFamilyDetail', 'employee_no', 'employee_no');
+        return $this->hasOne('App\Models\QC\EmployeeFamilyDetail', 'employee_no', 'employee_no');
     }
 
     public function employeeOtherQuestion(){
-        return $this->hasOne('App\Models\EmployeeOtherQuestion', 'employee_no', 'employee_no');
+        return $this->hasOne('App\Models\QC\EmployeeOtherQuestion', 'employee_no', 'employee_no');
     }
 
     public function employeeHealthDeclaration(){
-        return $this->hasOne('App\Models\EmployeeHealthDeclaration', 'employee_no', 'employee_no');
+        return $this->hasOne('App\Models\QC\EmployeeHealthDeclaration', 'employee_no', 'employee_no');
     }
 
     public function empBeginningCredits(){
@@ -150,11 +154,11 @@ class Employee extends Model{
 
 
     public function employeeTraining(){
-        return $this->hasMany('App\Models\EmployeeTraining', 'employee_no', 'employee_no')->orderBy('sequence_no','desc');
+        return $this->hasMany('App\Models\QC\EmployeeTraining', 'employee_no', 'employee_no')->orderBy('sequence_no','desc');
     }
 
     public function employeeChildren(){
-        return $this->hasMany('App\Models\EmployeeChildren', 'employee_no', 'employee_no');
+        return $this->hasMany('App\Models\QC\EmployeeChildren', 'employee_no', 'employee_no');
     } 
 
     public function employeeEducationalBackground(){
@@ -163,44 +167,44 @@ class Employee extends Model{
 
 
     public function employeeEligibility(){
-        return $this->hasMany('App\Models\EmployeeEligibility', 'employee_no', 'employee_no');
+        return $this->hasMany('App\Models\QC\EmployeeEligibility', 'employee_no', 'employee_no');
     }   
 
     public function employeeExperience(){
-        return $this->hasMany('App\Models\EmployeeExperience', 'employee_no', 'employee_no');
+        return $this->hasMany('App\Models\QC\EmployeeExperience', 'employee_no', 'employee_no');
     }
 
     public function employeeOrganization(){
-        return $this->hasMany('App\Models\EmployeeOrganization', 'employee_no', 'employee_no');
+        return $this->hasMany('App\Models\QC\EmployeeOrganization', 'employee_no', 'employee_no');
     }
 
     public function employeeRecognition(){
-        return $this->hasMany('App\Models\EmployeeRecognition', 'employee_no', 'employee_no');
+        return $this->hasMany('App\Models\QC\EmployeeRecognition', 'employee_no', 'employee_no');
     }
 
     public function employeeReference(){
-        return $this->hasMany('App\Models\EmployeeReference', 'employee_no', 'employee_no');
+        return $this->hasMany('App\Models\QC\EmployeeReference', 'employee_no', 'employee_no');
     }
 
     public function employeeSpecialSkill(){
-        return $this->hasMany('App\Models\EmployeeSpecialSkill', 'employee_no', 'employee_no');
+        return $this->hasMany('App\Models\QC\EmployeeSpecialSkill', 'employee_no', 'employee_no');
     }
 
     public function employeeVoluntaryWork(){
-        return $this->hasMany('App\Models\EmployeeVoluntaryWork', 'employee_no', 'employee_no');
+        return $this->hasMany('App\Models\QC\EmployeeVoluntaryWork', 'employee_no', 'employee_no');
     }
 
     public function employeeMedicalHistories(){
-        return $this->hasMany('App\Models\EmployeeMedicalHistory', 'employee_no', 'employee_no');
+        return $this->hasMany('App\Models\QC\EmployeeMedicalHistory', 'employee_no', 'employee_no');
     }
 
 
     public function employeeServiceRecord(){
-        return $this->hasMany('App\Models\EmployeeServiceRecord', 'employee_no', 'employee_no')->orderBy('sequence_no','asc');
+        return $this->hasMany('App\Models\QC\EmployeeServiceRecord', 'employee_no', 'employee_no')->orderBy('sequence_no','asc');
     }
 
     public function employeeMatrix(){
-        return $this->hasOne('App\Models\EmployeeMatrix', 'employee_no', 'employee_no');
+        return $this->hasOne('App\Models\QC\EmployeeMatrix', 'employee_no', 'employee_no');
     }
 
     public function permissionSlip(){
@@ -222,6 +226,7 @@ class Employee extends Model{
     public function file201s(){
         return $this->hasMany(EmployeeFile201::class,'employee_no','employee_no');
     }
+
 
 
 

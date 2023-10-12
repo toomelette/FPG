@@ -900,3 +900,246 @@ Route::get('regions',function (){
     });
     return Response::json($json,200,[],JSON_PRETTY_PRINT);
 });
+
+
+Route::get('update_qc_employees',function (){
+    $employeesQc = \App\Models\QC\Employee::query()->get();
+    $employeeTableColumns = Schema::connection('afd_qc')->getColumnListing('hr_employees');
+
+    unset($employeeTableColumns[array_search('biometric_user_id',$employeeTableColumns)]);
+    unset($employeeTableColumns[array_search('id',$employeeTableColumns)]);
+
+    $employeesNotFoundInBcd = [];
+
+    foreach ($employeesQc as $employeeQc){
+        $employeeBcd = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
+        if(empty($employeeBcd)){
+            $employeeBcd = new \App\Models\Employee();
+            foreach ($employeeTableColumns as $columnName){
+                $employeeBcd->$columnName = $employeeQc->$columnName;
+            }
+            $employeeBcd->save();
+        }else{
+            foreach ($employeeTableColumns as $columnName){
+                $employeeBcd->$columnName = $employeeQc->$columnName;
+            }
+            $employeeBcd->save();
+        }
+    }
+
+    dd('Finished');
+    dd($employeesQc);
+});
+
+Route::get('update_qc_employees_201',function () {
+    $employeesQc = \App\Models\QC\Employee::query()
+        ->whereHas('file201s')
+        ->get();
+
+    foreach ($employeesQc as $employeeQc){
+        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
+        $employeeBCD->file201s()->delete();
+        if($employeeQc->file201s->count() > 0){
+            $file201ToInsert = [];
+            foreach ($employeeQc->file201s as $file201){
+                $file201Array = $file201->toArray();
+                unset($file201Array['id']);
+                array_push($file201ToInsert,$file201Array);
+            }
+            \App\Models\EmployeeFile201::insert($file201ToInsert);
+        }
+    }
+    dd('Finished');
+
+});
+
+Route::get('update_qc_employees_sr',function () {
+    $employeesQc = \App\Models\QC\Employee::query()
+        ->whereHas('employeeServiceRecord')
+        ->get();
+    
+    foreach ($employeesQc as $employeeQc){
+        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
+        $employeeBCD->employeeServiceRecord()->delete();
+        if($employeeQc->employeeServiceRecord->count() > 0){
+            $employeeServiceRecordsToInsert = [];
+            foreach ($employeeQc->employeeServiceRecord as $sr){
+                $srArray = $sr->toArray();
+                unset($srArray['id']);
+
+                array_push($employeeServiceRecordsToInsert,$srArray);
+            }
+
+            \App\Models\EmployeeServiceRecord::insert($employeeServiceRecordsToInsert);
+        }
+    }
+    dd('Finished Service Record');
+});
+
+Route::get('update_qc_employees_trainings',function () {
+
+    $employeesQc = \App\Models\QC\Employee::query()
+        ->whereHas('employeeTraining')
+        ->get();
+
+    foreach ($employeesQc as $employeeQc){
+        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
+        $employeeBCD->employeeTraining()->delete();
+        if($employeeQc->employeeTraining->count() > 0){
+            $employeeTrainingsToInsert = [];
+            foreach ($employeeQc->employeeTraining as $training){
+                $trainingsArray = $training->toArray();
+                unset($trainingsArray['id']);
+
+                array_push($employeeTrainingsToInsert,$trainingsArray);
+            }
+
+            \App\Models\EmployeeTraining::insert($employeeTrainingsToInsert);
+        }
+    }
+    dd('Finished Trainings');
+});
+
+
+Route::get('update_qc_employees_educ',function () {
+
+    $employeesQc = \App\Models\QC\Employee::query()
+        ->whereHas('employeeEducationalBackground')
+        ->get();
+
+    foreach ($employeesQc as $employeeQc){
+        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
+        $employeeBCD->employeeEducationalBackground()->delete();
+        if($employeeQc->employeeEducationalBackground->count() > 0){
+            $employeeEducationalBackgroundsToInsert = [];
+            foreach ($employeeQc->employeeEducationalBackground as $educ){
+                $educsArray = $educ->toArray();
+                unset($educsArray['id']);
+
+                array_push($employeeEducationalBackgroundsToInsert,$educsArray);
+            }
+
+            \App\Models\EmployeeEducationalBackground::insert($employeeEducationalBackgroundsToInsert);
+        }
+    }
+    dd('Finished Educational Background');
+});
+
+Route::get('update_qc_employees_elig',function () {
+
+    $employeesQc = \App\Models\QC\Employee::query()
+        ->whereHas('employeeEligibility')
+        ->get();
+
+    foreach ($employeesQc as $employeeQc){
+        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
+        $employeeBCD->employeeEligibility()->delete();
+        if($employeeQc->employeeEligibility->count() > 0){
+            $employeeEligibilitysToInsert = [];
+            foreach ($employeeQc->employeeEligibility as $elig){
+                $eligsArray = $elig->toArray();
+                unset($eligsArray['id']);
+
+                array_push($employeeEligibilitysToInsert,$eligsArray);
+            }
+
+            App\Models\EmployeeEligibility::insert($employeeEligibilitysToInsert);
+        }
+    }
+    dd('Finished Eligibility');
+});
+
+
+
+
+
+Route::get('update_qc_employees_family',function () {
+
+    $about = 'employeeFamilyDetail';
+    $employeesQc = \App\Models\QC\Employee::query()
+        ->whereHas($about)
+        ->get();
+
+
+    foreach ($employeesQc as $employeeQc){
+        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
+        $employeeBCD->employeeFamilyDetail()->delete();
+
+        $employeeQc->$about;
+        $classNameOfRelationShip = get_class($employeeQc->$about()->getRelated());
+        $tableName = with(new $classNameOfRelationShip())-> getTable();
+
+        $columnsOfRelationShip = Schema::connection('afd_qc')->getColumnListing($tableName);
+        unset($columnsOfRelationShip[array_search('id',$columnsOfRelationShip)]);
+        $newEmployee = new \App\Models\EmployeeFamilyDetail();
+
+        foreach ($columnsOfRelationShip as $col){
+            $newEmployee->$col = $employeeQc->$about->$col;
+        }
+
+
+        $newEmployee->save();
+
+    }
+    dd('Finished '.$about);
+});
+Route::get('update_qc_employees_has_one',function () {
+
+    $about = \Illuminate\Support\Facades\Request::get('about');
+    $employeesQc = \App\Models\QC\Employee::query()
+        ->whereHas($about)
+        ->get();
+
+    foreach ($employeesQc as $employeeQc){
+        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
+
+        if(!empty($employeeBCD)){
+            $employeeBCD->$about()->delete();
+
+            $employeeQc->$about;
+            $classNameOfRelationShip = get_class($employeeQc->$about()->getRelated());
+            $tableName = with(new $classNameOfRelationShip())-> getTable();
+
+            $columnsOfRelationShip = Schema::connection('afd_qc')->getColumnListing($tableName);
+            unset($columnsOfRelationShip[array_search('id',$columnsOfRelationShip)]);
+            $class = str_replace('QC\\','',get_class($employeeQc->$about()->getRelated()));
+            $newEmployee =  new $class();
+
+            foreach ($columnsOfRelationShip as $col){
+                $newEmployee->$col = $employeeQc->$about->$col;
+            }
+
+            $newEmployee->save();
+        }
+    }
+    dd('Finished '.$about);
+});
+
+
+Route::get('update_qc_employees_has_many',function () {
+
+    $about = \Illuminate\Support\Facades\Request::get('about');
+    $relationClass = App\Models\EmployeeExperience::class;
+
+    $employeesQc = \App\Models\QC\Employee::query()
+        ->whereHas($about)
+        ->get();
+    $class = '';
+    foreach ($employeesQc as $employeeQc){
+        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
+        $employeeBCD->$about()->delete();
+        if($employeeQc->$about->count() > 0){
+            $toInsert = [];
+            foreach ($employeeQc->$about as $sigleData){
+                $class = str_replace('QC\\','',get_class($employeeQc->$about()->getRelated()));
+                $sigleDataArray = $sigleData->toArray();
+                unset($sigleDataArray['id']);
+
+                array_push($toInsert,$sigleDataArray);
+            }
+
+            $class::insert($toInsert);
+        }
+    }
+    dd('Finished '.$about);
+});
