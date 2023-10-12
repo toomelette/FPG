@@ -107,12 +107,14 @@ class DocumentRepository extends BaseRepository implements DocumentInterface {
 
     public function fetchByFolderCode($folder_code, $request){
 
+
         $key = str_slug($request->fullUrl(), '_');
         $document = $this->document->newQuery();
         $document = $document->select('subject','person_to','reference_no', 'slug', 'updated_at');
 
-        $document =  $document->where('subject','LIKE','%'.$request->q.'%');
-
+        if($request->q != null || $request->q != ''){
+            $document =  $document->where('subject','LIKE','%'.$request->q.'%');
+        }
 
         $document = $document->where(function($query) use ($folder_code){
             $query->where('folder_code', $folder_code)
