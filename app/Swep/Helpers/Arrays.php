@@ -73,6 +73,7 @@ class Arrays
 
     public static function portals(){
         return [
+            'ACCOUNTING' => 'ACCOUNTING',
             'DIGIFILE' => 'DIGIFILE',
             'PPU' => 'PPU',
             'MIS' => 'MIS',

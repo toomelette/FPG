@@ -28,22 +28,24 @@
         <tbody>
         @forelse($paps as $pap)
             @php
-                $totalBudgetCo = $pap->totalBudgetWithAdjustments()['co'];
-                $totalBudgetMooe = $pap->totalBudgetWithAdjustments()['mooe'];
-                $totalBudget = $totalBudgetCo + $totalBudgetMooe;
+                $orginalCo = $pap->co;
+                $originalMooe = $pap->mooe;
+                $totalCoWithAdjustments = $pap->totalBudgetWithAdjustments()['co'];
+                $totalMooeWithAdjustments = $pap->totalBudgetWithAdjustments()['mooe'];
+                $totalBudget = $totalCoWithAdjustments + $totalMooeWithAdjustments;
                 $totalUtilized = $pap->ors_applied_projects_sum_co + $pap->ors_applied_projects_sum_mooe;
             @endphp
             <tr>
                 <td>{{$pap->pap_code}}</td>
                 <td>{{$pap->pap_title}}</td>
-                <td class="text-right">{{Helper::toNumber($totalBudgetCo,2)}}</td>
-                <td class="text-right">{{Helper::toNumber($totalBudgetMooe,2)}}</td>
+                <td class="text-right">{{Helper::toNumber($totalCoWithAdjustments,2)}}</td>
+                <td class="text-right">{{Helper::toNumber($totalMooeWithAdjustments,2)}}</td>
                 <td class="text-right">{{Helper::toNumber($totalBudget,2)}}</td>
                 <td class="text-right">{{Helper::toNumber($pap->ors_applied_projects_sum_co,2)}}</td>
                 <td class="text-right">{{Helper::toNumber($pap->ors_applied_projects_sum_mooe,2)}}</td>
                 <td class="text-right">{{Helper::toNumber($totalUtilized,2)}}</td>
-                <td class="text-right">{{Helper::toNumber($balCo = $totalBudgetCo - $pap->ors_applied_projects_sum_co,2)}}</td>
-                <td class="text-right">{{Helper::toNumber($balMooe = $totalBudgetMooe - $pap->ors_applied_projects_sum_mooe,2)}}</td>
+                <td class="text-right">{{Helper::toNumber($balCo = $totalCoWithAdjustments - $pap->ors_applied_projects_sum_co,2)}}</td>
+                <td class="text-right">{{Helper::toNumber($balMooe = $totalMooeWithAdjustments - $pap->ors_applied_projects_sum_mooe,2)}}</td>
                 <td class="text-right">{{Helper::toNumber($balCo + $balMooe,2)}}</td>
             </tr>
         @empty
