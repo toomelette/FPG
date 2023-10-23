@@ -111,6 +111,16 @@
                                     @endif
                                     @php($done['BUDGET'] = 1)
                                 @break
+                                @case('LEGAL')
+                                    @if(!isset($done['LEGAL']))
+                                        <li class="">
+                                            <a href="http://legal.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="LEGAL">
+                                                <i class="fa fa-external-link"></i>legal.sra.gov.ph
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @php($done['LEGAL'] = 1)
+                                @break
                                 @default
                                     <li class="treeview ">
                                         <a href="#" searchable="{{$menu_content['menu_obj']->name}} {{$menu_content['menu_obj']->tags}} {{$menu_content['menu_obj']->category}} {!! \App\Swep\ViewHelpers\__html::sidenav_labeler($menu_content['menu_obj']->category) !!}">
