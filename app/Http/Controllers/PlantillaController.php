@@ -67,6 +67,9 @@ class PlantillaController extends Controller{
                 ->addColumn('orig_jg_si',function ($data){
                     return $data->original_job_grade.' - '.$data->original_job_grade_si;
                 })
+                ->addColumn('incumbent',function ($data){
+                    return ($data->incumbentEmployee->lastname ?? '').', '.($data->incumbentEmployee->firstname ?? '');
+                })
                 ->escapeColumns([])
                 ->setRowId('id')
                 ->make(true);
@@ -223,7 +226,7 @@ class PlantillaController extends Controller{
 
     public function reportGenerate(Request $request){
 
-        $pls = HRPayPlanitilla::query();
+        $pls = HRPayPlanitilla::query()->with(['incumbentEmployee']);
 
         if($request->has('order_column') && $request->order_column != null){
             $pls = $pls->orderBy($request->order_column,$request->direction ?? 'asc');
@@ -279,61 +282,6 @@ class PlantillaController extends Controller{
     }
 
 
-    public function allColumnsForReport(){
-        return [
-            'item_no' => [
-                'name' => 'Item No.',
-                'checked' => 1,
-            ],
-            'position' => [
-                'name' => 'Position',
-                'checked' => 1,
-            ],
-            'employee_name' => [
-                'name' => 'Name of Employee',
-                'checked' => 1,
-            ],
-            'employee_no' => [
-                'name' => 'Employee No.',
-                'checked' => 0,
-            ],
-            'job_grade' => [
-                'name' => 'Job Grade',
-                'checked' => 1,
-            ],
-            'step_inc' => [
-                'name' => 'Step Inc.',
-                'checked' => 1,
-            ],
-            'actual_salary' => [
-                'name' => 'Actual Salary',
-                'checked' => 1,
-            ],
-            'actual_salary_gcg' => [
-                'name' => 'Actual Salary (GCG)',
-                'checked' => 1,
-            ],
-            'eligibility' => [
-                'name' => 'Eligibility',
-                'checked' => 1,
-            ],
-            'educ_att' => [
-                'name' => 'Highest Educ Att',
-                'checked' => 1,
-            ],
-            'appointment_status' => [
-                'name' => 'Appt. Status',
-                'checked' => 1,
-            ],
-            'appointment_date' => [
-                'name' => 'Appt. Date',
-                'checked' => 1,
-            ],
-            'last_promotion' => [
-                'name' => 'Date of Last Promotion',
-                'checked' => 1,
-            ],
-        ];
-    }
+
     
 }

@@ -11,7 +11,7 @@ class HRPayPlanitilla extends Model
     protected $table = 'hr_pay_plantilla';
 //    protected $connection = 'server5';
     public function incumbentEmployee(){
-        return $this->hasOne(Employee::class,'employee_no','employee_no');
+        return $this->hasOne(Employee::class,'item_no','item_no')->where('is_active','=','ACTIVE');
     }
 
     public function occupants(){

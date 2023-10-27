@@ -633,4 +633,61 @@ class Arrays
             ];
         })->toArray();
     }
+
+    public static function plantillaColumnsForReport(){
+        return [
+            'item_no' => [
+                'name' => 'Item No.',
+                'checked' => 1,
+            ],
+            'position' => [
+                'name' => 'Position',
+                'checked' => 1,
+            ],
+            'employee_name' => [
+                'name' => 'Name of Employee',
+                'checked' => 1,
+            ],
+            'employee_no' => [
+                'name' => 'Employee No.',
+                'checked' => 0,
+            ],
+            'job_grade' => [
+                'name' => 'Job Grade',
+                'checked' => 1,
+            ],
+            'step_inc' => [
+                'name' => 'Step Inc.',
+                'checked' => 1,
+            ],
+            'actual_salary' => [
+                'name' => 'Actual Salary',
+                'checked' => 1,
+            ],
+            'actual_salary_gcg' => [
+                'name' => 'Actual Salary (GCG)',
+                'checked' => 1,
+            ],
+            'eligibility' => [
+                'name' => 'Eligibility',
+                'checked' => 1,
+            ],
+            'educ_att' => [
+                'name' => 'Highest Educ Att',
+                'checked' => 1,
+            ],
+            'appointment_status' => [
+                'name' => 'Appt. Status',
+                'checked' => 1,
+            ],
+            'appointment_date' => [
+                'name' => 'Appt. Date',
+                'checked' => 1,
+            ],
+            'last_promotion' => [
+                'name' => 'Date of Last Promotion',
+                'checked' => 1,
+            ],
+        ];
+    }
 }
