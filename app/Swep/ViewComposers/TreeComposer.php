@@ -19,6 +19,10 @@ class TreeComposer
             ->where('user_id', Auth::user()->user_id)
             ->whereHas('submenu', function ($query) {
                 return $query->where('is_nav', '=', 1);
+            })
+            ->whereHas('submenu.menu',function ($q){
+                return $q->where('portal','=',null)
+                    ->orWhere('portal','=','DIGIFILE');
             });
 
 

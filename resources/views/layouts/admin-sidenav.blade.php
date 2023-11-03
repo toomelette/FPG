@@ -89,39 +89,9 @@
                         @if($menu_content['menu_obj']->is_dropdown == false)
 
                         @else
-                            @switch($menu_content['menu_obj']->portal)
-                                @case('ACCOUNTING')
 
-                                    @if(!isset($done['ACCOUNTING']))
-                                        <li class="">
-                                            <a href="http://accounting.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="ACCOUNTING">
-                                                <i class="fa fa-external-link"></i>accounting.sra.gov.ph
-                                            </a>
-                                        </li>
-                                    @endif
-                                    @php($done['ACCOUNTING'] = 1)
-                                @break
-                                @case('BUDGET')
-                                    @if(!isset($done['BUDGET']))
-                                        <li class="">
-                                            <a href="http://budget.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="BUDGET ORS">
-                                                <i class="fa fa-external-link"></i>budget.sra.gov.ph
-                                            </a>
-                                        </li>
-                                    @endif
-                                    @php($done['BUDGET'] = 1)
-                                @break
-                                @case('LEGAL')
-                                    @if(!isset($done['LEGAL']))
-                                        <li class="">
-                                            <a href="http://legal.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="LEGAL">
-                                                <i class="fa fa-external-link"></i>legal.sra.gov.ph
-                                            </a>
-                                        </li>
-                                    @endif
-                                    @php($done['LEGAL'] = 1)
-                                @break
-                                @default
+
+
                                     <li class="treeview ">
                                         <a href="#" searchable="{{$menu_content['menu_obj']->name}} {{$menu_content['menu_obj']->tags}} {{$menu_content['menu_obj']->category}} {!! \App\Swep\ViewHelpers\__html::sidenav_labeler($menu_content['menu_obj']->category) !!}">
                                         <i class="fa {{$menu_content['menu_obj']->icon}}"></i> <span>{{$menu_content['menu_obj']->name}}</span>
@@ -143,8 +113,8 @@
                                         </ul>
 
                                     </li>
-                                @break
-                            @endswitch
+
+
 
                         @endif
                     @endif
@@ -153,10 +123,34 @@
 
 
             @endforeach
-                <li class="header header-group">PROPERTY AND PROCUREMENT</li>
+                <li class="header header-group">RELATED LINKS</li>
                 <li class="">
                     <a href="http://ppbtms.sra.gov.ph/"  style="color:#9aefff" target="_blank" searchable="PROPERTY AND PROCUREMENT">
                         <i class="fa fa-external-link"></i>ppbtms.sra.gov.ph
+                    </a>
+                </li>
+
+                <li class="">
+                    <a href="http://budget.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="BUDGET">
+                        <i class="fa fa-external-link"></i>budget.sra.gov.ph
+                    </a>
+                </li>
+
+                <li class="">
+                    <a href="https://accounting.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="ACCOUNTING">
+                        <i class="fa fa-external-link"></i>accounting.sra.gov.ph
+                    </a>
+                </li>
+
+                <li class="">
+                    <a href="https://legal.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="LEGAL">
+                        <i class="fa fa-external-link"></i>legal.sra.gov.ph
+                    </a>
+                </li>
+
+                <li class="">
+                    <a href="http://gfps.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="GFPS GAD">
+                        <i class="fa fa-external-link"></i>gfps.sra.gov.ph
                     </a>
                 </li>
         @endif
