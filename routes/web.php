@@ -1143,3 +1143,29 @@ Route::get('update_qc_employees_has_many',function () {
     }
     dd('Finished '.$about);
 });
+
+Route::get('ocr',function (){
+
+
+
+    $pdf = new Spatie\PdfToImage\Pdf('/home/test.pdf');
+
+
+    $imagick = new Imagick();
+    $imagick->readImage('/home/test.pdf');
+    $pages = $imagick->getNumberImages();
+
+    $readText = '';
+    for($i = 1;$i <= $pages; $i++){
+        $imagick->setIteratorIndex($i - 1);
+
+        $imagick->setImageFormat('png');
+        $imagick->writeImage('/home/image'.$i.'.png');
+
+        $readText .= (new \thiagoalessio\TesseractOCR\TesseractOCR('/home/image'.$i.'.png'))
+            ->run();
+    }
+
+
+    echo $readText;
+});

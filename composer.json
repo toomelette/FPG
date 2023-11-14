@@ -29,8 +29,11 @@
         "spatie/laravel-activitylog": "^4.0",
         "spatie/laravel-html": "^3.2",
         "spatie/laravel-ignition": "^1.0",
+        "spatie/pdf-to-image": "^2.2",
+        "thiagoalessio/tesseract_ocr": "^2.13",
         "yajra/laravel-datatables": "^1.5",
-        "yajra/laravel-datatables-html": "^4.0"
+        "yajra/laravel-datatables-html": "^4.0",
+        "ext-imagick": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
