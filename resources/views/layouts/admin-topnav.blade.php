@@ -31,7 +31,7 @@
           <li style="width: 750px;padding-top: 12px"><p style="color: white; font-size: larger">DEVELOPMENT MODE</p></li>
         @endif
           <li class="dropdown tasks-menu">
-            <a href="http://swep.sra.gov.ph/" >
+            <a href="http://10.36.1.14/" >
               <i class="fa fa-home"></i> Lobby Page
             </a>
           </li>
