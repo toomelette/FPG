@@ -1,4 +1,6 @@
-@php($rand = \Illuminate\Support\Str::random())
+@php
+    $rand = \Illuminate\Support\Str::random();
+@endphp
 @extends('layouts.modal-content',['form_id'=>'edit_user_form_'.$rand, 'slug'=> $user->slug,])
 
 
@@ -14,12 +16,6 @@ Edit
                     <div class="col-md-12">
                         <ul class="nav nav-pills nav-stacked">
                             <li role="presentation" class="active"><a href="#tab_1_{{$rand}}" data-toggle="tab" aria-expanded="false">ACCESS</a></li>
-
-                            @foreach($by_category as $category => $menus)
-                                <li role="presentation" class=""><a href="#tab_{{($category == null) ? 'NoCategory' : $category}}_{{$rand}}" data-toggle="tab" aria-expanded="false">{{($category == null) ? 'No Category' : \App\Swep\ViewHelpers\__html::sidenav_labeler($category)}}</a></li>
-                            @endforeach
-
-
                         </ul>
                     </div>
                 </div>
@@ -67,80 +63,121 @@ Edit
 
 
                     </div>
-                    @foreach($by_category as $category => $menus)
-                        <div class="tab-pane" id="tab_{{($category == null) ? 'NoCategory' : $category}}_{{$rand}}">
-                            <h4>{{($category == null) ? 'No Category' : \App\Swep\ViewHelpers\__html::sidenav_labeler($category)}}</h4>
-                            <div class="row">
-                                @foreach($menus as $menu)
-                                    <div class="col-md-3">
-                                        @if($menu->route == 'dashboard.home')
-                                            <div class="panel panel-default">
-                                                <div class="panel-heading">
-                                                    <i class="fa {{$menu->icon}}"></i>
-                                                    {{$menu->name}}
-                                                </div>
-                                                <div class="panel-body" style="min-height: 210px">
-                                                    <div class="row">
-                                                        {!!
-                                                            __form::select_static2('12', 'dash_type', 'Dashboard type',$user->dash,
-                                                            [
-                                                                'HRU Dashboard' => 'hru',
-                                                                'RECORDS Dashboard' => 'records',
-                                                            ]
-                                                            , '', '', '', '')
-                                                           !!}
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <div class="panel panel-default">
-                                                <div class="panel-heading">
-                                                    <i class="fa {{$menu->icon}}"></i>
-                                                    {{$menu->name}}
-                                                    <div class="pull-right">
-                                                        <button class="btn btn-xs btn-default clear_btn" type="button">Clear</button>
-                                                    </div>
-                                                </div>
-                                                <div class="panel-body" style="min-height: 180px">
-                                                    <div class="row">
-                                                        <div class="col-sm-12">
-                                                            <select multiple="" name="submenus[{{$menu->menu_id}}][]" class="form-control select_multiple" size="6">
-                                                                @if($menu->submenu->count() > 0)
-                                                                    @foreach($menu->submenu as $submenu)
-                                                                        <option value="{{$submenu->submenu_id}}" @if(isset($user_submenus_arr[$submenu->submenu_id])) selected @endif>
-                                                                            {{$submenu->name}}
-                                                                        </option>
-                                                                    @endforeach
-
-                                                                @endif
-                                                            </select>
-                                                            <span class="help-block" style="font-size: 12px; font-family: 'Product Sans Light'">No module selected</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="progress xs">
-                                                        <div class="progress-bar bg-green" style="width: 0%;" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endif
-
-                                    </div>
-
-                                @endforeach
-                            </div>
-
-                        </div>
-                    @endforeach
-
-
                 </div>
             </div>
         </div>
-
-
     </div>
+    @forelse($byPortalAndCategory as $portal => $menus)
+        <div class="panel">
+            <div class="box box-sm box-default box-solid">
+                <div class="box-header with-border {{$colors[$portal] ?? ''}}">
+                    <p class="no-margin text-strong"> {{$portal == '' ? 'N/A' : $portal}} <small id="filter-notifier" class="label bg-blue blink"></small></p>
+                </div>
+
+                @php
+                $by_category = $menus->groupBy('category');
+                @endphp
+                <div class="box-body" style="">
+                    <div class="nav-tabs">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <ul class="nav nav-pills nav-stacked">
+                                            @foreach($by_category as $category => $menus)
+                                                <li role="presentation" class=""><a href="#tab_{{($category == null) ? 'NoCategory' : $category}}_{{$rand}}" data-toggle="tab" aria-expanded="false">{{($category == null) ? 'No Category' : \App\Swep\ViewHelpers\__html::sidenav_labeler($category)}}</a></li>
+                                            @endforeach
+
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="tab-content">
+                                    @foreach($by_category as $category => $menus)
+                                        <div class="tab-pane" id="tab_{{($category == null) ? 'NoCategory' : $category}}_{{$rand}}">
+                                            <h4>{{($category == null) ? 'No Category' : \App\Swep\ViewHelpers\__html::sidenav_labeler($category)}}</h4>
+                                            <div class="row">
+                                                @foreach($menus as $menu)
+                                                    <div class="col-md-3">
+                                                        @if($menu->route == 'dashboard.home')
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <i class="fa {{$menu->icon}}"></i>
+                                                                    {{$menu->name}}
+                                                                </div>
+                                                                <div class="panel-body" style="min-height: 210px">
+                                                                    <div class="row">
+                                                                        {!!
+                                                                            __form::select_static2('12', 'dash_type', 'Dashboard type',$user->dash,
+                                                                            [
+                                                                                'HRU Dashboard' => 'hru',
+                                                                                'RECORDS Dashboard' => 'records',
+                                                                            ]
+                                                                            , '', '', '', '')
+                                                                           !!}
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <i class="fa {{$menu->icon}}"></i>
+                                                                    {{$menu->name}}
+                                                                    <div class="pull-right">
+                                                                        <button class="btn btn-xs btn-default clear_btn" type="button">Clear</button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="panel-body" style="min-height: 180px">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12">
+                                                                            <select multiple="" name="submenus[{{$menu->menu_id}}][]" class="form-control select_multiple" size="6">
+                                                                                @if($menu->submenu->count() > 0)
+                                                                                    @foreach($menu->submenu as $submenu)
+                                                                                        <option value="{{$submenu->submenu_id}}" @if(isset($user_submenus_arr[$submenu->submenu_id])) selected @endif>
+                                                                                            {{$submenu->name}}
+                                                                                        </option>
+                                                                                    @endforeach
+
+                                                                                @endif
+                                                                            </select>
+                                                                            <span class="help-block" style="font-size: 12px; font-family: 'Product Sans Light'">No module selected</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="progress xs">
+                                                                        <div class="progress-bar bg-green" style="width: 0%;" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+
+                                                    </div>
+
+                                                @endforeach
+                                            </div>
+
+                                        </div>
+                                    @endforeach
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    @empty
+    @endforelse
+
+
+
 
 
 
