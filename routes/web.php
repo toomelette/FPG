@@ -1169,3 +1169,22 @@ Route::get('ocr',function (){
 
     echo $readText;
 });
+
+
+Route::get('sample_page',function (){
+
+    $a = 2;
+    $name = 'Jae';
+
+    for($startingNumber = 1; $startingNumber < 101; $startingNumber++ ){
+        echo $startingNumber.'. JAE <br>';
+    }
+
+
+
+
+
+
+
+
+});

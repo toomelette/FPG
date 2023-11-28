@@ -589,8 +589,10 @@ class EmployeeController extends Controller{
 
     public function reportGenerate(EmployeeReportRequest $request){
 
-        $employees = Employee::with(['employeeTraining','employeeServiceRecord','employeeEducationalBackground','employeeEligibility','employeeChildren']);
+        $employees = Employee::query()
+            ->with(['employeeTraining','employeeServiceRecord','employeeEducationalBackground','employeeEligibility','employeeChildren']);
         $filters = [];
+
         if($request->status != null){
             $employees = $employees->where('is_active','=',$request->status);
             array_push($filters,'STATUS: '.$request->status);
