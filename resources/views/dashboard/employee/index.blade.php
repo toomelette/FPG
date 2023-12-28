@@ -271,6 +271,10 @@
           "searchable": false,
           "class" : 'action4'
         },
+        {
+          "targets" : 0,
+          "class" : 'w-30p'
+        }
       ],
       "responsive": true,
       "initComplete": function( settings, json ) {

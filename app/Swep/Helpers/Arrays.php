@@ -416,7 +416,7 @@ class Arrays
     public static function groupedRespCodes($all = null){
 
         $rcs = PPURespCodes::query()->with(['description']);
-        $userProjectId = Auth::user()->project_id;
+        $userProjectId = Auth::user()->project_id ?? null;
         if($userProjectId != null){
             if($userProjectId == 1){
                 $rcs->where('vis','=',1);

@@ -72,8 +72,10 @@ class EmployeeController extends Controller{
 
     private function dataTable($request){
         $sql_server_is_on = Helper::sqlServerIsOn();
-        $cols = ['fullname','employee_no','position','email','biometric_user_id', 'date_of_birth','sex','civil_status','firstname','slug','name_ext'];
-        $employees = Employee::query()->select($cols);
+        $cols = ['fullname','employee_no','position','email','biometric_user_id', 'date_of_birth','sex','civil_status','firstname','slug','name_ext','cell_no'];
+        $employees = Employee::query()->with([
+            'responsibilityCenter',
+        ]);
         if($sql_server_is_on === true){
             $employees = $employees->with('empMaster');
         }
@@ -127,47 +129,16 @@ class EmployeeController extends Controller{
                 }
                 return $data->biometric_user_id;
             })->editColumn('position',function ($data) use($sql_server_is_on){
-                if($sql_server_is_on === true){
-                    if(!empty($data->empMaster)){
-                        return $data->position.'<div class="table-subdetail">
-                                                    JG-Step: '.$data->empMaster->SalGrade.' - '.$data->empMaster->StepInc.'
-                                                        <span class="pull-right">Monthly Basic: '.number_format($data->empMaster->MonthlyBasic,2).'</span>
-                                                    </div>';
-                    }
-                    return $data->position.'<div class="table-subdetail" style="color: #d9534f !important;">No data available</div>';
-                }
-                return $data->position;
+                return view('dashboard.employee.dt.position')->with([
+                    'data' => $data,
+                    'sql_server_is_on' => $sql_server_is_on,
+                ]);
             })
             ->editColumn('fullname',function ($data){
 
-                $bday_mark = '';
-                $bday = 'N/A';
-                if($data->date_of_birth != '' ){
-                    if(Carbon::parse($data->date_of_birth)->format("md") == Carbon::now()->format('md')){
-                        $bday_mark  = '<span class="pull-right text-danger"><i class="fa fa-birthday-cake" title="Today is '.ucfirst(strtolower($data->firstname)).'\'s birthday."></i></span>';
-                    }
-                    $bday = Carbon::parse($data->date_of_birth)->format("M. d, Y");
-                }
-
-                return '<p class="text-strong no-margin">'.$data->fullname. ' '.$data->name_ext.' '.$bday_mark.'</p>'.
-                    '<div class="table-subdetail" style="margin-top: 3px">
-                        <table>
-                            <tr>
-                                <td style="padding-right: 10px">Bday:</td>
-                                <td>'.$bday.'</td>
-                                <td style="padding-left: 20px;padding-right: 10px">Age:</td>
-                                <td>'.Carbon::parse($data->date_of_birth)->age.'</td>
-                            </tr>
-
-                            <tr>
-                                <td style="padding-right: 10px">Sex:</td>
-                                <td>'.$data->sex.'</td>
-                                <td style="padding-left: 20px;padding-right: 10px">Civil Stat:</td>
-                                <td>'.$data->civil_status.'</td>
-                            </tr>
-                        </table>
-                        
-                    </div>';
+                return view('dashboard.employee.dt.fullname')->with([
+                    'data' => $data,
+                ]);
             })
             ->escapeColumns([])
             ->setRowId('slug')
@@ -590,7 +561,8 @@ class EmployeeController extends Controller{
     public function reportGenerate(EmployeeReportRequest $request){
 
         $employees = Employee::query()
-            ->with(['employeeTraining','employeeServiceRecord','employeeEducationalBackground','employeeEligibility','employeeChildren']);
+            ->with(['employeeTraining','employeeServiceRecord','employeeEducationalBackground','employeeEligibility','employeeChildren'])
+        ;
         $filters = [];
 
         if($request->status != null){

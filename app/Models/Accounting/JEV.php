@@ -3,6 +3,7 @@
 namespace App\Models\Accounting;
 
 use App\Models\PPU\RCDesc;
+use App\Models\Scopes\ProjectIdScope;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +25,11 @@ class JEV extends Model
             $a->created_at = \Carbon::now();
         });
     }
+    public static function booted():void
+    {
+        static::addGlobalScope(new ProjectIdScope);
+    }
+
     protected $table = 'acctg_jev';
 
     /*RELATIONSHIPS*/

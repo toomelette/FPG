@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
+use App\Models\PPU\PPURespCodes;
 use App\Models\SqlServer\EmpMaster;
 use App\Models\SqlServer\IncentiveTemplate;
 use Illuminate\Database\Eloquent\Model;
@@ -221,6 +222,10 @@ class Employee extends Model{
 
     public function file201s(){
         return $this->hasMany(EmployeeFile201::class,'employee_no','employee_no');
+    }
+
+    public function responsibilityCenter(){
+        return $this->belongsTo(PPURespCodes::class,'resp_center','rc_code');
     }
 
 

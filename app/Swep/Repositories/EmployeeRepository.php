@@ -146,6 +146,8 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
         $employee->assignment = $request->assignment;
         $employee->assignment_details = $request->assignment_details;
         $employee->station = $request->station;
+        $employee->resp_center = $request->resp_center;
+
         $employee->save();
 
         return $employee;
@@ -215,6 +217,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
         $employee->assignment = $request->assignment;
         $employee->assignment_details = $request->assignment_details;
         $employee->station = $request->station;
+        $employee->resp_center = $request->resp_center;
         $employee->save();
 
         $this->destroyDependencies($employee);

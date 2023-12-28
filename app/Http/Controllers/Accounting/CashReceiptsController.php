@@ -130,6 +130,7 @@ class CashReceiptsController extends Controller
     }
 
     public function index(Request $request){
+
         return view('dashboard.accounting.moved');
         if($request->ajax() && $request->has('draw')){
             $cashReceipts = JEV::query()->cashReceiptsOnly();

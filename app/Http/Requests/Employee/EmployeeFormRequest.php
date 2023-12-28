@@ -131,6 +131,7 @@ class EmployeeFormRequest extends FormRequest{
             'is_active' => 'required|string|max:11',
             'locations' => 'required|string',
             'assignment' => 'required|string',
+            'resp_center' => 'required|string',
 
             // Questions
             'q_34_a'=>'nullable|string|max:11',
