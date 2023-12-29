@@ -550,6 +550,8 @@ class Arrays
             'OFFICE-BASED' => [
                 'BACOLOD OFFICE' => 'BACOLOD OFFICE',
                 'QUEZON CITY OFFICE' => 'QUEZON CITY OFFICE',
+                'LGAREC OFFICE' => 'LGAREC  OFFICE',
+                'LAREC OFFICE' => 'LAREC OFFICE',
             ],
             'FIELD' => $mddc->pluck('slug','slug')->sort()->toArray(),
         ];
