@@ -480,6 +480,7 @@
                         {!! \App\Swep\ViewHelpers\__form2::textbox('employee_no',[
                          'label' => 'Employee No. *:',
                          'cols' => 2,
+                         'readonly' => 'readonly',
                         ],$employee ?? null) !!}
 
                         {!! \App\Swep\ViewHelpers\__form2::textbox('item_no',[
