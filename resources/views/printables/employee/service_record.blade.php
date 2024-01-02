@@ -137,7 +137,15 @@
                     @if($key <= ($i + 1) * $numberOfItems - 1 && $key >= $i * $numberOfItems)
                         <tr>
                             <td class="text-center">{{\Illuminate\Support\Carbon::parse($srArray[$key]->from_date)->format('m/d/Y')}}</td>
-                            <td class="text-center">{{($srArray[$key]->upto_date == 1) ? 'PRESENT' : \Illuminate\Support\Carbon::parse($srArray[$key]->to_date)->format('m/d/Y')}}</td>
+                            <td class="text-center">
+                                @if(($srArray[$key]->upto_date == 1))
+                                    PRESENT
+                                @else
+                                    @if(($srArray[$key]->to_date != null))
+                                        {{\Illuminate\Support\Carbon::parse($srArray[$key]->to_date)->format('m/d/Y')}}
+                                    @endif
+                                @endif
+                            </td>
                             <td>{{$srArray[$key]->position}}</td>
                             <td>{{$srArray[$key]->appointment_status}}</td>
                             <td>{{number_format($srArray[$key]->salary,2)}} / A</td>
