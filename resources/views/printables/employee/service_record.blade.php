@@ -50,7 +50,7 @@
                 <td rowspan="3" class="text-center no no-border-bottom no-border-left" style="width: 35%">
                     <p class="no-margin">Republic of the Philippines</p>
                     <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
-                    <p class="no-margin">{{App\Swep\Helpers\Get::setting('header_address')->string_value ?? 'SET HEADER !!!'}}</p>
+                    <p class="no-margin">{{App\Swep\Helpers\Get::headerAddress()}}</p>
                 </td>
                 <td style="width: 20%; vertical-align: top; text-align: right">
                     <p class="no-margin" style="font-size: 11px">Page {{$i+1}} of {{$pages}}</p>
