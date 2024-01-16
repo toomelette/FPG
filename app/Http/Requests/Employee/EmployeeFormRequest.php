@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests\Employee;
 
+use App\Models\Employee;
+use App\Models\EmployeeAddress;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use function PHPUnit\Framework\isEmpty;
 
 class EmployeeFormRequest extends FormRequest{
 
@@ -21,16 +24,7 @@ class EmployeeFormRequest extends FormRequest{
 
     public function rules(){
         
-//        $rows_children = $this->request->get('row_children');
-//        $rows_eb = $this->request->all()['row_eb'];
-//        $rows_training = $this->request->get('row_training');
-//        $rows_eligibility = $this->request->get('row_eligibility');
-//        $rows_we = $this->request->get('row_we');
-//        $rows_vw = $this->request->get('row_vw');
-//        $rows_recognition = $this->request->get('row_recognition');
-//        $rows_org = $this->request->get('row_org');
-//        $rows_ss = $this->request->get('row_ss');
-//        $rows_reference = $this->request->get('row_reference');
+
 
         $rules = [
             
@@ -111,7 +105,25 @@ class EmployeeFormRequest extends FormRequest{
                 Rule::unique('hr_employees','employee_no')->ignore($this->slug,'slug'),
             ],
             'position'=>'required|string|max:90',
-            'item_no'=>'nullable|int|max:10000',
+
+            'item_no'=>[
+                'nullable',
+                'int',
+                'max:10000',
+                function (string $attribute, mixed $value, \Closure $fail){
+                    $employee = Employee::query()
+                        ->where(function ($q) use ($value){
+                            return $q->where('is_active','=','ACTIVE')
+                                ->where('item_no','=',$value);
+                        })
+                        ->where('slug','!=',$this->slug)
+                        ->first();
+                    if($employee){
+                        $fail('This item is assigned to an ACTIVE employee: '.$employee->lastname.', '.$employee->firstname);
+                    }
+                }
+            ],
+
             'appointment_status'=>'nullable|string|max:45',
             'salary_grade'=>'nullable|int',
             'step_inc'=>'nullable|int',

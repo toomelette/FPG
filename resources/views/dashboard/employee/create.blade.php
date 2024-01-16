@@ -446,10 +446,12 @@
                          'cols' => 2,
                         ]) !!}
 
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('item_no',[
+                        {!! \App\Swep\ViewHelpers\__form2::select('item_no',[
                          'label' => 'Item No.:',
                          'cols' => 3,
-                        ]) !!}
+                         'options' => \App\Swep\Helpers\Arrays::payPlantillasWithItemNumber(),
+                         'id' => 'item_no',
+                        ],$employee ?? null) !!}
 
                         {!! \App\Swep\ViewHelpers\__form2::textbox('position',[
                          'label' => 'Position *:',
@@ -1795,7 +1797,7 @@
     })
 
 
-
+    $("#item_no").select2();
   </script>
 
 @endsection

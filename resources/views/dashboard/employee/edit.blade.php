@@ -483,9 +483,11 @@
                          'readonly' => 'readonly',
                         ],$employee ?? null) !!}
 
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('item_no',[
+                        {!! \App\Swep\ViewHelpers\__form2::select('item_no',[
                          'label' => 'Item No.:',
                          'cols' => 3,
+                         'options' => \App\Swep\Helpers\Arrays::payPlantillasWithItemNumber(),
+                         'id' => 'item_no',
                         ],$employee ?? null) !!}
 
                         {!! \App\Swep\ViewHelpers\__form2::textbox('position',[
@@ -498,6 +500,7 @@
                          'cols' => 2,
                          'options' => \App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeApptStatus(),'option','value'),
                         ],$employee ?? null) !!}
+
 
                         {!! \App\Swep\ViewHelpers\__form2::textbox('salary_grade',[
                          'label' => 'SG *:',
@@ -1805,7 +1808,7 @@
       }
     })
 
-
+  $("#item_no").select2();
 
   </script>
 
