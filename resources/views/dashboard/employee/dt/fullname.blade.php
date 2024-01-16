@@ -9,7 +9,7 @@
     }
 @endphp
 
-<p class="text-strong no-margin"> {{$data->fullname}} {{$data->name_ext}} {{$bday_mark}}</p>
+<p class="text-strong no-margin"> {{$data->fullname}} {{$data->name_ext}} {!! $bday_mark !!}</p>
 <div class="table-subdetail" style="margin-top: 3px">
     <table>
         <tr>

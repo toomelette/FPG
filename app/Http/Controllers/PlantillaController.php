@@ -68,7 +68,10 @@ class PlantillaController extends Controller{
                     return $data->original_job_grade.' - '.$data->original_job_grade_si;
                 })
                 ->addColumn('incumbent',function ($data){
-                    return ($data->incumbentEmployee->lastname ?? '').', '.($data->incumbentEmployee->firstname ?? '');
+                    if(!empty($data->incumbentEmployee)){
+                        return '<b>'.($data->incumbentEmployee->lastname ?? '').', '.($data->incumbentEmployee->firstname ?? '').'</b>';
+                    }
+                    return  '<small class="text-muted">-</small>';
                 })
                 ->escapeColumns([])
                 ->setRowId('id')
@@ -100,12 +103,9 @@ class PlantillaController extends Controller{
     }
 
     public function show($id){
-        if(request('typeahead') == true){
-            return $this->typeAhead(request());
-        }
 
 
-        $pp = HRPayPlanitilla::query()->with(['occupants','occupants.employee'])->find($id);
+        $pp = HRPayPlanitilla::query()->with(['occupants'])->find($id);
         return view('dashboard.plantilla.show')->with([
             'pp' => $pp,
         ]);
