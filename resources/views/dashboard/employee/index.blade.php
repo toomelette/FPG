@@ -68,7 +68,7 @@
                     <thead>
                     <tr class="">
                         <th >Full Name</th>
-                        <th class="th-20">Employee No.</th>
+                        <th class="th-20">Emp No.</th>
                         <th >Position</th>
                         <th >Email</th>
                         <th >BM id</th>
@@ -271,6 +271,10 @@
           "searchable": false,
           "class" : 'action4'
         },
+          {
+              "targets" : 1,
+              "class" : 'w-6p'
+          },
         {
           "targets" : 0,
           "class" : 'w-30p'
