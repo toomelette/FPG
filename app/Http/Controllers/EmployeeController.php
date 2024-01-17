@@ -91,6 +91,10 @@ class EmployeeController extends Controller{
         if($request->has('assignment') && $request->assignment != null){
             $employees = $employees->where('assignment','=',$request->assignment);
         }
+
+        if($request->has('resp_center') && $request->resp_center != null){
+            $employees = $employees->where('resp_center','=',$request->resp_center);
+        }
         return DataTables::of($employees)
             ->addColumn('action', function ($data){
                 $destroy_route = "'".route("dashboard.employee.destroy","slug")."'";

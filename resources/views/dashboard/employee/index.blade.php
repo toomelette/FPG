@@ -48,14 +48,19 @@
                                         {!! \App\Swep\Helpers\Helper::populateOptionsFromObject(\App\Models\SuOptions::employeeGroupings(),'option','value') !!}
                                     </select>
                                 </div>
-                                <div class="col-md-2 dt_filter-parent-div">
-                                    <label>Assignment:</label>
-                                    <select name="assignment"  class="form-control dt_filter filter_sex filters select22">
-                                        <option value="">Don't filter</option>
-                                        <option value="OFFICE-BASED">OFFICE-BASED</option>
-                                        <option value="FIELD">FIELD</option>
-                                    </select>
-                                </div>
+                                {!! \App\Swep\ViewHelpers\__form2::select('assignment',[
+                                    'class' => 'dt_filter filter_sex filters select22',
+                                    'cols' => '2 dt_filter-parent-div',
+                                    'label' => 'Assignment:',
+                                    'options' => \App\Swep\Helpers\Arrays::employeeAssignments(),
+                                ]) !!}
+
+                                {!! \App\Swep\ViewHelpers\__form2::select('resp_center',[
+                                    'class' => 'dt_filter filter_sex filters select2',
+                                    'cols' => '3 dt_filter-parent-div',
+                                    'label' => 'Assignment:',
+                                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                                ]) !!}
                             </div>
                         </form>
                     </div>
