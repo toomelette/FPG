@@ -59,7 +59,7 @@
                                     'class' => 'dt_filter filter_sex filters select2',
                                     'cols' => '3 dt_filter-parent-div',
                                     'label' => 'Assignment:',
-                                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                                    'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(true),
                                 ]) !!}
                             </div>
                         </form>

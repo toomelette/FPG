@@ -413,19 +413,19 @@ class Arrays
     }
 
 
-    public static function groupedRespCodes($all = null){
+    public static function groupedRespCodes($all = false){
 
         $rcs = PPURespCodes::query()->with(['description']);
         $userProjectId = Auth::user()->project_id ?? null;
         if($userProjectId != null){
-            if($userProjectId == 1){
-                $rcs->where('vis','=',1);
+            if($all == false){
+                if($userProjectId == 1){
+                    $rcs->where('vis','=',1);
+                }
+                if($userProjectId == 2){
+                    $rcs->where('lm','=',1);
+                }
             }
-
-            if($userProjectId == 2){
-                $rcs->where('lm','=',1);
-            }
-
         }
 
         $rcs =  $rcs->get();
