@@ -73,7 +73,7 @@
 
         <div class="col-sm-12 pull-left">
           <span style="font-size:14px;">CSC Form No. 6</span><br>
-          <span style="font-size:14px;">Revised 1984</span>
+          <span style="font-size:14px;">Revised 2020 </span>
         </div>
 
       </div>
