@@ -704,7 +704,7 @@
       <div class="row">
         <div class="col-sm-1"></div>
         <div class="col-sm-10" style="text-align: center; line-height: 12px;">
-          <span style="font-size:14px; font-weight: bold;">{{ $leave_application->authorized_official }}</span>
+          <span style="font-size:14px; font-weight: bold;"> ATTY. JOHANA S. JADOC </span>
         </div>
         <div class="col-sm-1"></div>
       </div>
@@ -717,7 +717,7 @@
 
         <div class="col-sm-4"></div>
         <div class="col-sm-4" style="border-top:solid 1.4px; border-top-height: 20px; text-align: center;">
-          <span style="font-size:12px; font-weight: bold;">{{ $leave_application->authorized_official_position }}</span>
+          <span style="font-size:12px; font-weight: bold;">MANAGER III, AFD Visayas</span>
         </div>
         <div class="col-sm-4"></div>
 

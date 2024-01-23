@@ -11,14 +11,15 @@
     <section class="content">
         <div class="box box-solid">
             <div class="box-body">
-                <div class="row">
-                    <div class="col-md-3">
+
                         <div id="employees_table_container" style="display: none">
                             <table class="table table-bordered table-striped table-hover table-condensed" id="employees_table" style="width: 100% !important">
                                 <thead>
                                 <tr class="">
                                     <th >Emp. No.</th>
                                     <th >Fullname</th>
+                                    <th >Incentives</th>
+                                    <th >Deductions</th>
                                     <th class="action">Action</th>
                                 </tr>
                                 </thead>
@@ -31,12 +32,7 @@
                                 <img style="width: 100px" src="{{asset('images/loader.gif')}}">
                             </center>
                         </div>
-                    </div>
-                    <div class="col-md-9">
-                        <div id="edit-view-container">
 
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -60,6 +56,8 @@
             "columns": [
                 { "data": "employee_no" },
                 { "data": "fullname" },
+                { "data": "incentives" },
+                { "data": "deductions" },
                 { "data": "action" },
             ],
             "buttons": [
@@ -68,7 +66,7 @@
             "columnDefs":[
 
                 {
-                    "targets" : 2,
+                    "targets" : 4,
                     "orderable" : false,
                     "class" : 'action1'
                 },

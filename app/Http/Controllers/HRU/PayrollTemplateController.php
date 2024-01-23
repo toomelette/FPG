@@ -19,10 +19,25 @@ class PayrollTemplateController extends Controller
 
     public function index(Request $request){
         if($request->ajax() && $request->has('draw')){
-            $employees = Employee::query();
+            $employees = Employee::query()
+                ->with([
+                    'nonZeroIncentives',
+                ])
+                ->applyProjectId()
+                ->active();
             return DataTables::of($employees)
                 ->addColumn('action',function($data){
                     return view('dashboard.hru.payroll_template.dtActions')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->addColumn('incentives',function($data){
+                    return view('dashboard.hru.payroll_template.dtIncentives')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->addColumn('deductions',function($data){
+                    return view('dashboard.hru.payroll_template.dtDeductions')->with([
                         'data' => $data,
                     ]);
                 })
