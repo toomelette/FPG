@@ -17,6 +17,6 @@ class ProjectIdScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('project_id','=', 2);
+        $builder->where('project_id','=', \Auth::user()->project_id);
     }
 }
