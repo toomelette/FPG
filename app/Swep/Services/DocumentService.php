@@ -4,8 +4,10 @@ namespace App\Swep\Services;
 
 use App\Http\Controllers\DocumentController;
 use App\Models\Document;
+use App\Models\DocumentDisseminationLog;
 use File;
 use Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -70,16 +72,12 @@ class DocumentService extends BaseService{
     }
 
     private function getStorage(){
-        if( Auth::user()->getAccessToDocuments() == 'QC'){
-            return Storage::disk('qc');
-        }elseif(  Auth::user()->getAccessToDocuments() == 'VIS'){
+        $auth = Auth::user();
+        if($auth->project_id == 1){
             return Storage::disk('local');
+        }else{
+            return Storage::disk('qc_records');
         }
-//        if(Auth::user()->access == 'VIS' ||Auth::user()->access == 'LGAREC'){
-//            return Storage::disk('local');
-//        }elseif (Auth::user()->access == 'LM' || Auth::user()->access == 'QC'){
-//            return Storage::disk('qc');
-//        }
     }
 
 
@@ -574,13 +572,6 @@ class DocumentService extends BaseService{
         $cc = []; //---> Array of recipients to be used for Logs
         $to_be_emailed = []; //---> Array of emails to be used for sending
 
-        // if($request->content == null){
-        //     return "blank";
-        // }else{
-        //     return "else";
-        // }
-        // return $request->content;
-
         if(!empty($request->employee)){
             foreach ($request->employee as $employee_from_form) {
 
@@ -639,7 +630,7 @@ class DocumentService extends BaseService{
 
             $this->mail->queue(new DocumentDisseminationMail($path, $request->subject, $document->filename, $to_be_emailed, $content));
             $status = "SENT";
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $status = "FAILED";
         }
 
@@ -841,6 +832,73 @@ class DocumentService extends BaseService{
 
     public function getRaw(){
         return $documents = $this->document_repo->getRaw();
+    }
+
+    public function disseminate2(Request $request){
+
+        $doc = Document::query()
+            ->where('slug','=',$request->document_slug)
+            ->first();
+
+        $path = $this->getStorage()->path($doc->path.$doc->filename);
+        if($request->type == 'employee'){
+            $employee = $this->employee_repo->findByEmployeeNo($request->employee);
+            $email_contact = null;
+        }else{
+            $employee = null;
+            $email_contact = $this->email_contact_repo->findByEmailContactId($request->employee);
+        }
+        $email = $employee->email ?? ($email_contact->email ?? null);
+
+        $mail = new \PHPMailer\PHPMailer\PHPMailer();
+        $mail->isSMTP();
+        $mail->SMTPDebug = false;
+        $mail->Host = 'mail.sra.gov.ph';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'mail.no-reply@sra.gov.ph';
+        $mail->Password = 'mail.no-reply';
+        $mail->SMTPSecure = 'ssl';
+        $mail->Port = 465;
+        $mail->From = 'mail.no-reply@sra.gov.ph';
+        $mail->FromName = 'SRA Web Portal - Document Dissemination';
+        $mail->SMTPOptions = [
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true,
+            ],
+        ];
+
+
+        $mail->isHTML();
+        $mail->Subject = $request->subject ?? null;
+//        $mail->addAddress('gguance221@gmail.com');
+        $mail->addAddress($email);
+
+        $ddl = new DocumentDisseminationLog();
+
+        $ddl->slug = Str::random();
+        $ddl->employee_no = $employee->employee_no ?? null;
+        $ddl->email_contact_id = $email_contact->email_contact_id ?? null;
+        $ddl->document_id = $doc->document_id;
+        $ddl->email = $email;
+        $ddl->subject = $request->subject;
+        $ddl->content = $request->content;
+        $ddl->status = 'SENT';
+        $ddl->send_copy = $request->get('send_copy') ?? 0;
+        $mail->Body =(
+            $request->content ?? 'Good day. Please see the attached file.').
+            view('dashboard.document.mail.footer')->with([
+                'slug' => $ddl->slug,
+            ])->render()
+        ;
+        $mail->addAttachment($path);
+
+        if($mail->send()){
+            $ddl->save();
+            return 1;
+        }
+        abort(500,'asdsada');
     }
 
 }

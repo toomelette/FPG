@@ -292,24 +292,24 @@ class DocumentRepository extends BaseRepository implements DocumentInterface {
 
 
     public function getDocumentIdInc(){
-
-//	    $prefix = SuSettings::query()->where('setting','=','document_prefix')->first()->string_value;
-        $prefix = env('DOCUMENT_PREFIX','NULL-');
-        $id = $prefix.'10000001';
-
+        $user = Auth::user();
+        if($user->project_id == 1){
+            $prefix = 'SRA-VIS-';
+        }else{
+            $prefix = 'SRA-QC-';
+        }
+        $id = $prefix.$user->project_id.'0000001';
         $document = $this->document->select('document_id')
-            ->where('document_id','like',env('DOCUMENT_PREFIX','NULL-').'%')
-            ->orderBy('document_id', 'desc')->first();
-
+            ->where('document_id','like',$prefix.'%')
+            ->orderBy('document_id', 'desc')
+            ->withTrashed()
+            ->first();
         if($document != null){
             if($document->document_id != null){
-//                $num = str_replace($prefix, '', $document->document_id);
                 $num = preg_replace("/[^0-9]/", "", $document->document_id)+1;
                 $id = $prefix. $num;
             }
-        
         }
-
         return $id;
     }
 

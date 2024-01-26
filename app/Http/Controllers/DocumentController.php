@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\DocumentDisseminationLog;
 use App\Swep\Helpers\__static;
 use App\Swep\Repositories\DocumentRepository;
 use App\Swep\Services\DocumentService;
@@ -154,18 +155,12 @@ class DocumentController extends Controller{
     }
 
     private function getStorage(){
-        if( Auth::user()->getAccessToDocuments() == 'QC'){
-            return Storage::disk('qc');
-        }elseif(  Auth::user()->getAccessToDocuments() == 'VIS'){
+        $auth = Auth::user();
+        if($auth->project_id == 1){
             return Storage::disk('local');
+        }else{
+            return Storage::disk('qc_records');
         }
-
-
-//        if(Auth::user()->access == 'VIS' ||Auth::user()->access == 'LGAREC'){
-//
-//        }elseif (Auth::user()->access == 'LM' || Auth::user()->access == 'QC'){
-//
-//        }
     }
 
 
@@ -506,10 +501,29 @@ class DocumentController extends Controller{
 
     public function disseminationPost(DocumentDisseminationRequest $request, $slug){
 
+        if(Auth::user()->project_id == 2){
+            $r = collect([
+                'subject' => $request->subject,
+                'employees' => $request->employee,
+                'email_contacts' => $request->email_contact,
+                'content' => $request->content,
+            ]);
+
+            return view('dashboard.document.dissemination_status')->with([
+                'r' => $r,
+                'slug' => $slug,
+                'send_copy' => $request->send_copy ?? 0,
+            ]);
+        }
+
        return $this->document->disseminationPost($request, $slug); 
        
     }
 
+    public function mailSingle(Request $request){
+
+        return $this->document->disseminate2($request);
+    }
     public function print($slug)
     {
         return $this->document->print($slug); 
@@ -550,13 +564,10 @@ class DocumentController extends Controller{
     public function getQr($slug){
         //    $path = storage_path('public/' . $filename);
 
-        if( Auth::user()->getAccessToDocuments() == 'QC'){
-            $storage =  Storage::disk('qc');
-        }elseif(  Auth::user()->getAccessToDocuments() == 'VIS'){
-            $storage = Storage::disk('local');
-        }
+        $storage = $this->getStorage();
+        dd($storage);
         $document = \App\Models\Document::query()->where('slug','=',$slug)->first();
-        $path = '/QRCODE_TEMP/'.$document->document_id.'.png';
+        $path = 'RECORDS_QC/QRCODE_TEMP/'.$document->document_id.'.png';
         if($storage->exists($path)){
             $file = $storage->get($path);
             $type = $storage->getMimetype($path);
@@ -565,7 +576,17 @@ class DocumentController extends Controller{
             return $response;
         }
         abort(503,'FILE DOES NOT EXIST');
+    }
 
+    public function received($slug){
+        $ddl = DocumentDisseminationLog::query()->where('slug','=',$slug)->first();
+        $ddl ?? abort(404,'Page not found');
 
+        if($ddl->received_at == null){
+            $ddl->received_at = Carbon::now();
+            $ddl->save();
+        }
+
+        return view('dashboard.document.received');
     }
 }

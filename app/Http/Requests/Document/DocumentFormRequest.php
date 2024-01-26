@@ -31,7 +31,7 @@ class DocumentFormRequest extends FormRequest{
 
         return [
 //            'doc_file' => 'required|max:50000',
-//            'doc_file' => $for_doc,
+            'doc_file' => $for_doc,
             'reference_no' => [
                 'required',
                 'max:45',

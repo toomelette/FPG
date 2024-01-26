@@ -53,9 +53,9 @@ return [
             'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/').'HR/',
         ],
 
-        'qc' => [
+        'qc_records' => [
             'driver' => 'local',
-            'root' => '/home/swep_afd_storage_qc/',
+            'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/').'RECORDS_QC/',
         ],
 
         'public' => [

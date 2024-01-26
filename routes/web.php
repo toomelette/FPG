@@ -20,7 +20,11 @@ Route::group(['as' => 'auth.'], function () {
     Route::post('/reset_password','Auth\AccountRecoveryController@reset_password')->name('reset_password');
     Route::post('/verify_email','Auth\AccountRecoveryController@verify_email')->name('verify_email');
     Route::get('/reset_password_via_email','Auth\AccountRecoveryController@reset_password_via_email')->name('reset_password_via_email');
+
+
 });
+
+Route::get('document/received/{slug}',\App\Http\Controllers\DocumentController::class.'@received')->name('dashboard.document.received');
 
 
 /** HOME **/
@@ -221,6 +225,8 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 	Route::get('/document/download', 'DocumentController@download')->name('document.download');
 	Route::post('/document/download_direct/{slug}', 'DocumentController@downloadDirect')->name('document.download_direct');
 	Route::get('/document/dissemination/{slug}', 'DocumentController@dissemination')->name('document.dissemination');
+    Route::post('/document/dissemination/{slug}', \App\Http\Controllers\DocumentController::class.'@mailSingle')->name('document.dissemination');
+
 	Route::post('/document/dissemination_post/{slug}', 'DocumentController@disseminationPost')->name('document.dissemination_post');
 
 	Route::get('/document/rename_all', 'DocumentController@rename_all')->name('document.rename_all');
@@ -410,7 +416,13 @@ Route::group(['as' => 'public.',
 Route::get('display_qr/{slug}',function ($slug, \App\Http\Controllers\DocumentController $documentController){
     $document = \App\Models\Document::query()->where('slug','=',$slug)->first();
     $documentController->makeQR($document,$document->document_id);
-    return response()->file(\Illuminate\Support\Facades\Storage::path('/QRCODE_TEMP/'.$document->document_id.'.png'));
+
+    if(Auth::user()->project_id == 1){
+        $storage =  \Illuminate\Support\Facades\Storage::disk('local');
+    }else{
+        $storage =  \Illuminate\Support\Facades\Storage::disk('qc_records');
+    }
+    return response()->file($storage->path('/QRCODE_TEMP/'.$document->document_id.'.png'));
 })->name('display_qr');
 
 
@@ -537,6 +549,10 @@ Route::get('/getSerial',function (\Illuminate\Http\Request $request){
 
 
 
+Route::post('testMail',\App\Http\Controllers\DocumentController::class.'@mailSingle');
+Route::get('sraLogo',function (){
+    return response()->file('/SRA_DA logo.png');
+});
 
 
 Route::get('/acc',function (){

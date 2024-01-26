@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ProjectIdScope;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,25 +22,24 @@ class Document extends Model{
         });
 
         static::creating(function ($a){
-            $a->user_created = Auth::user()->user_id;
+            $auth = Auth::user();
+            $a->user_created = $auth->user_id;
             $a->ip_created = request()->ip();
             $a->created_at = \Carbon::now();
             $a->updated_at = \Carbon::now();
+            $a->project_id = $auth->project_id;
         });
+    }
+
+    public static function booted()
+    {
+        static::addGlobalScope(new ProjectIdScope);
     }
 
     protected $table = 'rec_documents';
 
     use Sortable, LogsActivity;
 
-    public function getTable(){
-        return env('DOCUMENTS_TABLE');
-//        if( Auth::user()->getAccessToDocuments() == 'QC'){
-//            return 'qc_rec_documents';
-//        }elseif(  Auth::user()->getAccessToDocuments() == 'VIS'){
-//            return 'rec_documents';
-//        }
-    }
 
     public function getActivitylogOptions():LogOptions {
         return LogOptions::defaults();

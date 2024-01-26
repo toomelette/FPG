@@ -9,7 +9,21 @@ class DocumentDisseminationLog extends Model{
 
 
 //    protected $table = 'rec_document_dissemination_logs';
+    public static function boot()
+    {
+        parent::boot();
+        static::updating(function($a){
+            $a->user_sent = Auth::user()->user_id;
+            $a->ip_sent = request()->ip();
+            $a->sent_at = \Carbon::now();
+        });
 
+        static::creating(function ($a){
+            $a->user_sent = Auth::user()->user_id;
+            $a->ip_sent = request()->ip();
+            $a->sent_at = \Carbon::now();
+        });
+    }
     protected $dates = ['sent_at'];
 
 	public $timestamps = false;
@@ -25,7 +39,6 @@ class DocumentDisseminationLog extends Model{
         'email' => '',
         'subject' => '',
         'content' => '',
-        'status' => '',
         'status' => null,
         'sent_at' => null,
         'ip_sent' => '',
@@ -34,6 +47,7 @@ class DocumentDisseminationLog extends Model{
     ];
 
     public function getTable(){
+        return  'rec_document_dissemination_logs';
         if(Auth::user()->access == 'QC'){
             return 'qc_rec_document_dissemination_logs';
         }
