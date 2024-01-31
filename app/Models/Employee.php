@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\HRU\TemplateDeductions;
+use App\Models\HRU\TemplateIncentives;
+use App\Models\PPU\PPURespCodes;
 use App\Models\SqlServer\EmpMaster;
 use App\Models\SqlServer\IncentiveTemplate;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
 use Spatie\Activitylog\LogOptions;
@@ -217,7 +221,13 @@ class Employee extends Model{
         return $this->hasMany('App\Models\DailyTimeRecord','biometric_user_id','biometric_user_id');
     }
 
+    public function file201s(){
+        return $this->hasMany(EmployeeFile201::class,'employee_no','employee_no');
+    }
 
+    public function responsibilityCenter(){
+        return $this->belongsTo(PPURespCodes::class,'resp_center','rc_code');
+    }
 
 
 
@@ -271,7 +281,54 @@ class Employee extends Model{
         return $this->hasOne(EmpMaster::class,'EmpNo','employee_no');
     }
 
+    public function nonZeroIncentives(){
+        return $this->hasMany(TemplateIncentives::class,'employee_no','employee_no')
+            ->where('amount','!=',0)
+            ->where('non_deletable','!=',1)
+            ->orderBy('priority','asc');
+    }
+
+    public function nonZeroDeductions(){
+        return $this->hasMany(TemplateDeductions::class,'employee_no','employee_no')
+            ->where('amount','!=',0)
+            ->whereHas('deduction',function ($q){
+                return $q->where('availables','=',1);
+            })
+            ->orderBy('priority','asc');
+    }
+
     public function incentiveTemplate(){
         return $this->hasMany(IncentiveTemplate::class,'EmpNo','employee_no');
+    }
+
+    public function templateIncentives(){
+        return $this->hasMany(TemplateIncentives::class,'employee_no','employee_no')
+            ->where('non_deletable','!=',1)
+            ->orderBy('priority','asc');
+    }
+
+    public function templateDeductions(){
+        return $this->hasMany(TemplateDeductions::class,'employee_no','employee_no')
+            ->orderBy('priority','asc');
+    }
+
+    public function scopeApplyProjectId(Builder $query){
+        $project_id = \Auth::user()->project_id;
+        if($project_id == 1) {
+            $query->where(function ($q){
+                return $q->where('locations','=','VISAYAS')
+                    ->orWhere('locations','=','COS-VISAYAS');
+            });
+        }
+        if($project_id == 2){
+            $query->where(function ($q){
+                return $q->where('locations','=','LUZON/MINDANAO')
+                    ->orWhere('locations','=','COS-LUZMIN');
+            });
+        }
+    }
+
+    public function scopeActive(Builder $query){
+        $query->where('is_active','=','ACTIVE');
     }
 }

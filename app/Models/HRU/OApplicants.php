@@ -2,6 +2,7 @@
 
 namespace App\Models\HRU;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class OApplicants extends Model
@@ -26,4 +27,7 @@ class OApplicants extends Model
         return $this->belongsTo(PublicationDetails::class,'publication_detail_slug','slug');
     }
 
+    public function scopeFinalized(Builder $query){
+        $query->where('status' ,'=','FINALIZED');
+    }
 }

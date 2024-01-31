@@ -172,7 +172,6 @@
                         @if(!empty(\Illuminate\Support\Facades\Auth::user()->employee))
                             @php($emp = \Illuminate\Support\Facades\Auth::user()->employee)
                             <div class="tab-pane" id="tab_1">
-
                                 <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
                                     Father's Information
                                     <span class="pull-right">
@@ -181,7 +180,6 @@
                                 </p>
                                 <form id="family_form">
                                     <fieldset id="family_fieldset" disabled="disabled">
-
                                         @php($family_detail = \Illuminate\Support\Facades\Auth::user()->employee->employeeFamilyDetail)
                                         <div class="row">
                                             {!! \App\Swep\ViewHelpers\__form2::textbox('father_firstname',[
@@ -376,12 +374,8 @@
                                 </form>
                             </div>
                             <div class="tab-pane" id="tab_2">
-                                <div class="row">
-                                    <div class="col-md-12">
-{{--                                        <button data-toggle="modal" data-target="#add_sr_modal" id="add_sr_btn" class="btn btn-primary btn-sm pull-right" style="margin-bottom: 10px"><i class="fa fa-plus"></i> Add Service Record</button>--}}
-                                    </div>
-                                </div>
-                                <div id="service_records_table_container" style="display: none">
+
+                                <div id="" style="">
                                     <table class="table table-bordered table-striped table-hover" id="service_records_table" style="width: 100% !important">
                                         <thead>
                                         <tr class="">
@@ -391,18 +385,24 @@
                                             <th>Position</th>
                                             <th>Appt. Status</th>
                                             <th>Salary</th>
-                                            <th>Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
+                                            @forelse($user->employee->employeeServiceRecord as $sr)
+                                                <tr class="">
+                                                    <td>{{$sr->sequence_no}}</td>
+                                                    <td>{{$sr->from_date}}</td>
+                                                    <td>{{$sr->upto_date == 1 ? 'Present' : $sr->to_date}}</td>
+                                                    <td>{{$sr->position}}</td>
+                                                    <td>{{$sr->appointment_status}}</td>
+                                                    <td>{{number_format($sr->salary,2)}}</td>
+                                                </tr>
+                                            @empty
+                                            @endforelse
                                         </tbody>
                                     </table>
                                 </div>
-                                <div id="tbl_loader_2">
-                                    <center>
-                                        <img style="width: 100px" src="{{asset('images/loader.gif')}}">
-                                    </center>
-                                </div>
+
                             </div>
                             <div class="tab-pane" id="tab_3">
                                 <div class="row">
@@ -413,7 +413,7 @@
                                     </div>
                                 </div>
                                 <br>
-                                <div id="training_table_container" style="display: none">
+                                <div id="training_table_container" >
                                     <table class="table table-bordered table-striped table-hover training" id="training_table" style="width: 100% !important">
                                         <thead>
                                         <tr class="">
@@ -422,17 +422,21 @@
                                             <th>Started</th>
                                             <th>Ended</th>
                                             <th>Detailed Period</th>
-                                            <th>Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
+                                        @forelse($user->employee->employeeTraining as $training)
+                                            <tr class="">
+                                                <td>{{$training->sequence_no}}</td>
+                                                <td>{{$training->title}}</td>
+                                                <td>{{Carbon::parse($training->date_from)->format('Y-m-d')}}</td>
+                                                <td>{{Carbon::parse($training->date_to)->format('Y-m-d')}}</td>
+                                                <td>{{$training->detailed_period}}</td>
+                                            </tr>
+                                        @empty
+                                        @endforelse
                                         </tbody>
                                     </table>
-                                </div>
-                                <div id="tbl_loader_training">
-                                    <center>
-                                        <img style="width: 100px" src="{{asset('images/loader.gif')}}">
-                                    </center>
                                 </div>
                             </div>
                             <div class="tab-pane" id="tab_4">
@@ -666,131 +670,14 @@
         sr_active = '';
         uri = "{{route('dashboard.profile.service_record')}}";
         service_records_tbl = $("#service_records_table").DataTable({
-            'dom' : 'lBfrtip',
-            "processing": true,
-            "serverSide": true,
-            "ajax" : uri,
-            "columns": [
-                { "data": "sequence_no" },
-                { "data": "from_date" },
-                { "data": "to_date" },
-                { "data": "position" },
-                { "data": "appointment_status" },
-                { "data": "salary" },
-                { "data": "action" }
-            ],
-            "buttons": [
-                {!! __js::dt_buttons() !!}
-            ],
-            "columnDefs":[
-                {
-                    "targets" : 5,
-                    "class" : 'text-right'
-                },
-                {
-                    "targets" : 6,
-                    "orderable" : false,
-                    "class" : 'action-10p'
-                },
-            ],
-            "order":[[0,'desc']],
-            "responsive": false,
-            "initComplete": function( settings, json ) {
-                $('#tbl_loader_2').fadeOut(function(){
-                    $("#service_records_table_container").fadeIn();
-                    style_datatable("#service_records_table");
-
-                    //Need to press enter to search
-                    $('#service_records_table_filter input').unbind();
-                    $('#service_records_table_filter input').bind('keyup', function (e) {
-                        if (e.keyCode == 13) {
-                            service_records_tbl.search(this.value).draw();
-                        }
-                    });
-                });
-            },
-            "language":
-                {
-                    "processing": "<center><img style='width: 70px' src='{{asset("images/loader.gif")}}'></center>",
-                },
-            "drawCallback": function(settings){
-                $('[data-toggle="tooltip"]').tooltip();
-                $('[data-toggle="modal"]').tooltip();
-                if(sr_active != ''){
-                    $("#service_records_table #"+sr_active).addClass('success');
-                }
-            }
+            order: [[0,'desc']]
         })
 
 
         trainings_active = '';
         uri = "{{route('dashboard.profile.training')}}";
         trainings_tbl = $("#training_table").DataTable({
-            'dom' : 'lBfrtip',
-            "processing": true,
-            "serverSide": true,
-            "ajax" : uri,
-            "columns": [
-                { "data": "sequence_no" },
-                { "data": "title" },
-                { "data": "date_from" },
-                { "data": "date_to" },
-                { "data": "detailed_period" },
-                { "data": "action" }
-            ],
-            "buttons": [
-                {!! __js::dt_buttons() !!}
-            ],
-            "columnDefs":[
-                {
-                    "targets" : 0,
-                    "class" : 'w-6p'
-                },
-                {
-                    "targets" : 1,
-                    "class" : 'w-50p'
-                },
-                {
-                    "targets" : [2,3],
-                    "class" : 'w-8p'
-                },
-                {
-                    "targets" : 4,
-                    "class" : 'w-20p'
-                },
-                {
-                    "targets" : 5,
-                    "orderable" : false,
-                    "class" : 'action-8p'
-                },
-            ],
-            "order":[[0,'desc']],
-            "responsive": false,
-            "initComplete": function( settings, json ) {
-                $('#tbl_loader_training').fadeOut(function(){
-                    $("#training_table_container").fadeIn();
-                    style_datatable("#training_table");
-
-                    //Need to press enter to search
-                    $('#training_table_filter input').unbind();
-                    $('#training_table_filter input').bind('keyup', function (e) {
-                        if (e.keyCode == 13) {
-                            trainings_tbl.search(this.value).draw();
-                        }
-                    });
-                });
-            },
-            "language":
-                {
-                    "processing": "<center><img style='width: 70px' src='{{asset("images/loader.gif")}}'></center>",
-                },
-            "drawCallback": function(settings){
-                $('[data-toggle="tooltip"]').tooltip();
-                $('[data-toggle="modal"]').tooltip();
-                if(trainings_active != ''){
-                    $("#training_table #"+trainings_active).addClass('success');
-                }
-            }
+            order: [[0,'desc']]
         })
 
 

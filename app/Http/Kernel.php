@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\EnsureUserHasProjectId;
 use App\Http\Middleware\VerifyEmailAddress;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -69,5 +70,6 @@ class Kernel extends HttpKernel
         'last_activity' => \App\Http\Middleware\LastActivity::class,
         'sidenav_mw' => \App\Http\Middleware\sidenav_mw::class,
         'verify.email' => VerifyEmailAddress::class,
+        'ensureUserHasProjectId' => EnsureUserHasProjectId::class,
     ];
 }

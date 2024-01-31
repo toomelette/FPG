@@ -91,8 +91,8 @@
                                                 <br>
                                                 Select columns to show: <span class="text-info text-strong pull-right small">(Drag to reorder)</span>
                                                 <ol class="for_sort sortable todo-list">
-                                                    @if(count(\App\Http\Controllers\PlantillaController::allColumnsForReport()) > 0)
-                                                        @foreach(\App\Http\Controllers\PlantillaController::allColumnsForReport() as $column_name => $display_name)
+                                                    @if(count(\App\Swep\Helpers\Arrays::plantillaColumnsForReport()) > 0)
+                                                        @foreach(\App\Swep\Helpers\Arrays::plantillaColumnsForReport() as $column_name => $display_name)
                                                             <li class="ui-sortable">
                                                                 <div class="checkbox" style="margin: 0">
                                                                     <label>

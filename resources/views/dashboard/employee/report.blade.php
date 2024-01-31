@@ -41,21 +41,22 @@
                                 </div>
 
 
-                                <div class="box box-sm box-default box-solid collapsed-box">
+                                <div class="box box-sm box-default box-solid">
                                     <div class="box-header with-border">
                                         <p class="box-title-sm no-margin"><i class="fa fa-filter"></i> Filters</p>
                                         <div class="box-tools pull-right">
-                                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="box-body" style="display: none">
+                                    <div class="box-body" style="display: block">
                                         <div class="row">
                                             {!! \App\Swep\ViewHelpers\__form2::select('status',[
                                                 'label' => 'Status:',
                                                 'cols' => 6,
                                                 'options' => \App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeStatus(),'option','value'),
                                                 'class' => 'input-sm',
+                                                'required' => 'required',
                                             ]) !!}
 
 

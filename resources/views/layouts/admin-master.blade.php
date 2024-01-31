@@ -3,13 +3,21 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>SRA Web Portal - AFD</title>
+    <title>SRA Web Portal - HRRS</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @include('layouts.css-plugins')
 
     @yield('extras')
+
+    <meta property="og:title" content="SRA Web Portal"/>
+    <meta property="og:image" content="{{asset('/images/ogg.png')}}"/>
+    <meta property="og:description" content="HRRS"/>
+    <meta property="og:url" content="http://hris.sra.gov.ph/"/>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="627" />
+
 
   </head>
 
@@ -211,7 +219,7 @@
         datatable_object.ajax.url("{{Request::url()}}"+"?"+data).load();
 
         $(".dt_filter").each(function (index,el) {
-          if ($(this).val() != ''){
+          if ($(this).val() != '' && $(this).val() != 'NULL'){
             $(this).parent("div").addClass('has-success');
             $(this).siblings('label').addClass('text-green');
           } else {

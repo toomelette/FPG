@@ -22,14 +22,18 @@
         "picqer/php-barcode-generator": "^2.2",
         "predis/predis": "^1.1",
         "rats/zkteco": "^002.0",
+        "rmunate/spell-number": "^1.0",
         "setasign/fpdf": "1.8.*",
         "setasign/fpdi": "^2.0",
         "simplesoftwareio/simple-qrcode": "~4",
         "spatie/laravel-activitylog": "^4.0",
         "spatie/laravel-html": "^3.2",
         "spatie/laravel-ignition": "^1.0",
+        "spatie/pdf-to-image": "^2.2",
+        "thiagoalessio/tesseract_ocr": "^2.13",
         "yajra/laravel-datatables": "^1.5",
-        "yajra/laravel-datatables-html": "^4.0"
+        "yajra/laravel-datatables-html": "^4.0",
+        "ext-imagick": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",

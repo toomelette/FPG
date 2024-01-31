@@ -36,7 +36,7 @@
 
 </head>
 <body onload="" onafterprint="">
-<div class="wrapper" style="overflow:hidden !important; text-align: center">
+<div class="wrapper" style="overflow:hidden !important;">
     @yield('wrapper')
 </div>
 

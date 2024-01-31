@@ -59,7 +59,7 @@
             <tr {!! __html::table_highlighter( $data->slug, $table_sessions) !!} >
               <td id="mid-vert">
                 <i class="fa fa-folder" style="font-size: 20px; color: #3c8dbc"></i>
-                <a href="{{route('dashboard.document_folder.browse', $data->folder_code )}}?prev={{ Request::fullUrl() }}" style="text-decoration: underline; font-size:15px;">
+                <a href="{{route('dashboard.document_folder.browse', $data->folder_code )}}" style="text-decoration: underline; font-size:15px;">
 
                   {{ $data->folder_code .' - '. $data->description }}
                 </a>

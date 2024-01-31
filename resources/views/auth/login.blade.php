@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>SRA Web Portal - AFD</title>
+    <title>SRA Web Portal - HRRS</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -467,7 +467,7 @@
                                 @endif
                                 <form class="login100-form validate-form" id="loginForm" action="{{ route('auth.login') }}?portal={{request('portal')}}" method="POST">
                                     @csrf
-                                    <span class="login100-form-title "> SWEP </span>
+                                    <span class="login100-form-title ">HRRS</span>
                                     <span class="login100-form-subtitle m-b-16"> SRA - Web Protal | Login </span>
                                     @if ($errors->has('username'))
                                         <span class="help-block" style="color: darkred"> {{ $errors->first('username') }}</span>

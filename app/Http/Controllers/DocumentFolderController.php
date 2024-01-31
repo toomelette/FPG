@@ -85,7 +85,7 @@ class DocumentFolderController extends Controller{
 
 
     public function browse($folder_code, DocumentFolderFilterRequest $request){
-        
+
         return $this->doc_folder->browse($folder_code, $request);
 
     }

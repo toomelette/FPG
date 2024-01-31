@@ -66,7 +66,7 @@
                 {
                     "targets" : 4,
                     "orderable" : false,
-                    "class" : 'action3'
+                    "class" : 'action4'
                 },
             ],
             "responsive": false,

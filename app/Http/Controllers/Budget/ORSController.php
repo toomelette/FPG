@@ -22,6 +22,9 @@ use App\Swep\Helpers\Get;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\Budget\ORSReportsService;
 use App\Swep\Services\Budget\ORSService;
+use App\Swep\Traits\Budget\BudgetUtilizationPerProject;
+use App\Swep\Traits\Budget\CoPurchasesPerAccountEntries;
+use App\Swep\Traits\Budget\PapCodeMonitoring;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +35,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ORSController extends Controller
 {
-
+    use PapCodeMonitoring, BudgetUtilizationPerProject, CoPurchasesPerAccountEntries;
     public function __construct(
         protected ORSService $orsService,
         protected ORSReportsService $orsReportsService,
@@ -50,7 +53,7 @@ class ORSController extends Controller
     }
 
     public function index(Request $request){
-        $this->orsService->checkUserProjectCode();
+        return view('dashboard.budget.moved');
         if($request->ajax() && $request->has('draw')){
             return $this->dataTable($request);
         }
@@ -72,9 +75,15 @@ class ORSController extends Controller
             $ors = $ors->where('payee','=',$request->payee);
         }
 
-        if($request->has('applied_projects') && $request->applied_projects != ''){
+        if($request->has('applied_projects') && ($request->applied_projects != 'NULL' && $request->applied_projects != '')){
             $ors = $ors->whereHas('projectsApplied',function ($q) use($request){
                 return $q->where('pap_code','=',$request->applied_projects);
+            });
+        }
+
+        if($request->has('account_entry') && ($request->account_entry != 'NULL' && $request->account_entry != '')){
+            $ors = $ors->whereHas('accountEntries',function ($q) use($request){
+                return $q->where('account_code','=',$request->account_entry);
             });
         }
 
@@ -87,7 +96,6 @@ class ORSController extends Controller
             ->addColumn('details',function($data) use($request){
                 return view('dashboard.budget.ors.dtDetails')->with([
                     'data' => $data,
-                ])->with([
                     'request' => $request,
                 ]);
             })
@@ -102,9 +110,10 @@ class ORSController extends Controller
                     'data' => $data,
                 ]);
             })
-            ->addColumn('account_entries',function($data){
+            ->addColumn('account_entries',function($data) use ($request){
                 return view('dashboard.budget.ors.dtAccountEntries')->with([
                     'data' => $data,
+                    'request' => $request,
                 ]);
             })
             ->escapeColumns([])
@@ -113,7 +122,7 @@ class ORSController extends Controller
     }
 
     public function create(){
-        $this->orsService->checkUserProjectCode();
+        return view('dashboard.budget.moved');
         return view('dashboard.budget.ors.create');
     }
 
@@ -183,7 +192,7 @@ class ORSController extends Controller
     }
 
     public function print($slug, Request $request){
-
+        return view('dashboard.budget.moved');
         if($request->has('attachment') && $request->attachment != null){
             return view('printables.ors.ors_attachment')->with([
                 'ors' => $this->orsService->findBySlug($slug),
@@ -195,7 +204,7 @@ class ORSController extends Controller
     }
 
     public function edit($slug){
-        $this->orsService->checkUserProjectCode();
+        return view('dashboard.budget.moved');
         return view('dashboard.budget.ors.edit')->with([
             'ors' => $this->orsService->findBySlug($slug),
         ]);
@@ -271,12 +280,11 @@ class ORSController extends Controller
     }
 
     public function reports(){
-        $this->orsService->checkUserProjectCode();
+        return view('dashboard.budget.moved');
         return view('dashboard.budget.ors.reports');
     }
 
     public function reportGenerate($type){
-        $this->orsService->checkUserProjectCode();
         $request = Request::capture();
 
         switch ($type){
@@ -294,6 +302,12 @@ class ORSController extends Controller
                 return  $this->orsReportsService->budgetProposalMonitoring($request);
             case 'subsidiary_ledger_2':
                 return  $this->orsReportsService->subsidiaryLedger2($request);
+            case 'pap_code_monitoring':
+                return  $this->papCodeMonitoring($request);
+            case 'summary_of_budget_utilization':
+                return  $this->budgetUtilizationPerProject($request);
+            case 'co_purchases_per_account_entries':
+                return  $this->coPurchasesPerAccountEntries($request);
             default:
                 return 'default';
                 break;

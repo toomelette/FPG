@@ -18,7 +18,7 @@
     <section class="content">
         <div class="box box-success">
             <div class="box-header with-border" >
-                <h3 class="box-title">Daily Time Record</h3>
+                <h4 class="box-title">Daily Time Record</h4>
                 @php
                     $cl = \App\Models\CronLogs::query()->where('log','like','%Reconstructed%')->orderBy('created_at','desc')->first();
                 @endphp

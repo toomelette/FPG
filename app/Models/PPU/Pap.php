@@ -5,6 +5,7 @@ namespace App\Models\PPU;
 
 use App\Models\Budget\ORS;
 use App\Models\Budget\ORSProjectsApplied;
+use App\Models\Budget\PapAdjustments;
 use App\Models\PPBTMS\Transactions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -44,10 +45,36 @@ class Pap extends Model
         return $this->hasMany(Transactions::class,'pap_code','pap_code')->where('ref_book','=','PR')->orWhere('ref_book','=','JR');
     }
 
+    public function procurementsPr(){
+        return $this->hasMany(Transactions::class,'pap_code','pap_code')->where('ref_book','=','PR');
+    }
+
+    public function procurementsJr(){
+        return $this->hasMany(Transactions::class,'pap_code','pap_code')->where('ref_book','=','JR');
+    }
+
 
     public function scopeWithoutChargedToIncome(Builder $query): void{
         $query->where('charge_to_income','!=',1)
             ->orWhereNull('charge_to_income');
     }
 
+    public function increaseInBudget(){
+        return $this->hasMany(PapAdjustments::class,'destination_slug','slug');
+    }
+
+    public function decreaseInBudget(){
+        return $this->hasMany(PapAdjustments::class,'source_slug','slug');
+    }
+
+    public function totalBudgetWithAdjustments(){
+
+        $decrease = $this->decreaseInBudget;
+        $increase = $this->increaseInBudget;
+
+        return collect([
+            'mooe' => $this->mooe + $increase->sum('mooe') - $decrease->sum('mooe'),
+            'co' => $this->co + $increase->sum('co') - $decrease->sum('co'),
+        ]);
+    }
 }

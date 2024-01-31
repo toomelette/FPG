@@ -23,7 +23,7 @@ class FundSourceController extends Controller{
 
     
     public function index(FundSourceFilterRequest $request){
-
+        return view('dashboard.accounting.moved');
         return $this->fund_source->fetch($request);
     
     }
@@ -32,7 +32,7 @@ class FundSourceController extends Controller{
 
 
     public function create(){
-
+        return view('dashboard.accounting.moved');
         return view('dashboard.fund_source.create');
 
     }

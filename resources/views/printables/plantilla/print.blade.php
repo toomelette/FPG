@@ -149,10 +149,10 @@
                     @foreach($columns as $column)
                         @switch($column)
                             @case('item_no')
-                                <th class="text-center" style="width: 20px">{{\App\Http\Controllers\PlantillaController::allColumnsForReport()[$column]['name']}}</th>
+                                <th class="text-center" style="width: 20px">{{\App\Swep\Helpers\Arrays::plantillaColumnsForReport()[$column]['name']}}</th>
                             @break
                             @default
-                                <th class="text-center">{{\App\Http\Controllers\PlantillaController::allColumnsForReport()[$column]['name']}}</th>
+                                <th class="text-center">{{\App\Swep\Helpers\Arrays::plantillaColumnsForReport()[$column]['name']}}</th>
                             @break
                         @endswitch
                     @endforeach
@@ -182,6 +182,13 @@
                                         @break
                                         @case('last_promotion')
                                         <td class="text-right">{{$division->$column != null ? Carbon::parse($division->$column)->format('m/d/Y') : ''}}</td>
+                                        @break
+                                        @case('employee_name')
+                                            <td class="">
+                                                {{$division->incumbentEmployee->lastname ?? ''}}
+                                                {{!empty($division->incumbentEmployee) ? ',':''}}
+                                                {{$division->incumbentEmployee->firstname ?? ''}}
+                                            </td>
                                         @break
                                         @default
                                             <td class="">{{$division->$column}}</td>
@@ -214,6 +221,13 @@
                                                 @case('last_promotion')
                                                 <td class="text-right">{{$section->$column != null ? Carbon::parse($section->$column)->format('m/d/Y') : ''}}</td>
                                                 @break
+                                                @case('employee_name')
+                                                    <td class="">
+                                                        {{$section->incumbentEmployee->lastname ?? ''}}
+                                                        {{!empty($section->incumbentEmployee) ? ',':''}}
+                                                        {{$section->incumbentEmployee->firstname ?? ''}}
+                                                    </td>
+                                                    @break
                                                 @default
                                                 <td class="">{{$section->$column}}</td>
                                                 @break
@@ -243,6 +257,13 @@
                                                     @case('last_promotion')
                                                     <td class="text-right">{{$item->$column != null ? Carbon::parse($item->$column)->format('m/d/Y') : ''}}</td>
                                                     @break
+                                                    @case('employee_name')
+                                                        <td class="">
+                                                            {{$item->incumbentEmployee->lastname ?? ''}}
+                                                            {{!empty($item->incumbentEmployee) ? ',':''}}
+                                                            {{$item->incumbentEmployee->firstname ?? ''}}
+                                                        </td>
+                                                        @break
                                                     @default
                                                     <td class="">{{$item->$column}}</td>
                                                     @break

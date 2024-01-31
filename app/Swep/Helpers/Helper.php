@@ -286,7 +286,14 @@ class Helper
 
     public static function sanitizeAutonum($num){
         $num = str_replace('₱','',$num);
-        return str_replace(',','',$num);
+        $num = str_replace(',','',$num);
+        if ($num == ''){
+            return null;
+        }
+        if ($num == 0){
+            return null;
+        }
+        return $num;
     }
 
     public static function mis_request_nature(){
@@ -586,7 +593,15 @@ class Helper
             ->first();
         return $a;
     }
-    public static function wrapForSelect2($array,$paginate = true){
+    public static function wrapForSelect2($array,$paginate = true,$request = null){
+        if(($request->add_null ?? false) == true && $request->page < 2){
+
+            array_unshift($array,[
+                'id' => 'NULL',
+                'text' => 'Select',
+            ]);
+
+        }
         return [
             'results' => $array,
             "pagination" => [

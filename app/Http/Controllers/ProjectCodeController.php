@@ -25,7 +25,7 @@ class ProjectCodeController extends Controller{
 
     
     public function index(ProjectCodeFilterRequest $request){
-
+        return view('dashboard.accounting.moved');
     	return $this->project_code->fetch($request);
     
     }
@@ -34,7 +34,7 @@ class ProjectCodeController extends Controller{
 
 
     public function create(){
-
+        return view('dashboard.accounting.moved');
         return view('dashboard.project_code.create');
 
     }
@@ -52,7 +52,7 @@ class ProjectCodeController extends Controller{
 
 
     public function edit($slug){
-
+        return view('dashboard.accounting.moved');
     	return $this->project_code->edit($slug);
         
     }

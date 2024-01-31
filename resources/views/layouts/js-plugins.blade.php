@@ -40,8 +40,21 @@
 
 <script type="text/javascript" src="{{ asset('template/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('template/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+
+
 <script type="text/javascript" src="{{asset('template/plugins/datatables/responsive/dataTables.responsive.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('template/plugins/datatables/RowGroup-1.1.1/js/dataTables.rowGroup.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('template/plugins/datatables/Buttons-1.6.1/js/dataTables.buttons.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('template/plugins/datatables/Buttons-1.6.1/js/buttons.bootstrap.min.js')}}"></script>
+
+
+<script type="text/javascript" src="{{asset('template/plugins/datatables/JSZip-2.5.0/jszip.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('template/plugins/datatables/pdfmake-0.1.36/pdfmake.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('template/plugins/datatables/pdfmake-0.1.36/vfs_fonts.js')}}"></script>
+<script type="text/javascript" src="{{asset('template/plugins/datatables/Buttons-1.6.1/js/buttons.html5.min.js')}}"></script>
+
+
+
 
 <script type="text/javascript" src="{{asset('template/plugins/dt-moment/date-time-moment.js')}}"></script>
 {{-- Charts --}}

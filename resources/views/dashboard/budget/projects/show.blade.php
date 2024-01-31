@@ -38,7 +38,7 @@
                             <dd><table style="width: 100%;">
                                     <tr>
                                         <td>Amount: </td>
-                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($pap->co,2,'0.00')}}</td>
+                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($totalCo = $pap->totalBudgetWithAdjustments()['co'],2,'0.00')}}</td>
                                     </tr>
                                     <tr>
                                         <td>Utilized: </td>
@@ -46,7 +46,7 @@
                                     </tr>
                                     <tr>
                                         <td class="b-top">Balance: </td>
-                                        <td class="text-right text-strong b-top" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($pap->co - $pap->orsAppliedProjects->sum('co'),2,'0.00')}}</td>
+                                        <td class="text-right text-strong b-top" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($totalCo - $pap->orsAppliedProjects->sum('co'),2,'0.00')}}</td>
                                     </tr>
                                 </table></dd>
                         </dl>
@@ -58,7 +58,7 @@
                                 <table style="width: 100%;">
                                     <tr>
                                         <td>Amount: </td>
-                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($pap->mooe,2,'0.00')}}</td>
+                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($totalMooe = $pap->totalBudgetWithAdjustments()['mooe'],2,'0.00')}}</td>
                                     </tr>
                                     <tr>
                                         <td>Utilized: </td>
@@ -66,7 +66,40 @@
                                     </tr>
                                     <tr>
                                         <td class="b-top">Balance: </td>
-                                        <td class="text-right text-strong b-top" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($pap->mooe - $pap->orsAppliedProjects->sum('mooe'),2,'0.00')}}</td>
+                                        <td class="text-right text-strong b-top" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($totalMooe - $pap->orsAppliedProjects->sum('mooe'),2,'0.00')}}</td>
+                                    </tr>
+                                </table>
+                            </dd>
+                        </dl>
+                    </div>
+
+                    <div class="col-md-2">
+                        <dl>
+                            <dt>UNOBLIGATED:</dt>
+                            <dd>
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td>Total budget: </td>
+                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($totalBudget = $totalCo + $totalMooe,2,'0.00')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PR: </td>
+                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($prs = $pap->procurementsPr->sum('abc'),2,'0.00')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>JR: </td>
+                                        <td class="text-right text-strong" style="font-family: Consolas">{{\App\Swep\Helpers\Helper::toNumber($jrs = $pap->procurementsJr->sum('abc'),2,'0.00')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="b-top">Balance: </td>
+                                        @php
+                                            $totalProcurements = $prs + $jrs;
+                                            $totalProcurements = $prs + $jrs;
+                                            $totalUnobligated = $totalBudget - $totalProcurements;
+                                        @endphp
+                                        <td class="text-right text-strong b-top {{$totalUnobligated < 0 ? 'text-danger' : ''}}" style="font-family: Consolas">
+                                            {{\App\Swep\Helpers\Helper::toNumber($totalUnobligated,2,'0.00')}}
+                                        </td>
                                     </tr>
                                 </table>
                             </dd>
@@ -80,11 +113,76 @@
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab_1" data-toggle="tab">ORS</a></li>
-                <li><a href="#tab_2" data-toggle="tab">Procurements</a></li>
-{{--                <li><a href="#tab_3" data-toggle="tab">Tab 3</a></li>--}}
+                <li><a href="#tab_2" data-toggle="tab">Procurement</a></li>
+                <li><a href="#tab_3" data-toggle="tab">Budget Adjustments</a></li>
             </ul>
             <div class="tab-content">
+
                 <div class="tab-pane active" id="tab_1">
+                    <div class="panel">
+                        <div class="box box-sm box-default box-solid collapsed-box">
+                            <div class="box-header with-border">
+                                <p class="no-margin"><i class="fa fa-filter"></i> Advanced Filters <small id="filter-notifier" class="label bg-blue blink"></small></p>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool advanced_filters_toggler" data-widget="collapse"><i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="box-body" style="display: none">
+                                <form id="filter_form">
+                                    <div class="row">
+                                        <div class="col-md-2 dt_filter-parent-div">
+                                            <label>Fund Source:</label>
+                                            <select name="funds"  class="form-control dt_filter filters">
+                                                <option value="">Don't filter</option>
+                                                {!! \App\Swep\Helpers\Helper::populateOptionsFromArray(\App\Swep\Helpers\Arrays::orsFunds()) !!}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 dt_filter-parent-div">
+                                            <label>Ref Book:</label>
+                                            <select name="ref_book"  class="form-control dt_filter filters">
+                                                <option value="">Don't filter</option>
+                                                {!! \App\Swep\Helpers\Helper::populateOptionsFromArray(\App\Swep\Helpers\Arrays::orsBooks()) !!}
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-4 dt_filter-parent-div">
+                                            <label>Payee:</label>
+                                            @php
+                                                $payees = \App\Models\Budget\ORS::query()
+                                                        ->select('payee')
+                                                        ->groupBy('payee')
+                                                        ->orderBy('payee','asc')
+                                                        ->get();
+                                                $payees = $payees->pluck('payee')->map(function ($key,$value){
+                                                    return $key;
+                                                });
+                                            @endphp
+                                            {!! \App\Swep\ViewHelpers\__form2::selectOnly('payee',[
+                                                'class' => 'dt_filter filters',
+                                                'container_class' => 'select2-md',
+                                                'options' => \App\Swep\Helpers\Helper::flattenArray(array_values($payees->toArray())),
+                                                'id' => 'select2_payee',
+                                            ],'') !!}
+                                        </div>
+
+                                        <div class="col-md-4 dt_filter-parent-div">
+                                            <label>Account Entries:</label>
+                                            {!! \App\Swep\ViewHelpers\__form2::selectOnly('account_entry',[
+                                                'class' => 'select2_clear select2_account_entry dt_filter filters',
+                                                'container_class' => 'select2-md',
+                                                'options' => [],
+                                                'select2_preSelected' => '' ,
+                                            ],$data->pap_code ?? null) !!}
+                                        </div>
+
+
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
                     <div id="ors_table_container" style="display: none">
                         <table class="table table-bordered table-striped table-hover" id="ors_table" style="width: 100%">
                             <thead>
@@ -93,6 +191,7 @@
                                 <th class="th-20">Date</th>
                                 <th class="th-20">Payee</th>
                                 <th >Particulars</th>
+                                <th >Account Entries</th>
                                 <th >Applied Projects</th>
                                 <th >Amount</th>
                                 <th >Action</th>
@@ -135,13 +234,88 @@
                 </div>
 
                 <div class="tab-pane" id="tab_3">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                    when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                    It has survived not only five centuries, but also the leap into electronic typesetting,
-                    remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
-                    sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
-                    like Aldus PageMaker including versions of Lorem Ipsum.
+                    @php
+                        $increases = $pap->increaseInBudget;
+                        $decreases = $pap->decreaseInBudget;
+                        $merged = $increases->merge($decreases)->sortBy('created_at');
+                    @endphp
+
+                    <table class="table table-bordered table-condensed table-striped">
+                        <thead>
+                        <th style="width: 150px">Type</th>
+                        <th>PAP</th>
+                        <th style="width: 150px">CO</th>
+                        <th style="width: 150px">MOOE</th>
+                        </thead>
+
+
+                        <tbody>
+                        @php
+                            $co = $pap->co;
+                            $mooe = $pap->mooe
+                        @endphp
+
+                        <tr>
+                            <td class="text-strong text-info">
+                                Type
+                            </td>
+                            <td class="text-strong text-info">
+                                ORIGINAL BUDGET
+                            </td>
+                            <td class="text-right text-strong text-info">
+                                {{number_format($co,2)}}
+                            </td>
+                            <td class="text-right text-strong text-info">
+                                {{number_format($mooe,2)}}
+                            </td>
+                        </tr>
+
+                        @forelse($merged as $adjustment)
+                            <tr>
+                                @if($pap->slug == $adjustment->source_slug)
+                                {{--DECREASE IN BUDGET--}}
+                                    @php
+                                    $co = $co - $adjustment->co;
+                                    $mooe = $mooe - $adjustment->mooe;
+                                    @endphp
+                                    <td>Realignment to: </td>
+                                    <td>{{$adjustment->destinationPap->pap_code ?? '-'}} - {{$adjustment->destinationPap->pap_title ?? '-'}}</td>
+                                    <td class="text-right text-danger">
+                                        @if(!empty($adjustment->co))
+                                        ({{ Helper::toNumber($adjustment->co,2)}})
+                                        @endif
+                                    </td>
+                                    <td class="text-right text-danger">
+                                        @if(!empty($adjustment->mooe))
+                                        ({{ Helper::toNumber($adjustment->mooe,2) }})
+                                        @endif
+                                    </td>
+                                @else
+                                {{--INCREASE IN BUDGET--}}
+                                    @php
+                                        $co = $co + $adjustment->co;
+                                        $mooe = $mooe + $adjustment->mooe;
+                                    @endphp
+                                    <td> {{$adjustment->type == 'REALIGNMENT' ? 'Realignment from:' : 'Supplemental'}} </td>
+                                    <td>{{$adjustment->sourcePap->pap_code ?? '-'}} - {{$adjustment->sourcePap->pap_title ?? '-'}}</td>
+                                    <td class="text-right">{{Helper::toNumber($adjustment->co,2)}}</td>
+                                    <td class="text-right">{{Helper::toNumber($adjustment->mooe,2)}}</td>
+                                @endif
+
+
+                            </tr>
+                        @empty
+                        @endforelse
+                        </tbody>
+                        <tfoot>
+                        <tr class="bg-success">
+                            <th></th>
+                            <th>TOTAL</th>
+                            <th class="text-right">{{number_format($co,2)}}</th>
+                            <th class="text-right">{{number_format($mooe,2)}}</th>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
 
             </div>
@@ -178,17 +352,46 @@
                 { "data": "ors_date" },
                 { "data": "payee" },
                 { "data": "particulars" },
+                { "data": "account_entries" },
                 { "data": "details" },
                 { "data": "amount"},
                 { "data": "action"},
 
             ],
             "buttons": [
-                {!! __js::dt_buttons() !!}
+                {
+                    extend : 'excel',
+                    text: '<i class="fa fa-file-excel-o fa-fw"></i> Excel',
+                    className : 'buttons-excel btn-sm',
+                    action : function (e, dt, button, config){
+                        var self = this;
+                        let val = ors_tbl.page.len();
+                        let swal = Swal.fire({
+                            title: '<strong> Processing </strong>',
+                            icon: 'info',
+                            html:
+                                '<p><i class="fa fa-spinner fa-spin"></i> Please wait...</p>',
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            focusConfirm: false,
+                        })
+
+                        ors_tbl.page.len(-1).draw();
+                        ors_tbl.one('draw',function (){
+                            $.fn.DataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config);
+                            swal.close();
+                            ors_tbl.page.len(val).draw();
+                        });
+                    },
+                    exportOptions: {
+                        columns: [ 0,1,2,3,5 ]
+                    }
+                }
             ],
             "columnDefs":[
                 {
-                    "targets" : 6,
+                    "targets" : 7,
                     "orderable" : false,
                     "class" : 'action2'
                 },
@@ -201,11 +404,11 @@
                     'class' : 'w-8p',
                 },
                 {
-                    'targets' : 5,
+                    'targets' : 6,
                     'class' : 'w-8p text-right',
                 },
                 {
-                    'targets' : 4,
+                    'targets' : [4,5],
                     'class' : 'w-16p',
                 },
 
@@ -380,5 +583,35 @@
             }
         })
 
+        $("#select2_payee").select2();
+
+        $(".select2_account_entry").select2({
+            ajax: {
+                url: "{{route('dashboard.ajax.get','account')}}?add_null=true",
+            },
+            placeholder: 'Select item',
+        });
+
+        $(".dt_filter").change(function (){
+            let datatable_object = ors_tbl;
+            let data = $("#filter_form").serialize();
+            datatable_object.ajax.url("{{Request::url()}}"+"?table=ors&"+data).load();
+
+            $(".dt_filter").each(function (index,el) {
+                if ($(this).val() != '' && $(this).val() != 'NULL'){
+                    $(this).parent("div").addClass('has-success');
+                    $(this).siblings('label').addClass('text-green');
+                } else {
+                    $(this).parent("div").removeClass('has-success');
+                    $(this).siblings('label').removeClass('text-green');
+                }
+            });
+            let withSuccess = $('.dt_filter-parent-div.has-success');
+            if(withSuccess.length > 0){
+                $("#filter-notifier").html(withSuccess.length+' filter(s) currently active');
+            }else{
+                $("#filter-notifier").html('');
+            }
+        })
     </script>
 @endsection

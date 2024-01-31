@@ -107,12 +107,14 @@ class DocumentRepository extends BaseRepository implements DocumentInterface {
 
     public function fetchByFolderCode($folder_code, $request){
 
+
         $key = str_slug($request->fullUrl(), '_');
         $document = $this->document->newQuery();
         $document = $document->select('subject','person_to','reference_no', 'slug', 'updated_at');
 
-        $document =  $document->where('subject','LIKE','%'.$request->q.'%');
-
+        if($request->q != null || $request->q != ''){
+            $document =  $document->where('subject','LIKE','%'.$request->q.'%');
+        }
 
         $document = $document->where(function($query) use ($folder_code){
             $query->where('folder_code', $folder_code)
@@ -290,24 +292,24 @@ class DocumentRepository extends BaseRepository implements DocumentInterface {
 
 
     public function getDocumentIdInc(){
-
-//	    $prefix = SuSettings::query()->where('setting','=','document_prefix')->first()->string_value;
-        $prefix = env('DOCUMENT_PREFIX','NULL-');
-        $id = $prefix.'10000001';
-
+        $user = Auth::user();
+        if($user->project_id == 1){
+            $prefix = 'SRA-VIS-';
+        }else{
+            $prefix = 'SRA-QC-';
+        }
+        $id = $prefix.$user->project_id.'0000001';
         $document = $this->document->select('document_id')
-            ->where('document_id','like',env('DOCUMENT_PREFIX','NULL-').'%')
-            ->orderBy('document_id', 'desc')->first();
-
+            ->where('document_id','like',$prefix.'%')
+            ->orderBy('document_id', 'desc')
+            ->withTrashed()
+            ->first();
         if($document != null){
             if($document->document_id != null){
-//                $num = str_replace($prefix, '', $document->document_id);
                 $num = preg_replace("/[^0-9]/", "", $document->document_id)+1;
                 $id = $prefix. $num;
             }
-        
         }
-
         return $id;
     }
 

@@ -19,11 +19,7 @@
                                 <button type="button" class="btn btn-box-tool advanced_filters_toggler" data-widget="collapse"><i class="fa fa-plus"></i>
                                 </button>
                             </div>
-
                         </div>
-
-
-
                         <div class="box-body" style="display: none">
                             <form id="filter_form">
                                 <div class="row">
@@ -77,6 +73,16 @@
                                             'options' => \App\Swep\Helpers\Helper::flattenArray(array_values($payees->toArray())),
                                             'id' => 'select2_payee',
                                         ],'') !!}
+                                    </div>
+
+                                    <div class="col-md-4 dt_filter-parent-div">
+                                        <label>Account Entries:</label>
+                                        {!! \App\Swep\ViewHelpers\__form2::selectOnly('account_entry',[
+                                            'class' => 'select2_clear select2_account_entry dt_filter filters',
+                                            'container_class' => 'select2-md',
+                                            'options' => [],
+                                            'select2_preSelected' => '' ,
+                                        ],$data->pap_code ?? null) !!}
                                     </div>
 
 
@@ -134,7 +140,7 @@
                 alert('Error '+xhr.status+': '+xhr.responseJSON.message);
             }
         }).DataTable({
-            'dom' : 'lBfrtip',
+            'dom' : 'lfrtip',
             "processing": true,
             "serverSide": true,
             "ajax" : '{{route('dashboard.ors.index')}}',
@@ -192,7 +198,7 @@
             stateLoadCallback: function(settings) {
                 return JSON.parse( localStorage.getItem( 'DataTables_' + settings.sInstance ) )
             },
-            "order" : [[1, 'desc'],[2,'desc']],
+            "order" : [[1, 'desc'],[0,'desc'],[2,'asc']],
             "responsive": true,
             "initComplete": function( settings, json ) {
                 // console.log(settings);
@@ -292,10 +298,17 @@
 
         $(".select2_pap_code").select2({
             ajax: {
-                url: "{{route('dashboard.ajax.get','pap')}}",
+                url: "{{route('dashboard.ajax.get','pap')}}?add_null=true",
             },
             placeholder: 'Select item',
         });
         $("#select2_payee").select2();
+
+        $(".select2_account_entry").select2({
+            ajax: {
+                url: "{{route('dashboard.ajax.get','account')}}?add_null=true",
+            },
+            placeholder: 'Select item',
+        });
     </script>
 @endsection

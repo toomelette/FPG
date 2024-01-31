@@ -50,7 +50,7 @@
                 <td rowspan="3" class="text-center no no-border-bottom no-border-left" style="width: 35%">
                     <p class="no-margin">Republic of the Philippines</p>
                     <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
-                    <p class="no-margin">{{App\Swep\Helpers\Get::setting('header_address')->string_value ?? 'SET HEADER !!!'}}</p>
+                    <p class="no-margin">{{App\Swep\Helpers\Get::headerAddress()}}</p>
                 </td>
                 <td style="width: 20%; vertical-align: top; text-align: right">
                     <p class="no-margin" style="font-size: 11px">Page {{$i+1}} of {{$pages}}</p>
@@ -92,7 +92,7 @@
                 <tr>
                     <td>NAME</td>
                     <td class="b-bottom text-strong" style="font-size: 15px">{{$employee->lastname}}</td>
-                    <td class="b-bottom text-strong" style="font-size: 15px">{{$employee->firstname}}</td>
+                    <td class="b-bottom text-strong" style="font-size: 15px">{{$employee->firstname}} {{$employee->name_ext}}</td>
                     <td class="b-bottom text-strong" style="font-size: 15px">{{$employee->middlename}}</td>
                 </tr>
                 <tr>
@@ -120,7 +120,7 @@
                     <th rowspan="2" class="b-top b-left b-bottom">OFFICE/STATION</th>
                     <th rowspan="2" class="b-top b-left b-bottom">LEAVE W/o PAY</th>
                     <th colspan="2" class="b-top b-left b-bottom">SEPARATION</th>
-                    <th rowspan="2" class="b-top b-left b-bottom b-right">REMARKS</th>
+                    <th rowspan="2" class="b-top b-left b-bottom b-right" style="width: 12%">REMARKS</th>
                 </tr>
                 <tr>
                     <th class="b-bottom b-left">From</th>
@@ -137,7 +137,15 @@
                     @if($key <= ($i + 1) * $numberOfItems - 1 && $key >= $i * $numberOfItems)
                         <tr>
                             <td class="text-center">{{\Illuminate\Support\Carbon::parse($srArray[$key]->from_date)->format('m/d/Y')}}</td>
-                            <td class="text-center">{{($srArray[$key]->upto_date == 1) ? 'PRESENT' : \Illuminate\Support\Carbon::parse($srArray[$key]->to_date)->format('m/d/Y')}}</td>
+                            <td class="text-center">
+                                @if(($srArray[$key]->upto_date == 1))
+                                    PRESENT
+                                @else
+                                    @if(($srArray[$key]->to_date != null))
+                                        {{\Illuminate\Support\Carbon::parse($srArray[$key]->to_date)->format('m/d/Y')}}
+                                    @endif
+                                @endif
+                            </td>
                             <td>{{$srArray[$key]->position}}</td>
                             <td>{{$srArray[$key]->appointment_status}}</td>
                             <td>{{number_format($srArray[$key]->salary,2)}} / A</td>
@@ -145,7 +153,7 @@
                             <td class="text-center">{{$srArray[$key]->lwp}}</td>
                             <td class="text-center">{{$srArray[$key]->spdate}}</td>
                             <td class="text-center">{{$srArray[$key]->status}}</td>
-                            <td class="text-center">{{$srArray[$key]->remarks}}</td>
+                            <td class="text-center" style="font-size: 8px">{{$srArray[$key]->remarks}}</td>
                         </tr>
                     @endif
 

@@ -42,7 +42,12 @@ class ProfileController extends Controller{
 
 
 	public function details(){
-        $user = User::query()->with(['employee'])->find(\Auth::user()->id);
+        $user = User::query()
+            ->with([
+                'employee.employeeServiceRecord',
+                'employee.employeeTraining',
+            ])
+            ->find(\Auth::user()->id);
 
         return view('dashboard.profile.details')->with([
             'user' => $user,

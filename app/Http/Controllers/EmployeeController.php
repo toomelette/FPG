@@ -30,7 +30,10 @@ use App\Http\Requests\EmployeeMatrix\EmployeeMatrixPrintRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use Picqer\Barcode\BarcodeGeneratorPNG;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Yajra\DataTables\DataTables;
+use function Ramsey\Uuid\v1;
 
 
 class EmployeeController extends Controller{
@@ -69,8 +72,10 @@ class EmployeeController extends Controller{
 
     private function dataTable($request){
         $sql_server_is_on = Helper::sqlServerIsOn();
-        $cols = ['fullname','employee_no','position','email','biometric_user_id', 'date_of_birth','sex','civil_status','firstname','slug'];
-        $employees = Employee::query()->select($cols);
+        $cols = ['fullname','employee_no','position','email','biometric_user_id', 'date_of_birth','sex','civil_status','firstname','slug','name_ext','cell_no'];
+        $employees = Employee::query()->with([
+            'responsibilityCenter',
+        ]);
         if($sql_server_is_on === true){
             $employees = $employees->with('empMaster');
         }
@@ -85,6 +90,10 @@ class EmployeeController extends Controller{
         }
         if($request->has('assignment') && $request->assignment != null){
             $employees = $employees->where('assignment','=',$request->assignment);
+        }
+
+        if($request->has('resp_center') && $request->resp_center != null){
+            $employees = $employees->where('resp_center','=',$request->resp_center);
         }
         return DataTables::of($employees)
             ->addColumn('action', function ($data){
@@ -113,6 +122,7 @@ class EmployeeController extends Controller{
                                           <li><a href="#" uri="'.route('dashboard.file201.index').'"  data-toggle="modal" data-target="#file201_modal" class="file201_btn" data="'.$data->slug.'"><i class="fa fa-folder"></i> 201 File</a></li>
                                           <li><a href="#"  employee="'.$data->lastname.', '.$data->firstname.'" class="bm_uid_btn" data="'.$data->slug.'" bm_uid="'.$data->biometric_user_id.'"><i class="fa icon-ico-fingerprint"></i> Biometric User ID</a></li>
                                             <li><a href="#" data-toggle="modal" data-target="#other_hr_actions_modal" class="other_actions_btn" data="'.$data->slug.'"><i class="fa icon-service-record"></i> Other HR Actions</a></li>
+                                            <li><a target="_blank" href="'.route('dashboard.employee.generate_qr',$data->slug).'" class="other_actions_btn" data="'.$data->slug.'"><i class="fa fa-qrcode"></i> Get QR Code</a></li>
                                         </ul>
                                     </div>
                                 </div>';
@@ -123,46 +133,16 @@ class EmployeeController extends Controller{
                 }
                 return $data->biometric_user_id;
             })->editColumn('position',function ($data) use($sql_server_is_on){
-                if($sql_server_is_on === true){
-                    if(!empty($data->empMaster)){
-                        return $data->position.'<div class="table-subdetail">
-                                                    JG-Step: '.$data->empMaster->SalGrade.' - '.$data->empMaster->StepInc.'
-                                                        <span class="pull-right">Monthly Basic: '.number_format($data->empMaster->MonthlyBasic,2).'</span>
-                                                    </div>';
-                    }
-                    return $data->position.'<div class="table-subdetail" style="color: #d9534f !important;">No data available</div>';
-                }
-                return $data->position;
+                return view('dashboard.employee.dt.position')->with([
+                    'data' => $data,
+                    'sql_server_is_on' => $sql_server_is_on,
+                ]);
             })
             ->editColumn('fullname',function ($data){
-                $bday_mark = '';
-                $bday = 'N/A';
-                if($data->date_of_birth != '' ){
-                    if(Carbon::parse($data->date_of_birth)->format("md") == Carbon::now()->format('md')){
-                        $bday_mark  = '<span class="pull-right text-danger"><i class="fa fa-birthday-cake" title="Today is '.ucfirst(strtolower($data->firstname)).'\'s birthday."></i></span>';
-                    }
-                    $bday = Carbon::parse($data->date_of_birth)->format("M. d, Y");
-                }
 
-                return '<p class="text-strong no-margin">'.$data->fullname.$bday_mark.'</p>'.
-                    '<div class="table-subdetail" style="margin-top: 3px">
-                        <table>
-                            <tr>
-                                <td style="padding-right: 10px">Bday:</td>
-                                <td>'.$bday.'</td>
-                                <td style="padding-left: 20px;padding-right: 10px">Age:</td>
-                                <td>'.Carbon::parse($data->date_of_birth)->age.'</td>
-                            </tr>
-
-                            <tr>
-                                <td style="padding-right: 10px">Sex:</td>
-                                <td>'.$data->sex.'</td>
-                                <td style="padding-left: 20px;padding-right: 10px">Civil Stat:</td>
-                                <td>'.$data->civil_status.'</td>
-                            </tr>
-                        </table>
-                        
-                    </div>';
+                return view('dashboard.employee.dt.fullname')->with([
+                    'data' => $data,
+                ]);
             })
             ->escapeColumns([])
             ->setRowId('slug')
@@ -584,8 +564,11 @@ class EmployeeController extends Controller{
 
     public function reportGenerate(EmployeeReportRequest $request){
 
-        $employees = Employee::with(['employeeTraining','employeeServiceRecord','employeeEducationalBackground','employeeEligibility','employeeChildren']);
+        $employees = Employee::query()
+            ->with(['employeeTraining','employeeServiceRecord','employeeEducationalBackground','employeeEligibility','employeeChildren'])
+        ;
         $filters = [];
+
         if($request->status != null){
             $employees = $employees->where('is_active','=',$request->status);
             array_push($filters,'STATUS: '.$request->status);
@@ -859,7 +842,48 @@ class EmployeeController extends Controller{
         ];
     }
 
+    public function generateQr($slug,Request $request){
+        $employee = Employee::query()
+            ->where('slug','=',$slug)
+            ->first();
 
+        if($request->has('get_qr')){
+            $storage = \Storage::disk('local');
+            $path = 'EMP_QR_CODE/'.$employee->employee_no.'.png';
+            if($storage->exists($path)){
+                $file = $storage->get($path);
+                $type = 'png';
+                $response = \Response::make($file, 200);
+                $response->header("Content-Type", $type);
+                return $response;
+            }
+            return  1;
+        }
+
+        $barcode = $employee->employee_no;
+        $home = env('STORAGE_LOCATION','/home/swep_afd_storage/');
+
+        $generator = new BarcodeGeneratorPNG();
+        $temp_barcode_dir = $home.'/EMP_QR_CODE/';
+        if (!is_dir($temp_barcode_dir)) {
+            // dir doesn't exist, make it
+            mkdir($temp_barcode_dir);
+        }
+
+        $image = QrCode::size('200')
+            ->format('png')
+            ->merge('/public/images/sra_only2.png',0.4)
+            ->errorCorrection('H')
+            ->generate($barcode);
+
+
+
+        file_put_contents($temp_barcode_dir.$barcode.'.png', $image);
+
+        return view('dashboard.employee.print_qr')->with([
+            'employee' => $employee,
+        ]);
+    }
 
 
 }

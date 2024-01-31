@@ -480,11 +480,14 @@
                         {!! \App\Swep\ViewHelpers\__form2::textbox('employee_no',[
                          'label' => 'Employee No. *:',
                          'cols' => 2,
+                         'readonly' => 'readonly',
                         ],$employee ?? null) !!}
 
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('item_no',[
+                        {!! \App\Swep\ViewHelpers\__form2::select('item_no',[
                          'label' => 'Item No.:',
                          'cols' => 3,
+                         'options' => \App\Swep\Helpers\Arrays::payPlantillasWithItemNumber(),
+                         'id' => 'item_no',
                         ],$employee ?? null) !!}
 
                         {!! \App\Swep\ViewHelpers\__form2::textbox('position',[
@@ -497,6 +500,7 @@
                          'cols' => 2,
                          'options' => \App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeApptStatus(),'option','value'),
                         ],$employee ?? null) !!}
+
 
                         {!! \App\Swep\ViewHelpers\__form2::textbox('salary_grade',[
                          'label' => 'SG *:',
@@ -551,10 +555,10 @@
                          'cols' => 2,
                          'type' => 'date',
                         ],$employee ?? null) !!}
-                        {!! \App\Swep\ViewHelpers\__form2::select('project_id',[
+                        {!! \App\Swep\ViewHelpers\__form2::select('station',[
                          'label' => 'Station:',
                          'cols' => 2,
-                         'options' => $global_projects_all->pluck('project_address','project_id')->toArray(),
+                         'options' => ['QC' => 'QC', 'VIS' => 'VIS'],
                         ],$employee ?? null) !!}
                         {!! \App\Swep\ViewHelpers\__form2::select('is_active',[
                          'label' => 'Status *:',
@@ -1804,7 +1808,7 @@
       }
     })
 
-
+  $("#item_no").select2();
 
   </script>
 

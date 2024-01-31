@@ -29,6 +29,8 @@
 <link type="text/css" rel="stylesheet" href="{{ asset('css/product-sans.css') }}">
 <link type="text/css" rel="stylesheet" href="{{asset('template/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css')}}">
 <link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/datatables/responsive/responsive.dataTables.min.css') }}">
+<link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css') }}">
+<link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/datatables/Buttons-1.6.1/css/buttons.bootstrap.min.css') }}">
 
 
 {{-- Charts --}}	

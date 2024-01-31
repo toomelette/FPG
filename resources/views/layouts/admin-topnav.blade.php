@@ -1,8 +1,8 @@
 
 <header class="main-header">
   <a href="#" class="logo">
-    <span class="logo-mini">A</span>
-    <span class="logo-lg"><b>AFD</b></span>
+    <span class="logo-mini">H</span>
+    <span class="logo-lg"><b>HRRS</b></span>
   </a>
   @php
     $sa = \App\Models\SuSettings::query()->where('setting','=','SERVER_ADDR')->first();
@@ -31,14 +31,18 @@
           <li style="width: 750px;padding-top: 12px"><p style="color: white; font-size: larger">DEVELOPMENT MODE</p></li>
         @endif
           <li class="dropdown tasks-menu">
-            <a href="http://{{$_SERVER['SERVER_NAME']}}/" >
+            <a href="http://10.36.1.14/" >
               <i class="fa fa-home"></i> Lobby Page
             </a>
           </li>
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             @if(!empty(Auth::user()->employee))
-            <img src="{{asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')}}" class="user-image" alt="User Image">
+              @if(file_exists(public_path('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')))
+                <img src="{{asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')}}" class="user-image" alt="User Image">
+              @else
+                <img src="{{asset('images/avatar.jpeg')}}" class="user-image" alt="User Image">
+              @endif
             @else
             <img src="{{asset('images/avatar.jpeg')}}" class="user-image" alt="User Image">
             @endif
@@ -49,7 +53,11 @@
           <ul class="dropdown-menu">
             <li class="user-header">
               @if(!empty(Auth::user()->employee))
-                <img src="{{asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')}}" class="img-circle" alt="User Image">
+                @if(file_exists(public_path('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')))
+                  <img src="{{asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')}}" class="img-circle" alt="User Image">
+                @else
+                  <img src="{{asset('images/avatar.jpeg')}}" class="img-circle" alt="User Image">
+                @endif
               @else
                 <img src="{{asset('images/avatar.jpeg')}}" class="img-circle" alt="User Image">
               @endif

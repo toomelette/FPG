@@ -24,6 +24,9 @@
                                         <li role="presentation" class=""><a href="#subsidiary_ledger" data-toggle="tab" aria-expanded="true">Subsidiary Ledger</a></li>
                                         <li role="presentation" class=""><a href="#subsidiary_ledger_2" data-toggle="tab" aria-expanded="true">Subsidiary Ledger 2</a></li>
                                         <li role="presentation" class=""><a href="#budget_proposal_monitoring" data-toggle="tab" aria-expanded="true">Budget Proposal - (Monitoring)</a></li>
+                                        <li role="presentation" class=""><a href="#pap_code_monitoring_per_account" data-toggle="tab" aria-expanded="true">PAP Code Monitoring (Per Account)</a></li>
+                                        <li role="presentation" class=""><a href="#summary_of_budget_utilization" data-toggle="tab" aria-expanded="true">Summary of Budget Utilization</a></li>
+                                        <li role="presentation" class=""><a href="#co_purchases_per_account_entries" data-toggle="tab" aria-expanded="true">CO Purchases (Per acct.)</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -53,6 +56,18 @@
                                 <div class="tab-pane" id="budget_proposal_monitoring">
                                     @include('dashboard.budget.ors.reports.budget_proposal_monitoring')
                                 </div>
+                                <div class="tab-pane" id="pap_code_monitoring_per_account">
+                                    @include('dashboard.budget.ors.reports.pap_code_monitoring_per_account')
+                                </div>
+                                <div class="tab-pane" id="summary_of_budget_utilization">
+                                    @include('dashboard.budget.ors.reports.summary_of_budget_utilization')
+                                </div>
+
+                                <div class="tab-pane" id="co_purchases_per_account_entries">
+                                    @include('dashboard.budget.ors.reports.co_purchases_per_account_entries')
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -109,5 +124,22 @@
 
         $("#sl_accounts").select2();
         $("#sl2_accounts").select2();
+
+        $(".select2_account_code").select2({
+            ajax: {
+                url: '{{route("dashboard.ajax.get","account")}}',
+                dataType: 'json',
+                delay : 250,
+            },
+
+            placeholder: 'Select item',
+        });
+
+        $(".select2_pap_code").select2({
+            ajax: {
+                url: "{{route('dashboard.ajax.get','pap')}}",
+            },
+            placeholder: 'Select item',
+        });
     </script>
 @endsection

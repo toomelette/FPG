@@ -11,7 +11,10 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Projects Activities and Programs</h3>
                 <div class="pull-right">
-                    <button class="btn btn-primary btn-sm" data-target="#add_modal" data-toggle="modal"><i class="fa fa-plus"></i> Add PAP</button>
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-sm" data-target="#adjustment_modal" data-toggle="modal"> Budget Adjustment</button>
+                        <button class="btn btn-primary btn-sm" data-target="#add_modal" data-toggle="modal"><i class="fa fa-plus"></i> Add PAP</button>
+                    </div>
                 </div>
             </div>
             <div class="box-body">
@@ -43,6 +46,7 @@
                     </div>
                 </div>
 
+
                 <div id="pap_table_container" style="display: none">
                     <table class="table table-bordered table-striped table-hover" id="pap_table" style="width: 100% !important">
                         <thead>
@@ -53,7 +57,7 @@
                             <th style="width: 10%;">CO</th>
                             <th style="width: 10%;">MOOE</th>
                             <th style="width: 10%;">Total budget</th>
-                            <th style="width: 10%;">Details</th>
+                            <th style="width: 10%;">Procurement</th>
                             <th style="width: 10%;">Action</th>
                         </tr>
                         </thead>
@@ -166,9 +170,88 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="adjustment_modal" tabindex="-1" role="dialog" aria-labelledby="adjustment_modal_label">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Budget Adjustment</h4>
+          </div>
+          <div class="modal-body">
+            <p class="page-header-sm text-info text-strong" style="border-bottom: 1px solid #cedbe1">
+                Realignment
+            </p>
+              <form id="realign_form">
+                  <div class="row">
+                      {!! \App\Swep\ViewHelpers\__form2::select('source_pap',[
+                        'label' => 'Source PAP',
+                        'cols' => 12,
+                        'options' => $papCodes,
+                        'class' => 'pap_code',
+                        'id' => 'asrttrrre',
+                        ])  !!}
+                      {!! \App\Swep\ViewHelpers\__form2::select('destination_pap',[
+                        'label' => 'Destination PAP',
+                        'id' => 'saa',
+                        'cols' => 12,
+                        'options' => $papCodes,
+                        'class' => 'pap_code',
+                        ])  !!}
+                      {!! \App\Swep\ViewHelpers\__form2::select('type',[
+                        'label' => 'Type:',
+                        'cols' => 6,
+                        'options' => \App\Swep\Helpers\Arrays::budgetTypes(),
+                        ])  !!}
+                      {!! \App\Swep\ViewHelpers\__form2::textbox('amount',[
+                        'label' => 'Amount',
+                        'cols' => 6,
+                        ])  !!}
+                  </div>
+                  <div class="row">
+                      <div class="col-md-2 col-md-offset-10">
+                          <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Realign</button>
+                      </div>
+                  </div>
+              </form>
+
+
+            <p class="page-header-sm text-info text-strong" style="border-bottom: 1px solid #cedbe1">
+              Supplemental
+            </p>
+              <form id="supplement_form">
+                  <div class="row">
+                      {!! \App\Swep\ViewHelpers\__form2::select('destination_pap',[
+                        'label' => 'Destination PAP',
+                        'cols' => 12,
+                        'options' => $papCodes,
+                        'class' => 'pap_code',
+                        'id' => 'asrttr',
+                        ])  !!}
+                      {!! \App\Swep\ViewHelpers\__form2::select('type',[
+                        'label' => 'Type:',
+                        'cols' => 6,
+                        'options' => \App\Swep\Helpers\Arrays::budgetTypes(),
+                        ])  !!}
+                      {!! \App\Swep\ViewHelpers\__form2::textbox('amount',[
+                        'label' => 'Amount',
+                        'cols' => 6,
+                        ])  !!}
+                  </div>
+                  <div class="row">
+                      <div class="col-md-3 col-md-offset-9">
+                          <button type="submit" class="btn btn-sm btn-primary col-md-12"><i class="fa fa-check"></i> Supplement</button>
+                      </div>
+                  </div>
+              </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
     {!! \App\Swep\ViewHelpers\__html::blank_modal('ppmp_modal',90) !!}
     {!! \App\Swep\ViewHelpers\__html::blank_modal('edit_ppmp_modal',95,'200px') !!}
     {!! \App\Swep\ViewHelpers\__html::blank_modal('edit_pap_modal','') !!}
+    {!! __html::blank_modal('realignmentAndSupplementalModal','lg') !!}
 @endsection
 
 @section('scripts')
@@ -197,7 +280,6 @@
         })
 
 
-
         $(document).ready(function () {
             //-----DATATABLES-----//
             modal_loader = $("#modal_loader").parent('div').html();
@@ -212,11 +294,8 @@
                     { "data": "co" },
                     { "data": "mooe" },
                     { "data": "totalBudget" },
-                    { "data": "pcent_share" },
+                    { "data": "procurements" },
                     { "data": "action" }
-                ],
-                "buttons": [
-                    {!! __js::dt_buttons() !!}
                 ],
                 "columnDefs":[
                     {
@@ -228,17 +307,17 @@
                         "class" : 'w-8p'
                     },
                     {
-                        "targets" : [3,4,5],
-                        "class" : 'w-8p text-right'
+                        "targets" : [3,4,5,6],
+                        "class" : 'w-10p text-right'
                     },
                     {
                         "targets" : 7,
                         "orderable" : false,
-                        "class" : 'action3'
+                        "class" : 'action4'
                     },
                 ],
                 "responsive": false,
-                'dom' : 'lBfrtip',
+                'dom' : 'lfrtip',
                 "processing": true,
                 "serverSide": true,
                 "initComplete": function( settings, json ) {
@@ -294,6 +373,75 @@
 
         $(".dt_filter").change(function () {
             filterDT(pap_tbl);
+        })
+
+        $("body").on("click",".realignmentAndSupplementalModal_btn",function (){
+            let btn = $(this);
+            let slug = btn.attr('data');
+            let uri = '{{route('dashboard.projects.rs','slug')}}';
+            uri = uri.replace('slug',slug);
+            load_modal2(btn);
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
+
+        $(".pap_code").select2({
+            dropdownParent : $("#adjustment_modal"),
+        });
+        
+        $("#realign_form").submit(function (e) {
+            e.preventDefault()
+            let form = $(this);
+            loading_btn(form);
+            $.ajax({
+                url : '{{route("dashboard.projects.adjustment","realignment")}}',
+                data : form.serialize(),
+                type: 'POST',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    pap_tbl.draw(false);
+                    succeed(form,true,false);
+                    toast('success','Realignment successful.','Success!');
+                },
+                error: function (res) {
+                    errored(form,res);
+                }
+            })
+        })
+
+        $("#supplement_form").submit(function (e) {
+            e.preventDefault()
+            let form = $(this);
+            loading_btn(form);
+            $.ajax({
+                url : '{{route("dashboard.projects.adjustment","supplemental")}}',
+                data : form.serialize(),
+                type: 'POST',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    pap_tbl.draw(false);
+                    succeed(form,true,false);
+                    toast('success','Supplemental budget successfully added.','Success!');
+                },
+                error: function (res) {
+                    errored(form,res);
+                }
+            })
         })
     </script>
 @endsection

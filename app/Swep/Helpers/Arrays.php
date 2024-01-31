@@ -4,11 +4,13 @@
 namespace App\Swep\Helpers;
 
 
+use App\Models\Accounting\SubsidiaryAccounts;
 use App\Models\Applicant;
 use App\Models\ApplicantPositionApplied;
 use App\Models\Budget\ChartOfAccounts;
 use App\Models\HRPayPlanitilla;
 use App\Models\MDDC;
+use App\Models\PPU\Pap;
 use App\Models\PPU\PPURespCodes;
 use App\Models\PPU\RCDesc;
 use App\Models\SuOptions;
@@ -71,6 +73,7 @@ class Arrays
 
     public static function portals(){
         return [
+            'ACCOUNTING' => 'ACCOUNTING',
             'DIGIFILE' => 'DIGIFILE',
             'PPU' => 'PPU',
             'MIS' => 'MIS',
@@ -410,12 +413,21 @@ class Arrays
     }
 
 
-    public static function groupedRespCodes($all = null){
+    public static function groupedRespCodes($all = false){
 
         $rcs = PPURespCodes::query()->with(['description']);
-        if($all == 'vis'){
-            $rcs->where('vis','=',1);
+        $userProjectId = Auth::user()->project_id ?? null;
+        if($userProjectId != null){
+            if($all == false){
+                if($userProjectId == 1){
+                    $rcs->where('vis','=',1);
+                }
+                if($userProjectId == 2){
+                    $rcs->where('lm','=',1);
+                }
+            }
         }
+
         $rcs =  $rcs->get();
         $arr = [];
 
@@ -538,6 +550,8 @@ class Arrays
             'OFFICE-BASED' => [
                 'BACOLOD OFFICE' => 'BACOLOD OFFICE',
                 'QUEZON CITY OFFICE' => 'QUEZON CITY OFFICE',
+                'LGAREC OFFICE' => 'LGAREC  OFFICE',
+                'LAREC OFFICE' => 'LAREC OFFICE',
             ],
             'FIELD' => $mddc->pluck('slug','slug')->sort()->toArray(),
         ];
@@ -560,6 +574,122 @@ class Arrays
             'VOCATIONAL/TRADE COURSE' => 'VOCATIONAL/TRADE COURSE',
             'COLLEGE' => 'COLLEGE',
             'GRADUATE STUDIES' => 'GRADUATE STUDIES',
+        ];
+    }
+
+    public static function acctgFundSources(){
+        return [
+            'LBP - ACEF, Current' => 'LBP - ACEF, Current',
+            'LBP Bacolod (0422-1248-70)' => 'LBP Bacolod (0422-1248-70)',
+            'LBP Bacolod (ACEF)' => 'LBP Bacolod (ACEF)',
+            'LBP Bacolod (Block Farming)' => 'LBP Bacolod (Block Farming)',
+            'LBP Bacolod (CA# 0422-1234-66) Other Projects' => 'LBP Bacolod (CA# 0422-1234-66) Other Projects',
+            'LBP Bacolod (SIDA)' => 'LBP Bacolod (SIDA)',
+            'LBP-Bacolod (Corporate)' => 'LBP-Bacolod (Corporate)',
+        ];
+    }
+
+    public static function collectingOfficers(){
+        $coa = ChartOfAccounts::query()
+            ->select('name_of_collecting_officer')
+            ->where('name_of_collecting_officer','!=',null)
+            ->where('name_of_collecting_officer','!=','')
+            ->orderBy('name_of_collecting_officer','asc')
+            ->get();
+        return $coa->mapWithKeys(function ($data){
+            return [
+                $data->name_of_collecting_officer => $data->name_of_collecting_officer,
+            ];
+        })->toArray();
+    }
+
+    public static function groupedSubsidiaryAccounts(){
+        $sa = SubsidiaryAccounts::query()->select('sa_account_code_header','sa_account_code','sa_name')->get();
+        $arr = [];
+        foreach ($sa as $s){
+            $arr[$s->sa_account_code_header][$s->sa_account_code] = $s->sa_account_code.' - '. $s->sa_name;
+        }
+        return $arr;
+    }
+
+    public static function budgetMovements(){
+        return [
+            'REALIGNMENT',
+            'SUPPLEMENTAL',
+        ];
+    }
+
+    public static function budgetTypes(){
+        return [
+            'PS' => 'PS',
+            'MOOE' => 'MOOE',
+            'CO' => 'CO',
+        ];
+    }
+
+    public static function papCodes(){
+        $paps = Pap::query()->get();
+        return $paps->mapWithKeys(function ($data){
+            return [
+                $data->slug => $data->pap_code.' - '.$data->pap_title,
+            ];
+        })->toArray();
+    }
+
+    public static function plantillaColumnsForReport(){
+        return [
+            'item_no' => [
+                'name' => 'Item No.',
+                'checked' => 1,
+            ],
+            'position' => [
+                'name' => 'Position',
+                'checked' => 1,
+            ],
+            'employee_name' => [
+                'name' => 'Name of Employee',
+                'checked' => 1,
+            ],
+            'employee_no' => [
+                'name' => 'Employee No.',
+                'checked' => 0,
+            ],
+            'job_grade' => [
+                'name' => 'Job Grade',
+                'checked' => 1,
+            ],
+            'step_inc' => [
+                'name' => 'Step Inc.',
+                'checked' => 1,
+            ],
+            'actual_salary' => [
+                'name' => 'Actual Salary',
+                'checked' => 1,
+            ],
+            'actual_salary_gcg' => [
+                'name' => 'Actual Salary (GCG)',
+                'checked' => 1,
+            ],
+            'eligibility' => [
+                'name' => 'Eligibility',
+                'checked' => 1,
+            ],
+            'educ_att' => [
+                'name' => 'Highest Educ Att',
+                'checked' => 1,
+            ],
+            'appointment_status' => [
+                'name' => 'Appt. Status',
+                'checked' => 1,
+            ],
+            'appointment_date' => [
+                'name' => 'Appt. Date',
+                'checked' => 1,
+            ],
+            'last_promotion' => [
+                'name' => 'Date of Last Promotion',
+                'checked' => 1,
+            ],
         ];
     }
 }

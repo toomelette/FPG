@@ -2,6 +2,7 @@
 
 namespace App\Models\HRU;
 
+use App\Swep\Services\HRU\PublicationDetailService;
 use Illuminate\Database\Eloquent\Model;
 
 class Publications extends Model
@@ -28,6 +29,17 @@ class Publications extends Model
 
     public function publicationDetails(){
         return $this->hasMany(PublicationDetails::class,'publication_slug','slug');
+    }
+
+    public function publicationApplicants(){
+        return $this->hasManyThrough(
+            OApplicants::class,
+            PublicationDetails::class,
+            'publication_slug',
+            'publication_detail_slug',
+            'slug',
+            'slug'
+        );
     }
 
 }

@@ -366,6 +366,7 @@ class __form2
         (!isset($array['list'])) ? $array['list']= '' : false;
         (!isset($array['copyNameToClass'])) ? $array['copyNameToClass']= '' : false;
 
+
         $this->class = $array['class'];
         $this->cols = $array['cols'];
         $this->label = $array['label'];

@@ -6,36 +6,60 @@ namespace App\Http\Controllers\Budget;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Budget\PapFormRequest;
+use App\Http\Requests\Budget\RealignmentFormRequest;
 use App\Models\Budget\ORS;
 use App\Models\Budget\ORSProjectsApplied;
+use App\Models\Budget\PapAdjustments;
 use App\Models\PPBTMS\Transactions;
 use App\Models\PPU\Pap;
 use App\Models\PPU\PPURespCodes;
+use App\Models\Project;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\Budget\PapService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Html\Builder;
 
 class ProjectsController extends Controller
 {
     protected $papService;
     public function __construct(PapService $papService)
     {
+
         $this->papService = $papService;
     }
 
-    public function index(Request $request){
+    public function index(Request $request, Builder $builder){
+        return view('dashboard.budget.moved');
+        $html = $builder->parameters([
+            'buttons' => ['excel']
+        ]);
         if(request()->ajax() && request()->has('draw')){
             return $this->dataTable($request);
         }
-        return view('dashboard.budget.projects.index');
+        return view('dashboard.budget.projects.index', compact('html'))->with([
+            'papCodes' => \App\Swep\Helpers\Arrays::papCodes(),
+        ]);
     }
 
 
     public function dataTable(Request $request){
-        $paps = Pap::query()->with(['responsibilityCenter','orsAppliedProjects']);
+        $paps = Pap::query()->with([
+            'responsibilityCenter',
+            'orsAppliedProjects',
+        ])
+        ->withSum([
+            'procurementsPr' => function($q){
+                return $q->receivedAndNotCancelled();
+            }
+        ],'abc')
+        ->withSum([
+            'procurementsJr' => function($q){
+                return $q->receivedAndNotCancelled();
+            }
+        ],'abc');
         if($request->has('resp_center') && $request->resp_center != ''){
             $paps = $paps->where('resp_center','=',$request->resp_center);
         }
@@ -45,8 +69,10 @@ class ProjectsController extends Controller
                     'data' => $data,
                 ]);
             })
-            ->addColumn('procurement',function($data){
-                return 1;
+            ->addColumn('procurements',function($data){
+                return view('dashboard.budget.projects.dtProcurements')->with([
+                    'data' => $data,
+                ]);
             })
             ->addColumn('details',function ($data){
                 return 'd';
@@ -71,7 +97,7 @@ class ProjectsController extends Controller
                 ]);
             })
             ->addColumn('totalBudget',function($data){
-                return number_format($data->ps + $data->co + $data->mooe,2);
+                return '<b>'.number_format($data->ps + $data->co + $data->mooe,2).'</b>';
             })
             ->escapeColumns([])
             ->setRowId('slug')
@@ -108,6 +134,7 @@ class ProjectsController extends Controller
     }
 
     public function edit($slug){
+        return view('dashboard.budget.moved');
         return view('dashboard.budget.projects.edit')->with([
             'pap' => $this->papService->findBySlug($slug),
         ]);
@@ -143,18 +170,21 @@ class ProjectsController extends Controller
         abort(503,'Error deleting PAP');
     }
 
-    public function show($slug, Request $request){
+    public function show($slug, Request $request, Builder $builder){
+        return view('dashboard.budget.moved');
 
         if($request->has('draw') && $request->table == 'ors'){
             return $this->orsDatatable($slug, $request);
         }
 
         if($request->has('draw') && $request->table == 'procurements'){
-            return $this->procurementsDatatable($slug, $request);
+            return $this->procurementsDatatable($slug, $request, $builder);
         }
 
         $pap = $this->papService->findBySlug($slug);
         $pap_code = $pap->pap_code;
+
+
         return view('dashboard.budget.projects.show')->with([
             'pap' => $pap,
         ]);
@@ -163,7 +193,7 @@ class ProjectsController extends Controller
     private function orsDatatable($slug, Request $request){
         $pap = $this->papService->findBySlug($slug);
         $pap_code = $pap->pap_code;
-        $ors = ORS::query()->with(['projectsApplied'])
+        $ors = ORS::query()->with(['projectsApplied','accountEntries'])
             ->whereIn('slug',function ($q) use ($pap_code){
                 $q->select('ors_slug')
                     ->from(with(new ORSProjectsApplied())->getTable())
@@ -179,11 +209,17 @@ class ProjectsController extends Controller
             $ors = $ors->where('ref_book','=',$request->ref_book);
         }
 
-        if($request->has('applied_projects') && $request->applied_projects != ''){
-            $ors = $ors->whereHas('projectsApplied',function ($q) use($request){
-                return $q->where('pap_code','=',$request->applied_projects);
+        if($request->has('payee') && $request->payee != ''){
+            $ors = $ors->where('payee','=',$request->payee);
+        }
+
+        if($request->has('account_entry') && ($request->account_entry != 'NULL' && $request->account_entry != '')){
+
+            $ors = $ors->whereHas('accountEntries',function ($q) use($request){
+                return $q->where('account_code','=',$request->account_entry);
             });
         }
+
         $request->applied_projects = $pap->pap_code;
         return DataTables::of($ors)
             ->addColumn('action',function($data) use ($pap_code){
@@ -191,6 +227,13 @@ class ProjectsController extends Controller
             })
             ->addColumn('details',function($data) use($request){
                 return view('dashboard.budget.ors.dtDetails')->with([
+                    'data' => $data,
+                ])->with([
+                    'request' => $request,
+                ]);
+            })
+            ->addColumn('account_entries',function($data) use($request){
+                return view('dashboard.budget.ors.dtAccountEntries')->with([
                     'data' => $data,
                 ])->with([
                     'request' => $request,
@@ -211,6 +254,7 @@ class ProjectsController extends Controller
     }
 
     private function procurementsDatatable($slug, Request $request){
+
         $pap = $this->papService->findBySlug($slug);
         $pap_code = $pap->pap_code;
         $transactions = Transactions::query()
@@ -218,7 +262,9 @@ class ProjectsController extends Controller
             ->where(function ($q){
                 $q->where('ref_book','=','PR')
                     ->orWhere('ref_book','=','JR');
-            });
+            })
+            ->where('is_locked','=',1)
+            ->where('cancelled_at','=',null);
 
 
         return DataTables::of($transactions)
@@ -232,11 +278,40 @@ class ProjectsController extends Controller
             ->editColumn('ors_date',function($data){
                 return $data->ors_date != null ? Carbon::parse($data->ors_date)->format('M. d, Y') : '';
             })
+            ->editColumn('ref_no',function($data){
+                return '<a href="http://119.93.145.202:8006/dashboard/'.strtolower($data->ref_book).'?find='.$data->ref_no.'" target="_blank">'.$data->ref_no.'</a>';
+            })
             ->editColumn('date',function($data){
                 return Helper::dateFormat($data->date,'M. d, Y');
             })
             ->escapeColumns([])
             ->setRowId('slug')
             ->toJson();
+    }
+
+    public function realigmentAndSupplemental($projectSlug){
+        $project = Pap::query()->where('slug','=',$projectSlug)->first();
+        $project ?? abort(503,'Project not found.');
+        return view('dashboard.budget.projects.realignment_and_supplemental')->with([
+            'project' => $project,
+        ]);
+    }
+
+    public function adjustment($type,RealignmentFormRequest $request){
+
+        if($type != 'realignment' && $type != 'supplemental'){
+            abort(503,'Invalid budget adjustment type.');
+        }
+
+        $papAdj = new PapAdjustments();
+        $papAdj->slug = Str::random();
+        $papAdj->{strtolower($request->type)} = Helper::sanitizeAutonum($request->amount);
+        $papAdj->type = strtoupper($type);
+        $papAdj->source_slug = $request->source_pap;
+        $papAdj->destination_slug = $request->destination_pap;
+        if($papAdj->save()){
+            return 1;
+        }
+        abort(503,'Error saving realignment');
     }
 }

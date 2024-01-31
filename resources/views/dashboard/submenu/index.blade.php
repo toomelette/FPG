@@ -5,11 +5,14 @@
 @endsection
 
 @section('modal-body')
+    @php
+        $rand = \Illuminate\Support\Str::random(10);
+    @endphp
     <div class="row">
         <div class="col-md-12">
             <div class="well">
                 <div class="row">
-                    <form id="add_submenu_form" data="{{ $menu->slug}}" autocomplete="off">
+                    <form id="add_submenu_form_{{$rand}}" data="{{ $menu->slug}}" autocomplete="off">
                         @csrf
                         <p class="page-header-sm text-center">Add submenu to {{ $menu->name }} </p>
                         {!! __form::textbox(
@@ -33,6 +36,15 @@
                         ) !!}
 
                         <div class="col-md-12">
+                            <span class="small route-helper-{{$rand}}"><a href="#">Index</a></span>,
+                            <span class="small route-helper-{{$rand}}"><a href="#">Create</a></span>,
+                            <span class="small route-helper-{{$rand}}"><a href="#">Store</a></span>,
+                            <span class="small route-helper-{{$rand}}"><a href="#">Edit</a></span>,
+                            <span class="small route-helper-{{$rand}}"><a href="#">Update</a></span>,
+                            <span class="small route-helper-{{$rand}}"><a href="#">Delete</a></span>,
+                            <span class="small route-helper-{{$rand}}"><a href="#">Show</a></span>,
+                            <span class="small route-helper-{{$rand}}"><a href="#">Print</a></span>
+
                             <button type="submit" class="btn bg-green pull-right">
                                 <i class="fa fa-save"></i> Save
                             </button>
@@ -97,7 +109,7 @@
             })
         });
 
-        $("#add_submenu_form").submit(function (e) {
+        $("#add_submenu_form_{{$rand}}").submit(function (e) {
             e.preventDefault();
             form = $(this);
             loading_btn(form);
@@ -200,6 +212,21 @@
             })
         })
 
+        $(".route-helper-{{$rand}}").click(function (){
+            let form = $("#add_submenu_form_{{$rand}}");
+            let span = $(this);
+            let a = span.children('a');
+            form.find('input[name="name"]').val(a.html());
+            form.find('input[name="route"]').val('{{$menu->route}}'+'.'+a.html().toLowerCase());
+            if(a.html() === 'Index'){
+                form.find('input[name="nav_name"]').val('Manage');
+                form.find('select[name="is_nav"]').val('1');
+            }else {
+                form.find('input[name="nav_name"]').val('');
+                form.find('select[name="is_nav"]').val('0');
+            }
+
+        })
     </script>
 @endsection
 

@@ -81,7 +81,7 @@
             { "data": "item_no" },
             { "data": "position" },
             { "data": "orig_jg_si" },
-            { "data": "employee_name" },
+            { "data": "incumbent" },
             { "data": "action" }
         ],
         "buttons": [
