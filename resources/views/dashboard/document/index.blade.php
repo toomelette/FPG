@@ -222,6 +222,7 @@
                             {!! \App\Swep\ViewHelpers\__form2::textbox('outgoing_control_no',[
                                 'label' => 'Outgoing Control No.:',
                                 'cols' => 6,
+                                'id' => 'outgoing_control_no'
                             ]) !!}
                         </div>
                     </div>
@@ -647,5 +648,21 @@
                 // timerProgressBar: true,
             })
         })
+
+        $("#outgoing_control_no").click(function (){
+            $.ajax({
+                url : '{{route("dashboard.ajax.get","documents_outgoing_control_no")}}',
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    alert(res);
+                },
+                error: function (res) {
+                    alert(res);
+                }
+            })
+        });
     </script>
 @endsection

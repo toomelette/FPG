@@ -14,12 +14,12 @@
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="{{route('dashboard.document.dissemination', $data->slug)}}" target="_blank" class="service_records_btn" data="'.$data->slug.'"><i class="fa icon-service-record"></i> Disseminate</a></li>
-            <li><a href="{{route('dashboard.document.dissemination', $data->slug)}}?send_copy=1" target="_blank" class="trainings_btn" data="'.$data->slug.'"><i class="fa icon-seminar"></i> Send Copy</a></li>
-            <li><a href="#" data-toggle="modal" data-target="#matrix_modal" class="print_qr_btn" data="{{$data->slug}}"><i class="fa fa-dashboard"></i>Print QR</a></li>
-            @if(Auth::user()->project_id == 2)
-                <li><a href="#" data-toggle="modal" data-target="#matrix_modal" class="outgoing_tag_btn" data="{{$data->slug}}"><i class="fa fa-dashboard"></i>Outgoing Tag</a></li>
-            @endif
+            <li><a href="{{route('dashboard.document.dissemination', $data->slug)}}" target="_blank" class="service_records_btn" data="{{$data->slug}}"><i class="fa fa-envelope-o"></i> Disseminate</a></li>
+            <li><a href="{{route('dashboard.document.dissemination', $data->slug)}}?send_copy=1" target="_blank" class="trainings_btn" data="{{$data->slug}}"><i class="fa fa-envelope"></i> Send Copy</a></li>
+            <li><a href="#" data-toggle="modal" data-target="#matrix_modal" class="print_qr_btn" data="{{$data->slug}}"><i class="fa fa-qrcode"></i>Print QR</a></li>
+
+            <li><a href="#" data-toggle="modal" data-target="#matrix_modal" class="outgoing_tag_btn" data="{{$data->slug}}"><i class="fa fa-qrcode"></i>Outgoing Tag</a></li>
+
         </ul>
     </div>
 </div>
