@@ -136,23 +136,26 @@
                     </a>
                 </li>
 
-                <li class="">
-                    <a href="https://accounting.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="ACCOUNTING">
-                        <i class="fa fa-external-link"></i>accounting.sra.gov.ph
-                    </a>
-                </li>
+                @if(Auth::user()->project_id == 1)
 
-                <li class="">
-                    <a href="https://legal.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="LEGAL">
-                        <i class="fa fa-external-link"></i>legal.sra.gov.ph
-                    </a>
-                </li>
+                    <li class="">
+                        <a href="https://acctg.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="ACCOUNTING">
+                            <i class="fa fa-external-link"></i>acctg.sra.gov.ph
+                        </a>
+                    </li>
 
-                <li class="">
-                    <a href="http://gfps.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="GFPS GAD">
-                        <i class="fa fa-external-link"></i>gfps.sra.gov.ph
-                    </a>
-                </li>
+                    <li class="">
+                        <a href="https://legal.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="LEGAL">
+                            <i class="fa fa-external-link"></i>legal.sra.gov.ph
+                        </a>
+                    </li>
+
+                    <li class="">
+                        <a href="http://gfps.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="GFPS GAD">
+                            <i class="fa fa-external-link"></i>gfps.sra.gov.ph
+                        </a>
+                    </li>
+                @endif
         @endif
       @endif
 
