@@ -219,6 +219,10 @@
                                 'cols' => 12,
                             ]) !!}
 
+                            {!! \App\Swep\ViewHelpers\__form2::textbox('outgoing_control_no',[
+                                'label' => 'Outgoing Control No.:',
+                                'cols' => 6,
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -629,6 +633,19 @@
         $("#print_qr_iframe").on('load',function () {
             $(this).get(0).contentWindow.print();
             swal.close();
+        })
+
+        $("body").on("click",".outgoing_tag_btn",function () {
+            let btn = $(this);
+            let uri = '{{route('dashboard.document.print_qr','slug')}}?print_as_tag=true';
+            uri = uri.replace('slug',btn.attr('data'));
+            $("#print_qr_iframe").attr('src',uri);
+            var swal = Swal.fire({
+                title: 'Preparing QR Code',
+                html: '<div style="height: 20px"><i class="fa fa-spinner fa-spin"></i> Please wait . . . </div>',
+                // timer: 3000,
+                // timerProgressBar: true,
+            })
         })
     </script>
 @endsection
