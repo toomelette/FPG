@@ -41,7 +41,7 @@ Edit
                                     @endforeach
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1">
                                     Access to Documents
                                 </p>
@@ -59,6 +59,23 @@ Edit
                                     @endforeach
                                 </div>
                             </div>
+
+                                {!! \App\Swep\ViewHelpers\__form2::select('project_id',[
+                                    'label' => 'Project id',
+                                    'cols' => 2,
+                                    'options' => [
+                                        1 => 1,
+                                        2 => 2,
+                                    ]
+                                ],$user->project_id)  !!}
+
+                            {!! \App\Swep\ViewHelpers\__form2::select('pms_allowed',[
+                                    'label' => 'PMS',
+                                    'cols' => 1,
+                                    'options' => [
+                                        1 => 1,
+                                    ]
+                                ],$user->pms_allowed)  !!}
                         </div>
 
 
@@ -98,66 +115,73 @@ Edit
                                     @foreach($by_category as $category => $menus)
                                         <div class="tab-pane" id="tab_{{($category == null) ? 'NoCategory' : $category}}_{{$rand}}">
                                             <h4>{{($category == null) ? 'No Category' : \App\Swep\ViewHelpers\__html::sidenav_labeler($category)}}</h4>
-                                            <div class="row">
-                                                @foreach($menus as $menu)
-                                                    <div class="col-md-3">
-                                                        @if($menu->route == 'dashboard.home')
-                                                            <div class="panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <i class="fa {{$menu->icon}}"></i>
-                                                                    {{$menu->name}}
-                                                                </div>
-                                                                <div class="panel-body" style="min-height: 210px">
-                                                                    <div class="row">
-                                                                        {!!
-                                                                            __form::select_static2('12', 'dash_type', 'Dashboard type',$user->dash,
-                                                                            [
-                                                                                'HRU Dashboard' => 'hru',
-                                                                                'RECORDS Dashboard' => 'records',
-                                                                            ]
-                                                                            , '', '', '', '')
-                                                                           !!}
 
+                                            @php
+                                                $rows = $menus->chunk(4);
+                                            @endphp
+                                            @forelse($rows as $menus)
+                                                <div class="row">
+                                                    @foreach($menus as $menu)
+                                                        <div class="col-md-3">
+                                                            @if($menu->route == 'dashboard.home')
+                                                                <div class="panel panel-default">
+                                                                    <div class="panel-heading">
+                                                                        <i class="fa {{$menu->icon}}"></i>
+                                                                        {{$menu->name}}
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                        @else
-                                                            <div class="panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <i class="fa {{$menu->icon}}"></i>
-                                                                    {{$menu->name}}
-                                                                    <div class="pull-right">
-                                                                        <button class="btn btn-xs btn-default clear_btn" type="button">Clear</button>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="panel-body" style="min-height: 180px">
-                                                                    <div class="row">
-                                                                        <div class="col-sm-12">
-                                                                            <select multiple="" name="submenus[{{$menu->menu_id}}][]" class="form-control select_multiple" size="6">
-                                                                                @if($menu->submenu->count() > 0)
-                                                                                    @foreach($menu->submenu as $submenu)
-                                                                                        <option value="{{$submenu->submenu_id}}" @if(isset($user_submenus_arr[$submenu->submenu_id])) selected @endif>
-                                                                                            {{$submenu->name}}
-                                                                                        </option>
-                                                                                    @endforeach
+                                                                    <div class="panel-body" style="min-height: 210px">
+                                                                        <div class="row">
+                                                                            {!!
+                                                                                __form::select_static2('12', 'dash_type', 'Dashboard type',$user->dash,
+                                                                                [
+                                                                                    'HRU Dashboard' => 'hru',
+                                                                                    'RECORDS Dashboard' => 'records',
+                                                                                ]
+                                                                                , '', '', '', '')
+                                                                               !!}
 
-                                                                                @endif
-                                                                            </select>
-                                                                            <span class="help-block" style="font-size: 12px; font-family: 'Product Sans Light'">No module selected</span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="progress xs">
-                                                                        <div class="progress-bar bg-green" style="width: 0%;" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        @endif
+                                                            @else
+                                                                <div class="panel panel-default">
+                                                                    <div class="panel-heading">
+                                                                        <i class="fa {{$menu->icon}}"></i>
+                                                                        {{$menu->name}}
+                                                                        <div class="pull-right">
+                                                                            <button class="btn btn-xs btn-default clear_btn" type="button">Clear</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="panel-body" style="min-height: 180px">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12">
+                                                                                <select multiple="" name="submenus[{{$menu->menu_id}}][]" class="form-control select_multiple" size="6">
+                                                                                    @if($menu->submenu->count() > 0)
+                                                                                        @foreach($menu->submenu as $submenu)
+                                                                                            <option value="{{$submenu->submenu_id}}" @if(isset($user_submenus_arr[$submenu->submenu_id])) selected @endif>
+                                                                                                {{$submenu->name}}
+                                                                                            </option>
+                                                                                        @endforeach
 
-                                                    </div>
+                                                                                    @endif
+                                                                                </select>
+                                                                                <span class="help-block" style="font-size: 12px; font-family: 'Product Sans Light'">No module selected</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="progress xs">
+                                                                            <div class="progress-bar bg-green" style="width: 0%;" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
 
-                                                @endforeach
-                                            </div>
+                                                        </div>
+
+                                                    @endforeach
+                                                </div>
+                                            @empty
+                                            @endforelse
 
                                         </div>
                                     @endforeach
