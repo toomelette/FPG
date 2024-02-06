@@ -49,7 +49,13 @@ class DocumentFormRequest extends FormRequest{
             'folder_code' => 'required|max:45|string',
             'folder_code2' => 'nullable|max:45|string|different:folder_code',
             'remarks' => 'nullable|max:255|string',
-
+            'outgoing_control_no' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('rec_documents','outgoing_control_no')
+                    ->where('project_id',\Auth::user()->project_id),
+            ]
         ];
     
     }

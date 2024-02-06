@@ -91,31 +91,9 @@ class DocumentController extends Controller{
                 }
             })
             ->addColumn('action',function($data){
-                $destroy_route = "'".route("dashboard.document.destroy","slug")."'";
-                $slug = "'".$data->slug."'";
-                $button = '<div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-sm view_document_btn" data="'.$data->slug.'" data-toggle="modal" data-target ="#show_document_modal" title="View more" data-placement="left">
-                                        <i class="fa fa-file-text"></i>
-                                    </button>
-                                   
-                                    <button  data-toggle="modal" data-target="#edit_document_modal" for="linkToEdit" type="button" data="'.$data->slug.'" class="btn btn-default btn-sm edit_document_btn"  title="Edit" data-placement="top">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button type="button" data="'.$data->slug.'" onclick="delete_data('.$slug.','.$destroy_route.')" class="btn btn-sm btn-danger delete_jo_employee_btn" data-toggle="tooltip" title="Delete" data-placement="top">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                   <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-right">
-                                          <li><a href="'.route('dashboard.document.dissemination', $data->slug).'" target="_blank" class="service_records_btn" data="'.$data->slug.'"><i class="fa icon-service-record"></i> Disseminate</a></li>
-                                          <li><a href="'.route('dashboard.document.dissemination', $data->slug).'?send_copy=1" target="_blank" class="trainings_btn" data="'.$data->slug.'"><i class="fa icon-seminar"></i> Send Copy</a></li>
-                                          <li><a href="#" data-toggle="modal" data-target="#matrix_modal" class="print_qr_btn" data="'.$data->slug.'"><i class="fa fa-dashboard"></i>Print QR</a></li>
-                                         </ul>
-                                    </div>
-                                </div>';
-                return $button;
+                return view('dashboard.document.dtActions')->with([
+                    'data' => $data,
+                ]);
             })
             ->editColumn('date',function($data){
                 return Carbon::parse($data->date)->format('m/d/Y');
@@ -192,6 +170,7 @@ class DocumentController extends Controller{
         $document->folder_code2 = $request->folder_code2;
         $document->remarks = $request->remarks;
         $document->qr_location = $request->qr_location;
+        $document->outgoing_control_no = $request->outgoing_control_no;
 
         if(!empty($request->qr_location)){
             //Make QR
@@ -549,7 +528,7 @@ class DocumentController extends Controller{
         return $this->document->rename_all();
     }
 
-    public function printQr($slug){
+    public function printQr($slug,Request $request){
 
         $document = $this->findBySlug($slug);
         $storage = $this->getStorage();
@@ -557,9 +536,15 @@ class DocumentController extends Controller{
         $path = '/QRCODE_TEMP/'.$document->document_id.'.png';
 
 
-        return view('dashboard.document.print_qr')->with([
-            'document' => $document,
-        ]);
+        if($request->has('print_as_tag') && $request->print_as_tag == true){
+            return view('dashboard.document.outgoing_tag')->with([
+                'document' => $document,
+            ]);
+        }else{
+            return view('dashboard.document.print_qr')->with([
+                'document' => $document,
+            ]);
+        }
     }
     public function getQr($slug){
         //    $path = storage_path('public/' . $filename);

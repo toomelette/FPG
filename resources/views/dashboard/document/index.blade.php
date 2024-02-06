@@ -219,6 +219,11 @@
                                 'cols' => 12,
                             ]) !!}
 
+                            {!! \App\Swep\ViewHelpers\__form2::textbox('outgoing_control_no',[
+                                'label' => 'Outgoing Control No.:',
+                                'cols' => 6,
+                                'id' => 'outgoing_control_no'
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -630,5 +635,34 @@
             $(this).get(0).contentWindow.print();
             swal.close();
         })
+
+        $("body").on("click",".outgoing_tag_btn",function () {
+            let btn = $(this);
+            let uri = '{{route('dashboard.document.print_qr','slug')}}?print_as_tag=true';
+            uri = uri.replace('slug',btn.attr('data'));
+            $("#print_qr_iframe").attr('src',uri);
+            var swal = Swal.fire({
+                title: 'Preparing QR Code',
+                html: '<div style="height: 20px"><i class="fa fa-spinner fa-spin"></i> Please wait . . . </div>',
+                // timer: 3000,
+                // timerProgressBar: true,
+            })
+        })
+
+        $("#outgoing_control_no").click(function (){
+            $.ajax({
+                url : '{{route("dashboard.ajax.get","documents_outgoing_control_no")}}',
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    alert(res);
+                },
+                error: function (res) {
+                    alert(res);
+                }
+            })
+        });
     </script>
 @endsection

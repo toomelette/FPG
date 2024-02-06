@@ -234,6 +234,13 @@ class AjaxController extends Controller
             $request = \Illuminate\Http\Request::capture();
             return $ORSService->newOrsNumber($request->fund);
         }
+
+        if($for == 'documents_outgoing_control_no'){
+            $documents = Document::query()
+                ->orderBy('outgoing_control_no','desc')
+                ->first();
+            return  $documents->outgoing_control_no;
+        }
     }
 
     private function applicant_filter_item_no(){
