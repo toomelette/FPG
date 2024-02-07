@@ -265,7 +265,7 @@ class AjaxController extends Controller
                 ]);
             }
         }
-        $request->addNull = true;
+        $request->add_null = true;
         return Helper::wrapForSelect2($arr,true,$request);
     }
     private function applicant_filter_position(){
@@ -289,7 +289,7 @@ class AjaxController extends Controller
                 ]);
             }
         }
-        $request->addNull = true;
+        $request->add_null = true;
         return Helper::wrapForSelect2($arr,true,$request);
 
     }
@@ -380,7 +380,7 @@ class AjaxController extends Controller
                 array_push($arr,['id'=>$course->name,'text' => $course->name]);
             }
         }
-        $request->addNull = true;
+        $request->add_null = true;
         return Helper::wrapForSelect2($arr,true,$request);
     }
 
