@@ -265,9 +265,10 @@ class AjaxController extends Controller
     }
     private function applicant_filter_position(){
         $arr['results'] = [];
+        $request = Request::capture();
         array_push($arr['results'],['id'=>'','text' => "Don't Filter"]);
         $ps = ApplicantPositionApplied::query()->select('position_applied')
-            ->where('position_applied','like','%'.Request::get('q').'%')
+            ->where('position_applied','like','%'.$request->get('q').'%')
             ->groupBy('position_applied')
             ->orderBy('position_applied','asc')
             ->limit(20)
