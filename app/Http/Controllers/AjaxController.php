@@ -244,44 +244,54 @@ class AjaxController extends Controller
     }
 
     private function applicant_filter_item_no(){
-        $arr['results'] = [];
-        array_push($arr['results'],['id'=>'','text' => "Don't Filter"]);
+        $arr = [];
+        $request = Request::capture();
         $ps = HRPayPlanitilla::query()->select('item_no','position')
-            ->where('position','like','%'.Request::get('q').'%')
-            ->orWhere('item_no','like','%'.Request::get('q').'%')
+            ->where('position','like','%'.$request->get('q').'%')
+            ->orWhere('item_no','like','%'.$request->get('q').'%')
             ->groupBy('item_no')
-            ->orderBy('item_no','asc')
-            ->limit(20)
+            ->orderBy('item_no','asc');
+
+        if($request->has('page')){
+            $ps = $ps->offset((($request->page) - 1) * 10);
+        }
+        $ps = $ps->limit(10)
             ->get();
         if(!empty($ps)){
             foreach ($ps as $p){
-                array_push($arr['results'],[
+                array_push($arr,[
                     'id' => $p->item_no,
                     'text' => $p->item_no.' - '.$p->position,
                 ]);
             }
         }
-        return $arr;
+        $request->addNull = true;
+        return Helper::wrapForSelect2($arr,true,$request);
     }
     private function applicant_filter_position(){
-        $arr['results'] = [];
+        $arr = [];
         $request = Request::capture();
-        array_push($arr['results'],['id'=>'','text' => "Don't Filter"]);
         $ps = ApplicantPositionApplied::query()->select('position_applied')
             ->where('position_applied','like','%'.$request->get('q').'%')
             ->groupBy('position_applied')
-            ->orderBy('position_applied','asc')
-            ->limit(20)
+            ->orderBy('position_applied','asc');
+
+        if($request->has('page')){
+            $ps = $ps->offset((($request->page) - 1) * 10);
+        }
+        $ps = $ps->limit(10)
             ->get();
         if(!empty($ps)){
             foreach ($ps as $p){
-                array_push($arr['results'],[
+                array_push($arr,[
                     'id' => $p->position_applied,
                     'text' => $p->position_applied,
                 ]);
             }
         }
-        return $arr;
+        $request->addNull = true;
+        return Helper::wrapForSelect2($arr,true,$request);
+
     }
     private function compute_monthly_salary(){
         $latest = SSL::query()->orderBy('date_implemented','desc')->first();
@@ -353,21 +363,25 @@ class AjaxController extends Controller
     }
 
     private function applicant_courses(){
-        $arr['results'] = [];
-        $courses = Course::query()->where('acronym','like','%'.\Illuminate\Support\Facades\Request::get("q").'%')
+        $arr = [];
+        $request = Request::capture();
+        $courses = Course::query()->where('acronym','like','%'.$request->get("q").'%')
             ->orWhere('name','like','%'.\Illuminate\Support\Facades\Request::get("q").'%')
-            ->groupBy('name')->limit(30)->get();
-        if(\Illuminate\Support\Facades\Request::get('default') == 'Select'){
-            array_push($arr['results'],['id'=>'','text' => "Select"]);
-        }else{
-            array_push($arr['results'],['id'=>'','text' => "Don't Filter"]);
+            ->groupBy('name');
+        if($request->has('page')){
+            $courses = $courses->offset((($request->page) - 1) * 10);
         }
+        $courses = $courses->limit(10)
+            ->get();
+
+
         if(!empty($courses)){
             foreach ($courses as $course){
-                array_push($arr['results'],['id'=>$course->name,'text' => $course->name]);
+                array_push($arr,['id'=>$course->name,'text' => $course->name]);
             }
         }
-        return $arr;
+        $request->addNull = true;
+        return Helper::wrapForSelect2($arr,true,$request);
     }
 
     private function search_active_employees(){
