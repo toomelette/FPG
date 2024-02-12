@@ -197,6 +197,7 @@ class DTRService extends BaseService
 
                 $employee = Employee::query()->select('lastname','firstname','locations')->where('employee_no', '=' ,$dtr->employee_no)->first();
                 if(!empty($employee)){
+                    $latest_time_in = $jo_latest_time_in;
                     if($employee->locations == 'COS-VISAYAS' || $employee->locations == 'COS-LUZMIN'){
                         $latest_time_in = $jo_latest_time_in;
                         $earliest_time_out = $jo_earliest_time_out;
