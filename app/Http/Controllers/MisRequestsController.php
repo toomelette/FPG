@@ -57,6 +57,8 @@ class MisRequestsController extends Controller
         $r->nature_of_request = MisRequestsNature::query()->where('slug','=',$request->nature_of_request)->first()->nature_of_request;
         $r->requisitioner = Auth::user()->user_id;
         $r->request_details = $request->details;
+        $r->email = $request->email;
+        $r->phone = $request->phone;
         if($r->save()){
             $user = User::query()->where('user_id','=',$r->user_created)->first();
             $data = [
