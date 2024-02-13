@@ -70,7 +70,18 @@
                             <div class="row">
                                 {!! __form::textarea('12 details', 'details', 'Details: ', '', '', '', '', '') !!}
                             </div>
+                            <div class="row">
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('email',[
+                                    'cols' => '6',
+                                    'label' => 'Email address:',
+                                ]) !!}
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('Contact No.',[
+                                    'cols' => '6',
+                                    'label' => 'Contact No.:',
+                                ]) !!}
+                            </div>
                         </div>
+
 
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Create</button>
