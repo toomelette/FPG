@@ -12,9 +12,9 @@ use Illuminate\Support\Carbon;
 
 class EligibilityController extends Controller
 {
-    public function dataTable($employee_no){
+    public function dataTable($employee_slug){
 
-        $eligs = EmployeeEligibility::query()->where('employee_no','=',$employee_no);
+        $eligs = EmployeeEligibility::query()->where('employee_slug','=',$employee_slug);
         return \DataTables::of($eligs)
             ->addColumn('action',function($data){
                 $destroy_route = "'".route("dashboard.employee.elig.destroy","slug")."'";
@@ -55,6 +55,7 @@ class EligibilityController extends Controller
     public function store(EligibilityFormRequest $request){
 
         $elig = new EmployeeEligibility;
+        $elig->employee_slug = $request->employee_slug;
         $elig->employee_no = $request->employee_no;
         $elig->eligibility = $request->eligibility;
         $elig->level = $request->level;

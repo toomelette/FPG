@@ -301,6 +301,7 @@ class UserController extends Controller{
                 $user->slug = Str::random(16);
                 $user->user_id = rand(1000000,9999999);
                 $user->username = $request->username;
+                $user->employee_slug = $employee->slug;
                 $user->employee_no = $employee->employee_no;
                 $user->password = Hash::make(Carbon::parse($employee->birthday)->format('mdy'));
                 if($user->save()){
@@ -343,16 +344,22 @@ class UserController extends Controller{
 
 
     public function edit($slug){
-        $all_menus = Menu::query()->orderBy('name','asc')->get();
-        $user = User::where('slug',$slug)->first();
+        $all_menus = Menu::query()
+            ->with(['submenu'])
+            ->orderBy('name','asc')->get();
+        $user = User::query()
+            ->with(['userSubmenu'])
+            ->where('slug',$slug)->first();
         $user_submenus_arr = [];
         foreach ($user->userSubmenu as $submenu){
             $user_submenus_arr[$submenu->submenu_id] = 1;
         }
+
         $by_category = [];
         foreach ($all_menus as $menu){
             $by_category[$menu->category][$menu->slug] = $menu;
         }
+
         ksort($by_category);
         $byPortalAndCategory = $all_menus->sortBy('portal')->groupBy('portal');
         $colors = [
@@ -364,6 +371,7 @@ class UserController extends Controller{
             'LEGAL' => 'bg-navy',
             '' => 'bg-warning',
         ];
+
         return view('dashboard.user.edit')->with([
             'all_menus' => $all_menus,
             'user' => $user,

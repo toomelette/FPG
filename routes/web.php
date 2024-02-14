@@ -1206,6 +1206,4 @@ Route::get('update',function (\Illuminate\Http\Request $request){
     }else{
         dd('Done all.');
     }
-
-
 })->name('updateee');

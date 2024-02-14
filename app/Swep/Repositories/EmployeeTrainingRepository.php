@@ -89,6 +89,7 @@ class EmployeeTrainingRepository extends BaseRepository implements EmployeeTrain
 
         $employee = $this->employee_repo->findBySlug($slug);
         $employee_trng = new EmployeeTraining;
+        $employee_trng->employee_slug = $employee->slug;
         $employee_trng->slug = $this->str->random(32);
         $employee_trng->employee_no = $employee->employee_no;
         $employee_trng->sequence_no = $request->sequence_no;

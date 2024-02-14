@@ -22,8 +22,8 @@ class EducationalBGController extends Controller
         ]);
     }
 
-    public function dataTable($employee_no){
-        $educ_bg = EmployeeEducationalBackground::query()->where('employee_no','=',$employee_no);
+    public function dataTable($employee_slug){
+        $educ_bg = EmployeeEducationalBackground::query()->where('employee_slug','=',$employee_slug);
         return \DataTables::of($educ_bg)
             ->addColumn('action',function($data){
                 $destroy_route = "'".route("dashboard.employee.educ_bg.destroy","slug")."'";
@@ -77,8 +77,10 @@ class EducationalBGController extends Controller
     }
 
     public function store(EducBGFormRequest $request){
+
         $eb = new EmployeeEducationalBackground;
         $eb->slug = Str::random();
+        $eb->employee_slug = $request->employee_slug;
         $eb->employee_no = $request->employee_no;
         $eb->level = $request->level;
         $eb->school_name = $request->school_name;

@@ -60,6 +60,7 @@ class EmployeeServiceRecordRepository extends BaseRepository implements Employee
         $employee = $this->employee_repo->findBySlug($slug);
         $employee_sr = new EmployeeServiceRecord;
         $employee_sr->slug = $this->str->random(32);
+        $employee_sr->employee_slug = $employee->slug;
         $employee_sr->employee_no = $employee->employee_no;
         $employee_sr->sequence_no = $request->sequence_no;
         $employee_sr->from_date = $request->from_date;

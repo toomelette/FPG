@@ -472,6 +472,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeAddress($request, $employee){
 
         $employee_address = new EmployeeAddress;
+        $employee_address->employee_slug = $employee->slug;
         $employee_address->employee_no = $employee->employee_no;
         $employee_address->res_address_block = $request->res_address_block;
         $employee_address->res_address_street = $request->res_address_street;
@@ -499,6 +500,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeChildren($data, $employee){
 
         $employee_children = new EmployeeChildren;
+        $employee_children->employee_slug = $employee->slug;
         $employee_children->employee_no = $employee->employee_no;
         $employee_children->fullname = $data['fullname'];
         $employee_children->date_of_birth = $this->__dataType->date_parse($data['date_of_birth']);
@@ -514,6 +516,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeEducationalBackground($data, $employee){
         
         $employee_eb = new EmployeeEducationalBackground;
+        $employee_eb->employee_slug = $employee->slug;
         $employee_eb->employee_no = $employee->employee_no;
         $employee_eb->level = $data['level'];
         $employee_eb->school_name = $data['school_name'];
@@ -535,6 +538,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeEligibility($data, $employee){
 
         $employee_elig = new EmployeeEligibility;
+        $employee_elig->employee_slug = $employee->slug;
         $employee_elig->employee_no = $employee->employee_no;
         $employee_elig->eligibility = $data['eligibility'];
         $employee_elig->level = $data['level'];
@@ -555,6 +559,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeExperience($data, $employee){
 
         $employee_exp = new EmployeeExperience;
+        $employee_exp->employee_slug = $employee->slug;
         $employee_exp->employee_no = $employee->employee_no;
         $employee_exp->date_from = $this->__dataType->date_parse($data['date_from']);
         $employee_exp->date_to = $this->__dataType->date_parse($data['date_to']);
@@ -576,6 +581,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeFamilyDetails($request, $employee){
 
         $employee_family_details = new EmployeeFamilyDetail;
+        $employee_family_details->employee_slug = $employee->slug;
         $employee_family_details->employee_no = $employee->employee_no;
         $employee_family_details->spouse_lastname = $request->spouse_lastname;
         $employee_family_details->spouse_firstname = $request->spouse_firstname;
@@ -605,6 +611,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeOrganization($data, $employee){
 
         $employee_org = new EmployeeOrganization;
+        $employee_org->employee_slug = $employee->slug;
         $employee_org->employee_no = $employee->employee_no;
         $employee_org->name = $data['name'];
         $employee_org->save();
@@ -620,6 +627,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
 
         $employee_oq = new EmployeeOtherQuestion;
         $employee_oq->employee_no = $employee->employee_no;
+        $employee_oq->employee_slug = $employee->slug;
         $employee_oq->q_34_a = $this->__dataType->string_to_boolean($request->q_34_a);
         $employee_oq->q_34_b = $this->__dataType->string_to_boolean($request->q_34_b);
         $employee_oq->q_34_b_yes_details = $request->q_34_b_yes_details;
@@ -656,6 +664,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeRecognition($data, $employee){
 
         $employee_recog = new EmployeeRecognition;
+        $employee_recog->employee_slug = $employee->slug;
         $employee_recog->employee_no = $employee->employee_no;
         $employee_recog->title = $data['title'];
         $employee_recog->save();
@@ -670,6 +679,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeReference($data, $employee){
 
         $employee_reference = new EmployeeReference;
+        $employee_reference->employee_slug = $employee->slug;
         $employee_reference->employee_no = $employee->employee_no;
         $employee_reference->fullname = $data['fullname'];
         $employee_reference->address = $data['address'];
@@ -686,6 +696,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeSpecialSkill($data, $employee){
 
         $employee_ss = new EmployeeSpecialSkill;
+        $employee_ss->employee_slug = $employee->slug;
         $employee_ss->employee_no = $employee->employee_no;
         $employee_ss->description = $data['description'];
         $employee_ss->save();
@@ -699,6 +710,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeVoluntaryWork($data, $employee){
 
         $employee_vw = new EmployeeVoluntaryWork;
+        $employee_vw->employee_slug = $employee->slug;
         $employee_vw->employee_no = $employee->employee_no;
         $employee_vw->name = $data['name'];
         $employee_vw->address = $data['address'];
@@ -715,6 +727,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeHealthDeclaration($request, $employee){
 
         $employee_hd = new EmployeeHealthDeclaration;
+        $employee_hd->employee_slug = $employee->slug;
         $employee_hd->employee_no = $employee->employee_no;
         $employee_hd->family_doctor = $request->family_doctor;
         $employee_hd->contact_person = $request->contact_person;
@@ -747,6 +760,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
     public function storeMedicalHistory($medical_history, $medication, $employee){
 
         $employee_mh = new EmployeeMedicalHistory;
+        $employee_mh->employee_slug = $employee->slug;
         $employee_mh->employee_no = $employee->employee_no;
         $employee_mh->medical_history = $medical_history;
         $employee_mh->medication = $medication; 

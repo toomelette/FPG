@@ -2,12 +2,14 @@
  
 namespace App\Swep\Services;
 
+use App\Models\Employee;
 use App\Swep\Interfaces\EmployeeInterface;
 use App\Swep\Interfaces\DepartmentUnitInterface;
 
 use App\Swep\BaseClasses\BaseService;
-
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 
 class EmployeeService extends BaseService{
@@ -31,7 +33,27 @@ class EmployeeService extends BaseService{
 
 
 
+    public function newEmployeeNo(Request $request){
+        $digits = Carbon::parse($request->firstday_sra)->format('Y');
+        $digits = preg_replace('/0/', '', $digits, 1);
+        $lname = strtoupper(substr($request->lastname, 0, 1));
+        if($request->middlename == null || $request->middlename == ''){
+            $fname = strtoupper(substr($request->firstname, 0, 2));
+            $mname = '';
+        }else{
+            $fname = strtoupper(substr($request->firstname, 0, 1));
+            $mname = strtoupper(substr($request->middlename, 0, 1));
+        }
+        $empNo = $fname.$mname.$lname.$digits;
+        //check if employee number is already used;
+        $e = Employee::query()->where('employee_no','=',$empNo)->count();
 
+        if($e > 0){
+            $empNo = $fname;
+        }
+
+        dd($empNo);
+    }
 
 
 

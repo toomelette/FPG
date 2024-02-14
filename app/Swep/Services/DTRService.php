@@ -124,6 +124,7 @@ class DTRService extends BaseService
                         $dtr->slug = Str::random(30);
                         $dtr->$db_col = Carbon::parse($dtr_raw->timestamp)->format('H:i');
                         $dtr->date = Carbon::parse($dtr_raw->timestamp)->format('Y-m-d');
+                        $dtr->employee_slug = $employees->slug;
                         $dtr->employee_no = $employees->employee_no;
                         $dtr->biometric_user_id = $biometric_user_id;
                         $dtr->biometric_uid = 0;

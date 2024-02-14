@@ -27,7 +27,7 @@ class File201Controller extends Controller
         if($request->draw != null){
             $file201 = EmployeeFile201::query();
             $employee = $employeeController->findEmployeeBySlug($request->employee);
-            $file201 = $file201->where('employee_no' ,'=',$employee->employee_no);
+            $file201 = $file201->where('employee_slug' ,'=',$employee->slug);
             $dt = DataTables::of($file201)
                 ->addColumn('action',function ($data){
                     $destroy_route = "'".route("dashboard.file201.destroy","slug")."'";
@@ -87,6 +87,7 @@ class File201Controller extends Controller
                 $fullPath = '/File201/'.$employee->employee_no.'/'.$new_file_name_full;
                 \Storage::disk('local_hru')->put($fullPath,$file->get());
                 $file201->employee_no = $employee->employee_no;
+                $file201->employee_slug = $employee->slug;
                 $file201->filename = $new_file_name_full;
                 $file201->original_filename =  $original_file_name_only.'.'.$original_ext;
                 $file201->file_ext = $original_ext;

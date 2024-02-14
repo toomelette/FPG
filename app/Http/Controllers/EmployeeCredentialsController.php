@@ -15,13 +15,13 @@ class EmployeeCredentialsController extends Controller
 
         $employee = $employeeController->findEmployeeBySlug($slug);
         if(request('for') == 'educ_bg'){
-            return $educationalBGController->dataTable($employee->employee_no);
+            return $educationalBGController->dataTable($slug);
         }
         if(request('for') == 'elig'){
-            return $eligibilityController->dataTable($employee->employee_no);
+            return $eligibilityController->dataTable($slug);
         }
         if(request('for') == 'work'){
-            return $workExperienceController->dataTable($employee->employee_no);
+            return $workExperienceController->dataTable($slug);
         }
         return view('dashboard.employee.credentials.index')->with([
             'employee' => $employee,

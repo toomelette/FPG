@@ -9,12 +9,13 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Requests\Employee\WorkExperienceFormRequest;
 use App\Models\EmployeeExperience;
 use App\Swep\Helpers\Helper;
+use Dotenv\Util\Str;
 use Illuminate\Support\Carbon;
 
 class WorkExperienceController extends Controller
 {
-    public function dataTable($employee_no){
-        $works = EmployeeExperience::query()->where('employee_no','=',$employee_no);
+    public function dataTable($employee_slug){
+        $works = EmployeeExperience::query()->where('employee_slug','=',$employee_slug);
         return \DataTables::of($works)
             ->addColumn('action',function($data){
                 $destroy_route = "'".route("dashboard.employee.work.destroy","slug")."'";
@@ -58,8 +59,11 @@ class WorkExperienceController extends Controller
     }
 
     public function store(WorkExperienceFormRequest $request){
+
         $work = new EmployeeExperience;
+        $work->slug = \Illuminate\Support\Str::random();
         $work->employee_no = $request->employee_no;
+        $work->employee_slug = $request->employee_slug;
         $work->date_from = $request->date_from;
         $work->date_to = $request->date_to;
         $work->position = $request->position;

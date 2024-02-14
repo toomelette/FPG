@@ -224,7 +224,7 @@ class EmployeeController extends Controller{
     public function serviceRecord($slug){
         if(request()->has('draw')){
             $employee = $this->findEmployeeBySlug($slug);
-            $sr = EmployeeServiceRecord::query()->where('employee_no','=',$employee->employee_no);
+            $sr = EmployeeServiceRecord::query()->where('employee_slug','=',$employee->slug);
 
             $rt = \Illuminate\Support\Facades\Request::route()->getName().'_destroy';
 
@@ -342,7 +342,7 @@ class EmployeeController extends Controller{
 
         if(request()->ajax() && request()->has('draw')){
             $employee = $this->findEmployeeBySlug($slug);
-            $trainings = EmployeeTraining::query()->where('employee_no','=',$employee->employee_no);
+            $trainings = EmployeeTraining::query()->where('employee_slug','=',$employee->slug);
 
             return DataTables::of($trainings)
                 ->addColumn('action',function ($data){
@@ -477,7 +477,6 @@ class EmployeeController extends Controller{
            'employee'=>$employee,
         ]);
 
-//        return $this->employee_matrix->index($slug);
     }
 
 

@@ -99,6 +99,8 @@
 <script type="text/javascript" src="{{asset('template/plugins/html2canvas/html2canvas.js')}}"></script>
 <script type="text/javascript" src="{{asset('template/plugins/jquery-number/jquery.number.min.js')}}"></script>
 
+<script type="text/javascript" src="{{ asset('template/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+
 <script type="text/javascript">
 
         // autonum_settings = {

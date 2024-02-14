@@ -30,6 +30,7 @@ class EmployeeMatrixRepository extends BaseRepository implements EmployeeMatrixI
 
     public function store($request, $employee_no){
 
+
         $employee_matrix = new EmployeeMatrix;
         $employee_matrix->employee_no = $employee_no;
         $employee_matrix->educ_bachelors_degree = $request->educ_bachelors_degree;
