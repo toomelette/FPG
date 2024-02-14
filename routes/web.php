@@ -155,7 +155,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
 	/** LEAVE APPLICATION **/
 	Route::get('/leave_application/user_index', 'LeaveApplicationController@userIndex')->name('leave_application.user_index');
-	Route::get('/leave_application/print/{slug}/{type}', 'LeaveApplicationController@print')->name('leave_application.print');
+	Route::get('/leave_application/{slug}/print', 'LeaveApplicationController@print')->name('leave_application.print');
 	Route::get('/leave_application/{slug}/save_as', 'LeaveApplicationController@saveAs')->name('leave_application.save_as');
 	Route::resource('leave_application', 'LeaveApplicationController');
 
@@ -1160,3 +1160,52 @@ Route::get('update_qc_employees_has_many',function () {
     dd('Finished '.$about);
 });
 
+Route::get('update',function (\Illuminate\Http\Request $request){
+
+    $relations = [
+        'employeeVoluntaryWork',
+        'employeeTraining',
+        'employeeSpecialSkill',
+        'employeeServiceRecord',
+        'employeeReference',
+        'employeeRecognition',
+        'employeeOtherQuestion',
+        'employeeOrganization',
+        'employeeMedicalHistories',
+        'employeeMatrix',
+        'employeeHealthDeclaration',
+        'file201s',
+        'employeeFamilyDetail',
+        'employeeExperience',
+        'employeeEligibility',
+        'employeeEducationalBackground',
+        'employeeChildren',
+        'employeeAddress',
+        'empBeginningCredits',
+        'dtr_records',
+        'documentDisseminationLog',
+        'user',
+    ];
+
+    if(isset($relations[$request->current])){
+        $relation = $relations[$request->current];
+        $employees = \App\Models\Employee::query()
+            ->whereHas($relation,function ($q){
+                return $q->where('employee_slug','=',null);
+            })
+            ->get();
+
+        foreach ($employees as $employee){
+            $employee->$relation()->update([
+                'employee_slug' => $employee->slug,
+            ]);
+        }
+        return redirect()->route('updateee',[
+            'current' => $request->current + 1,
+        ]);
+    }else{
+        dd('Done all.');
+    }
+
+
+})->name('updateee');
