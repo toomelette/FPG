@@ -14,7 +14,7 @@ class EmpBeginningCredits extends Model{
 
 	/** RELATIONSHIPS **/
     public function employee() {
-    	return $this->belongsTo('App\Models\Employee','employee_no','employee_no');
+    	return $this->belongsTo('App\Models\Employee','employee_slug','slug');
     }
 
     

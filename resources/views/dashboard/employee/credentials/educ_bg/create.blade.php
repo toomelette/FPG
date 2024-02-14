@@ -7,6 +7,7 @@
 
 @section('modal-body')
     <div class="row">
+        <input name="employee_slug" value="{{$employee->slug}}" hidden>
         <input name="employee_no" value="{{$employee->employee_no}}" hidden>
         {!! \App\Swep\ViewHelpers\__form2::select('level',[
             'label' => 'Level:',

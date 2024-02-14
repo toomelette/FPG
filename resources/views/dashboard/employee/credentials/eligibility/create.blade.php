@@ -6,6 +6,7 @@
 @endsection
 
 @section('modal-body')
+    <input name="employee_slug" value="{{$employee->slug}}" hidden>
     <input name="employee_no" value="{{$employee->employee_no}}" hidden>
     <div class="row">
         {!! \App\Swep\ViewHelpers\__form2::textbox('eligibility',[

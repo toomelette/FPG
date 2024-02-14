@@ -26,7 +26,7 @@ class EmployeeFile201 extends Model
     protected $table = 'hr_employee_file201';
 
     public function employeeData(){
-        return $this->belongsTo(Employee::class,'employee_no','employee_no');
+        return $this->belongsTo(Employee::class,'employee_slug','slug');
     }
 
 

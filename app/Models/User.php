@@ -93,7 +93,7 @@ class User extends Authenticatable{
 
 
     public function employee(){
-        return $this->hasOne(Employee::class, 'employee_no', 'employee_no');
+        return $this->hasOne(Employee::class, 'slug', 'employee_slug');
     }
 
     public function joEmployee(){

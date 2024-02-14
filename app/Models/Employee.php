@@ -110,7 +110,7 @@ class Employee extends Model{
 
     /** RELATIONSHIPS **/
     public function user() {
-        return $this->hasOne(User::class,'employee_no','employee_no');
+        return $this->hasOne(User::class,'employee_slug','slug');
     }
 
     public function department(){
@@ -129,80 +129,80 @@ class Employee extends Model{
 
 
     public function employeeAddress(){
-        return $this->hasOne('App\Models\EmployeeAddress', 'employee_no', 'employee_no');
+        return $this->hasOne(EmployeeAddress::class, 'employee_slug', 'slug');
     } 
 
     public function employeeFamilyDetail(){
-        return $this->hasOne('App\Models\EmployeeFamilyDetail', 'employee_no', 'employee_no');
+        return $this->hasOne(EmployeeFamilyDetail::class, 'employee_slug', 'slug');
     }
 
     public function employeeOtherQuestion(){
-        return $this->hasOne('App\Models\EmployeeOtherQuestion', 'employee_no', 'employee_no');
+        return $this->hasOne(EmployeeOtherQuestion::class, 'employee_slug', 'slug');
     }
 
     public function employeeHealthDeclaration(){
-        return $this->hasOne('App\Models\EmployeeHealthDeclaration', 'employee_no', 'employee_no');
+        return $this->hasOne(EmployeeHealthDeclaration::class, 'employee_slug', 'slug');
     }
 
     public function empBeginningCredits(){
-        return $this->hasOne('App\Models\EmpBeginningCredits', 'employee_no', 'employee_no');
+        return $this->hasOne(EmpBeginningCredits::class, 'employee_slug', 'slug');
     }
 
 
 
 
     public function employeeTraining(){
-        return $this->hasMany('App\Models\EmployeeTraining', 'employee_no', 'employee_no')->orderBy('sequence_no','desc');
+        return $this->hasMany('App\Models\EmployeeTraining', 'employee_slug', 'slug')->orderBy('sequence_no','desc');
     }
 
     public function employeeChildren(){
-        return $this->hasMany('App\Models\EmployeeChildren', 'employee_no', 'employee_no');
+        return $this->hasMany(EmployeeChildren::class, 'employee_slug', 'slug');
     } 
 
     public function employeeEducationalBackground(){
-        return $this->hasMany(EmployeeEducationalBackground::class, 'employee_no', 'employee_no');
+        return $this->hasMany(EmployeeEducationalBackground::class, 'employee_slug', 'slug');
     }
 
 
     public function employeeEligibility(){
-        return $this->hasMany('App\Models\EmployeeEligibility', 'employee_no', 'employee_no');
+        return $this->hasMany(EmployeeEligibility::class, 'employee_slug', 'slug');
     }   
 
     public function employeeExperience(){
-        return $this->hasMany('App\Models\EmployeeExperience', 'employee_no', 'employee_no');
+        return $this->hasMany(EmployeeExperience::class, 'employee_slug', 'slug');
     }
 
     public function employeeOrganization(){
-        return $this->hasMany('App\Models\EmployeeOrganization', 'employee_no', 'employee_no');
+        return $this->hasMany(EmployeeOrganization::class, 'employee_slug', 'slug');
     }
 
     public function employeeRecognition(){
-        return $this->hasMany('App\Models\EmployeeRecognition', 'employee_no', 'employee_no');
+        return $this->hasMany(EmployeeRecognition::class, 'employee_slug', 'slug');
     }
 
     public function employeeReference(){
-        return $this->hasMany('App\Models\EmployeeReference', 'employee_no', 'employee_no');
+        return $this->hasMany(EmployeeReference::class, 'employee_slug', 'slug');
     }
 
     public function employeeSpecialSkill(){
-        return $this->hasMany('App\Models\EmployeeSpecialSkill', 'employee_no', 'employee_no');
+        return $this->hasMany(EmployeeSpecialSkill::class, 'employee_slug', 'slug');
     }
 
     public function employeeVoluntaryWork(){
-        return $this->hasMany('App\Models\EmployeeVoluntaryWork', 'employee_no', 'employee_no');
+        return $this->hasMany(EmployeeVoluntaryWork::class, 'employee_slug', 'slug');
     }
 
     public function employeeMedicalHistories(){
-        return $this->hasMany('App\Models\EmployeeMedicalHistory', 'employee_no', 'employee_no');
+        return $this->hasMany(EmployeeMedicalHistory::class, 'employee_slug', 'slug');
     }
 
 
     public function employeeServiceRecord(){
-        return $this->hasMany('App\Models\EmployeeServiceRecord', 'employee_slug', 'slug')->orderBy('sequence_no','asc');
+        return $this->hasMany(EmployeeServiceRecord::class, 'employee_slug', 'slug')->orderBy('sequence_no','asc');
     }
 
     public function employeeMatrix(){
-        return $this->hasOne('App\Models\EmployeeMatrix', 'employee_no', 'employee_no');
+        return $this->hasOne(EmployeeMatrix::class, 'employee_slug', 'slug');
     }
 
     public function permissionSlip(){
@@ -214,7 +214,7 @@ class Employee extends Model{
     }
 
     public function documentDisseminationLog(){
-        return $this->hasMany('App\Models\DocumentDisseminationLog', 'employee_no', 'employee_no');
+        return $this->hasMany(DocumentDisseminationLog::class, 'employee_slug', 'slug');
     }
 
     public function dtr_records(){
@@ -222,7 +222,7 @@ class Employee extends Model{
     }
 
     public function file201s(){
-        return $this->hasMany(EmployeeFile201::class,'employee_no','employee_no');
+        return $this->hasMany(EmployeeFile201::class,'employee_slug','slug');
     }
 
     public function responsibilityCenter(){
