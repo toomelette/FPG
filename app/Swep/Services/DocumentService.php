@@ -557,10 +557,10 @@ class DocumentService extends BaseService{
         if(!empty($request->employee)){
             foreach ($request->employee as $employee_from_form) {
 
-                $employee = $this->employee_repo->findByEmployeeNo($employee_from_form);
+                $employee = $this->employee_repo->findBySlug($employee_from_form);
 
                 if (filter_var($employee->email, FILTER_VALIDATE_EMAIL ) != false) {
-                    $cc[$employee->employee_no] = [
+                    $cc[$employee->slug] = [
                         "type" => "employee",
                         "email" => $employee->email
                     ]; 
@@ -598,14 +598,6 @@ class DocumentService extends BaseService{
         $connected = @fsockopen("www.google.com",80);
         $connected_2 = @fsockopen("www.yahoo.com",80);
 
-//        if(!$connected){
-//            if(!$connected_2){
-//                return "<center style='font-family:Arial; color:red; padding-top:100px; font-size:26px'><b>No internet or Server not responding</b></center>";
-//            }
-//        }
-
-
-
 
         //SENDING EMAIL
         try {
@@ -640,6 +632,8 @@ class DocumentService extends BaseService{
                 $ddl = $this->ddl_repo->store($request, null, $key, $document->document_id, $recepient['email'], $status, $send_copy);
             }
         }
+
+
 
         return redirect()->back();
 

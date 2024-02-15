@@ -3,7 +3,7 @@
         <i class="fa fa-file-text"></i>
     </button>
 
-    <button  data-toggle="modal" data-target="#edit_document_modal" for="linkToEdit" type="button" data="'.$data->slug.'" class="btn btn-default btn-sm edit_document_btn"  title="Edit" data-placement="top">
+    <button  data-toggle="modal" data-target="#edit_document_modal" for="linkToEdit" type="button" data="{{$data->slug}}" class="btn btn-default btn-sm edit_document_btn"  title="Edit" data-placement="top">
         <i class="fa fa-edit"></i>
     </button>
     <button type="button" data="{{$data->slug}}" onclick="delete_data('{{$data->slug}}','{{route("dashboard.document.destroy","slug")}}')" class="btn btn-sm btn-danger delete_jo_employee_btn" data-toggle="tooltip" title="Delete" data-placement="top">

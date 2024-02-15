@@ -73,21 +73,23 @@ $span_failed = '<span class="badge bg-red">Failed</span>';
                           <p class="help-block"> {{ $errors->first('email_contact') }} </p>
                         @endif
                       </div>
-                      
 
+
+                      @php
+                        $employeesWithEmail = \App\Models\Employee::query()
+                            ->select(['email','slug','fullname'])
+                            ->where('email','!=',null)
+                            ->orWhere('email','!=','')
+                            ->active()
+                            ->get();
+                      @endphp
                       <div class="form-group col-md-12 {{ $errors->has('employee') ? 'has-error' : '' }}" id="employee_div">
                         <label for="employee">Employees: </label> <br>
                         <select name="employee[]" id="employee" class="form-control select2" multiple="multiple" data-placeholder="Recipients">
-                            @foreach($global_employees_all as $data)
-                                @if(old('employee'))
-                                    <option value="{{ $data->employee_no }}"   {!! in_array($data->employee_no, old('employee')) ? 'selected' : '' !!}>{{$data->fullname}}</option>
-                                @else
-                                      @if($data->email != "")
-                                        <option value="{{ $data->employee_no }}" data-fullname="{{$data->fullname}}" data-email="{{$data->email}}">{{$data->fullname}} | {{$data->email}}
-                                      @endif
-                                    </option>
-                                @endif
-                            @endforeach
+                            @forelse($employeesWithEmail as $employee)
+                              <option value="{{ $employee->slug }}" data-fullname="{{$employee->fullname}}" data-email="{{$employee->email}}">{{$employee->fullname}} | {{$employee->email}}</option>
+                            @empty
+                            @endforelse
                         </select>
 
                         @if ($errors->has('employee'))
