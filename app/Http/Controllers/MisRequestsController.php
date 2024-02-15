@@ -157,12 +157,15 @@ class MisRequestsController extends Controller
                     return Carbon::parse($data->created_at)->format("M. d, Y | h:i A");
                 })
                 ->addColumn('fullname',function ($data){
+                    $append = view('dashboard.mis_requests.dtRequisitioner')->with([
+                        'data' => $data,
+                    ])->render();
                     if(!empty($data->user)){
                         if(!empty($data->user->employee)){
-                            return strtoupper($data->user->employee->lastname).', '.strtoupper($data->user->employee->firstname);
+                            return strtoupper($data->user->employee->lastname).', '.strtoupper($data->user->employee->firstname).$append;
                         }
                     }
-                    return $data->requisitioner;
+                    return $data->requisitioner.$append;
                 })
                 ->editColumn('nature_of_request',function ($data){
                     $success = '';

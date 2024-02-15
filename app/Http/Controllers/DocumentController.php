@@ -439,7 +439,10 @@ class DocumentController extends Controller{
     }
 
     public function findBySlug($slug){
-        $d = Document::query()->with(['folder','folder2'])->where('slug','=',$slug)->first();
+        $d = Document::query()
+            ->with(['folder','folder2'])
+            ->where('slug','=',$slug)
+            ->first();
         if(!empty($d)){
             return $d;
         }

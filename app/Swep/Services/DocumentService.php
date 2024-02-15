@@ -527,29 +527,11 @@ class DocumentService extends BaseService{
 
 
     public function dissemination($request, $slug){
+
         $document = $this->document_repo->findBySlug($slug);
 
+
         return view('dashboard.document.dissemination')->with(['document'=>$document, 'request' => $request]);
-
-
-        // if(!empty($request->send_copy)){
-        //     if($request->send_copy == 1){
-
-        //         //SEND COPY
-        //         $document = $this->document_repo->findBySlug($slug);
-        //         return view('dashboard.document.dissemination_send_copy')->with('document', $document);
-                
-        //     }else{
-        //         $document = $this->document_repo->findBySlug($slug);
-        //         return view('dashboard.document.dissemination')->with('document', $document);
-        //     }
-        // }else{
-           
-        //     $document = $this->document_repo->findBySlug($slug);
-        //     return view('dashboard.document.dissemination')->with('document', $document);
-           
-        // }
-        
 
     }
 

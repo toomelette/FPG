@@ -94,7 +94,9 @@ class Document extends Model{
     }
 
     public function documentDisseminationLog(){
-        return $this->hasMany('App\Models\DocumentDisseminationLog', 'document_id', 'document_id')->whereNull('send_copy')->orWhere('send_copy','!=',1);
+        return $this->hasMany(DocumentDisseminationLog::class, 'document_id', 'document_id')
+            ->whereNull('send_copy')
+            ->orWhere('send_copy','!=',1);
     }
 
 
