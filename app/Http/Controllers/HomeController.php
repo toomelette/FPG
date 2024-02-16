@@ -157,8 +157,8 @@ class HomeController extends Controller{
             $avg_sent_by_week = round($sent_all/$sent_by_week,0);
 
             $emails_per_contact = DocumentDisseminationLog::with(['emailContact','employee'])
-                ->select('email_contact_id','employee_no',DB::raw('count(slug) as count'))
-                ->groupBy('email_contact_id','employee_no')
+                ->select('email_contact_id','email','employee_slug',DB::raw('count(slug) as count'))
+                ->groupBy('email_contact_id','email','employee_slug')
                 ->get();
 
 

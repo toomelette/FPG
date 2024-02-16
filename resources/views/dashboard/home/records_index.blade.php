@@ -130,24 +130,18 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+
                                 @if($emails_per_contact->count() > 0)
                                     @foreach($emails_per_contact as $data)
                                         <tr>
                                             <td>
-                                                @if($data->employee_no != '')
-                                                    @if(!empty($data->employee))
-                                                        {{$data->employee->fullname}}
-                                                    @else
-                                                        N/A
-                                                    @endif
-                                                    {{$data->employee->fullname}}
-                                                @elseif($data->email_contact_id != '')
-                                                    @if(!empty($data->emailContact))
-                                                        {{$data->emailContact->name}}
-                                                    @else
-                                                        N/A
-                                                    @endif
-                                                @endif
+
+                                                {{$data->emailContact->name ?? ''}}
+
+                                                {{$data->employee->fullname ?? ''}}
+                                                |
+                                                <span class="small">{{$data->email}}</span>
+
                                             </td>
                                             <td class="text-center">
                                                 {{number_format($data->count)}}
@@ -234,16 +228,7 @@
                     ],
                     labels:[
                         @foreach($emails_per_contact as $data)
-                            @if($data->employee_no != '')
-                                @if(!empty($data->employee))
-                                    '{{$data->employee->fullname}}',
-                                @endif
-                                '{{$data->employee->fullname}}',
-                            @elseif($data->email_contact_id != '')
-                                @if(!empty($data->emailContact))
-                                    '{{$data->emailContact->name}}',
-                                @endif
-                            @endif
+                            '{{$data->emailContact->name ?? ($data->employee->fullname ?? $data->email)}}',
                         @endforeach
                     ]
                 },
