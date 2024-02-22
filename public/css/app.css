@@ -774,3 +774,12 @@ li.has-error>a{
 .background-yellow{
     background-color: yellow;
 }
+
+.indent{
+    padding-left: 20px;
+}
+
+.vl-specify-textbox{
+    padding-left: 10px;
+    padding-bottom: 10px;
+}

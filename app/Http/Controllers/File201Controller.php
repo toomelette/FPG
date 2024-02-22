@@ -75,6 +75,7 @@ class File201Controller extends Controller
         $file201->slug =Str::random();
         $file201->title = ucfirst($request->title);
         $file201->description = ucfirst($request->description);
+        $file201->date = $request->date;
 
         if(!empty($request->doc_file)){
             foreach ($request->file('doc_file') as $file){
@@ -122,6 +123,7 @@ class File201Controller extends Controller
         $file201 = $this->findBySlug($slug);
         $file201->title = $request->title;
         $file201->description = $request->description;
+        $file201->date = $request->date;
 
         $employee = $file201->employeeData;
         if($request->_changed == 'true'){

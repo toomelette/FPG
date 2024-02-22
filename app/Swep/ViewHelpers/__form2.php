@@ -32,6 +32,11 @@ class __form2
             $value = ($value != '') ? Carbon::parse($value)->format('Y-m-d') : '';
         }
 
+        $disabled = '';
+        if($n->disabled != ''){
+            $disabled = 'disabled="disabled"';
+        }
+
         $r_o = ($n->readonly == 'readonly') ? 'readonly' : '';
         $step = ($n->step != '') ? 'step="'.$n->step.'"' : '';
         $id = ($n->id != '') ?  'id="'.$n->id.'"' : '';
@@ -45,7 +50,7 @@ class __form2
         }
         return '<div class="form-group '.$c_class.' col-md-'.$n->cols.' '.$name.'">
                 <label for="'. $name .'">'.$n->label.'</label> '.$title.'
-                <input class="form-control '.$n->class.'" '.$id.' '.$tab_index.' name="'. $name .$ext.'" type="'.$n->type.'" value="'.$value.'" placeholder="'. $n->placeholder.'" '. $n->extra_attr .' autocomplete="'.$n->autocomplete.'" '.$r_o.' '.$step.' '.$n->required.' '.$list.'>
+                <input class="form-control '.$n->class.'" '.$id.' '.$tab_index.' name="'. $name .$ext.'" type="'.$n->type.'" value="'.$value.'" placeholder="'. $n->placeholder.'" '. $n->extra_attr .' autocomplete="'.$n->autocomplete.'" '.$r_o.' '.$step.' '.$n->required.' '.$list.' '.$disabled.'>
               </div>';
     }
 
@@ -125,6 +130,10 @@ class __form2
         if($n->container_class != ''){
             $c_class = $n->container_class;
         }
+        $disabled = '';
+        if($n->disabled != ''){
+            $disabled = 'disabled="disabled"';
+        }
 
         $r_o = '';
         $r_o = ($n->readonly == 'readonly') ? 'readonly' : '';
@@ -157,7 +166,7 @@ class __form2
 
         return '<div class="form-group '.$c_class.' col-md-'.$n->cols .' '.$name.'">
                   <label for="'. $name .'">'. $n->label .'</label>
-                  <select name="'. $name .$ext.'" '. $id .' class="form-control '.$n->class.'" '. $n->extra_attr .' '.$r_o.' '.$n->required.'>
+                  <select name="'. $name .$ext.'" '. $id .' class="form-control '.$n->class.'" '. $n->extra_attr .' '.$r_o.' '.$n->required.' '.$disabled.'>
                     <option value="">Select</option>
                     '.$opt_html.'
                   </select>

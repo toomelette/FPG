@@ -23,6 +23,7 @@ class EmployeeFile201FormRequest extends FormRequest
                 'max:255',
                 Rule::exists('hr_employees','slug'),
             ],
+            'date' => 'nullable|date_format:"Y-m-d"',
         ];
     }
 }

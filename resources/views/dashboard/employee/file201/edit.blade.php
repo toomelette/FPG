@@ -18,6 +18,12 @@
             'cols' => 12,
             'label' => 'Description:'
         ],$file201) !!}
+
+        {!! \App\Swep\ViewHelpers\__form2::textbox('date',[
+            'cols' => 6,
+            'label' => 'Date:',
+            'type' => 'date',
+        ],$file201) !!}
     </div>
     <div class="row">
         {!! \App\Swep\ViewHelpers\__form2::file('doc_file[]',[

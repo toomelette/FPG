@@ -550,7 +550,8 @@
         e.preventDefault();
         let form = $(this);
         $("#training_frame").attr('src',form.attr('action')+'?'+form.serialize());
-
     })
+
+
 </script>
 @endsection

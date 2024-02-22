@@ -515,9 +515,14 @@ Route::get('check_device',function (\App\Swep\Services\DTRService $DTRService){
     if(!request()->has('ip')){
         return 'Missing IP';
     }
+    $port = request()->get('port') ?? 4370;
+
     $ip = request()->get('ip');
-    $zk = new ZKTeco($ip);
+
+    $zk = new ZKTeco($ip,$port);
     $zk->connect();
+
+    dd($zk);
     return $zk->getAttendance();
 //    return $DTRService->clearAttendance('10.36.1.23');
 });

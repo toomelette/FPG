@@ -16,6 +16,7 @@
         <table class="table table-bordered table-striped table-hover file_201_{{$rand}}" id="file_201_table_{{$rand}}" style="width: 100% !important">
             <thead>
             <tr class="">
+                <th>Date</th>
                 <th >Title</th>
                 <th>Description</th>
                 <th>Attachment</th>
@@ -65,6 +66,7 @@
             "serverSide": true,
             "ajax" : '{{route("dashboard.file201.index")}}?employee={{$employee->slug}}',
             "columns": [
+                { "data": "date" },
                 { "data": "title" },
                 { "data": "description" },
                 { "data": "filename" },
@@ -75,7 +77,7 @@
             ],
             "columnDefs":[
                 {
-                    "targets" : 3,
+                    "targets" : 4,
                     "orderable" : false,
                     "class" : 'action-10p'
                 },

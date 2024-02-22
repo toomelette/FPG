@@ -692,4 +692,110 @@ class Arrays
             ],
         ];
     }
+
+    public static function leaveTypesForView(){
+        return [
+            'Vacation Leave' => ' (Sec. 51, Rule XVI, Omnibus Rules Implementing E.O. No. 292)',
+            'Mandatory/Forced Leave' => '(Sec. 25, Rule XVI, Omnibus Rules Implementing E.O. No. 292)',
+            'Sick Leave' => '(Sec. 43, Rule XVI, Omnibus Rules Implementing E.O. No. 292)',
+            'Maternity Leave' => ' (R.A. No. 11210 / IRR issued by CSC, DOLE and SSS)',
+            'Paternity Leave' => ' (R.A. No. 8187 / CSC MC No. 71, s. 1998, as amended)',
+            'Special Privilege Leave' => ' (Sec. 21, Rule XVI, Omnibus Rules Implementing E.O. No. 292)',
+            'Solo Parent Leave' => '(RA No. 8972 / CSC MC No. 8, s. 2004)',
+            'Study Leave' => ' (Sec. 68, Rule XVI, Omnibus Rules Implementing E.O. No. 292) ',
+            '10-Day VAWC Leave' => ' (RA No. 9262 / CSC MC No. 15, s. 2005) ',
+            'Rehabilitation Privilege' => ' (Sec. 55, Rule XVI, Omnibus Rules Implementing E.O. No. 292)',
+            'Special Leave Benefits for Women' => '(RA No. 9710 / CSC MC No. 25, s. 2010)',
+            'Special Emergency (Calamity) Leave' => ' (CSC MC No. 2, s. 2012, as amended)',
+            'Adoption Leave' => '(R.A. No. 8552) ',
+            'Others' => '',
+        ];
+    }
+
+    public static function leaveTypes(){
+        return [
+            'Vacation Leave' => 'Vacation Leave',
+            'Mandatory/Forced Leave' => 'Mandatory/Forced Leave',
+            'Sick Leave' => 'Sick Leave',
+            'Maternity Leave' => 'Maternity Leave',
+            'Paternity Leave' => 'Paternity Leave',
+            'Special Privilege Leave' => 'Special Privilege Leave',
+            'Solo Parent Leave' => 'Solo Parent Leave',
+            'Study Leave' => 'Study Leave',
+            '10-Day VAWC Leave' => '10-Day VAWC Leave',
+            'Rehabilitation Privilege' => 'Rehabilitation Privilege',
+            'Special Leave Benefits for Women' => 'Special Leave Benefits for Women',
+            'Special Emergency (Calamity) Leave' => 'Special Emergency (Calamity) Leave',
+            'Adoption Leave' => 'Adoption Leave',
+            'Others' => 'Others',
+        ];
+    }
+
+    public static function leaveTypesJson(){
+        return [
+            'Vacation Leave' => [
+                'Within the Philippines' => null,
+                'Abroad' => 1,
+            ],
+            'Mandatory/Forced Leave' => null,
+            'Sick Leave' => [
+                'In Hospital' => 1,
+                'Out Patient' => 1,
+            ],
+            'Maternity Leave' => null,
+            'Paternity Leave' => null,
+            'Special Privilege Leave' => [
+                'Within the Philippines' => null,
+                'Abroad' => 1,
+            ],
+            'Solo Parent Leave' => null,
+            'Study Leave' => [
+                "Completion of Master's Degree" => null,
+                'BAR/Board Exam Review' => null,
+            ],
+            '10-Day VAWC Leave' => null,
+            'Rehabilitation Privilege' => null,
+            'Special Leave Benefits for Women' => 1,
+            'Special Emergency (Calamity) Leave' => null,
+            'Adoption Leave' => null,
+            'Others' => [
+                'Monetization of Leave Credits' => null,
+                'Terminal Leave' => null,
+            ],
+        ];
+    }
+
+    public static function leaveTypesTree(){
+        return [
+            'Vacation Leave' => [
+                'Within the Philippines' => 'Abroad',
+                'Abroad' => 'Abroad',
+            ],
+            'Mandatory/Forced Leave' => "Mandatory/Forced Leave",
+            'Sick Leave' => [
+                'In Hospital' => 'In Hospital',
+                'Out Patient' => 'Out Patient',
+            ],
+            'Maternity Leave' => "Maternity Leave",
+            'Paternity Leave' => "Paternity Leave",
+            'Special Privilege Leave' => [
+                'Within the Philippines' => "Within the Philippines",
+                'Abroad' => 'Abroad',
+            ],
+            'Solo Parent Leave' => "Solo Parent Leave",
+            'Study Leave' => [
+                "Completion of Master's Degree" => "Completion of Master's Degree",
+                'BAR/Board Exam Review' => "BAR/Board Exam Review",
+            ],
+            '10-Day VAWC Leave' => "10-Day VAWC Leave",
+            'Rehabilitation Privilege' => "Rehabilitation Privilege",
+            'Special Leave Benefits for Women' => 'Special Leave Benefits for Women',
+            'Special Emergency (Calamity) Leave' => "Special Emergency (Calamity) Leave",
+            'Adoption Leave' => "Adoption Leave",
+            'Others' => [
+                'Monetization of Leave Credits' => "Monetization of Leave Credits",
+                'Terminal Leave' => "Terminal Leave",
+            ],
+        ];
+    }
 }
