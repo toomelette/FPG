@@ -139,7 +139,7 @@
                 @if(Auth::user()->project_id == 1)
 
                     <li class="">
-                        <a href="https://acctg.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="ACCOUNTING">
+                        <a href="http://acctg.sra.gov.ph/" style="color:#9aefff" target="_blank" searchable="ACCOUNTING">
                             <i class="fa fa-external-link"></i>acctg.sra.gov.ph
                         </a>
                     </li>
