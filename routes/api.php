@@ -51,3 +51,11 @@ Route::get('/department/textbox_department_ByDepartmentId/{dept_id}', 'Api\ApiDe
 
 
 Route::get('/getEmployee/{id}','Api\Employee\ApiEmployeeController@getEmployee');
+
+Route::get('/g',function (\Illuminate\Http\Request $request){
+    $employee = \App\Models\Employee::query()
+        ->where('employee_no','=',$request->employee_no)
+        ->first();
+
+    return $employee;
+});

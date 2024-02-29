@@ -861,23 +861,20 @@ class EmployeeController extends Controller{
 
         $barcode = $employee->employee_no;
         $home = env('STORAGE_LOCATION','/home/swep_afd_storage/');
-
         $generator = new BarcodeGeneratorPNG();
         $temp_barcode_dir = $home.'/EMP_QR_CODE/';
         if (!is_dir($temp_barcode_dir)) {
             // dir doesn't exist, make it
             mkdir($temp_barcode_dir);
         }
-
         $image = QrCode::size('200')
             ->format('png')
             ->merge('/public/images/sra_only2.png',0.4)
             ->errorCorrection('H')
             ->generate($barcode);
-
-
-
         file_put_contents($temp_barcode_dir.$barcode.'.png', $image);
+
+
 
         return view('dashboard.employee.print_qr')->with([
             'employee' => $employee,
