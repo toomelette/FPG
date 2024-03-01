@@ -31,6 +31,12 @@
             <td style="padding-left: 20px;padding-right: 10px">Email : </td>
             <td><a href="mailto:{{$data->email}}"> {{$data->email}}</a></td>
         </tr>
+        <tr>
+            <td style="border-top: 1px solid #e7e7e7 ;padding-right: 10px">Created : </td>
+            <td style="border-top: 1px solid #e7e7e7">{{Helper::dateFormat($data->created_at,'M. d, Y | h:i A')}}</td>
+            <td style="border-top: 1px solid #e7e7e7 ;padding-left: 20px;padding-right: 10px">Updated : </td>
+            <td style="border-top: 1px solid #e7e7e7">{{Helper::dateFormat($data->updated_at,'M. d, Y | h:i A')}}</td>
+        </tr>
     </table>
 
 </div>

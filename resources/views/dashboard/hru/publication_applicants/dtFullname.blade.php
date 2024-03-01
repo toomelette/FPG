@@ -29,5 +29,6 @@
             <td>Phone</td>
             <td>{{$data->contact_no}}</td>
         </tr>
+
     </table>
 </div>
