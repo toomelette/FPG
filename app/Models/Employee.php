@@ -16,6 +16,21 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Employee extends Model{
 
+    public static function boot()
+    {
+        parent::boot();
+        static::updating(function($a){
+            $a->user_updated = \Auth::user()->user_id;
+            $a->ip_updated = request()->ip();
+            $a->updated_at = \Carbon::now();
+        });
+
+        static::creating(function ($a){
+            $a->user_created = \Auth::user()->user_id;
+            $a->ip_created = request()->ip();
+            $a->created_at = \Carbon::now();
+        });
+    }
 
 
 
@@ -26,7 +41,7 @@ class Employee extends Model{
 
     protected $dates = ['date_of_birth', 'firstday_gov', 'firstday_sra', 'appointment_date', 'adjustment_date', 'created_at', 'updated_at'];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected static $logName = 'employee';
     protected static $logAttributes = ['*'];

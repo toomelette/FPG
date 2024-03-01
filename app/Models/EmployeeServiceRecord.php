@@ -17,7 +17,7 @@ class EmployeeServiceRecord extends Model{
     protected $dates = ['created_at', 'updated_at'];
 
     public $timestamps = false;
-    
+    protected $touches = ['employee'];
 
     use SoftDeletes;
 
@@ -56,7 +56,7 @@ class EmployeeServiceRecord extends Model{
 
     /** RELATIONSHIPS **/
     public function employee() {
-    	return $this->belongsTo('App\Models\Employee','employee_slug','slug');
+    	return $this->belongsTo(Employee::class,'employee_slug','slug');
     }
     
 

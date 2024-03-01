@@ -19,6 +19,7 @@ class EmployeeExperience extends Model{
     
     use SoftDeletes;
 
+    protected $touches = ['employee'];
 
 
     protected $attributes = [

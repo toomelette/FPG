@@ -17,7 +17,7 @@ class EmployeeTraining extends Model{
 
     public $timestamps = false;
     use SoftDeletes;
-
+    protected $touches = ['employee'];
     
 
 

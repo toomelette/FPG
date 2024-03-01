@@ -125,7 +125,7 @@ class EmployeeServiceRecordRepository extends BaseRepository implements Employee
         }
 
 
-        $employee_sr->update();
+        $employee_sr->save();
 
         return $employee_sr;
 
