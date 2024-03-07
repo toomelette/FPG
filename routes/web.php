@@ -1212,3 +1212,40 @@ Route::get('update',function (\Illuminate\Http\Request $request){
         dd('Done all.');
     }
 })->name('updateee');
+
+
+Route::get('/user', function(){
+
+    $zk = new ZKTeco('10.36.1.23');
+    //ini_set('max_execution_time', 300);
+    $zk->connect();
+
+    $employees = \App\Models\Employee::query()
+        ->where('biometric_user_id','!=',null)
+        ->where(function ($q){
+            $q->where('locations','=','VISAYAS')
+            ->orWhere('locations','=','COS-VISAYAS');
+        })
+        ->get()
+        ->mapWithKeys(function ($data){
+            return [
+                $data->biometric_user_id => $data
+            ];
+        });
+
+    foreach (collect($zk->getUser())->toArray() as $id => $data){
+        if (isset($employees[$id])){
+
+            $new_uid = $data['uid'];
+            $new_userid = $data['userid'];
+            $new_name = \Illuminate\Support\Str::limit($employees[$id]->firstname.' '.$employees[$id]->lastname,24);
+            $new_password = $data['password'];
+            $zk->setUser($new_uid,$new_userid,$new_name,$new_password,\Rats\Zkteco\Lib\Helper\Util::LEVEL_USER,"0000000000");
+        }
+
+    }
+
+
+    return $zk->getUser();
+
+});
