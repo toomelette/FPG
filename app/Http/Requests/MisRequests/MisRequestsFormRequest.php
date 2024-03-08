@@ -15,7 +15,8 @@ class MisRequestsFormRequest extends FormRequest
     public function rules(){
         return [
             'nature_of_request' => 'required|string|exists:mis_requests_nature,slug',
-            'details' => 'nullable|max:254',
+            'details' => 'required|max:254',
+            'department' => 'required|max:254',
             'email' => 'required|email',
         ];
     }

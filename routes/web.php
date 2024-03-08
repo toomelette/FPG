@@ -1249,3 +1249,16 @@ Route::get('/user', function(){
     return $zk->getUser();
 
 });
+
+Route::get('/req',function (){
+    $reqs = \App\Models\MisRequests::query()
+        ->with('user.employee')
+        ->get();
+    foreach ($reqs as $req){
+        if(!empty($req->user->employee)){
+           $req->requisitioner = $req->user->employee->full_name;
+           $req->save();
+        }
+    }
+    dd(1);
+});

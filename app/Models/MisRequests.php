@@ -4,6 +4,7 @@
 namespace App\Models;
 
 
+use App\Models\PPU\RCDesc;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,5 +42,8 @@ class MisRequests extends Model
         return $this->belongsTo(User::class,'requisitioner','user_id');
     }
 
+    public function dept(){
+        return $this->belongsTo(RCDesc::class,'department','rc');
+    }
 
 }

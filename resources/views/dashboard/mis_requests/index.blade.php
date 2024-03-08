@@ -105,12 +105,12 @@
             "serverSide": true,
             "ajax" : '{{route("dashboard.mis_requests.index")}}',
             "columns": [
-                { "data": "request_no" },
-                { "data": "fullname" },
-                { "data": "nature_of_request" },
-                { "data": "created_at" },
-                { "data": "status" },
-                { "data": "action" },
+                { "data": "request_no", "name": "request_no" },
+                { "data": "fullname", "name": "fullname" },
+                { "data": "nature_of_request", "name": "nature_of_request" },
+                { "data": "created_at", "name": "created_at" },
+                { "data": "status", "name": "status" },
+                { "data": "action", "name": "action" },
             ],
             "buttons": [
                 {!! __js::dt_buttons() !!}

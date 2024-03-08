@@ -8,6 +8,7 @@ use App\Models\PPU\PPURespCodes;
 use App\Models\SqlServer\EmpMaster;
 use App\Models\SqlServer\IncentiveTemplate;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
 use Spatie\Activitylog\LogOptions;
@@ -116,6 +117,13 @@ class Employee extends Model{
     ];
 
     protected $guarded = ['id','slug'];
+
+    protected function fullName(): Attribute
+    {
+        return  new Attribute(
+            get: fn() => $this->lastname.', '.$this->firstname,
+        );
+    }
 
 
     public function getActivitylogOptions():LogOptions {

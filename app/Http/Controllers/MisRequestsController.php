@@ -51,14 +51,16 @@ class MisRequestsController extends Controller
     }
 
     public  function store(MisRequestsFormRequest $request){
+
         $r = new MisRequests;
         $r->slug = Str::random(16);
         $r->request_no = $this->createNewRequstNo();;
         $r->nature_of_request = MisRequestsNature::query()->where('slug','=',$request->nature_of_request)->first()->nature_of_request;
-        $r->requisitioner = Auth::user()->user_id;
+        $r->requisitioner = strtoupper(Auth::user()->employee->full_name);
         $r->request_details = $request->details;
         $r->email = $request->email;
         $r->phone = $request->phone;
+        $r->department = $request->department;
         if($r->save()){
             $user = User::query()->where('user_id','=',$r->user_created)->first();
             $data = [
@@ -160,11 +162,7 @@ class MisRequestsController extends Controller
                     $append = view('dashboard.mis_requests.dtRequisitioner')->with([
                         'data' => $data,
                     ])->render();
-                    if(!empty($data->user)){
-                        if(!empty($data->user->employee)){
-                            return strtoupper($data->user->employee->lastname).', '.strtoupper($data->user->employee->firstname).$append;
-                        }
-                    }
+
                     return $data->requisitioner.$append;
                 })
                 ->editColumn('nature_of_request',function ($data){

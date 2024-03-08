@@ -61,6 +61,11 @@
                         <div class="modal-body">
                             <div class="row">
 
+                                {!! \App\Swep\ViewHelpers\__form2::select('department',[
+                                    'cols' => 12,
+                                    'label' => 'Department',
+                                    'options' => \App\Swep\Helpers\Arrays::departmentList(),
+                                ]) !!}
 
                                 {!! __form::select_static2(
                                     '12 nature_of_request', 'nature_of_request', 'Nature of Request:', '', \App\Swep\Helpers\Helper::mis_request_nature(), '', '', '', ''

@@ -1,5 +1,6 @@
 @if($data->email != null)
     <div class="table-subdetail" style="margin-top: 3px">
+        {{$data->dept->descriptive_name ?? ''}}
         <table>
             <tbody>
             <tr>
