@@ -101,6 +101,7 @@
                                         </a>
                                         <ul class="treeview-menu">
                                             @if(count($menu_content['submenus']) > 0)
+                                                @php(ksort($menu_content['submenus']))
                                                 @foreach($menu_content['submenus'] as $submenu)
                                                     @if($submenu->is_nav == true)
 

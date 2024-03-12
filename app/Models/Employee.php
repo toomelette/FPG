@@ -354,4 +354,19 @@ class Employee extends Model{
     public function scopeActive(Builder $query){
         $query->where('is_active','=','ACTIVE');
     }
+
+    public function scopePermanent(Builder $query){
+        $query->where(function ($q){
+            $q->where('locations','=','VISAYAS')
+                ->orWhere('locations','=','LUZON/MINDANAO')
+                ->orWhere('locations','=','RETIREE');
+        });
+    }
+
+    public function scopeCos(Builder $query){
+        $query->where(function ($q){
+            $q->where('locations','!=','VISAYAS')
+                ->where('locations','!=','LUZON/MINDANAO');
+        });
+    }
 }

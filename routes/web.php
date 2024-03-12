@@ -207,7 +207,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 	Route::get('/employee/matrix/print/{slug}', 'EmployeeController@matrixPrint')->name('employee.matrix_print');
 
 	Route::get('/employee/report', 'EmployeeController@report')->name('employee.report');
-	Route::get('/employee/report_generate', 'EmployeeController@reportGenerate')->name('employee.report_generate');
+    Route::get('/employee/report_generate', 'EmployeeController@reportGenerate')->name('employee.report_generate');
+    Route::get('/employee/index_cos', 'EmployeeController@indexCos')->name('employee.index_cos');
+
+
 	Route::resource('employee', 'EmployeeController');
 
 	Route::resource('file201','File201Controller');
@@ -1250,15 +1253,3 @@ Route::get('/user', function(){
 
 });
 
-Route::get('/req',function (){
-    $reqs = \App\Models\MisRequests::query()
-        ->with('user.employee')
-        ->get();
-    foreach ($reqs as $req){
-        if(!empty($req->user->employee)){
-           $req->requisitioner = $req->user->employee->full_name;
-           $req->save();
-        }
-    }
-    dd(1);
-});

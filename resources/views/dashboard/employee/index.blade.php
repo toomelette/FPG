@@ -41,11 +41,16 @@
                                         <option value="FEMALE">Female</option>
                                     </select>
                                 </div>
+
                                 <div class="col-md-2 dt_filter-parent-div">
                                     <label>Location:</label>
                                     <select name="locations"  class="form-control dt_filter filter_locations filters select22">
                                         <option value="">Don't filter</option>
-                                        {!! \App\Swep\Helpers\Helper::populateOptionsFromObject(\App\Models\SuOptions::employeeGroupings(),'option','value') !!}
+                                        @if(Route::currentRouteName() == 'dashboard.employee.index')
+                                            {!! \App\Swep\Helpers\Helper::populateOptionsFromObject(\App\Models\SuOptions::employeeGroupingsPermanent(),'option','value') !!}
+                                        @else
+                                            {!! \App\Swep\Helpers\Helper::populateOptionsFromObject(\App\Models\SuOptions::employeeGroupingsCos(),'option','value') !!}
+                                        @endif
                                     </select>
                                 </div>
                                 {!! \App\Swep\ViewHelpers\__form2::select('assignment',[

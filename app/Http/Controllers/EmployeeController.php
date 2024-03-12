@@ -60,22 +60,35 @@ class EmployeeController extends Controller{
 
 
     // Employee Master
-	public function index(EmployeeFilterRequest $request){
+	public function index(Request $request){
 
         if($request->ajax() && $request->has('draw')){
             return $this->dataTable($request);
         }
         return view('dashboard.employee.index');
-    	return $this->employee->fetch($request);
     
     }
 
-    private function dataTable($request){
+    public function indexCos(Request $request){
+        if($request->ajax() && $request->has('draw')){
+            return $this->dataTable($request,'COS');
+        }
+        return view('dashboard.employee.index');
+    }
+
+    private function dataTable($request, $type = 'PERMANENT'){
         $sql_server_is_on = Helper::sqlServerIsOn();
         $cols = ['fullname','employee_no','position','email','biometric_user_id', 'date_of_birth','sex','civil_status','firstname','slug','name_ext','cell_no'];
         $employees = Employee::query()->with([
             'responsibilityCenter',
         ]);
+
+        if($type == 'PERMANENT'){
+            $employees = $employees->permanent();
+        }else{
+            $employees = $employees->cos();
+
+        }
         if($sql_server_is_on === true){
             $employees = $employees->with('empMaster');
         }
