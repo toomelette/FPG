@@ -220,9 +220,11 @@ class UserController extends Controller{
                 $employees = Employee::query()
                     ->select(['slug','firstname','middlename','lastname','locations'])
 //                    ->addSelect(DB::raw('"PERM" as type'))
-                    ->where('firstname','like','%'.$query.'%')
-                    ->orWhere('middlename','like','%'.$query.'%')
-                    ->orWhere('lastname','like','%'.$query.'%')
+                    ->where(function ($q) use ($query){
+                        $q->where('firstname','like','%'.$query.'%')
+                            ->orWhere('middlename','like','%'.$query.'%')
+                            ->orWhere('lastname','like','%'.$query.'%');
+                    })
                     ->doesntHave('user');
 //                return $employees->to
                 $all_employees = $employees->get();

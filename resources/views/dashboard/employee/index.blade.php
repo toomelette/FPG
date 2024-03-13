@@ -3,7 +3,12 @@
 @section('content')
 
 <section class="content-header">
-    <h1>Manage Employees</h1>
+    @if(Route::currentRouteName() == 'dashboard.employee.index')
+        <h1>Manage Permanent Employees</h1>
+    @else
+        <h1>Manage COS Employees</h1>
+    @endif
+
 </section>
 
 <section class="content">

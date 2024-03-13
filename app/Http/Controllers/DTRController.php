@@ -154,6 +154,7 @@ class DTRController extends  Controller
     }
 
     public function show($slug){
+
         $p_employee = Employee::query()->where('slug','=',$slug)->first();
         if(empty($p_employee)){
             $jo_employee = JoEmployees::query()->where('slug','=',$slug)->first();
@@ -213,9 +214,8 @@ class DTRController extends  Controller
         $firstDtr = DailyTimeRecord::query()->orderBy('date')->first();
         $start = Carbon::parse($firstDtr->date ?? null)->format('Y-m-01');
         $end = Carbon::now()->format('Y-m-01');
-        $employee = $this->getCurrentUserEmployeeObj();
+        $employee = Auth::user()->employee;
         $dtr_by_year = [];
-
 
         while (Carbon::parse($start)->format('Y-m-d') <= Carbon::parse($end)->format('Y-m-d')){
             $dtr_by_year[Carbon::parse($start)->format('Y')][Carbon::parse($start)->format('Y-m')] = null;
@@ -252,8 +252,11 @@ class DTRController extends  Controller
                 $bm_u_id = $request->bm_u_id;
             }
 
-            $dtrs = DailyTimeRecord::with('edits')->where('biometric_user_id','=',$request->bm_u_id)->
-                where('date','like',$request->month.'%')->orderBy('date','asc')->get();
+            $dtrs = DailyTimeRecord::with('edits')
+                ->where('biometric_user_id','=',$request->bm_u_id)
+                ->where('date','like',$request->month.'%')
+                ->orderBy('date','asc')
+                ->get();
             $dtr_array = [];
             if($dtrs->count() > 0){
                 foreach ($dtrs as $dtr) {
@@ -261,15 +264,8 @@ class DTRController extends  Controller
                 }
             }
 
-            $perm_employee = Employee::query()->where('biometric_user_id','=',$bm_u_id)->first();
-            if(!empty($perm_employee)){
-                $employee = $perm_employee;
-            }else{
-                $jo_employee = JoEmployees::query()->where('biometric_user_id','=',$bm_u_id)->first();
-                if(!empty($jo_employee)){
-                    $employee = $jo_employee;
-                }
-            }
+            $employee = Employee::query()->where('biometric_user_id','=',$bm_u_id)->first();
+
             $first_day = $request->month.'-01';
             $first_day_next_month = Carbon::parse($first_day)->addMonth(1)->format('Y-m-d');
             $holidays = $this->holidaysArray($request->month);

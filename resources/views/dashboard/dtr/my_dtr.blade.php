@@ -9,6 +9,7 @@
             $bm_uid = $employee->biometric_user_id;
         }
     @endphp
+
     <section class="content-header">
         <h1>Daily Time Record</h1>
     </section>
