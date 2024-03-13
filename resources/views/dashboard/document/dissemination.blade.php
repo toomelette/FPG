@@ -59,6 +59,7 @@ $span_failed = '<span class="badge bg-red">Failed</span>';
 
                       <div class="form-group col-md-12 {{ $errors->has('email_contact') ? 'has-error' : '' }}">
                         <label for="email_contact">Contacts: </label> <br>
+
                         <select name="email_contact[]" id="email_contact" class="form-control select2" multiple="multiple" data-placeholder="Recipients">
                             @foreach($global_email_contacts_all as $data)
                                 @if(old('email_contact'))
@@ -77,7 +78,7 @@ $span_failed = '<span class="badge bg-red">Failed</span>';
 
                       @php
                         $employeesWithEmail = \App\Models\Employee::query()
-                            ->select(['email','slug','fullname'])
+                            ->select(['email','slug','lastname','firstname','middlename'])
                             ->where('email','!=',null)
                             ->orWhere('email','!=','')
                             ->active()
@@ -87,7 +88,7 @@ $span_failed = '<span class="badge bg-red">Failed</span>';
                         <label for="employee">Employees: </label> <br>
                         <select name="employee[]" id="employee" class="form-control select2" multiple="multiple" data-placeholder="Recipients">
                             @forelse($employeesWithEmail as $employee)
-                              <option value="{{ $employee->slug }}" data-fullname="{{$employee->fullname}}" data-email="{{$employee->email}}">{{$employee->fullname}} | {{$employee->email}}</option>
+                              <option value="{{ $employee->slug }}" data-fullname="{{$employee->full_name}}" data-email="{{$employee->email}}">{{$employee->full_name}} | {{$employee->email}}</option>
                             @empty
                             @endforelse
                         </select>

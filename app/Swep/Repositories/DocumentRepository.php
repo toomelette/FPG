@@ -241,7 +241,7 @@ class DocumentRepository extends BaseRepository implements DocumentInterface {
             ->with([
                 'documentDisseminationLog',
 //                'documentDisseminationLog.employee',
-                'documentDisseminationLog.emailContact',
+//                'documentDisseminationLog.emailContact',
             ])
             ->first() ?? abort(503,'Document not found');
 
