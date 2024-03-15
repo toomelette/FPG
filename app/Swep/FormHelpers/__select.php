@@ -4,23 +4,24 @@ namespace App\Swep\FormHelpers;
 
 use Illuminate\Support\Collection;
 
-class __textbox
+class __select
 {
-
     private $name,
-            $label,
-            $placeholder,
-            $autocomplete = 'on',
-            $value,
-            $class,
-            $containerClass,
-            $cols,
-            $type = 'text',
-            $for;
+        $label,
+        $placeholder,
+        $autocomplete = 'on',
+        $value,
+        $class,
+        $containerClass,
+        $cols,
+        $type = 'text',
+        $options,
+        $disableDefault = false,
+        $for;
 
     public static function make()
     {
-        return new __textbox();
+        return new __select();
     }
 
     public function __construct()
@@ -33,11 +34,21 @@ class __textbox
         $cls = new \ReflectionClass(__CLASS__);
         $toPass = new Collection();
         foreach ($cls->getProperties() as $property){
-           $toPass->{$property->name} = $this->{$property->name};
+            $toPass->{$property->name} = $this->{$property->name};
         }
-        return  view('helpers.textbox')->with([
+        return  view('helpers.select')->with([
             'thiss' => $toPass,
         ]);
+    }
+
+    public function disableDefault(){
+        $this->disableDefault = true;
+        return $this;
+    }
+
+    public function options(array $array){
+        $this->{__FUNCTION__} = $array;
+        return $this;
     }
 
     public function for($value)
@@ -94,7 +105,6 @@ class __textbox
         $this->{__FUNCTION__} = $value;
         return $this;
     }
-
 
 
 }

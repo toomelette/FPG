@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6fbcd74ec7d3baa9d4329ad32b32a08c",
+    "content-hash": "0c8995bb5b638f2142d1abf4f4a8bfbb",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1301,6 +1301,40 @@
                 }
             ],
             "time": "2023-10-12T05:21:21+00:00"
+        },
+        {
+            "name": "gguance/swep-helpers",
+            "version": "1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/toomelette/SWEPHelpers.git",
+                "reference": "307e448c9415d55c239f4f3d0fb4ca48f3fc49bc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/toomelette/SWEPHelpers/zipball/307e448c9415d55c239f4f3d0fb4ca48f3fc49bc",
+                "reference": "307e448c9415d55c239f4f3d0fb4ca48f3fc49bc",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Gguance\\SwepHelpers\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "MISVIS",
+                    "email": "sramisvis@gmail.com"
+                }
+            ],
+            "description": "Helpers for SRA Web Portal",
+            "support": {
+                "issues": "https://github.com/toomelette/SWEPHelpers/issues",
+                "source": "https://github.com/toomelette/SWEPHelpers/tree/1.8"
+            },
+            "time": "2024-03-15T06:49:22+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -10678,10 +10712,10 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.0",
+        "php": "^8.1",
         "ext-curl": "*",
-        "ext-json": "*",
-        "ext-imagick": "*"
+        "ext-imagick": "*",
+        "ext-json": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

@@ -32,7 +32,44 @@ class LeaveApplicationController extends Controller{
 
     public function index(LeaveApplicationFilterRequest $request){
 
-        return $this->leave_application->fetch($request);
+        if($request->ajax() && $request->has('draw')){
+            $las = LeaveApplication::query()
+                ->with([
+                    'dates','employee'
+                ]);
+            return DataTables::of($las)
+                ->editColumn('date_of_filing',function($data){
+                    return Carbon::parse($data->date_of_filing)->format('M. d, Y');
+                })
+                ->addColumn('inclusive_dates',function($data){
+                    return view('dashboard.leave_application.dtInclusiveDates')
+                        ->with([
+                            'data' => $data,
+                        ]);
+                })
+                ->editColumn('leave_type',function($data){
+                    return view('dashboard.leave_application.dtLeaveType')
+                        ->with([
+                            'data' => $data,
+                        ]);
+                })
+                ->addColumn('employee',function($data){
+
+                })
+                ->addColumn('status',function($data){
+
+                })
+                ->addColumn('action',function($data){
+                    return view('dashboard.leave_application.dtActions')
+                        ->with([
+                            'data' => $data,
+                        ]);
+                })
+                ->escapeColumns([])
+                ->setRowId('slug')
+                ->toJson();
+        }
+        return view('dashboard.leave_application.index');
     
     }
 
@@ -42,7 +79,8 @@ class LeaveApplicationController extends Controller{
     public function userIndex(LeaveApplicationFilterRequest $request){
         if($request->ajax() && $request->has('draw')){
             $las = LeaveApplication::query()
-                ->with(['dates']);
+                ->with(['dates'])
+                ->myData();
             return DataTables::of($las)
                 ->editColumn('date_of_filing',function($data){
                     return Carbon::parse($data->date_of_filing)->format('M. d, Y');

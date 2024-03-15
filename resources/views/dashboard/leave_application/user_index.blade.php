@@ -1,21 +1,3 @@
-<?php
-
-  $appended_requests = [
-                        'q'=> Request::get('q'), 
-                        'sort' => Request::get('sort'),
-                        'direction' => Request::get('direction'),
-
-                        't'=> Request::get('t'), 
-                        'df' => Request::get('df'),
-                        'dt' => Request::get('dt'),
-                      ];
-
-?>
-
-
-
-
-
 @extends('layouts.admin-master')
 
 @section('content')

@@ -1,121 +1,38 @@
-<?php
-
-  $appended_requests = [
-                        'q'=> Request::get('q'), 
-                        'sort' => Request::get('sort'),
-                        'direction' => Request::get('direction'),
-                        'e' => Request::get('e'),
-
-                        't'=> Request::get('t'), 
-                        'df' => Request::get('df'),
-                        'dt' => Request::get('dt'),
-                      ];
-
-  $span_user_not_exist = '<span class="text-red"><b>User does not exist!</b></span>';
-
-?>
-
-
-
-
-
 @extends('layouts.admin-master')
 
 @section('content')
 
   <section class="content-header">
-      <h1>Leave Application List</h1>
+    <h1>My Leave Applications</h1>
   </section>
+@endsection
+@section('content2')
 
   <section class="content">
-
-
-    {{-- Form Start --}}
-    <form data-pjax class="form" id="filter_form" method="GET" autocomplete="off" action="{{ route('dashboard.leave_application.index') }}">
-
-
-    {{-- Advance Filters --}}
-    {!! __html::filter_open() !!}
-
-      <div class="col-md-12">
-
-        {!! __form::select_static_for_filter('3', 't', 'Type of Leave', old('t'), __static::leave_types(), 'submit_la_filter', '', '') !!}
-
-      </div>
-
-
-      <div class="col-md-12 no-padding">
-
-        <h5>Date of Filing Filter : </h5>
-
-        {!! __form::datepicker('3', 'df',  'From', old('df'), '', '') !!}
-
-        {!! __form::datepicker('3', 'dt',  'To', old('dt'), '', '') !!}
-
-        <button type="submit" class="btn btn-primary" style="margin:25px;">Filter Date <i class="fa fa-fw fa-arrow-circle-right"></i></button>
-
-      </div>
-
-    {!! __html::filter_close('submit_la_filter') !!}
-
-
-
-    <div class="box" id="pjax-container" style="overflow-x:auto;">
-
-      {{-- Table Search --}}
+    <div class="box box-solid">
       <div class="box-header with-border">
-        {!! __html::table_search(route('dashboard.leave_application.index')) !!}
+        <h3 class="box-title">List of leave applications</h3>
       </div>
 
-    {{-- Form End --}}
-    </form>
-
-      {{-- Table Grid --}}
-      <div class="box-body no-padding">
-        <table class="table table-hover">
-          <tr>
-            <th>@sortablelink('user.firstname', 'User')</th>
-            <th>@sortablelink('firstname', 'Name')</th>
-            <th>@sortablelink('type', 'Type of Leave')</th>
-            <th>@sortablelink('date_of_filing', 'Date of Filing')</th>
-            <th style="width: 150px">Action</th>
-          </tr>
-          @foreach($leave_applications as $data)
-            <tr>
-              <td id="mid-vert">{!! empty($data->user) ? $span_user_not_exist : Str::limit($data->user->fullnameShort, 25) !!}</td>
-              <td id="mid-vert">{{ $data->firstname .' '. substr($data->middlename , 0, 1) .'. '.  $data->lastname}}</td>
-              <td id="mid-vert">
-                @foreach(__static::leave_types() as $name => $key)
-                  @if($key == $data->type)
-                    {{ $name }}
-                  @endif
-                @endforeach
-              </td>
-              <td id="mid-vert">{{ __dataType::date_parse($data->date_of_filing, 'M d, Y') }}</td>
-              <td id="mid-vert">
-                <select id="action" class="form-control input-md">
-                  <option value="">Select</option>
-                  <option data-type="1" data-url="{{ route('dashboard.leave_application.show', $data->slug) }}">Print</option>
-                  <option data-type="1" data-url="{{ route('dashboard.leave_application.edit', $data->slug) }}">Edit</option>
-                  <option data-type="0" data-action="delete" data-url="{{ route('dashboard.leave_application.destroy', $data->slug) }}">Delete</option>
-                </select>
-              </td>
+      <div class="box-body">
+        <div id="la_table_container" style="">
+          <table class="table table-bordered table-striped table-hover" id="la_table" style="width: 100%">
+            <thead>
+            <tr class="">
+              <th >Date of Application</th>
+              <th >Employee</th>
+              <th class="th-20">Type of Leave</th>
+              <th >Inclusive Dates</th>
+              <th >Status</th>
+              <th class="action">Action</th>
             </tr>
-            @endforeach
-        </table>
-      </div>
-
-      @if($leave_applications->isEmpty())
-        <div style="padding :5px;">
-          <center><h4>No Records found!</h4></center>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
         </div>
-      @endif
 
-      <div class="box-footer">
-        {!! __html::table_counter($leave_applications) !!}
-        {!! $leave_applications->appends($appended_requests)->render('vendor.pagination.bootstrap-4') !!}
       </div>
-
     </div>
 
   </section>
@@ -123,31 +40,77 @@
 @endsection
 
 
-
-
-
 @section('modals')
 
-  {!! __html::modal_delete('la_delete') !!}
-
-@endsection 
-
-
-
-
+@endsection
 
 @section('scripts')
-
   <script type="text/javascript">
 
-    {{-- CALL CONFIRM DELETE MODAL --}}
-    {!! __js::modal_confirm_delete_caller('la_delete') !!}
+    modal_loader = $("#modal_loader").parent('div').html();
+    //Initialize DataTable
+    active = '';
+    employees_tbl = $("#la_table").DataTable({
+      'dom' : 'lBfrtip',
+      "processing": true,
+      "serverSide": true,
+      "ajax" : '{{route('dashboard.leave_application.index')}}',
+      "columns": [
+        { "data": "date_of_filing" },
+        { "data": "employee" },
+        { "data": "leave_type" },
+        { "data": "inclusive_dates" },
+        { "data": "status" },
+        { "data": "action"}
+      ],
+      "buttons": [
+        {!! __js::dt_buttons() !!}
+      ],
+      "columnDefs":[
+        {
+          "targets" : 5,
+          "orderable" : false,
+          "searchable": false,
+          "class" : 'action4'
+        },
 
-    {{-- DV DELETE TOAST --}}
-    @if(Session::has('LA_DELETE_SUCCESS'))
-      {!! __js::toast(Session::get('LA_DELETE_SUCCESS')) !!}
-    @endif
+      ],
+      "responsive": true,
+      "initComplete": function( settings, json ) {
 
+      },
+      "language":
+              {
+                "processing": "<center><img style='width: 70px' src='{{asset("images/loader.gif")}}'></center>",
+              },
+      "drawCallback": function(settings){
+        // console.log(employees_tbl.page.info().page);
+        $("#la_table a[for='linkToEdit']").each(function () {
+          let orig_uri = $(this).attr('href');
+          $(this).attr('href',orig_uri+'?page='+employees_tbl.page.info().page);
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="modal"]').tooltip();
+        if(active != ''){
+          $("#la_table #"+active).addClass('success');
+        }
+      }
+    })
+
+    style_datatable("#la_table");
+
+    //Need to press enter to search
+    $('#la_table_filter input').unbind();
+    $('#la_table_filter input').bind('keyup', function (e) {
+      if (e.keyCode == 13) {
+        employees_tbl.search(this.value).draw();
+      }
+    });
+
+    $("body").on("click",".print-btn-dialog",function (){
+      let href = $(this).attr('href');
+      window.open(href, "popupWindow", "width=1200, height=600, scrollbars=yes");
+    })
   </script>
-    
 @endsection
