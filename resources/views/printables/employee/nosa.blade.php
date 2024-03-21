@@ -16,8 +16,8 @@
         NOTICE OF SALARY ADJUSTMENT
     </title>
 </head>
-<body style="padding-top: 175px">
-    <p class="text-center" style="font-size: 18px">
+<body style="padding-top: 175px; font-size: 14px">
+    <p class="text-center" style="font-size: 16px">
         <b>NOTICE OF SALARY ADJUSTMENT</b>
     </p>
 
@@ -26,16 +26,15 @@
     </p>
 
     <p>
-        <span style="font-size: 20px ">
-            {{($employee->sex = 'FEMALE') ? 'Ms.' : 'Mr.'}} {{$employee->firstname}} {{\Illuminate\Support\Str::limit($employee->middlename,1)}} {{$employee->lastname}}
+        <span style="font-size: 18px ">
+            <b>{{($employee->sex == 'FEMALE') ? 'Ms.' : 'Mr.'}} {{$employee->firstname}} {{\Illuminate\Support\Str::limit($employee->middlename,1,'.')}} {{$employee->lastname}}</b>
         </span>
         <br>
         Sugar Regulatory Administration
     </p>
 
     <p>
-        {{($employee->sex = 'FEMALE') ? "Madam" : 'Sir'}},
-
+        {{($employee->sex == 'FEMALE') ? "Madam" : 'Sir'}},
     </p>
 
     <p style="text-align: justify">
@@ -46,14 +45,15 @@
 
     <table style="width: 100%">
         <tr>
+            <td style="width: 15px; vertical-align: top">1.</td>
             <td style="width: 80%">
-                1. Adjusted monthly basic salary effective
+                Adjusted monthly basic salary effective
                 {{\Carbon\Carbon::parse(\Illuminate\Support\Facades\Request::get('effectivity'))->format('F d, Y')}}
                 under the new salary schedule
                 JG <b>{{\Illuminate\Support\Facades\Request::get('new_salary_grade')}}</b>
                 Step <b>{{\Illuminate\Support\Facades\Request::get('new_step_inc')}}</b>
             </td>
-            <td class="text-right">
+            <td class="text-right" style="vertical-align: top">
                 <u>
                     <p class="editable">
                         {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('new_monthly_salary')),2)}}
@@ -63,13 +63,14 @@
         </tr>
 
         <tr>
+            <td style="width: 15px; vertical-align: top">2.</td>
             <td>
-                2. Actual monthly salary as of
+                Actual monthly salary as of
                 {{\Carbon\Carbon::parse(\Illuminate\Support\Facades\Request::get('as_of'))->format('F d, Y')}}
                 SG <b>{{\Illuminate\Support\Facades\Request::get('salary_grade')}}</b>
                 Step <b>{{\Illuminate\Support\Facades\Request::get('step_inc')}}</b>
             </td>
-            <td class="text-right">
+            <td class="text-right" style="vertical-align: top">
                 <u>
                     <p class="editable">
                         {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('monthly_basic')),2)}}
@@ -80,11 +81,12 @@
         </tr>
 
         <tr>
+            <td style="width: 15px; vertical-align: top">3.</td>
             <td>
-                3. Monthly Salary Adjustment effective
+                Monthly Salary Adjustment effective
                 {{\Carbon\Carbon::parse(\Illuminate\Support\Facades\Request::get('effectivity'))->format('F d, Y')}}
             </td>
-            <td class="text-right">
+            <td class="text-right" style="vertical-align: top">
                 <u>
                     <p class="editable">
                         {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('new_monthly_salary')) - \App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('monthly_basic')),2)}}
@@ -133,7 +135,7 @@
 
 
     <div style="overflow: auto">
-        <div style="width: 30%; float: right; font-family: Calibri">
+        <div style="width: 30%; float: right;">
         <p>
             FM-AFD-HRS-034, Rev. 001<br>Effectivity Date: March 8, 2022
         </p>

@@ -698,6 +698,12 @@ class EmployeeController extends Controller{
             ]);
         }
 
+        if($type == 'nosi'){
+            return \view('printables.employee.nosi')->with([
+                'employee' => $employee,
+            ]);
+        }
+
 
         return view('dashboard.employee.other_hr_actions.index')->with([
             'employee' => $employee,
