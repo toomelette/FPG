@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CopyBiometricDataFromLgarec;
 use App\Console\Commands\DemoCron;
 use App\Console\Commands\UploadDtrs;
 use App\Models\CronLogs;
@@ -22,6 +23,7 @@ class Kernel extends ConsoleKernel
         Commands\ComputeLateUndertime::class,
         Commands\SanitizeBiometricDevice::class,
         Commands\UploadDtrs::class,
+        Commands\CopyBiometricDataFromLgarec::class,
     ];
 
     /**
@@ -35,6 +37,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('dtr:extract')->everyTenMinutes();
         $schedule->command('dtr:reconstruct')->everyTenMinutes();
         $schedule->command('dtr:compute_late_undertime')->everyTenMinutes();
+        $schedule->command('dtr:copy_from_lgarec')->everyTenMinutes();
 //        $schedule->command('dtr:sanitizeBiometricDevices')->fridays()->at('18:00');
 //        $schedule->command('dtr:upload')->everyTenMinutes();
 //        $schedule->command('demo:cron')->everyMinute();

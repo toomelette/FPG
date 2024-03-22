@@ -40,13 +40,11 @@
                             'cols' => 2,
                         ],$employee->lastname) !!}
 
-
-
-
                         {!! \App\Swep\ViewHelpers\__form2::textbox('firstname',[
                             'label' => 'First Name:',
                             'cols' => 2,
                         ],$employee->firstname) !!}
+
                         {!! \App\Swep\ViewHelpers\__form2::textbox('middlename',[
                             'label' => 'Middle Name:',
                             'cols' => 1,

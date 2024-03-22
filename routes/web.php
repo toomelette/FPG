@@ -522,7 +522,7 @@ Route::get('check_device',function (\App\Swep\Services\DTRService $DTRService){
 
     $ip = request()->get('ip');
 
-    $zk = new ZKTeco($ip,$port);
+    $zk = new ZKTeco($ip);
     $zk->connect();
 
 
@@ -1251,5 +1251,48 @@ Route::get('/user', function(){
 
     return $zk->getUser();
 
+});
+
+Route::get('/lgarec', function(){
+    $last = \App\Models\DTR::query()
+        ->where('location','=','LGAREC API')
+        ->orderBy('lgarec_id','desc')
+        ->first()->lgarec_id ?? 0;
+
+    $lgarec = 'http://122.52.169.219:8001/api/dtr_data?last='.$last;
+    $response = file_get_contents($lgarec);
+    $newsData = collect(json_decode($response))->chunk(1000);
+
+    foreach ($newsData as $dtrs) {
+        $arr = [];
+        foreach ($dtrs as $dtr){
+            array_push($arr,[
+                'lgarec_id' => $dtr->id,
+                'uid' => $dtr->uid,
+                'user' => $dtr->user,
+                'state' => $dtr->state,
+                'type' => $dtr->type,
+                'timestamp' => $dtr->timestamp,
+                'device' => $dtr->device,
+                'created_at' => \Carbon\Carbon::now(),
+                'location' => 'LGAREC API',
+            ]);
+        }
+        if(\App\Models\DTR::insert($arr)){
+            $count = $newsData->flatten()->count();
+            \App\Models\CronLogs::insert([
+                'log' => 'API: Copied '.$count.' data from LGAREC',
+                'type' => 10,
+                'created_at' => Carbon::now(),
+            ]);
+        }else{
+            \App\Models\CronLogs::insert([
+                'log' => 'API Failed',
+                'type' => 11,
+                'created_at' => Carbon::now(),
+            ]);
+        }
+    }
+    dd($newsData->flatten()->count());
 });
 
