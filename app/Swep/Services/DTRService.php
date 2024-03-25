@@ -101,21 +101,34 @@ class DTRService extends BaseService
 
     public  function reconstruct(){
         $dtrs_raw = DTR::query()->where('processed','=',null)
-            ->orWhere('processed','=',0)->get();
+            ->orWhere('processed','=',0)
+//            ->limit(100)
+            ->get();
         $values = $this->biometric_values();
         $no_of_processed = 0;
         $not_processed = 0;
+        $users = [];
+
+
+        $employees = Employee::query()->where('biometric_user_id','!=',0)->get();
+        $employeesArray = $employees->mapWithKeys(function ($data){
+            return [
+                $data->biometric_user_id => $data,
+            ];
+        });
+        $ext = '';
         foreach ($dtrs_raw as $dtr_raw) {
             $biometric_user_id = $dtr_raw->user;
-            $p_employee = Employee::query()->select('firstname','lastname','biometric_user_id','employee_no',DB::raw('"permanent" as type'))->where('biometric_user_id','=',$biometric_user_id);
-            $jo_employee = JoEmployees::query()->select('firstname','lastname','biometric_user_id','employee_no',DB::raw('"jo" as type'))->where('biometric_user_id','=',$biometric_user_id);
-            $employees = $p_employee->union($jo_employee)->first();
+//            $p_employee = Employee::query()->select('firstname','lastname','biometric_user_id','employee_no',DB::raw('"permanent" as type'))->where('biometric_user_id','=',$biometric_user_id);
+//            $jo_employee = JoEmployees::query()->select('firstname','lastname','biometric_user_id','employee_no',DB::raw('"jo" as type'))->where('biometric_user_id','=',$biometric_user_id);
+//            $employees = $p_employee->union($jo_employee)->first();
             $ext = '';
-
-            if(!empty($employees)){
+            array_push($users,$biometric_user_id);
+            if(isset($employeesArray[$biometric_user_id])){
+                $employee = $employeesArray[$biometric_user_id];
                 $dtr_check = DailyTimeRecord::query()
                     ->where('date','=',Carbon::parse($dtr_raw->timestamp)->format('Y-m-d'))
-                    ->where('employee_no','=',$employees->employee_no)
+                    ->where('employee_no','=',$employee->employee_no)
                     ->first();
                 if(isset($values[$dtr_raw->type])){
                     $db_col = $values[$dtr_raw->type];
@@ -124,8 +137,8 @@ class DTRService extends BaseService
                         $dtr->slug = Str::random(30);
                         $dtr->$db_col = Carbon::parse($dtr_raw->timestamp)->format('H:i');
                         $dtr->date = Carbon::parse($dtr_raw->timestamp)->format('Y-m-d');
-                        $dtr->employee_slug = $employees->slug;
-                        $dtr->employee_no = $employees->employee_no;
+                        $dtr->employee_slug = $employee->slug;
+                        $dtr->employee_no = $employee->employee_no;
                         $dtr->biometric_user_id = $biometric_user_id;
                         $dtr->biometric_uid = 0;
                         $dtr->calculated = 0;
@@ -147,12 +160,16 @@ class DTRService extends BaseService
                         }
                     }
                 }else{
+
                     $not_processed++;
                     $ext = ' | '.$not_processed.' data not processed due to DTR Value not set.';
                 }
-
             }
+            $dtr_raw->processed = 2;
+            $dtr_raw->update();
+
         }
+
 
         $cl = new CronLogs;
         $cl->log = 'Reconstructed '.$no_of_processed.' raw DTR data'. $ext;
