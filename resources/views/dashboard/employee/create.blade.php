@@ -53,17 +53,6 @@
                     </div>
                     <div class="box-body" style="">
                       <div class="row">
-
-                        {!!
-                            \App\Swep\FormHelpers\__textbox::label('label')
-                            ->placeHolder('placeholder')
-                            ->value('value')
-                            ->columns(6)
-                            ->class('classes')
-                            ->type('date')
-                            ->render()
-                        !!}
-
                         {!! \App\Swep\ViewHelpers\__form2::textbox('lastname',[
                         'label' => 'Last Name:',
                         'cols' => 3,
