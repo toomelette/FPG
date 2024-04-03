@@ -77,6 +77,10 @@ table.print-table th,table.print-table td{
     /*margin: 0;*/
 }
 
+table.tbl{
+    border-spacing: 0;
+    width: 100%;
+}
 
 .page-break{
     border: 1px dashed red;
@@ -137,12 +141,7 @@ table.print-table th,table.print-table td{
 .text-strong{
     font-weight: bold;
 }
-.f-12{
-    font-size: 12px;
-}
-.f-9{
-    font-size: 9px;
-}
+
 .no-border-top{
     border-top: 0px
 }
@@ -255,5 +254,124 @@ table.print-table th,table.print-table td{
 }
 .bg-orange{
     background-color: #ffebd6;
+}
+.f-1{
+    font-size: 1px;
+}
+.f-2{
+    font-size: 2px;
+}
+.f-3{
+    font-size: 3px;
+}
+.f-4{
+    font-size: 4px;
+}
+.f-5{
+    font-size: 5px;
+}
+.f-6{
+    font-size: 6px;
+}
+.f-7{
+    font-size: 7px;
+}
+.f-8{
+    font-size: 8px;
+}
+.f-9{
+    font-size: 9px;
+}
+.f-10{
+    font-size: 10px;
+}
+.f-11{
+    font-size: 11px;
+}
+.f-12{
+    font-size: 12px;
+}
+.f-13{
+    font-size: 13px;
+}
+.f-14{
+    font-size: 14px;
+}
+.f-15{
+    font-size: 15px;
+}
+.f-16{
+    font-size: 16px;
+}
+.f-17{
+    font-size: 17px;
+}
+.f-18{
+    font-size: 18px;
+}
+.f-19{
+    font-size: 19px;
+}
+.f-20{
+    font-size: 20px;
+}
+.f-21{
+    font-size: 21px;
+}
+.f-22{
+    font-size: 22px;
+}
+.f-23{
+    font-size: 23px;
+}
+.f-24{
+    font-size: 24px;
+}
+.f-25{
+    font-size: 25px;
+}
+.f-26{
+    font-size: 26px;
+}
+.f-27{
+    font-size: 27px;
+}
+
+.b-side{
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.b-tb{
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.pds-light-fill{
+    background-color: #D9D9D9;
+}
+.pds-dark-fill{
+    background-color: #969696;
+    color: white;
+}
+
+.tbl-pds-20 td{
+    height: 20px;
+}
+.tbl-pds-25 td{
+    height: 25px;
+}
+.tbl-pds-30 td{
+    height: 30px;
+}
+.tbl-pds-15 td{
+    height: 15px;
+}
+.tbl-pds-10 td{
+    height: 10px;
+}
+
+.tbl-pds-5 td{
+    height: 5px;
 }
 

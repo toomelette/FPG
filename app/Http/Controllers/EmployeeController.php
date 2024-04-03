@@ -710,6 +710,17 @@ class EmployeeController extends Controller{
         ]);
     }
 
+    public function print($slug,$type){
+        $employee = Employee::query()
+            ->with(['employeeAddress'])
+            ->where('slug','=',$slug)->first() ?? abort(404,'Employee not found.');
+        if($type == 'pds'){
+            return view('printables.hru.employee.pds_1')->with([
+                'employee' => $employee
+            ]);
+        }
+    }
+
     public function allColumnsForReport(){
         return [
             'fullname' => [

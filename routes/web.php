@@ -211,6 +211,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('/employee/index_cos', 'EmployeeController@indexCos')->name('employee.index_cos');
 
 
+    Route::get('/employee/{slug}/{type}/print', \App\Http\Controllers\EmployeeController::class.'@print')->name('employee.print');
 	Route::resource('employee', 'EmployeeController');
 
 	Route::resource('file201','File201Controller');
