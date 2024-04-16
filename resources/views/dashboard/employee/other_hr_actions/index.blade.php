@@ -332,13 +332,15 @@
                                                     'label' => 'Name:',
                                                     'cols' => 6,
                                                     'class' => 'input-sm',
-                                                ],$s_name) !!}
+                                                ],($s_name == '') ? 'ATTY. BRANDO D. NOROÑA' : $s_name) !!}
 
-                                                {!! \App\Swep\ViewHelpers\__form2::textbox('signatory_position',[
-                                                    'label' => 'Position:',
-                                                    'cols' => 6,
-                                                    'class' => 'input-sm',
-                                                ],$s_position) !!}
+                                                <div class="col-md-6">
+                                                    <label>Position:</label>
+                                                    <textarea class="form-control input-sm" rows="3" name="signatory_position">Deputy Administrator II
+Administration and Finance
+
+                                                    </textarea>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-3">

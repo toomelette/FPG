@@ -59,3 +59,15 @@ Route::get('/g',function (\Illuminate\Http\Request $request){
 
     return $employee;
 });
+
+Route::controller(\App\Http\Controllers\Api\AuthController::class)->group(function () {
+    Route::post('login', 'login');
+    Route::post('register', 'register');
+    Route::post('logout', 'logout');
+    Route::post('refresh', 'refresh');
+});
+
+Route::controller(App\Http\Controllers\Api\Employee\ApiEmployeeController::class)->group(function (){
+    Route::get('getEmployees','getAll');
+    Route::get('getEmployeeByEmployeeNo/{employee_no}','getEmployeeByEmployeeNo');
+})->middleware('auth:api');

@@ -681,7 +681,7 @@ class EmployeeController extends Controller{
     public function otherHrActionsPrint($slug, $type){
         $employee = $this->findEmployeeBySlug($slug);
         if($type == 'nosa'){
-            return \view('printables.employee.nosa')->with([
+            return \view('printables.employee.nosa-hrs-034-02')->with([
                 'employee' => $employee,
             ]);
         }
