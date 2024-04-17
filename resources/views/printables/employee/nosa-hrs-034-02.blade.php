@@ -141,7 +141,7 @@
 <div style="overflow: auto">
     <div style="width: 20%; float: right; font-size: 10px">
         <p>
-            FM-AFD-HRS-034, Rev. 001<br>Effectivity Date: March 8, 2022
+            FM-AFD-HRS-034, Rev. 002<br>Effectivity Date: April 4, 2024
         </p>
     </div>
 </div>
