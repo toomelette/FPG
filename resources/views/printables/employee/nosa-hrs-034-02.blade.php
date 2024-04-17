@@ -74,7 +74,7 @@
         <td>
             Actual monthly salary as of
             <b><u>{{\Carbon\Carbon::parse(\Illuminate\Support\Facades\Request::get('as_of'))->format('F d, Y')}}</u></b>
-            SG <b>{{\Illuminate\Support\Facades\Request::get('salary_grade')}}</b>
+            JG <b>{{\Illuminate\Support\Facades\Request::get('salary_grade')}}</b>
             Step <b>{{\Illuminate\Support\Facades\Request::get('step_inc')}}</b>
         </td>
         <td class="text-right" style="vertical-align: top">
