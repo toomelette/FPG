@@ -17,12 +17,14 @@
     </title>
 </head>
 <body style="padding-top: 175px; font-size: 14px">
-<p class="text-center" style="font-size: 16px">
+<p class="text-center" style="font-size: 18px">
     <b>NOTICE OF SALARY ADJUSTMENT</b>
+    <br><br>
 </p>
 
 <p class="">
     {{\Illuminate\Support\Carbon::now()->format('F d, Y')}}
+    <br><br>
 </p>
 
 <p>
@@ -33,6 +35,7 @@
     Sugar Regulatory Administration
     <br>
     {{Auth::user()->project_id == 1 ? 'Bacolod City': 'Quezon City'}}
+    <br><br>
 </p>
 
 <p>
@@ -47,10 +50,10 @@
     as follows:
 </p>
 
-<table style="width: 100%;font-size: 14px">
+<table style="width: 93%;font-size: 14px; margin-left: 25px">
     <tr>
         <td style="width: 15px; vertical-align: top">1.</td>
-        <td style="width: 80%">
+        <td style="width: 75%">
             Adjusted monthly basic salary effective
             <b><u>{{\Carbon\Carbon::parse(\Illuminate\Support\Facades\Request::get('effectivity'))->format('F d, Y')}}</u></b>
             under the new salary schedule
