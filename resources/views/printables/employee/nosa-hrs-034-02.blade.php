@@ -129,15 +129,12 @@
     Item No./ Unique Item No., FY 2021 Personal Services Itemization <br> and/or Plantilla of Personnel:  <b>{{\Illuminate\Support\Facades\Request::get('new_item_no')}}</b>
 </p>
 
-<table style="font-size: 12px">
+<table style="font-size: 12px; border-collapse: collapse">
     <tr>
-        <td>Copy Furnished:</td>
-        <td>GSIS</td>
+        <td style="vertical-align: top">Copy Furnished:</td>
+        <td>GSIS <br> Accounting</td>
     </tr>
-    <tr>
-        <td></td>
-        <td>Accounting</td>
-    </tr>
+
 </table>
 
 
