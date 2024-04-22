@@ -5,7 +5,9 @@
         <i class="fa fa-folder-open"></i>
     </a>
 
-    <a href="{{route('dashboard.document_folder.download',$data->slug)}}" type="button" data="{{$data->slug}}" class="btn btn-default btn-sm"  title="Edit" data-placement="top">
+    <a href="{{route('dashboard.document_folder.download',$data->slug)}}" type="button" data="{{$data->slug}}" class="btn btn-default btn-sm"  title="Edit" data-placement="top"
+        {{($data->documents1_count + $data->documents2_count < 1) ? 'disabled' : ''}}
+    >
         <i class="fa fa-download"></i>
     </a>
     <button href="{{route('dashboard.leave_application.print',$data->slug )}}"  type="button"  class="btn btn-default btn-sm print-btn-dialog"  title="Print" data-placement="top">

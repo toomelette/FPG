@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Kyslik\ColumnSortable\Sortable;
@@ -49,6 +50,7 @@ class DocumentFolder extends Model{
             return 'rec_document_folders';
         }
     }
+
 
     public function documents1(){
         return $this->hasMany('App\Models\Document','folder_code','folder_code');
