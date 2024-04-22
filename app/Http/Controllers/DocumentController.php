@@ -48,6 +48,9 @@ class DocumentController extends Controller{
 
         if ($request->ajax() && !empty($request->draw)){
 //            return 1;
+            if(!empty($request->folder_code)){
+                $documents->where('folder_code','=',$request->folder_code);
+            }
             return $this->dataTable($request, $documents);
         }
 
@@ -61,15 +64,14 @@ class DocumentController extends Controller{
         if(!empty($request->type)){
             $documents->where('type','=',$request->type);
         }
+
         if(!empty($request->person_to)){
             $documents->where('person_to','=',$request->person_to);
         }
         if(!empty($request->person_from)){
             $documents->where('person_from','=',$request->person_from);
         }
-        if(!empty($request->folder_code)){
-            $documents->where('folder_code','=',$request->folder_code);
-        }
+
 
         if(!empty($request->date_before)){
             $documents->where('date','<=',$request->date_before);

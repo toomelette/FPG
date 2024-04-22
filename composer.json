@@ -9,6 +9,7 @@
         "ext-curl": "*",
         "ext-imagick": "*",
         "ext-json": "*",
+        "ext-zip": "*",
         "barryvdh/laravel-dompdf": "^1.0.0",
         "codedge/laravel-fpdf": "^1.9",
         "doctrine/dbal": "^2.12.1",

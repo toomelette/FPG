@@ -1,140 +1,104 @@
-<?php
-
-  $table_sessions = [ 
-                      Session::get('DOC_FOLDER_UPDATE_SUCCESS_SLUG'),
-                    ];
-
-  $appended_requests = [
-                        'q'=> Request::get('q'),
-                        'sort' => Request::get('sort'),
-                        'direction' => Request::get('direction'),
-                        'e' => Request::get('e'),
-                      ];
-                      
-?>
-
-
-
-
-
 @extends('layouts.admin-master')
 
 @section('content')
-    
-  <section class="content-header">
-      <h1>Document Folder List</h1>
-  </section>
 
-  <section class="content">
-    
-    {{-- Form Start --}}
-    
-    <form data-pjax class="form" id="filter_form" method="GET" autocomplete="off" action="{{ route('dashboard.document_folder.index') }}">
+    <section class="content-header">
+        <h1>Document Folders</h1>
+    </section>
+@endsection
+@section('content2')
 
-    <div class="box" id="pjax-container" style="overflow-x:auto;">
-
-      {{-- Table Search --}}        
-      <div class="box-header with-border">
-        {!! __html::table_search(route('dashboard.document_folder.index')) !!}
-      </div>
-
-    {{-- Form End --}}  
-    </form>
-
-    <ol class="breadcrumb">
-        <li><a href="#">Home</a></li>
-      </ol>
-
-      {{-- Table Grid --}}        
-      <div class="box-body no-padding">
-        <table class="table">
-          <tr>
-            <th>@sortablelink('folder_code', 'Folder Code')</th>
-            <th>Documents</th>
-            <th style="width: 150px">Action</th>
-          </tr>
-
-
-          @foreach($doc_folders as $data) 
-            <tr {!! __html::table_highlighter( $data->slug, $table_sessions) !!} >
-              <td id="mid-vert">
-                <i class="fa fa-folder" style="font-size: 20px; color: #3c8dbc"></i>
-                <a href="{{route('dashboard.document_folder.browse', $data->folder_code )}}" style="text-decoration: underline; font-size:15px;">
-
-                  {{ $data->folder_code .' - '. $data->description }}
-                </a>
-              </td>
-              <td style="width: 50px" class="text-center">
-                @if(count($data->documents1) + count($data->documents2)==0)
-                  Empty
-                @else
-                  {{count($data->documents1) + count($data->documents2) }}
-                @endif
-                
-              </td>
-              <td> 
-                <select id="action" class="form-control input-md">
-                  <option value="">Select</option>
-                  <option data-type="1" data-url="{{ route('dashboard.document_folder.edit', $data->slug) }}">Edit</option>
-                  <option data-type="0" data-action="delete" data-url="{{ route('dashboard.document_folder.destroy', $data->slug) }}">Delete</option>
-                </select>
-              </td>
-
-            </tr>
-            @endforeach
-        </table>
-      </div>
-
-      @if($doc_folders->isEmpty())
-        <div style="padding :5px;">
-          <center><h4>No Records found!</h4></center>
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Folders</h3>
+            </div>
+            <div class="box-body">
+                <div id="df_table_container" style="">
+                    <table class="table table-bordered table-striped table-hover" id="df_table" style="width: 100%">
+                        <thead>
+                        <tr class="">
+                            <th >Folder Code</th>
+                            <th >Folder Name</th>
+                            <th >Documents</th>
+                            <th class="action">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-      @endif
 
-      <div class="box-footer">
-        {!! __html::table_counter($doc_folders) !!}
-        {!! $doc_folders->appends($appended_requests)->render('vendor.pagination.bootstrap-4') !!}
-      </div>
-
-    </div>
-
-  </section>
-
+    </section>
 
 @endsection
 
 
-
-
-
-
 @section('modals')
 
-  {!! __html::modal_delete('doc_folder_delete') !!}
-
-@endsection 
-
-
-
-
+@endsection
 
 @section('scripts')
+    <script type="text/javascript">
+        modal_loader = $("#modal_loader").parent('div').html();
+        //Initialize DataTable
+        active = '';
+        df_tbl = $("#df_table").DataTable({
+            'dom' : 'lBfrtip',
+            "processing": true,
+            "serverSide": true,
+            "ajax" : '{{route('dashboard.document_folder.index')}}',
+            "columns": [
+                { "data": "folder_code" },
+                { "data": "description" },
+                { "data": "documents" },
+                { "data": "action"}
+            ],
+            "buttons": [
+                {!! __js::dt_buttons() !!}
+            ],
+            "columnDefs":[
+                {
+                    "targets" : 3,
+                    "orderable" : false,
+                    "searchable": false,
+                    "class" : 'action4'
+                },
 
-  <script type="text/javascript">
+            ],
+            "responsive": true,
+            "initComplete": function( settings, json ) {
 
-    {{-- CALL CONFIRM DELETE MODAL --}}
-    {!! __js::modal_confirm_delete_caller('doc_folder_delete') !!}
+            },
+            "language":
+                {
+                    "processing": "<center><img style='width: 70px' src='{{asset("images/loader.gif")}}'></center>",
+                },
+            "drawCallback": function(settings){
+                // console.log(df_tbl.page.info().page);
+                $("#df_table a[for='linkToEdit']").each(function () {
+                    let orig_uri = $(this).attr('href');
+                    $(this).attr('href',orig_uri+'?page='+df_tbl.page.info().page);
+                });
 
-    {{-- DOCUMENT FOLDER DELETE TOAST --}}
-    @if(Session::has('DOC_FOLDER_DELETE_SUCCESS'))
-      {!! __js::toast(Session::get('DOC_FOLDER_DELETE_SUCCESS')) !!}
-    @endif
+                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="modal"]').tooltip();
+                if(active != ''){
+                    $("#df_table #"+active).addClass('success');
+                }
+            }
+        })
 
-    {{-- DOCUMENT FOLDER UPDATE TOAST --}}
-    @if(Session::has('DOC_FOLDER_UPDATE_SUCCESS'))
-      {!! __js::toast(Session::get('DOC_FOLDER_UPDATE_SUCCESS')) !!}
-    @endif
+        style_datatable("#df_table");
 
-  </script>
-    
+        //Need to press enter to search
+        $('#df_table_filter input').unbind();
+        $('#df_table_filter input').bind('keyup', function (e) {
+            if (e.keyCode == 13) {
+                df_tbl.search(this.value).draw();
+            }
+        });
+    </script>
 @endsection

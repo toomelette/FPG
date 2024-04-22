@@ -245,7 +245,8 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
 
 	/** Document Folder Codes **/
-	Route::get('/document_folder/browse/{folder_code}', 'DocumentFolderController@browse')->name('document_folder.browse');
+	Route::get('/document_folder/{folder_code}/browse', 'DocumentFolderController@browse')->name('document_folder.browse');
+    Route::get('/document_folder/{folder_code}/download', 'DocumentFolderController@download')->name('document_folder.download');
 	Route::resource('document_folder', 'DocumentFolderController');
 
 
