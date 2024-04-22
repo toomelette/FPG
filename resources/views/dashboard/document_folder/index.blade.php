@@ -100,5 +100,7 @@
                 df_tbl.search(this.value).draw();
             }
         });
+
+
     </script>
 @endsection

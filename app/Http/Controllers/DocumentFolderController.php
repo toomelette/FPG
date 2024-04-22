@@ -58,6 +58,8 @@ class DocumentFolderController extends Controller{
     }
 
     public function download($slug){
+
+
         $document_folder = DocumentFolder::query()
             ->where('slug','=',$slug)
             ->first();
