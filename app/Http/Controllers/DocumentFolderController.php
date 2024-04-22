@@ -73,7 +73,7 @@ class DocumentFolderController extends Controller{
             ->get();
 
         $zip = new \ZipArchive();
-        $fileName = 'symlink/'.\Carbon::now()->format('Ymd-His').'.zip';
+        $fileName = 'symlink/temp/'.\Carbon::now()->format('Ymd-His').'.zip';
         if ($zip->open(($fileName), \ZipArchive::CREATE)== TRUE) {
 
             foreach ($documents as $document){
