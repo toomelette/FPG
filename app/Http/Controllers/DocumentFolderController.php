@@ -78,7 +78,7 @@ class DocumentFolderController extends Controller{
                 if(\File::exists(env('STORAGE_LOCATION').$document->path.$document->filename)){
                     $zip->addFile(
                         env('STORAGE_LOCATION').$document->path.$document->filename,
-                        $document->year.'/'.$document->filename,
+                        \Carbon::parse($document->date)->format('Y').'/'.$document->filename,
                     );
                 }
             }
