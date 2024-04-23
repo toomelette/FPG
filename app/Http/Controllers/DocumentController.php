@@ -490,6 +490,9 @@ class DocumentController extends Controller{
 
         $fieldForFolder = '';
         switch ($request->type){
+            case 'by_year':
+                $fieldForFolder = 'year';
+                break;
             case 'by_to':
                 $fieldForFolder = 'person_to';
                 break;
@@ -518,9 +521,15 @@ class DocumentController extends Controller{
                 foreach ($documents as $document){
                     if($ct < $max){
                         if(\File::exists(env('STORAGE_LOCATION').$document->path.$document->filename)){
+                            if($request->type = 'by_year'){
+                                $folder = Carbon::parse($document->date)->format('Y');
+                            }else{
+                                $folder = str_replace('/',' or ',$document->$fieldForFolder);
+                            }
+
                             $zip->addFile(
                                 env('STORAGE_LOCATION').$document->path.$document->filename,
-                                str_replace('/',' or ',$document->$fieldForFolder).'/'.$document->filename,
+                                $folder.'/'.$document->filename,
                             );
                             $ct ++;
                         }
@@ -529,7 +538,6 @@ class DocumentController extends Controller{
                 }
             }
             if($zip->numFiles > 0){
-
                 $zip->close();
             }
         }
