@@ -57,11 +57,11 @@ class DocumentFolderController extends Controller{
         
     }
 
-    public function download($slug){
+    public function download($folder_code){
 
 
         $document_folder = DocumentFolder::query()
-            ->where('slug','=',$slug)
+            ->where('folder_code','=',$folder_code)
             ->first();
         $document_folder ?? abort(404,'Document Folder not found.');
         $folderCode = $document_folder->folder_code;
@@ -76,18 +76,27 @@ class DocumentFolderController extends Controller{
         $fileName = 'symlink/temp/'.\Carbon::now()->format('Ymd-His').'.zip';
         if ($zip->open(($fileName), \ZipArchive::CREATE)== TRUE) {
 
-            foreach ($documents as $document){
-                if(\File::exists(env('STORAGE_LOCATION').$document->path.$document->filename)){
-                    $zip->addFile(
-                        env('STORAGE_LOCATION').$document->path.$document->filename,
-                        \Carbon::parse($document->date)->format('Y').'/'.$document->filename,
-                    );
-                }
-            }
-            $zip->close();
-        }
+            if(!empty($documents)){
 
-        return response()->download(public_path($fileName));
+                foreach ($documents as $document){
+                    if(\File::exists(env('STORAGE_LOCATION').$document->path.$document->filename)){
+                        $zip->addFile(
+                            env('STORAGE_LOCATION').$document->path.$document->filename,
+                            \Carbon::parse($document->date)->format('Y').'/'.$document->filename,
+                        );
+                    }
+                }
+
+
+            }
+            if($zip->numFiles > 0){
+                $zip->close();
+            }
+        }
+        if(\File::exists(public_path($fileName))){
+            return response()->download(public_path($fileName));
+        }
+        abort(503,'No files found.');
     }
 
 
@@ -141,12 +150,13 @@ class DocumentFolderController extends Controller{
 
 
 
-    public function browse($folder_slug,Request $request, DocumentController $documentController){
+    public function browse($folder_code,Request $request, DocumentController $documentController){
         $document_folder = DocumentFolder::query()
-            ->where('slug',$folder_slug)
+            ->where('folder_code','=',$folder_code)
             ->first();
+
         $document_folder ?? abort(404,'Document Folder not found.');
-        $folderCode = $document_folder->folder_code;
+        $folderCode = $folder_code;
         if($request->ajax() && $request->has('draw')){
             $documents = Document::query()
                 ->with(['folder','folder2'])

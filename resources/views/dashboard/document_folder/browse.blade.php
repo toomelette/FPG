@@ -245,7 +245,7 @@
             'dom' : 'lBfrtip',
             "processing": true,
             "serverSide": true,
-            "ajax" : '{{route('dashboard.document_folder.browse',$document_folder->slug)}}',
+            "ajax" : '{{route('dashboard.document_folder.browse',$document_folder->folder_code)}}',
             "columns": [
                 { "data": "view_document" },
                 { "data": "reference_no" },

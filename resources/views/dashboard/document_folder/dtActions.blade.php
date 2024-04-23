@@ -5,7 +5,7 @@
         <i class="fa fa-folder-open"></i>
     </a>
     @if(($data->documents1_count + $data->documents2_count > 0) )
-    <a href="{{route('dashboard.document_folder.download',$data->slug)}}" type="button" data="{{$data->slug}}" class="btn btn-default btn-sm"  title="Edit" data-placement="top">
+    <a href="{{route('dashboard.document_folder.download',$data->folder_code)}}" type="button" data="{{$data->slug}}" class="btn btn-default btn-sm"  title="Edit" data-placement="top">
         <i class="fa fa-download"></i>
     </a>
     @else
