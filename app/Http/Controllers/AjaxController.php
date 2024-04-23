@@ -62,10 +62,10 @@ class AjaxController extends Controller
         }
 
         if($for == 'document_person_to'){
-            return $this->document_person_to();
+            return $this->document_person_to($r);
         }
         if($for == 'document_person_from'){
-            return $this->document_person_from();
+            return $this->document_person_from($r);
         }
         if($for == 'dv_add_item'){
             return $this->dv_add_item();
@@ -316,29 +316,47 @@ class AjaxController extends Controller
         return Session::get('last_slug');
     }
 
-    private function document_person_to(){
-        $arr['results'] = [];
-        $docs = Document::query()->select('person_to')->where('person_to','like','%'.\Illuminate\Support\Facades\Request::get("q").'%')->groupBy('person_to')->limit(30)->get();
-        array_push($arr['results'],['id'=>'','text' => "Don't Filter"]);
+    private function document_person_to(Request $request){
+        $arr = [];
+        $docs = Document::query()->select('person_to')
+            ->where('person_to','like','%'.\Illuminate\Support\Facades\Request::get("q").'%')
+            ->orderBy('person_to','asc')
+            ->groupBy('person_to');
+        if($request->has('page')){
+            $docs = $docs->offset((($request->page) - 1) * 10);
+        }
+        $docs = $docs->limit(10)
+            ->get();
         if(!empty($docs)){
 
             foreach ($docs as $doc){
-                array_push($arr['results'],['id'=>$doc->person_to,'text' => $doc->person_to]);
+                array_push($arr,['id'=>$doc->person_to,'text' => $doc->person_to]);
             }
         }
-        return $arr;
+
+        $request->add_null = true;
+        return Helper::wrapForSelect2($arr,true,$request);
     }
 
-    private function document_person_from(){
-        $arr['results'] = [];
-        $docs = Document::query()->select('person_from')->where('person_from','like','%'.\Illuminate\Support\Facades\Request::get("q").'%')->groupBy('person_from')->limit(30)->get();
-        array_push($arr['results'],['id'=>'','text' => "Don't Filter"]);
+    private function document_person_from(Request $request){
+        $arr = [];
+        $docs = Document::query()->select('person_from')
+            ->where('person_from','like','%'.\Illuminate\Support\Facades\Request::get("q").'%')
+            ->orderBy('person_from','asc')
+            ->groupBy('person_from');
+        if($request->has('page')){
+            $docs = $docs->offset((($request->page) - 1) * 10);
+        }
+        $docs = $docs->limit(10)
+            ->get();
         if(!empty($docs)){
+
             foreach ($docs as $doc){
-                array_push($arr['results'],['id'=>$doc->person_from,'text' => $doc->person_from]);
+                array_push($arr,['id'=>$doc->person_from,'text' => $doc->person_from]);
             }
         }
-        return $arr;
+        $request->add_null = true;
+        return Helper::wrapForSelect2($arr,true,$request);
     }
 
     private function dv_add_item(){

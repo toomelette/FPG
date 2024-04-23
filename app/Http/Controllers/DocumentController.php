@@ -145,6 +145,7 @@ class DocumentController extends Controller{
 
 
     public function store(DocumentFormRequest $request, DocumentRepository $documentRepository){
+
         $path = Carbon::parse($request->date)->format('Y').'/'.$request->folder_code.'/';
         $path2 = null;
         if(!empty($request->folder_code2)){
@@ -191,7 +192,7 @@ class DocumentController extends Controller{
             $document->path2 = $path2;
             $storage->put($path2.'/'.$new_file_name,$output);
         }
-
+        $document->filesize = $storage->fileSize($path.'/'.$new_file_name);
         //Delete Temporary QR
         $storage->delete('/QRCODE_TEMP/'.$document_id.'.png');
 
@@ -453,6 +454,7 @@ class DocumentController extends Controller{
 
 
     public function download(){
+
         $ys = [];
         $years = $this->document->getRaw()->groupBy('year')->orderBy('year','asc')->pluck('year'); 
         foreach ($years as $year) {
@@ -462,6 +464,81 @@ class DocumentController extends Controller{
 
     }
 
+    public function downloadPost(Request $request){
+
+        $documents = Document::query();
+
+        if(($request->has('date_from') && $request->date_from != '') || $request->has('date_to') && $request->date_to != ''){
+            $documents = $documents->where(function ($q) use ($request){
+                $q->where('date','>=',$request->date_from)
+                    ->where('date','<=',$request->date_to);
+            });
+        }
+
+        if($request->has('document_type') && $request->document_type != ''){
+            $documents = $documents->where('type','=',$request->document_type);
+        }
+
+        if($request->has('person_from') && $request->person_from != ''){
+            $documents = $documents->where('person_from','=',$request->person_from);
+        }
+        if($request->has('person_to') && $request->person_to != ''){
+            $documents = $documents->where('person_to','=',$request->person_to);
+        }
+
+        $documents = $documents->get();
+
+        $fieldForFolder = '';
+        switch ($request->type){
+            case 'by_to':
+                $fieldForFolder = 'person_to';
+                break;
+            case 'by_from':
+                $fieldForFolder = 'person_from';
+                break;
+            case 'by_folder_code':
+                $fieldForFolder = 'folder_code';
+                break;
+            case 'by_document_type':
+                $fieldForFolder = 'type';
+                break;
+            default:
+                abort(504,'Please select folders.');
+                break;
+        }
+
+        $zip = new \ZipArchive();
+        $fileName = 'symlink/temp/'.\Carbon::now()->format('Ymd-His').'.zip';
+        $max = 10000000;
+        $ct = 0;
+        if ($zip->open(($fileName), \ZipArchive::CREATE)== TRUE) {
+
+            if(!empty($documents)){
+
+                foreach ($documents as $document){
+                    if($ct < $max){
+                        if(\File::exists(env('STORAGE_LOCATION').$document->path.$document->filename)){
+                            $zip->addFile(
+                                env('STORAGE_LOCATION').$document->path.$document->filename,
+                                str_replace('/',' or ',$document->$fieldForFolder).'/'.$document->filename,
+                            );
+                            $ct ++;
+                        }
+                    }
+
+                }
+            }
+            if($zip->numFiles > 0){
+
+                $zip->close();
+            }
+        }
+
+        if(\File::exists(public_path($fileName))){
+            return response()->download(public_path($fileName));
+        }
+        abort(503,'No files found.');
+    }
 
 
 

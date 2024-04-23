@@ -226,7 +226,9 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 	Route::get('/document/report_generate', 'DocumentController@report_generate')->name('document.report_generate');
 
 	Route::get('/document/view_file/{slug}', 'DocumentController@viewFile')->name('document.view_file');
+
 	Route::get('/document/download', 'DocumentController@download')->name('document.download');
+    Route::post('/document/download', 'DocumentController@downloadPost')->name('document.download');
 	Route::post('/document/download_direct/{slug}', 'DocumentController@downloadDirect')->name('document.download_direct');
 	Route::get('/document/dissemination/{slug}', 'DocumentController@dissemination')->name('document.dissemination');
     Route::post('/document/dissemination/{slug}', \App\Http\Controllers\DocumentController::class.'@mailSingle')->name('document.dissemination');
@@ -1296,5 +1298,19 @@ Route::get('/lgarec', function(){
         }
     }
     dd($newsData->flatten()->count());
+});
+
+Route::get('/filesize',function (){
+   $docs  = \App\Models\Document::query()
+       ->where('filesize','=',null)
+       ->get();
+    foreach ($docs as $doc) {
+        if(\Illuminate\Support\Facades\File::exists(env('STORAGE_LOCATION').$doc->path.$doc->filename)){
+            $size = File::size(env('STORAGE_LOCATION').$doc->path.$doc->filename);
+            $doc->filesize = $size;
+            $doc->save();
+        }
+   }
+    return 1;
 });
 
