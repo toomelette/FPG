@@ -29,9 +29,15 @@
 
 @section('content')
   <section class="content-header">
-      <h1>Edit Employee</h1>
-      <div class="pull-right" style="margin-top: -25px;">
-       {!! __html::back_button(['dashboard.employee.index', 'dashboard.employee.show']) !!}
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Edit Employee</h3>
+        </div>
+        <div class="col-md-6">
+          <div class="pull-right" style="margin-top: -25px;">
+
+          </div>
+        </div>
       </div>
   </section>
 
@@ -47,7 +53,9 @@
       </div>
 
 
+
       <form id="edit_employee_form" autocomplete="off">
+
 
         @csrf
         <input name="slug" value="{{$employee->slug}}" type="hidden">
@@ -82,114 +90,130 @@
                       <p class="no-margin">Personal Information</p>
                     </div>
                     <div class="box-body" style="">
-                      <div class="row">
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('lastname',[
-                        'label' => 'Last Name:',
-                        'cols' => 3,
-                        ],$employee ?? null) !!}
-
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('firstname',[
-                          'label' => 'First Name:',
+                      <div class="col-md-10">
+                        <div class="row">
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('lastname',[
+                          'label' => 'Last Name:',
                           'cols' => 3,
-                        ],$employee ?? null) !!}
+                          ],$employee ?? null) !!}
 
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('middlename',[
-                          'label' => 'Middle Name:',
-                          'cols' => 2,
-                        ],$employee ?? null) !!}
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('firstname',[
+                            'label' => 'First Name:',
+                            'cols' => 3,
+                          ],$employee ?? null) !!}
 
-                        {!! \App\Swep\ViewHelpers\__form2::select('name_ext',[
-                          'label' => 'Name Ext.:',
-                          'cols' => 1,
-                          'options' => \App\Swep\Helpers\Arrays::name_extensions(),
-                        ],$employee ?? null) !!}
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('middlename',[
+                            'label' => 'Middle Name:',
+                            'cols' => 2,
+                          ],$employee ?? null) !!}
 
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('date_of_birth',[
-                          'label' => 'Birthday:',
-                          'cols' => 3,
-                          'type' => 'date',
-                        ],$employee ?? null) !!}
+                          {!! \App\Swep\ViewHelpers\__form2::select('name_ext',[
+                            'label' => 'Name Ext.:',
+                            'cols' => 1,
+                            'options' => \App\Swep\Helpers\Arrays::name_extensions(),
+                          ],$employee ?? null) !!}
+
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('date_of_birth',[
+                            'label' => 'Birthday:',
+                            'cols' => 3,
+                            'type' => 'date',
+                          ],$employee ?? null) !!}
+                        </div>
+                        <div class="row">
+                          {!! \App\Swep\ViewHelpers\__form2::select('sex',[
+                            'label' => 'Sex:',
+                            'cols' => 1,
+                            'options' => \App\Swep\Helpers\Arrays::sex(),
+                          ],$employee ?? null) !!}
+
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('place_of_birth',[
+                            'label' => 'Place of Birth:',
+                            'cols' => 5,
+                          ],$employee ?? null) !!}
+
+                          {!! \App\Swep\ViewHelpers\__form2::select('civil_status',[
+                            'label' => 'Civil Status:',
+                            'cols' => 2,
+                            'options' => \App\Swep\Helpers\Arrays::civil_status(),
+                          ],$employee ?? null) !!}
+
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('height',[
+                            'label' => 'Height:',
+                            'cols' => 1,
+                          ],$employee ?? null) !!}
+
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('weight',[
+                            'label' => 'Weight:',
+                            'cols' => 1,
+                          ],$employee ?? null) !!}
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('blood_type',[
+                            'label' => 'Blood Type:',
+                            'cols' => 2,
+                          ],$employee ?? null) !!}
+                        </div>
+                        <div class="row">
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('tel_no',[
+                            'label' => 'Telephone No.:',
+                            'cols' => 2,
+                          ],$employee ?? null) !!}
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('cell_no',[
+                            'label' => 'Cellphone No.:',
+                            'cols' => 2,
+                          ],$employee ?? null) !!}
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('email',[
+                            'label' => 'Email Address:',
+                            'cols' => 3,
+                          ],$employee ?? null) !!}
+
+                          {!! \App\Swep\ViewHelpers\__form2::select('citizenship',[
+                            'label' => 'Ctznship:',
+                            'cols' => 1,
+                            'options' => ['Filipino' => 'Filipino', 'Dual Citizenship' => 'Dual Citizenship'],
+                          ],$employee ?? null) !!}
+                          {!! \App\Swep\ViewHelpers\__form2::select('citizenship_type',[
+                            'label' => 'Ctznship Type:',
+                            'cols' => 2,
+                            'options' => ['BB' => 'by birth', 'BN' => 'by naturalization'],
+                          ],$employee ?? null) !!}
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('dual_citizenship_country',[
+                           'label' => 'If (Dual Citizenship):',
+                           'cols' => 2,
+                           'placeholder' => ' Pls. Indicate Country',
+                          ],$employee ?? null) !!}
+                        </div>
+                        <div class="row">
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('agency_no',[
+                           'label' => 'Agency Employee No.:',
+                           'cols' => 2,
+                          ],$employee ?? null) !!}
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('gov_id',[
+                           'label' => 'Government Issued ID:',
+                           'cols' => 2,
+                          ],$employee ?? null) !!}
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('license_passport_no',[
+                           'label' => 'ID/License/Passport No.:',
+                           'cols' => 2,
+                          ],$employee ?? null) !!}
+
+                          {!! \App\Swep\ViewHelpers\__form2::textbox('id_date_issue',[
+                           'label' => 'Date/Place of Issuance:',
+                           'cols' => 2,
+                          ],$employee ?? null) !!}
+                        </div>
                       </div>
-                      <div class="row">
-                        {!! \App\Swep\ViewHelpers\__form2::select('sex',[
-                          'label' => 'Sex:',
-                          'cols' => 1,
-                          'options' => \App\Swep\Helpers\Arrays::sex(),
-                        ],$employee ?? null) !!}
-
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('place_of_birth',[
-                          'label' => 'Place of Birth:',
-                          'cols' => 5,
-                        ],$employee ?? null) !!}
-
-                        {!! \App\Swep\ViewHelpers\__form2::select('civil_status',[
-                          'label' => 'Civil Status:',
-                          'cols' => 2,
-                          'options' => \App\Swep\Helpers\Arrays::civil_status(),
-                        ],$employee ?? null) !!}
-
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('height',[
-                          'label' => 'Height:',
-                          'cols' => 1,
-                        ],$employee ?? null) !!}
-
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('weight',[
-                          'label' => 'Weight:',
-                          'cols' => 1,
-                        ],$employee ?? null) !!}
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('blood_type',[
-                          'label' => 'Blood Type:',
-                          'cols' => 2,
-                        ],$employee ?? null) !!}
-                      </div>
-                      <div class="row">
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('tel_no',[
-                          'label' => 'Telephone No.:',
-                          'cols' => 2,
-                        ],$employee ?? null) !!}
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('cell_no',[
-                          'label' => 'Cellphone No.:',
-                          'cols' => 2,
-                        ],$employee ?? null) !!}
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('email',[
-                          'label' => 'Email Address:',
-                          'cols' => 3,
-                        ],$employee ?? null) !!}
-
-                        {!! \App\Swep\ViewHelpers\__form2::select('citizenship',[
-                          'label' => 'Ctznship:',
-                          'cols' => 1,
-                          'options' => ['Filipino' => 'Filipino', 'Dual Citizenship' => 'Dual Citizenship'],
-                        ],$employee ?? null) !!}
-                        {!! \App\Swep\ViewHelpers\__form2::select('citizenship_type',[
-                          'label' => 'Ctznship Type:',
-                          'cols' => 2,
-                          'options' => ['BB' => 'by birth', 'BN' => 'by naturalization'],
-                        ],$employee ?? null) !!}
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('dual_citizenship_country',[
-                         'label' => 'If (Dual Citizenship):',
-                         'cols' => 2,
-                         'placeholder' => ' Pls. Indicate Country',
-                        ],$employee ?? null) !!}
-                      </div>
-                      <div class="row">
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('agency_no',[
-                         'label' => 'Agency Employee No.:',
-                         'cols' => 2,
-                        ],$employee ?? null) !!}
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('gov_id',[
-                         'label' => 'Government Issued ID:',
-                         'cols' => 2,
-                        ],$employee ?? null) !!}
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('license_passport_no',[
-                         'label' => 'ID/License/Passport No.:',
-                         'cols' => 2,
-                        ],$employee ?? null) !!}
-
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('id_date_issue',[
-                         'label' => 'Date/Place of Issuance:',
-                         'cols' => 2,
-                        ],$employee ?? null) !!}
+                      <style>
+                        .jquery-uploader-card,.jquery-uploader-select-card{
+                          width: 100% !important;
+                          height: 215px !important;
+                          margin: 0 !important;
+                        }
+                        .jquery-uploader-preview-container{
+                          padding: 0 !important;
+                        }
+                      </style>
+                      <div class="col-md-2">
+                        <label>Photo:</label>
+                        <input type="text" id="employee_photo" value="" />
                       </div>
                     </div>
                   </div>
@@ -1808,7 +1832,59 @@
     })
 
   $("#item_no").select2();
-
+    $("#employee_photo").uploader({
+      defaultValue: [
+              @if($employee->photo != null && File::exists(public_path('symlink/employee_pics/uploaded/'.$employee->photo)))
+        {
+          name: "jquery",
+          url: "/symlink/employee_pics/uploaded/{{$employee->photo}}",
+        },
+              @endif
+      ],
+      ajaxConfig: {
+        url: "{{route('dashboard.employee.photo',$employee->slug)}}",
+        method: "post",
+        paramsBuilder: function (uploaderFile) {
+          let form = new FormData();
+          form.append("file", uploaderFile.file)
+          return form
+        },
+        ajaxRequester: function (config, uploaderFile, progressCallback, successCallback, errorCallback) {
+          $.ajax({
+            url: config.url,
+            contentType: false,
+            processData: false,
+            method: config.method,
+            headers: {
+              {!! __html::token_header() !!}
+            },
+            data: config.paramsBuilder(uploaderFile),
+            success: function (response) {
+              toast('success','Photo successfully uploaded.');
+              successCallback();
+            },
+            error: function (response) {
+              console.error("Error", response)
+              errorCallback("Error")
+            },
+            xhr: function () {
+              let xhr = new XMLHttpRequest();
+              xhr.upload.addEventListener('progress', function (e) {
+                let progressRate = (e.loaded / e.total) * 100;
+                progressCallback(progressRate)
+              })
+              return xhr;
+            }
+          })
+        },
+        responseConverter: function (uploaderFile, response) {
+          return {
+            url: response.data,
+            name: null,
+          }
+        },
+      },
+    })
   </script>
 
 @endsection

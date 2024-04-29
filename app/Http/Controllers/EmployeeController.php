@@ -30,6 +30,7 @@ use App\Http\Requests\EmployeeMatrix\EmployeeMatrixPrintRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Yajra\DataTables\DataTables;
@@ -78,7 +79,7 @@ class EmployeeController extends Controller{
 
     private function dataTable($request, $type = 'PERMANENT'){
         $sql_server_is_on = Helper::sqlServerIsOn();
-        $cols = ['fullname','employee_no','position','email','biometric_user_id', 'date_of_birth','sex','civil_status','firstname','slug','name_ext','cell_no'];
+        $cols = ['fullname','employee_no','position','email','biometric_user_id', 'date_of_birth','sex','civil_status','firstname','slug','name_ext','cell_no','photo'];
         $employees = Employee::query()->with([
             'responsibilityCenter',
         ]);
@@ -149,6 +150,11 @@ class EmployeeController extends Controller{
                 return view('dashboard.employee.dt.position')->with([
                     'data' => $data,
                     'sql_server_is_on' => $sql_server_is_on,
+                ]);
+            })
+            ->addColumn('photo',function($data){
+                return view('dashboard.employee.dt.photo')->with([
+                    'data' => $data,
                 ]);
             })
             ->editColumn('fullname',function ($data){
@@ -719,6 +725,25 @@ class EmployeeController extends Controller{
                 'employee' => $employee
             ]);
         }
+    }
+
+    public function updatePhoto(Request $request,$slug){
+        $file = $request->file;
+        $employee = $this->findEmployeeBySlug($slug);
+        $old_photo = $employee->photo;
+        $name = $employee->firstname.' '.$employee->lastname;
+        $name = str_replace(' ','-',$name);
+        $fileName = $name.'-'.Str::random(3).'.'.$file->getClientOriginalExtension();
+        if(\Storage::disk('symlinks')
+            ->put('hrrs/employee_pics/uploaded/'.$fileName,$file->get())){
+            $employee->photo = $fileName;
+            $employee->save();
+            if($old_photo != null){
+                \Storage::disk('symlinks')->delete('hrrs/employee_pics/uploaded/'.$old_photo);
+            }
+            return true;
+        }
+        abort(503,'Error uploading file');
     }
 
     public function allColumnsForReport(){

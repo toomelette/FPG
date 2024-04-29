@@ -218,7 +218,8 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('/other_hr_actions_print/{slug}/{type}','EmployeeController@otherHrActionsPrint')->name('employee.other_hr_actions_print');
     Route::get('/other_hr_actions/{slug}','EmployeeController@otherHrActions')->name('employee.other_hr_actions');
 
-
+    /** Employee Photo **/
+    Route::post('/photo/{slug}','EmployeeController@updatePhoto')->name('employee.photo');
 
 	/** DOCUMENTS **/
 	Route::get('/document/print_qr/{slug}','DocumentController@printQr')->name('document.print_qr');

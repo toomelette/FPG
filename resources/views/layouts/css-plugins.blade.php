@@ -55,3 +55,5 @@
 <link type="text/css" rel="stylesheet" href="{{asset('template/plugins/awesome-select/package/css/awselect.min.css')}}">
 <link type="text/css" rel="stylesheet" href="{{asset('template/plugins/select2-bootstrap-theme/dist/select2-bootstrap.min.css')}}">
 <link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.min.css') }}">
+<link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/ajax-file-uploader/css/jquery.uploader.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />

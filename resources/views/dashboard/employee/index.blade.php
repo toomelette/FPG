@@ -85,7 +85,7 @@
                         <th >Full Name</th>
                         <th class="th-20">Emp No.</th>
                         <th >Position</th>
-                        <th >Email</th>
+                        <th >Photo</th>
                         <th >BM id</th>
                         <th class="action">Action</th>
                     </tr>
@@ -272,7 +272,7 @@
         { "data": "fullname" },
         { "data": "employee_no" },
         { "data": "position" },
-        { "data": "email" },
+        { "data": "photo" },
         { "data": "biometric_user_id" },
         { "data": "action"}
       ],
@@ -293,7 +293,12 @@
         {
           "targets" : 0,
           "class" : 'w-30p'
-        }
+        },
+          {
+              "targets" : 3,
+              "class" : 'w-10p'
+          }
+
       ],
       "responsive": true,
       "initComplete": function( settings, json ) {

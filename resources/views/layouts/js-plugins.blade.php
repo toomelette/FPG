@@ -100,6 +100,9 @@
 <script type="text/javascript" src="{{asset('template/plugins/jquery-number/jquery.number.min.js')}}"></script>
 
 <script type="text/javascript" src="{{ asset('template/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('template/plugins/ajax-file-uploader/dist/jquery.uploader.min.js') }}"></script>
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+
 
 <script type="text/javascript">
 

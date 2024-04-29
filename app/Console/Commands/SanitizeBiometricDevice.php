@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\BiometricDevices;
 use App\Swep\Services\DTRService;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class SanitizeBiometricDevice extends Command
@@ -44,10 +45,9 @@ class SanitizeBiometricDevice extends Command
         if(!empty($bds)){
             foreach ($bds as $bd){
                 $ip = $bd->ip_address;
-                try{
+                $diff = \Carbon::parse($bd->last_cleared)->diffInDays(Carbon::now());
+                if($diff == 7){
                     $DTRService->clearAttendance($ip);
-                }catch (\Exception $e){
-
                 }
             }
         }
