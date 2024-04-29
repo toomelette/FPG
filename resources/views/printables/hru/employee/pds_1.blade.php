@@ -294,7 +294,7 @@
             <td style="width: 16px" class="text-right pds-light-fill b-bottom"></td>
             <td style="width: 130px" class="b-right pds-light-fill b-bottom">FIRST NAME</td>
             <td class="b-right b-bottom text-center" style="width: 120px"> {{$employee->employeeFamilyDetail->spouse_firstname ?? 'N/A'}}</td>
-            <td class="pds-light-fill b-right b-bottom" style="width: 135px">NAME EXTENSION (JR., SR)</td>
+            <td class="pds-light-fill b-right b-bottom text-top" style="width: 135px"><span style="font-size: 8px">NAME EXTENSION (JR., SR)</span></td>
             <td class="text-center b-bottom b-right">
                 @if($employee->employeeChildren->count() > 0)
                     {{$children[0]['fullname'] ?? ''}}
@@ -381,7 +381,7 @@
             <td style="width: 16px" class="text-right pds-light-fill b-bottom"></td>
             <td style="width: 130px" class="b-right pds-light-fill b-bottom">FIRST NAME</td>
             <td class="b-right b-bottom text-center"> {{$employee->employeeFamilyDetail->father_firstname ?? 'N/A'}}</td>
-            <td class="pds-light-fill b-right b-bottom">NAME EXTENSION (JR., SR) {{$employee->employeeFamilyDetail->father_name_ext}}</td>
+            <td class="pds-light-fill b-right b-bottom text-top"><span style="font-size: 8px">NAME EXTENSION (JR., SR)</span> {{$employee->employeeFamilyDetail->father_name_ext}}</td>
             <td class="text-center b-bottom b-right">
                 {{$children[7]['fullname'] ?? ''}}
             </td>
@@ -450,11 +450,140 @@
             </td>
         </tr>
     </table>
-    <table class="tbl f-13 b-side b-bottom" style="font-family: 'Arial Narrow'">
+    <table class="tbl f-10 b-side b-bottom tbl-bordered" style="font-family: 'Arial Narrow'">
         <tr>
-            <td class="text-strong pds-dark-fill">III.  EDUCATIONAL BACKGROUND</td>
+            <td class="text-strong pds-dark-fill f-13" colspan="8">III.  EDUCATIONAL BACKGROUND</td>
+        </tr>
+        <tr>
+            <td class="text-center pds-light-fill" rowspan="2">LEVEL</td>
+            <td class="text-center pds-light-fill" rowspan="2">NAME OF SCHOOL (Write in full)</td>
+            <td class="text-center pds-light-fill" rowspan="2">BASIC EDUCATION/DEGREE/ (Write in full)</td>
+            <td class="text-center pds-light-fill" colspan="2">PERIOD OF ATTENDANCE</td>
+            <td class="text-center pds-light-fill" rowspan="2">HIGHEST LEVEL/UNITS EARNED (if not graduated)</td>
+            <td class="text-center pds-light-fill" rowspan="2">YEAR GRADUATED</td>
+            <td class="text-center pds-light-fill" rowspan="2">SCHOLARSHIP/ ACADEMIC HONORS RECEIVED</td>
+        </tr>
+        <tr>
+            <td class="text-center pds-light-fill">FROM</td>
+            <td class="text-center pds-light-fill">TO</td>
+        </tr>
+        <tr>
+            <td class="pds-light-fill">ELEMENTARY</td>
+            @php
+                $elementary = $employee->employeeEducationalBackground->where('level','ELEMENTARY')->sortByDesc('graduate_year')->first();
+            @endphp
+            @if(!empty($elementary))
+                <td class="text-center">{{$elementary->school_name ?? 'N/A'}}</td>
+                <td class="text-center">{{$elementary->course ?? 'N/A'}}</td>
+                <td class="text-center">{{$elementary->date_from ?? 'N/A'}}</td>
+                <td class="text-center">{{$elementary->date_to ?? 'N/A'}}</td>
+                <td class="text-center">{{$elementary->units ?? 'N/A'}}</td>
+                <td class="text-center">{{$elementary->graduate_year ?? 'N/A'}}</td>
+                <td class="text-center">{{$elementary->honor ?? 'N/A'}}</td>
+            @else
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+            @endif
+        </tr>
+        <tr>
+            <td class="pds-light-fill">SECONDARY</td>
+            @php
+                $secondary = $employee->employeeEducationalBackground->where('level','SECONDARY')->sortByDesc('graduate_year')->first();
+            @endphp
+            @if(!empty($secondary))
+                <td class="text-center">{{$secondary->school_name ?? 'N/A'}}</td>
+                <td class="text-center">{{$secondary->course ?? 'N/A'}}</td>
+                <td class="text-center">{{$secondary->date_from ?? 'N/A'}}</td>
+                <td class="text-center">{{$secondary->date_to ?? 'N/A'}}</td>
+                <td class="text-center">{{$secondary->units ?? 'N/A'}}</td>
+                <td class="text-center">{{$secondary->graduate_year ?? 'N/A'}}</td>
+                <td class="text-center">{{$secondary->honor ?? 'N/A'}}</td>
+            @else
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+            @endif
+        </tr>
+        <tr>
+            <td class="pds-light-fill">VOCATIONAL/TRADE COURSE</td>
+            @php
+                $vocational = $employee->employeeEducationalBackground->where('level','VOCATIONAL/TRADE COURSE')->sortByDesc('graduate_year')->first();
+            @endphp
+            @if(!empty($vocational))
+                <td class="text-center">{{$vocational->school_name ?? 'N/A'}}</td>
+                <td class="text-center">{{$vocational->course ?? 'N/A'}}</td>
+                <td class="text-center">{{$vocational->date_from ?? 'N/A'}}</td>
+                <td class="text-center">{{$vocational->date_to ?? 'N/A'}}</td>
+                <td class="text-center">{{$vocational->units ?? 'N/A'}}</td>
+                <td class="text-center">{{$vocational->graduate_year ?? 'N/A'}}</td>
+                <td class="text-center">{{$vocational->honor ?? 'N/A'}}</td>
+            @else
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+            @endif
+        </tr>
+        <tr>
+            <td class="pds-light-fill">COLLEGE</td>
+            @php
+                $college = $employee->employeeEducationalBackground->where('level','COLLEGE')->sortByDesc('graduate_year')->first();
+            @endphp
+            @if(!empty($college))
+                <td class="text-center">{{$college->school_name ?? 'N/A'}}</td>
+                <td class="text-center">{{$college->course ?? 'N/A'}}</td>
+                <td class="text-center">{{$college->date_from ?? 'N/A'}}</td>
+                <td class="text-center">{{$college->date_to ?? 'N/A'}}</td>
+                <td class="text-center">{{$college->units ?? 'N/A'}}</td>
+                <td class="text-center">{{$college->graduate_year ?? 'N/A'}}</td>
+                <td class="text-center">{{$college->honor ?? 'N/A'}}</td>
+            @else
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+            @endif
+        </tr>
+        <tr>
+            <td class="pds-light-fill">GRADUATE STUDIES</td>
+            @php
+                $grad = $employee->employeeEducationalBackground->where('level','GRADUATE STUDIES')->sortByDesc('graduate_year')->first();
+            @endphp
+            @if(!empty($grad))
+                <td class="text-center">{{$grad->school_name ?? 'N/A'}}</td>
+                <td class="text-center">{{$grad->course ?? 'N/A'}}</td>
+                <td class="text-center">{{$grad->date_from ?? 'N/A'}}</td>
+                <td class="text-center">{{$grad->date_to ?? 'N/A'}}</td>
+                <td class="text-center">{{$grad->units ?? 'N/A'}}</td>
+                <td class="text-center">{{$grad->graduate_year ?? 'N/A'}}</td>
+                <td class="text-center">{{$grad->honor ?? 'N/A'}}</td>
+            @else
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+                <td class="text-center">N/A</td>
+            @endif
         </tr>
     </table>
+
 </div>
 
 @endsection

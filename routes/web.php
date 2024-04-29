@@ -1314,3 +1314,22 @@ Route::get('/filesize',function (){
     return 1;
 });
 
+Route::get('/setTime',function (){
+    $biometrics = \App\Models\BiometricDevices::query()
+        ->where('status','=',1)
+        ->get();
+    $logs = [];
+   foreach ($biometrics as $biometric){
+       $zk = new \Rats\Zkteco\Lib\ZKTeco($biometric->ip_address);
+       $zk->connect();
+       $zk->setTime(Carbon::now()->format(\Illuminate\Support\Carbon::now()->format('Y-m-d H:i:s')));
+       array_push($logs,[
+           'log' => 'Time reset successful: '.$biometric->ip_address,
+           'type' => 4,
+           'created_at' => Carbon::now(),
+           'updated_at' => Carbon::now(),
+       ]);
+   }
+   \App\Models\CronLogs::insert($logs);
+});
+

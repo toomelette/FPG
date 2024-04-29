@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
         Commands\SanitizeBiometricDevice::class,
         Commands\UploadDtrs::class,
         Commands\CopyBiometricDataFromLgarec::class,
+        Commands\ResetBiometricDeviceTime::class,
     ];
 
     /**
@@ -38,6 +39,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('dtr:reconstruct')->everyTenMinutes();
         $schedule->command('dtr:compute_late_undertime')->everyTenMinutes();
         $schedule->command('dtr:copy_from_lgarec')->everyTenMinutes();
+        $schedule->command('dtr:reset_device_time')->dailyAt('05:00');
 //        $schedule->command('dtr:sanitizeBiometricDevices')->sundays()->at('18:00');
 //        $schedule->command('dtr:upload')->everyTenMinutes();
 //        $schedule->command('demo:cron')->everyMinute();
