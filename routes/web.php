@@ -220,7 +220,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     /** Employee Photo **/
     Route::post('/photo/{slug}','EmployeeController@updatePhoto')->name('employee.photo');
-
+    Route::delete('/photo/{slug}','EmployeeController@deletePhoto')->name('employee.photo');
 	/** DOCUMENTS **/
 	Route::get('/document/print_qr/{slug}','DocumentController@printQr')->name('document.print_qr');
 	Route::get('/document/report', 'DocumentController@report')->name('document.report');

@@ -237,6 +237,7 @@ return [
         '__static' => App\Swep\Helpers\__static::class,
         '__dynamic' => App\Swep\Helpers\__dynamic::class,
         'Helper' => App\Swep\Helpers\Helper::class,
+        'Image' => Intervention\Image\Laravel\Facades\Image::class,
     ],
 
 ];

@@ -29,16 +29,7 @@
 
 @section('content')
   <section class="content-header">
-      <div class="row">
-        <div class="col-md-6">
-          <h3>Edit Employee</h3>
-        </div>
-        <div class="col-md-6">
-          <div class="pull-right" style="margin-top: -25px;">
-
-          </div>
-        </div>
-      </div>
+    <h1>Edit Employee</h1>
   </section>
 
   <section class="content">
@@ -1834,12 +1825,12 @@
   $("#item_no").select2();
     $("#employee_photo").uploader({
       defaultValue: [
-              @if($employee->photo != null && File::exists(public_path('symlink/employee_pics/uploaded/'.$employee->photo)))
+        @if($employee->photo != null && File::exists(public_path('symlink/employee_pics/uploaded/'.$employee->photo)))
         {
-          name: "jquery",
+          name: "employeePhoto",
           url: "/symlink/employee_pics/uploaded/{{$employee->photo}}",
         },
-              @endif
+        @endif
       ],
       ajaxConfig: {
         url: "{{route('dashboard.employee.photo',$employee->slug)}}",
@@ -1884,7 +1875,44 @@
           }
         },
       },
-    })
+    }).on("file-remove", function(e) {
+      Swal.fire({
+        title: 'Remove photo?',
+        html: 'Are you sure you want to delete this photo?',
+        showCancelButton: true,
+        confirmButtonText: '<i class="fa fa-trash"></i> Remove',
+        showLoaderOnConfirm: true,
+        preConfirm: (password) => {
+          return $.ajax({
+            url : '{{route('dashboard.employee.photo',$employee->slug)}}',
+            type: 'DELETE',
+            headers: {
+              {!! __html::token_header() !!}
+            },
+          })
+          .then(response => {
+            return  response;
+          })
+          .catch(error => {
+            console.log(error);
+            Swal.showValidationMessage(
+                    'Error : '+ error.responseJSON.message,
+            )
+          })
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        if (result.isConfirmed) {
+          console.log(result);
+          Swal.fire({
+            title: result.value,
+            icon : 'success',
+          })
+        }else{
+          location.reload();
+        }
+      })
+    });
   </script>
 
 @endsection

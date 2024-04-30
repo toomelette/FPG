@@ -31,6 +31,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+use Intervention\Image\Laravel\Facades\Image;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Yajra\DataTables\DataTables;
@@ -734,16 +735,56 @@ class EmployeeController extends Controller{
         $name = $employee->firstname.' '.$employee->lastname;
         $name = str_replace(' ','-',$name);
         $fileName = $name.'-'.Str::random(3).'.'.$file->getClientOriginalExtension();
+
+
+
+
         if(\Storage::disk('symlinks')
             ->put('hrrs/employee_pics/uploaded/'.$fileName,$file->get())){
+            //store image in different sizes
+
+            foreach ($this->imageSizes() as $size){
+                $new_image = Image::read($file);
+                $new_image = $new_image->scaleDown(width: $size);
+                $root = \Storage::disk('symlinks')->getConfig()['root'];
+                $new_image->save($root.'/hrrs/employee_pics/uploaded_'.$size.'/'.$fileName);
+            }
+
             $employee->photo = $fileName;
             $employee->save();
             if($old_photo != null){
+                foreach ($this->imageSizes() as $size) {
+                    \Storage::disk('symlinks')->delete('hrrs/employee_pics/uploaded_'.$size.'/'.$old_photo);
+                }
                 \Storage::disk('symlinks')->delete('hrrs/employee_pics/uploaded/'.$old_photo);
             }
             return true;
         }
         abort(503,'Error uploading file');
+    }
+    private function imageSizes(){
+        return [
+            50 => 50,
+            100 => 100,
+            300 => 300,
+            500 => 500,
+            1000 => 1000,
+        ];
+    }
+
+    public function deletePhoto($slug){
+        $employee = $this->findEmployeeBySlug($slug);
+        $photo = $employee->photo;
+        if($photo != null){
+            foreach ($this->imageSizes() as $size) {
+                \Storage::disk('symlinks')->delete('hrrs/employee_pics/uploaded_'.$size.'/'.$photo);
+            }
+            \Storage::disk('symlinks')->delete('hrrs/employee_pics/uploaded/'.$photo);
+            $employee->photo = null;
+            $employee->save();
+            return 'Photo successfully removed.';
+        }
+        abort(503,'Error removing photo.');
     }
 
     public function allColumnsForReport(){

@@ -15,6 +15,8 @@
         "doctrine/dbal": "^2.12.1",
         "gguance/swep-helpers": "^1.1",
         "howtomakeaturn/pdfinfo": "1.*",
+        "intervention/image": "^3.6",
+        "intervention/image-laravel": "^1.2",
         "jacobbennett/pjax": "~1.0",
         "kyslik/column-sortable": "6.*",
         "laravel/framework": "^9.0",
