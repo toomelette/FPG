@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\EmployeeServiceRecord;
 use App\Models\EmployeeTraining;
 use App\Models\SuSettings;
+use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\EmployeeService;
 use App\Swep\Services\EmployeeTrainingService;
@@ -763,13 +764,7 @@ class EmployeeController extends Controller{
         abort(503,'Error uploading file');
     }
     private function imageSizes(){
-        return [
-            50 => 50,
-            100 => 100,
-            300 => 300,
-            500 => 500,
-            1000 => 1000,
-        ];
+        return Arrays::imageSizes();
     }
 
     public function deletePhoto($slug){

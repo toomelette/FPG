@@ -26,6 +26,16 @@ class Arrays
         ];
     }
 
+    public static function imageSizes(){
+        return [
+            50 => 50,
+            100 => 100,
+            300 => 300,
+            500 => 500,
+            1000 => 1000,
+        ];
+    }
+
     public static function sex(){
         return [
             'MALE' => 'MALE',

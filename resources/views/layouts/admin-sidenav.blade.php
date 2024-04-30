@@ -18,14 +18,10 @@
   <section class="sidebar">
     <div class="user-panel">
       <div class="pull-left image">
-          @if(!empty(Auth::user()->employee))
-              @if(file_exists(public_path('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')))
-                    <img src="{{asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')}}" class="img-circle" alt="User Image">
-              @else
-                  <img src="{{asset('images/avatar.jpeg')}}" class="img-circle" alt="User Image">
-              @endif
-            @else
-            <img src="{{asset('images/avatar.jpeg')}}" class="img-circle" alt="User Image">
+          @if(!empty(Auth::user()->employee) && Auth::user()->employee->photo != null && file_exists(public_path(Auth::user()->employee->photo_path['50'])))
+              <img src="{{asset(Auth::user()->employee->photo_path['50'])}}" class="img-circle" alt="User Image">
+          @else
+              <img src="{{asset('images/avatar.jpeg')}}" class="img-circle" alt="User Image">
           @endif
       </div>
       <div class="pull-left info">

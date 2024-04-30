@@ -7,6 +7,7 @@ use App\Models\HRU\TemplateIncentives;
 use App\Models\PPU\PPURespCodes;
 use App\Models\SqlServer\EmpMaster;
 use App\Models\SqlServer\IncentiveTemplate;
+use App\Swep\Helpers\Arrays;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -122,6 +123,16 @@ class Employee extends Model{
     {
         return  new Attribute(
             get: fn() => $this->lastname.', '.$this->firstname,
+        );
+    }
+    protected function photoPath(): Attribute{
+        $arr = [];
+        foreach (Arrays::imageSizes() as $size){
+            $arr[$size] = 'symlink/employee_pics/uploaded_'.$size.'/'.$this->photo;
+        }
+        $arr['original'] = 'symlink/employee_pics/uploaded/'.$this->photo;
+        return new Attribute(
+            get: fn() =>$arr,
         );
     }
 

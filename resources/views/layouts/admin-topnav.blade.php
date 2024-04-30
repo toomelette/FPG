@@ -37,14 +37,10 @@
           </li>
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            @if(!empty(Auth::user()->employee))
-              @if(file_exists(public_path('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')))
-                <img src="{{asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')}}" class="user-image" alt="User Image">
-              @else
-                <img src="{{asset('images/avatar.jpeg')}}" class="user-image" alt="User Image">
-              @endif
+            @if(!empty(Auth::user()->employee) && Auth::user()->employee->photo != null && file_exists(public_path(Auth::user()->employee->photo_path['50'])))
+                <img src="{{asset(Auth::user()->employee->photo_path['50'])}}" class="user-image" alt="User Image">
             @else
-            <img src="{{asset('images/avatar.jpeg')}}" class="user-image" alt="User Image">
+              <img src="{{asset('images/avatar.jpeg')}}" class="user-image" alt="User Image">
             @endif
             @if(Auth::check())
               {!! strtoupper($userName['firstname']) !!}
@@ -52,16 +48,11 @@
           </a>
           <ul class="dropdown-menu">
             <li class="user-header">
-              @if(!empty(Auth::user()->employee))
-                @if(file_exists(public_path('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')))
-                  <img src="{{asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')}}" class="img-circle" alt="User Image">
-                @else
-                  <img src="{{asset('images/avatar.jpeg')}}" class="img-circle" alt="User Image">
-                @endif
+              @if(!empty(Auth::user()->employee) && Auth::user()->employee->photo != null &&  file_exists(public_path(Auth::user()->employee->photo_path['50'])))
+                <img src="{{asset(Auth::user()->employee->photo_path['300'])}}" class="img-circle" alt="User Image">
               @else
                 <img src="{{asset('images/avatar.jpeg')}}" class="img-circle" alt="User Image">
               @endif
-
 
               <p>
                 @if(Auth::check())
