@@ -646,7 +646,7 @@ class Helper
     }
 
     public static function dateFormat($date,$format = 'M. d, Y'){
-        if($date == null) {
+        if($date == null || $date == '') {
             return null;
         }else{
             return Carbon::parse($date)->format($format);

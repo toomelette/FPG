@@ -107,9 +107,9 @@
                                         @if($user->employee->ta != 0.00)
                                             <li class="pad5">Transportation Allowance <span class="pull-right">{{number_format($user->employee->ta,2)}}</span></li>
                                         @endif
-                                        <li class="pad5">First day in Government <span class="pull-right">{{Carbon::parse($user->employee->firstday_gov)->format('F d, Y')}}</span></li>
-                                        <li class="pad5">First day in SRA <span class="pull-right">{{Carbon::parse($user->employee->firstday_sra)->format('F d, Y')}}</span></li>
-                                        <li class="pad5">Date of last promotion <span class="pull-right">{{Carbon::parse($user->employee->adjustment_date)->format('F d, Y')}}</span></li>
+                                        <li class="pad5">First day in Government <span class="pull-right">{{\App\Swep\Helpers\Helper::dateFormat($user->employee->firstday_gov,'F d. Y')}}</span></li>
+                                        <li class="pad5">First day in SRA <span class="pull-right">{{\App\Swep\Helpers\Helper::dateFormat($user->employee->firstday_sra,'F d. Y')}}</span></li>
+                                        <li class="pad5">Date of last promotion <span class="pull-right">{{\App\Swep\Helpers\Helper::dateFormat($user->employee->adjustment_date,'F d. Y')}}</span></li>
                                     @endif
                                     @if($user->employee->locations == 'COS')
                                         <li class="pad5">Position <span class="pull-right">{{$user->employee->position}}</span></li>
