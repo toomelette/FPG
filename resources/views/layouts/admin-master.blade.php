@@ -62,7 +62,10 @@
       </footer>
 
     </div>
-
+    <div id="img_box">
+      <span style="color:white;font-size: 56px;"><i class="fa fa-spin fa-spinner"></i></span>
+      <img src="">
+    </div>
     @include('layouts.js-plugins')
 
     @yield('modals')
@@ -102,6 +105,8 @@
             </form>
         </div>
       </div>
+
+
 
     <script type="text/javascript">
       const autonumericElement =  AutoNumeric.multiple('.autonumber');

@@ -531,3 +531,16 @@ function makeSubmenuActive(url){
     targetA.parents('.treeview').addClass('menu-open');
     targetA.parents('.treeview-menu').css('display','block');
 }
+
+$("#img_box").click(function (){
+    $(this).fadeOut();
+})
+$("body").on("click",".gj-imagebox",function (){
+    $("#img_box span").show();
+    $("#img_box").fadeIn();
+    $("#img_box img").attr('src',$(this).attr('original'));
+})
+
+$("#img_box img").on("load",function (){
+    $("#img_box span").hide();
+})
