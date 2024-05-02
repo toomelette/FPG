@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\HRU\HrOtherActions;
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
 use App\Models\PPU\PPURespCodes;
@@ -263,6 +264,9 @@ class Employee extends Model{
         return $this->belongsTo(PPURespCodes::class,'resp_center','rc_code');
     }
 
+    public function otherNosa(){
+        return $this->hasOne(HrOtherActions::class,'employee_slug','slug')->orderBy('created_at','desc');
+    }
 
 
 

@@ -7,6 +7,7 @@ use App\Http\Requests\Employee\BiometricUserIdFormRequest;
 use App\Models\Employee;
 use App\Models\EmployeeServiceRecord;
 use App\Models\EmployeeTraining;
+use App\Models\HRU\HrOtherActions;
 use App\Models\SuSettings;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
@@ -686,9 +687,14 @@ class EmployeeController extends Controller{
         ]);
     }
 
-    public function otherHrActionsPrint($slug, $type){
+    public function otherHrActionsPrint($slug, $type, Request $request){
         $employee = $this->findEmployeeBySlug($slug);
         if($type == 'nosa'){
+            $oa = new HrOtherActions();
+            $oa->employee_slug = $slug;
+            $oa->type = $type;
+            $oa->values = $request->all();
+            $oa->save();
             return \view('printables.employee.nosa-hrs-034-02')->with([
                 'employee' => $employee,
             ]);
@@ -708,6 +714,12 @@ class EmployeeController extends Controller{
 
         if($type == 'nosi'){
             return \view('printables.employee.nosi')->with([
+                'employee' => $employee,
+            ]);
+        }
+
+        if($type == 'appointment_letter'){
+            return \view('printables.employee.appointment_letter')->with([
                 'employee' => $employee,
             ]);
         }

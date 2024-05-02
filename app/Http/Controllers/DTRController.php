@@ -312,7 +312,6 @@ class DTRController extends  Controller
             $employee = $this->getCurrentUserEmployeeObj();
         }else{
             $perm_employee = Employee::query()->where('biometric_user_id','=',$request->bm_u_id)->first();
-
             if(!empty($perm_employee)){
                 $employee = $perm_employee;
             }else{
@@ -323,7 +322,6 @@ class DTRController extends  Controller
 
             }
         }
-
         $dtrs = DailyTimeRecord::query()->where('biometric_user_id','=',$employee->biometric_user_id)->
         where('date','like',$request->month.'%')->orderBy('date','asc')->get();
 
@@ -386,17 +384,18 @@ class DTRController extends  Controller
     }
 
     private function getCurrentUserEmployeeObj(){
-        $user_employee_no = Auth::user()->employee_no;
-        $perm_employee = Employee::query()->where('employee_no','=',$user_employee_no)->first();
+        $employee = Employee::query()->where('slug','=',Auth::user()->employee_slug)->first();
+
+        return $employee ?? null;
         $employee = null;
-        if(!empty($perm_employee)){
-            $employee = $perm_employee;
-        }else{
-            $jo_employee = JoEmployees::query()->where('employee_no','=',$user_employee_no)->first();
-            if(!empty($jo_employee)){
-                $employee = $jo_employee;
-            }
-        }
+        //        if(!empty($perm_employee)){
+        //            $employee = $perm_employee;
+        //        }else{
+        //            $jo_employee = JoEmployees::query()->where('employee_no','=',$user_employee_no)->first();
+        //            if(!empty($jo_employee)){
+        //                $employee = $jo_employee;
+        //            }
+        //        }
         return $employee;
     }
     private function fetchAttendance($ip){

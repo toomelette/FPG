@@ -214,6 +214,9 @@
                                     <p class="box-title-sm no-margin"><i class="fa fa-wrench"></i> NOTICE OF SALARY ADJUSTMENT</p>
                                 </div>
                                 <div class="box-body" style="">
+                                    @php
+                                        $savedNosa = $employee->otherNosa;
+                                    @endphp
                                     <div class="row">
                                         <div class="col-md-4">
                                             <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1">
@@ -226,7 +229,7 @@
                                                     'class' => 'input-sm currents_'.$rand,
                                                     'type' => 'number',
                                                     'id' => 'cur_sg_'.$rand,
-                                                ], $employee) !!}
+                                                ], $employee->otherNosa->values['salary_grade'] ?? $employee) !!}
 
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('step_inc',[
                                                     'label' => 'Step Inc:',
@@ -235,14 +238,14 @@
                                                     'type' => 'number',
                                                     'value' => $employee,
                                                     'id' => 'cur_si_'.$rand,
-                                                ], $employee) !!}
+                                                ], $employee->otherNosa->values['step_inc'] ?? $employee) !!}
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('monthly_basic',[
                                                     'label' => 'Monthly Sal.:',
                                                     'cols' => 4,
                                                     'class' => 'input-sm',
                                                     'id' => 'cur_monthly_salary_'.$rand,
                                                     'tab_index' => -1,
-                                                ], number_format($employee->monthly_basic,2)) !!}
+                                                ], number_format(Helper::sanitizeNumFormat($employee->otherNosa->values['monthly_basic']) ?? $employee->monthly_basic,2)) !!}
                                             </div>
                                         </div>
 
@@ -256,14 +259,14 @@
                                                     'cols' => 2,
                                                     'class' => 'input-sm',
                                                     'required' => 'required',
-                                                ]) !!}
+                                                ],$employee->otherNosa->values['new_item_no'] ?? null) !!}
 
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('new_position',[
                                                     'label' => 'Position:',
                                                     'cols' => 4,
                                                     'class' => 'input-sm',
                                                     'required' => 'required',
-                                                ]) !!}
+                                                ],$employee->otherNosa->values['new_position'] ?? null) !!}
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('new_salary_grade',[
                                                     'label' => 'Job Grade:',
                                                     'cols' => 2,
@@ -272,7 +275,7 @@
                                                     'id' => 'new_sg_'.$rand,
                                                     'required' => 'required',
 
-                                                ]) !!}
+                                                ],$employee->otherNosa->values['new_salary_grade'] ?? null) !!}
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('new_step_inc',[
                                                     'label' => 'Step Inc:',
                                                     'cols' => 2,
@@ -280,14 +283,14 @@
                                                     'type' => 'number',
                                                     'id' => 'new_si_'.$rand,
                                                     'required' => 'required',
-                                                ]) !!}
+                                                ],$employee->otherNosa->values['new_step_inc'] ?? null) !!}
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('new_monthly_salary',[
                                                     'label' => 'Monthly Sal.:',
                                                     'cols' => 2,
                                                     'class' => 'input-sm news_'.$rand,
                                                     'id' => 'new_monthly_salary_'.$rand,
                                                     'tab_index' => -1,
-                                                ]) !!}
+                                                ],$employee->otherNosa->values['new_monthly_salary'] ?? null) !!}
                                             </div>
                                         </div>
 
@@ -303,14 +306,14 @@
                                                     'cols' => 6,
                                                     'class' => 'input-sm',
                                                     'type' => 'date',
-                                                ]) !!}
+                                                ],$employee->otherNosa->values['effectivity'] ?? null) !!}
 
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('as_of',[
                                                     'label' => 'As of:',
                                                     'cols' => 6,
                                                     'class' => 'input-sm',
                                                     'type' => 'date',
-                                                ]) !!}
+                                                ],$employee->otherNosa->values['as_of'] ?? null) !!}
                                             </div>
                                         </div>
                                         <div class="col-md-5">
@@ -332,12 +335,12 @@
                                                     'label' => 'Name:',
                                                     'cols' => 6,
                                                     'class' => 'input-sm',
-                                                ],($s_name == '') ? 'ATTY. BRANDO D. NOROÑA' : $s_name) !!}
+                                                ],$employee->otherNosa->values['signatory_name'] ??  (($s_name == '') ? 'ATTY. BRANDO D. NOROÑA' : $s_name)) !!}
 
                                                 <div class="col-md-6">
                                                     <label>Position:</label>
-                                                    <textarea class="form-control input-sm" rows="3" name="signatory_position">Deputy Administrator II
-Administration and Finance
+                                                    <textarea class="form-control input-sm" rows="3" name="signatory_position">{{$employee->otherNosa->values['signatory_position'] ?? 'Deputy Administrator II
+Administration and Finance' }}
 
                                                     </textarea>
                                                 </div>
