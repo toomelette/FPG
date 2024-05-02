@@ -102,7 +102,10 @@
         </div>
     </div>
 </section>
-
+<div id="img_box">
+    <span style="color:white;font-size: 56px;"><i class="fa fa-spin fa-spinner"></i></span>
+    <img src="">
+</div>
 
 @endsection
 
@@ -568,5 +571,17 @@
     })
 
 
+    $("#img_box").click(function (){
+        $(this).fadeOut();
+    })
+    $("body").on("click",".gj-imagebox",function (){
+        $("#img_box span").show();
+        $("#img_box").fadeIn();
+        $("#img_box img").attr('src',$(this).attr('original'));
+    })
+
+    $("#img_box img").on("load",function (){
+        $("#img_box span").hide();
+    })
 </script>
 @endsection
