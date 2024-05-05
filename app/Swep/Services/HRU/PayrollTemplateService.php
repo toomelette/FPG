@@ -8,7 +8,11 @@ class PayrollTemplateService
 {
     public function findEmployeeBySlug($slug){
         $employee = Employee::query()
-            ->with(['templateIncentives.incentive','templateDeductions.deduction'])
+            ->with([
+                'templateIncentives.incentive',
+                'templateDeductions.deduction',
+                'responsibilityCenter',
+            ])
             ->where('slug','=',$slug)->first();
 
         return $employee ?? abort(503,'Employee does not exist.');

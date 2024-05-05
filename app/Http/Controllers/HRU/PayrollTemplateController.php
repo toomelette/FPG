@@ -4,6 +4,9 @@ namespace App\Http\Controllers\HRU;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\HRU\TemplateDeductions;
+use App\Models\HRU\TemplateIncentives;
+use App\Swep\Helpers\Helper;
 use App\Swep\Services\HRU\PayrollTemplateService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -50,9 +53,54 @@ class PayrollTemplateController extends Controller
 
     public function edit($slug){
         $employee = $this->payrollTemplateService->findEmployeeBySlug($slug);
+        $incentivesArray = $employee->templateIncentives->mapWithKeys(function ($data){
+           return [
+               $data->incentive_code => $data->amount,
+           ];
+        });
+        $deductionsArray = $employee->templateDeductions->mapWithKeys(function ($data){
+            return [
+                $data->deduction_code => $data->amount,
+            ];
+        });
+
         return view('dashboard.hru.payroll_template.edit')->with([
             'employee' => $employee,
+            'employeeIncentivesArray' => $incentivesArray,
+            'employeeDeductionsArray' => $deductionsArray,
         ]);
+    }
 
+    public function update(Request $request,$empSlug){
+
+        $emp = $this->payrollTemplateService->findEmployeeBySlug($empSlug);
+
+        $arrIncentives = [];
+        if(count($request->incentives) > 0){
+            foreach ($request->incentives as $code => $incentive){
+                array_push($arrIncentives,[
+                    'employee_slug' => $empSlug,
+                    'incentive_code' => $code,
+                    'amount' => Helper::sanitizeAutonum($incentive),
+                ]);
+            }
+        }
+
+        $arrDeductions = [];
+        if(count($request->deductions) > 0){
+            foreach ($request->deductions as $code => $deduction){
+                array_push($arrDeductions,[
+                    'employee_slug' => $empSlug,
+                    'deduction_code' => $code,
+                    'amount' => Helper::sanitizeAutonum($deduction),
+                ]);
+            }
+        }
+        $emp->templateIncentives()->delete();
+        $emp->templateDeductions()->delete();
+        TemplateIncentives::insert($arrIncentives);
+        TemplateDeductions::insert($arrDeductions);
+
+        dd($request->incentives);
     }
 }

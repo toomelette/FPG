@@ -320,14 +320,14 @@ class Employee extends Model{
     }
 
     public function nonZeroIncentives(){
-        return $this->hasMany(TemplateIncentives::class,'employee_no','employee_no')
+        return $this->hasMany(TemplateIncentives::class,'employee_slug','slug')
             ->where('amount','!=',0)
             ->where('non_deletable','!=',1)
             ->orderBy('priority','asc');
     }
 
     public function nonZeroDeductions(){
-        return $this->hasMany(TemplateDeductions::class,'employee_no','employee_no')
+        return $this->hasMany(TemplateDeductions::class,'employee_slug','slug')
             ->where('amount','!=',0)
             ->whereHas('deduction',function ($q){
                 return $q->where('availables','=',1);
@@ -340,13 +340,13 @@ class Employee extends Model{
     }
 
     public function templateIncentives(){
-        return $this->hasMany(TemplateIncentives::class,'employee_no','employee_no')
-            ->where('non_deletable','!=',1)
+        return $this->hasMany(TemplateIncentives::class,'employee_slug','slug')
+//            ->where('non_deletable','!=',1)
             ->orderBy('priority','asc');
     }
 
     public function templateDeductions(){
-        return $this->hasMany(TemplateDeductions::class,'employee_no','employee_no')
+        return $this->hasMany(TemplateDeductions::class,'employee_slug','slug')
             ->orderBy('priority','asc');
     }
 

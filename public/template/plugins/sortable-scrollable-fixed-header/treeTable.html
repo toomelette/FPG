@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" media="all" href="css/styles.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/scrollableTable.js"></script>
+    </head>
+    <body>
+        <div id="headline"><h2>Sortable and Scrollable TreeTable with fixed Header!</h2></div>
+        <div id="bar">Filter: <input id="searchField" type="text" value="" oninput="filterTable()"></div>
+        <div id="wrapper"></div>
+
+        <pre id="displayArea">Chick on a row to display its content here.</pre>
+
+        <script type="text/javascript">
+            /** Generate Test Data */
+            var testData = [
+                {"id": 0, "name": "name0", "value": Math.floor(100000 + Math.random() * 900000) },
+                {
+                    "id": 1,
+                    "name": "name1",
+                    "value": Math.floor(100000 + Math.random() * 900000),
+                    "subtree": [
+                        {
+                            "id": 11,
+                            "name": "name1.1",
+                            "value": Math.floor(100000 + Math.random() * 900000),
+                            "subtree": []
+                        },{
+                            "id": 12,
+                            "name": "name1.2",
+                            "value": Math.floor(100000 + Math.random() * 900000),
+                            "subtree": []
+                        },{
+                            "id": 13,
+                            "name": "name1.3",
+                            "value": Math.floor(100000 + Math.random() * 900000),
+                            "subtree": [
+                                {
+                                    "id": 131,
+                                    "name": "name1.3.1",
+                                    "value": Math.floor(100000 + Math.random() * 900000),
+                                    "subtree": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "name2",
+                    "value": Math.floor(100000 + Math.random() * 900000),
+                    "subtree": []
+                },
+                {
+                    "id": 3,
+                    "name": "name3",
+                    "value": Math.floor(100000 + Math.random() * 900000)
+                },
+                {
+                    "id": 4,
+                    "name": "name4",
+                    "value": Math.floor(100000 + Math.random() * 900000),
+                    "subtree": [
+                        {
+                            "id": 41,
+                            "name": "name4.1",
+                            "value": Math.floor(100000 + Math.random() * 900000),
+                            "subtree": []
+                        }
+                    ]
+                }
+            ]
+
+            // add more test data so that we will see the scrollbar
+            for(var i=6; i<50; i++) {
+                testData.push( {"id": i, "name": "name"+i, "value": Math.floor(100000 + Math.random() * 900000) } )
+            }
+
+            /** Table creation */
+            var scrollableTable = new scrollableTable(/* unique id */ 'scrollableTable', /* HTML wrapper id */ 'wrapper', /* enable logging*/ true)
+            scrollableTable.setTableHeader(["Name", "Id", "Value"])
+            scrollableTable.setTableContent(testData, "testDataEventType", ["name", "id","value"], /* optional parameter for TreeTable */ "subtree")
+            /* optional */ scrollableTable.setTableHeight( () => { return $( window ).height() - 166 } )
+                           // or alternatively e.g.: scrollableTable.setTableHeight(500)
+            /* optional */ scrollableTable.expandTree()
+            // /* optional */ scrollableTable.collapseTree()
+            /* optional */ scrollableTable.setCompareFunctionForSorting( function(a,b) {
+                return a.localeCompare(b, undefined, {usage: 'sort', numeric: true, sensitivity: 'base'})
+            })
+            /* optional */ scrollableTable.sortByColumnName("Name")
+
+
+
+            /**
+             * Event processing
+             * data type: {rowId: '<<STRING>>', data: {<<ORIGINAL DATA ENTRY of the selected row>>}}
+            */
+            $( document ).on("testDataEventType", function(event, data) {
+                $('#displayArea').html(
+                    "'testDataEventType' from row with ID: '" + data.rowId +"' was triggered.\n\n"+
+                    "Row data: \n" +
+                    JSON.stringify( data.data, null, 4) )
+            });
+
+            function filterTable() {
+                var filterString = $('#searchField').val()
+                scrollableTable.filter(filterString)
+            }
+
+            $('#searchField').focus()
+
+            </script>
+    </body>
+</html>

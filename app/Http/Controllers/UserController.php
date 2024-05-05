@@ -174,7 +174,7 @@ class UserController extends Controller{
                             $default_pword = Carbon::parse($data->employee->date_of_birth)->format('mdy');
                             $add = '';
                             if(!Hash::check($default_pword,$data->password)){
-                                $add = '<i class="fa fa-lock text-muted" title="The user has already changed its password."></i>';
+                                $add = '<i class="fa fa-lock text-muted" title="This user has already changed password."></i>';
                             }
                             if(file_exists(public_path('images/EmployeePics/1by1Low/'.$data->employee->employee_no.'.jpg'))){
                                 $div = $div.'<img src="'.asset('images/EmployeePics/1by1Low/'.$data->employee->employee_no.'.jpg').'" style="object-fit: contain;width: 100%" class="img-circle" alt="User Image">';

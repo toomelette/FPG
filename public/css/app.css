@@ -806,3 +806,15 @@ li.has-error>a{
     background-color: rgba(0, 0, 0, 0.9);
     padding: 10% 0;
 }
+
+#empScrollable_scrollableTableContainer{
+    border-top: 1px solid #b2aeae;
+}
+
+#empScrollable{
+    font-family: "Product Sans";
+}
+.scrollableTableSection{
+    top: 0px !important;
+    width: 100% !important;
+}

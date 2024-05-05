@@ -537,10 +537,12 @@ $("#img_box").click(function (){
 })
 $("body").on("click",".gj-imagebox",function (){
     $("#img_box span").show();
+    $("#img_box img").hide();
     $("#img_box").fadeIn();
     $("#img_box img").attr('src',$(this).attr('original'));
 })
 
 $("#img_box img").on("load",function (){
     $("#img_box span").hide();
+    $("#img_box img").show();
 })

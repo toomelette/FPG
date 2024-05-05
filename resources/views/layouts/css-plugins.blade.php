@@ -57,3 +57,4 @@
 <link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.min.css') }}">
 <link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/ajax-file-uploader/css/jquery.uploader.css') }}">
 <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+<link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/sortable-scrollable-fixed-header/css/styles.css') }}">

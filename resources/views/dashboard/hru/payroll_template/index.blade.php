@@ -2,38 +2,32 @@
 
 @section('content')
 
-    <section class="content-header">
-        <h1>Payroll Template</h1>
-    </section>
 @endsection
 @section('content2')
-
+    @php
+        $emps = \App\Models\Employee::query()
+            ->permanent()
+            ->active()
+            ->orderBy('lastname','asc')
+            ->get();
+    @endphp
     <section class="content">
         <div class="box box-solid">
             <div class="box-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div id="employeeScrollable"></div>
 
-                        <div id="employees_table_container" style="display: none">
-                            <table class="table table-bordered table-striped table-hover table-condensed" id="employees_table" style="width: 100% !important">
-                                <thead>
-                                <tr class="">
-                                    <th >Emp. No.</th>
-                                    <th >Fullname</th>
-                                    <th >Incentives</th>
-                                    <th >Deductions</th>
-                                    <th class="action">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                    </div>
+                    <div class="col-md-9" id="template">
+                        <div id="template_placeholder" class='text-center' style="margin-top: 200px">
+                            <h1><span style="font-size: 84px; color: grey"><i class="fa fa-user"></i></span></h1>
+                            <p>Please select an employee first.</p>
                         </div>
-                        <div id="tbl_loader">
-                            <center>
-                                <img style="width: 100px" src="{{asset('images/loader.gif')}}">
-                            </center>
-                        </div>
-
+                    </div>
                 </div>
+
+
             </div>
         </div>
 
@@ -43,66 +37,43 @@
 
 
 @section('modals')
-
 @endsection
+
 
 @section('scripts')
     <script type="text/javascript">
         modal_loader = $("#modal_loader").parent('div').html();
         //Initialize DataTable
         var active = '';
-        publication_tbl = $("#employees_table").DataTable({
-            "ajax" : '{{\Illuminate\Support\Facades\Request::url()}}',
-            "columns": [
-                { "data": "employee_no" },
-                { "data": "fullname" },
-                { "data": "incentives" },
-                { "data": "deductions" },
-                { "data": "action" },
-            ],
-            "buttons": [
-                {!! __js::dt_buttons() !!}
-            ],
-            "columnDefs":[
 
-                {
-                    "targets" : 4,
-                    "orderable" : false,
-                    "class" : 'action1'
-                },
-            ],
-            "responsive": false,
-            'dom' : 'lBfrtip',
-            "processing": true,
-            "serverSide": true,
-            "initComplete": function( settings, json ) {
-                style_datatable("#"+settings.sTableId);
-                $('#tbl_loader').fadeOut(function(){
-                    $("#"+settings.sTableId+"_container").fadeIn();
-                    if(find != ''){
-                        publication_tbl.search(find).draw();
-                    }
-                });
-                //Need to press enter to search
-                $('#'+settings.sTableId+'_filter input').unbind();
-                $('#'+settings.sTableId+'_filter input').bind('keyup', function (e) {
-                    if (e.keyCode == 13) {
-                        publication_tbl.search(this.value).draw();
-                    }
-                });
-            },
+        var empScrollable = new scrollableTable('empScrollable','employeeScrollable');
+        empScrollable.setTableHeader(["Name","Id"]);
+        var testData = {!! $emps->map(function ($data){
+                return [
+                    'full_name' => $data->full_name,
+                    'employee_no' => $data->employee_no,
+                    'slug' => $data->slug,
+                ];
+            }) !!};
+        empScrollable.setTableHeight( () => {return $( window ).height() - 300 } );
+        empScrollable.setTableContent(testData,"testDataEventType", ["full_name","employee_no"]);
 
-            "language":
-                {
-                    "processing": "<center><img style='width: 70px' src='{{asset("images/loader.gif")}}'></center>",
+        $( document ).on("testDataEventType", function(event, data) {
+            var url = '{{route("dashboard.payroll_template.edit","slug")}}';
+            url = url.replace('slug',data.data.slug);
+            $.ajax({
+                url : url,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
                 },
-            "drawCallback": function(settings){
-                $('[data-toggle="tooltip"]').tooltip();
-                $('[data-toggle="modal"]').tooltip();
-                if(active != ''){
-                    $("#"+settings.sTableId+" #"+active).addClass('success');
+                success: function (res) {
+                    $("#template").html(res);
+                },
+                error: function (res) {
+
                 }
-            }
+            })
         });
 
         $("body").on("click",".view-employee-btn",function (){
@@ -117,7 +88,8 @@
                     {!! __html::token_header() !!}
                 },
                 success: function (res) {
-                    $("#edit-view-container").html(res);
+                    $("#template").html(res);
+
                 },
                 error: function (res) {
 
