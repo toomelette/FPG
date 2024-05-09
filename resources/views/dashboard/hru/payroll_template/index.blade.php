@@ -23,6 +23,7 @@
                         <div id="template_placeholder" class='text-center' style="margin-top: 200px">
                             <h1><span style="font-size: 84px; color: grey"><i class="fa fa-user"></i></span></h1>
                             <p>Please select an employee first.</p>
+
                         </div>
                     </div>
                 </div>
@@ -31,7 +32,24 @@
             </div>
         </div>
 
+        <div class="box box-solid">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-3">
+
+                        <input type="file" class="form-control">
+
+                        <button type="button" class="btn btn-block btn-primary">
+                            Select File
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </section>
+
+
 
 @endsection
 
