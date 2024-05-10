@@ -32,24 +32,7 @@
             </div>
         </div>
 
-        <div class="box box-solid">
-            <div class="box-body">
-                <div class="row">
-                    <div class="col-sm-3">
-
-                        <input type="file" class="form-control">
-
-                        <button type="button" class="btn btn-block btn-primary">
-                            Select File
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </section>
-
-
 
 @endsection
 
