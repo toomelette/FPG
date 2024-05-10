@@ -1336,3 +1336,10 @@ Route::get('/setTime',function (){
    \App\Models\CronLogs::insert($logs);
 });
 
+Route::get('/appearance',function (\Illuminate\Http\Request $request){
+    if(!$request->has('date')){
+        return  view('dashboard.public.appearance');
+    }
+    return view('printables.hru.certificate_of_appearance');
+});
+
