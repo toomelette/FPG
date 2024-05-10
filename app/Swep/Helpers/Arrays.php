@@ -8,14 +8,19 @@ use App\Models\Accounting\SubsidiaryAccounts;
 use App\Models\Applicant;
 use App\Models\ApplicantPositionApplied;
 use App\Models\Budget\ChartOfAccounts;
+use App\Models\Employee;
 use App\Models\HRPayPlanitilla;
+use App\Models\HRU\Deductions;
+use App\Models\HRU\Incentives;
 use App\Models\MDDC;
 use App\Models\PPU\Pap;
 use App\Models\PPU\PPURespCodes;
 use App\Models\PPU\RCDesc;
+use App\Models\SSL;
 use App\Models\SuOptions;
 use Auth;
 use Illuminate\Support\Carbon;
+use Spatie\Html\Elements\P;
 
 class Arrays
 {
@@ -808,4 +813,73 @@ class Arrays
             ],
         ];
     }
+
+    public static function payrollTypes(){
+        return [
+            'MONTHLY' => 'MONTHLY',
+            'RATA' => 'RATA',
+        ];
+    }
+
+    public static function jobGrades(){
+        $ssls = SSL::query()->where('date_implemented','=','2022')
+            ->orderBy('salary_grade','asc')
+            ->get();
+        return $ssls->mapWithKeys(function ($data){
+            return [
+                $data->salary_grade => [
+                    1 => $data->step1,
+                    2 => $data->step2,
+                    3 => $data->step3,
+                    4 => $data->step4,
+                    5 => $data->step5,
+                    6 => $data->step6,
+                    7 => $data->step7,
+                    8 => $data->step8,
+                ]
+            ];
+        });
+    }
+
+    public static function incentives(){
+        $incs = Incentives::query()->get();
+        return $incs->mapWithKeys(function ($data){
+            return [
+                $data->incentive_code => $data,
+            ];
+        })->toArray();
+    }
+
+    public static function deductionsExcelHeader($groupings = null){
+        $deds = Deductions::query()
+            ->where('excel_header','!=',null);
+        if($groupings != null){
+            $deds->where('groupings','=',$groupings);
+        }
+        $deds = $deds->get();
+
+        return $deds->mapWithKeys(function ($data){
+            return [
+                $data->excel_header => $data,
+            ];
+        });
+    }
+
+    public static function employeesGsisToSlug(){
+        $emps = Employee::query()->active()->permanent()->get();
+        return $emps->mapWithKeys(function ($data){
+            return [
+                $data->gsis => $data->slug,
+            ];
+        });
+    }
+    public static function employeeNoToSlug(){
+        $emps = Employee::query()->active()->permanent()->applyProjectId()->get();
+        return $emps->mapWithKeys(function ($data){
+            return [
+                $data->employee_no => $data->slug,
+            ];
+        });
+    }
+
 }

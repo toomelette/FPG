@@ -266,7 +266,8 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 	/** Leave Card **/
 	Route::get('/leave_card/report', 'LeaveCardController@report')->name('leave_card.report');
 	Route::get('/leave_card/report_generate', 'LeaveCardController@reportGenerate')->name('leave_card.report_generate');
-	Route::resource('leave_card', 'LeaveCardController');
+    Route::get('/leave_card/{slug}/print', 'LeaveCardController@print')->name('leave_card.print');
+    Route::resource('leave_card', 'LeaveCardController');
 
 
 	/** Applicant **/
@@ -375,7 +376,8 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     /** Payroll Template **/
     Route::resource('payroll_template',\App\Http\Controllers\HRU\PayrollTemplateController::class);
-
+    Route::post('/payroll_preparation/{slug}/update',\App\Http\Controllers\HRU\PayrollPreparationController::class.'@update')->name('payroll_preparation.update');
+    Route::resource('payroll_preparation',\App\Http\Controllers\HRU\PayrollPreparationController::class)->except(['update']);
 
 });
 

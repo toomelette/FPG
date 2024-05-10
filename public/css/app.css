@@ -818,3 +818,29 @@ li.has-error>a{
     top: 0px !important;
     width: 100% !important;
 }
+
+
+.tscroll {
+    width: 100%;
+    overflow-x: scroll;
+    margin-bottom: 10px;
+    border: solid black 1px;
+    overflow-y: scroll;
+    height: calc(100vh - 23em);
+}
+
+.tscroll table td.first,.tscroll table th.first {
+    position: sticky;
+    left: 0;
+    background-color: #ddd;
+    width: 1000px;
+}
+.tscroll table thead tr {
+    position: sticky;
+    top: 0;
+    background-color: white;
+}
+
+.tscroll td, .tscroll th {
+    border-bottom: dashed #888 1px;
+}

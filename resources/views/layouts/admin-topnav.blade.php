@@ -28,7 +28,7 @@
       <ul class="nav navbar-nav">
 
         @if($_SERVER['SERVER_ADDR'] != $server_address)
-          <li style="width: 750px;padding-top: 12px"><p style="color: white; font-size: larger">DEVELOPMENT MODE</p></li>
+{{--          <li style="width: 750px;padding-top: 12px"><span style="color: white; font-size: larger">DEV</span></li>--}}
         @endif
           <li class="dropdown tasks-menu">
             <a href="http://10.36.1.14/" >
