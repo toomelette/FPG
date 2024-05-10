@@ -16,7 +16,12 @@ use Spatie\Html\Elements\P;
 
 class PayrollPreparationController
 {
-    public function create(){
+    public function create(Request $request){
+
+        if($request->update_table==true){
+            return view('dashboard.hru.payroll_preparation.'.$request->type.'.emplyslist');
+        };
+
         return view('dashboard.hru.payroll_preparation.create');
     }
 
@@ -38,41 +43,82 @@ class PayrollPreparationController
         if($payMaster->save()){
             PayrollMasterEmployees::query()->insert($employeeArr);
         }
-        $this->recompute($payMaster->slug);
+        $this->{'recompute'.$request->type}($payMaster->slug);
         return $payMaster->only('slug');
     }
 
-    public function edit($slug,Request $request){
-        if($request->has('recompute') && $request->recompute == true){
-            $this->recompute($slug);
+    private function recomputeRATA($payrollMasterSlug){
 
-            $payrollMaster = PayrollMaster::query()
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees.employee.templateIncentives',
+            ])
+            ->find($payrollMasterSlug);
+
+        // dd($rataEmply);
+    }
+
+    public function edit($slug,Request $request){
+
+        $payrollMaster = PayrollMaster::query()
                 ->with([
                     'payrollMasterEmployees.employee',
                     'payrollMasterEmployees.employeePayrollDetails',
                 ])
                 ->find($slug);
 
-                $payrollMaster ?? abort(404,'Payroll not found.');
-            return view('dashboard.hru.payroll_preparation.preview')->with([
-                'payrollMaster' => $payrollMaster,
-            ]);
-        }
-        $payrollMaster = PayrollMaster::query()
-            ->with([
-                'payrollMasterEmployees.employee',
-                'payrollMasterEmployees.employeePayrollDetails',
-            ])
-            ->find($slug);
-
         $payrollMaster ?? abort(404,'Payroll not found.');
 
-        return view('dashboard.hru.payroll_preparation.edit')->with([
-            'payrollMaster' => $payrollMaster,
-        ]);
+        switch($payrollMaster->type){
+            case 'MONTHLY':
+                if($request->has('recompute') && $request->recompute == true){
+                    $this->recomputeMONTHLY($slug);
+        
+                    
+                    return view('dashboard.hru.payroll_preparation.MONTHLY.preview')->with([
+                        'payrollMaster' => $payrollMaster,
+                    ]);
+                }
+                $payrollMaster = PayrollMaster::query()
+                    ->with([
+                        'payrollMasterEmployees.employee',
+                        'payrollMasterEmployees.employeePayrollDetails',
+                    ])
+                    ->find($slug);
+        
+                $payrollMaster ?? abort(404,'Payroll not found.');
+        
+                return view('dashboard.hru.payroll_preparation.MONTHLY.edit')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
+                break;
+            case 'RATA':
+                if($request->has('recompute') && $request->recompute == true){
+                    $this->recomputeRATA($slug);
+        
+                    
+                    return view('dashboard.hru.payroll_preparation.MONTHLY.preview')->with([
+                        'payrollMaster' => $payrollMaster,
+                    ]);
+                }
+                $payrollMaster = PayrollMaster::query()
+                    ->with([
+                        'payrollMasterEmployees.employee',
+                        'payrollMasterEmployees.employeePayrollDetails',
+                    ])
+                    ->find($slug);
+        
+                $payrollMaster ?? abort(404,'Payroll not found.');
+        
+                return view('dashboard.hru.payroll_preparation.RATA.edit_rata')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
+            break;
+        }
+        
     }
 
-    public function recompute($payrollMasterSlug){
+    public function recomputeMONTHLY($payrollMasterSlug){
         $incentives = Incentives::query()
             ->where('n_is_monthly','=',1)
             ->orderBy('n_priority','asc')

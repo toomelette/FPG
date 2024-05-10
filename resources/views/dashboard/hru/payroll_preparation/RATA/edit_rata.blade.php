@@ -26,14 +26,12 @@
             <div class="box box-solid">
                 <div class="box-header">
                     <div class="btn-group pull-right">
-                        <button type="button" data-target="#upload_modal" data-toggle="modal" class="btn btn-default btn-sm"> <i class="fa fa-folder-open"></i> Upload Excel File </button>
-
                         <button type="button" id="recompute_btn" class="btn btn-primary btn-sm"> <i class="fa fa-refresh"></i> Recompute </button>
                     </div>
                 </div>
                 <div class="box-body" id="payroll_table">
 
-                    @include('dashboard.hru.payroll_preparation.preview',[
+                    @include('dashboard.hru.payroll_preparation.RATA.preview',[
                         'payrollMaster' => $payrollMaster,
                     ])
                 </div>
@@ -46,39 +44,7 @@
 
 
 @section('modals')
-    <div class="modal fade" id="upload_modal" tabindex="-1" role="dialog" aria-labelledby="upload_modal_label">
-      <div class="modal-dialog modal-sm" role="document">
-          <form id="upload_form">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                    {!! \App\Swep\ViewHelpers\__form2::select('type',[
-                       'label' => 'Type:',
-                       'cols' => 12,
-                       'options' => [
-                            'GSIS' => 'GSIS',
-                            'HDMF' => 'HDMF',
-                            'SURRECO' => 'SURRECO',
-                        ]
-                   ]) !!}
-                    {!! \App\Swep\ViewHelpers\__form2::textbox('file',[
-                        'label' => 'Type:',
-                        'cols' => 12,
-                        'type' => 'file'
-                    ]) !!}
-                </div>
-              </div>
-              <div class="modal-footer">
-                 <button type="submit" class="btn btn-primary btn-sm"> <i class="fa fa-check"></i> Upload</button>
-              </div>
-            </div>
-          </form>
-      </div>
-    </div>
+    
 @endsection
 
 
