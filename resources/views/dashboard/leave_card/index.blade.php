@@ -1,177 +1,134 @@
-<?php
-   $table_sessions = [
-                      Session::get('LC_UPDATE_SUCCESS_SLUG')
-                    ];
-
-  $appended_requests = [
-                        'q'=> Request::get('q'),
-                        'sort' => Request::get('sort'),
-                        'direction' => Request::get('direction'),
-                        'e' => Request::get('e'),
-
-                        'emp'=> Request::get('emp'), 
-                        'doc_t'=> Request::get('doc_t'),
-                        'leave_t'=> Request::get('leave_t'),
-                        'df'=> Request::get('df'),
-                        'dt'=> Request::get('dt'),
-                      ];
-
-?>
-
-
-
-
-
 @extends('layouts.admin-master')
 
 @section('content')
-    
-  <section class="content-header">
-      <h1>Leave Card List</h1>
-  </section>
 
-  <section class="content">
-    
+    <section class="content-header">
+        <h1>Leave Cards</h1>
+    </section>
+@endsection
+@section('content2')
 
-    {{-- Form Start --}}
-    <form data-pjax class="form" id="filter_form" method="GET" autocomplete="off" action="{{ route('dashboard.leave_card.index') }}">
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Leave Cards</h3>
+            </div>
 
+            <div class="box-body">
+                <div id="la_table_container" style="">
+                    <table class="table table-bordered table-striped table-hover" id="la_table" style="width: 100%">
+                        <thead>
+                        <tr class="">
+                            <th >Employee</th>
+                            <th >VL</th>
+                            <th >SL</th>
+                            <th >Other</th>
+                            <th class="action">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
 
-    {{-- Advance Filters --}}
-    {!! __html::filter_open() !!}
-
-      <div class="col-md-12 no-padding">
-
-        {!! 
-          __form::select_dynamic_for_filter('3', 'emp', 'Employee', old('emp'), $global_employees_all, 'employee_no', 'fullname', 'submit_lc_filter', 'select2', 'style="width:100%;"') 
-        !!}
-
-        {!!
-          __form::select_static_for_filter('3', 'doc_t', ' Doc Type', old('doc_t'), __static::document_types_leave_card(), 'submit_lc_filter', '', '') 
-        !!}
-
-        {!!
-          __form::select_static_for_filter('3', 'leave_t', ' Leave Type', old('leave_t'), __static::leave_types(), 'submit_lc_filter', '', '') 
-        !!}
-
-      </div>
-
-
-      <div class="col-md-12 no-padding">
-        
-        <h5>Date Filter : </h5>
-
-        {!! __form::datepicker('3', 'df',  'From', old('df'), '', '') !!}
-
-        {!! __form::datepicker('3', 'dt',  'To', old('dt'), '', '') !!}
-
-        <button type="submit" class="btn btn-primary" style="margin:25px;">Filter Date <i class="fa fa-fw fa-arrow-circle-right"></i></button>
-
-      </div>
-        
-    {!! __html::filter_close('submit_lc_filter') !!}
-
-
-
-    <div class="box" id="pjax-container" style="overflow-x:auto;">
-
-      {{-- Table Search --}}        
-      <div class="box-header with-border">
-        {!! __html::table_search(route('dashboard.leave_card.index')) !!}
-      </div>
-
-    {{-- Form End --}}  
-    </form>
-
-      {{-- Table Grid --}}        
-      <div class="box-body no-padding">
-        <table class="table table-hover">
-          <tr>
-            <th>@sortablelink('employee.fullname', 'Employee')</th>
-            <th>@sortablelink('doc_type', 'Doc Type')</th>
-            <th>@sortablelink('leave_type', 'Leave Type')</th>
-            <th>Date</th>
-            <th>@sortablelink('credits', 'Credits')</th>
-            <th style="width: 150px">Action</th>
-          </tr>
-          @foreach($leave_cards as $data) 
-            <tr {!! __html::table_highlighter( $data->slug, $table_sessions) !!}>
-              <td id="mid-vert">{!! empty($data->employee) ? '' : $data->employee->fullname !!}</td>
-              <td id="mid-vert">{{ $data->doc_type }}</td>
-              <td id="mid-vert">{{ $data->doc_type == 'LEAVE' ? $data->leave_type : 'N/A' }}</td>
-              <td id="mid-vert">
-                @if($data->doc_type == 'LEAVE')
-                  {{ __dataType::date_parse($data->date_from, 'M d, Y') .' - '. __dataType::date_parse($data->date_to, 'M d, Y') }}
-                @else
-                  {{ __dataType::date_parse($data->date, 'M d, Y') }}
-                @endif
-              </td>
-              <td id="mid-vert">
-                {!! 
-                  $data->doc_type == 'OT' ? '<span class="text-success">'. $data->credits .'</span>' : '<span class="text-danger">'. $data->credits .'</span>'; 
-                !!}
-              </td>
-              <td id="mid-vert"> 
-                <select id="action" class="form-control input-md">
-                  <option value="">Select</option>
-                  <option data-type="1" data-url="{{ route('dashboard.leave_card.show', $data->slug) }}">Details</option>
-                  <option data-type="1" data-url="{{ route('dashboard.leave_card.edit', $data->slug) }}">Edit</option>
-                  <option data-type="0" data-action="delete" data-url="{{ route('dashboard.leave_card.destroy', $data->slug) }}">Delete</option>
-                </select>
-              </td>
-            </tr>
-            @endforeach
-        </table>
-      </div>
-
-      @if($leave_cards->isEmpty())
-        <div style="padding :5px;">
-          <center><h4>No Records found!</h4></center>
+            </div>
         </div>
-      @endif
 
-      <div class="box-footer">
-        {!! __html::table_counter($leave_cards) !!}
-        {!! $leave_cards->appends($appended_requests)->render('vendor.pagination.bootstrap-4') !!}
-      </div>
-
-    </div>
-
-  </section>
+    </section>
 
 @endsection
 
 
-
-
-
 @section('modals')
-
-  {!! __html::modal_delete('lc_delete') !!}
-
-@endsection 
-
-
-
-
+    {!! __html::blank_modal('edit_leave_card_modal','') !!}
+@endsection
 
 @section('scripts')
+    <script type="text/javascript">
 
-  <script type="text/javascript">
+        modal_loader = $("#modal_loader").parent('div').html();
+        //Initialize DataTable
+        active = '';
+        employees_tbl = $("#la_table").DataTable({
+            'dom' : 'lBfrtip',
+            "processing": true,
+            "serverSide": true,
+            "ajax" : '{{route('dashboard.leave_card.index')}}',
+            "columns": [
+                { "data": "lastname" },
+                { "data": "vlRemaining" },
+                { "data": "slRemaining" },
+                { "data": "details" },
+                { "data": "action"}
+            ],
+            "buttons": [
+                {!! __js::dt_buttons() !!}
+            ],
+            "columnDefs":[
+                {
+                    "targets" : 4,
+                    "orderable" : false,
+                    "searchable": false,
+                    "class" : 'action4'
+                },
 
-    {{-- CALL CONFIRM DELETE MODAL --}}
-    {!! __js::modal_confirm_delete_caller('lc_delete') !!}
+            ],
+            "responsive": true,
+            "initComplete": function( settings, json ) {
 
-    {{-- LC UPDATE TOAST --}}
-    @if(Session::has('LC_UPDATE_SUCCESS'))
-      {!! __js::toast(Session::get('LC_UPDATE_SUCCESS')) !!}
-    @endif
+            },
+            "language":
+                {
+                    "processing": "<center><img style='width: 70px' src='{{asset("images/loader.gif")}}'></center>",
+                },
+            "drawCallback": function(settings){
+                // console.log(employees_tbl.page.info().page);
+                $("#la_table a[for='linkToEdit']").each(function () {
+                    let orig_uri = $(this).attr('href');
+                    $(this).attr('href',orig_uri+'?page='+employees_tbl.page.info().page);
+                });
 
-    {{-- LC DELETE TOAST --}}
-    @if(Session::has('LC_DELETE_SUCCESS'))
-      {!! __js::toast(Session::get('LC_DELETE_SUCCESS')) !!}
-    @endif
+                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="modal"]').tooltip();
+                if(active != ''){
+                    $("#la_table #"+active).addClass('success');
+                }
+            }
+        })
 
-  </script>
-    
+        style_datatable("#la_table");
+
+        //Need to press enter to search
+        $('#la_table_filter input').unbind();
+        $('#la_table_filter input').bind('keyup', function (e) {
+            if (e.keyCode == 13) {
+                employees_tbl.search(this.value).draw();
+            }
+        });
+
+        $("body").on("click",".print-btn-dialog",function (){
+            let href = $(this).attr('href');
+            window.open(href, "popupWindow", "width=1200, height=600, scrollbars=yes");
+        })
+
+        $("body").on("click",".edit_leave_card_btn",function () {
+            let btn = $(this);
+            load_modal2(btn);
+            let uri = '{{route("dashboard.leave_card.edit","slug")}}';
+            uri = uri.replace('slug',btn.attr('data'));
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
+    </script>
 @endsection

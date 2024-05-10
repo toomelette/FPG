@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LeaveCard\LeaveCardBegBalFormRequest;
+use App\Models\Employee;
+use App\Models\HRU\LeaveBeginningBalance;
 use App\Swep\Services\LeaveCardService;
 use App\Http\Requests\LeaveCard\LeaveCardFormRequest;
 use App\Http\Requests\LeaveCard\LeaveCardFilterRequest;
 use App\Http\Requests\LeaveCard\LeaveCardReportRequest;
+use Illuminate\Http\Request;
 
 class LeaveCardController extends Controller{
     
@@ -24,10 +28,35 @@ class LeaveCardController extends Controller{
 
 
 
-    public function index(LeaveCardFilterRequest $request){
+    public function index(Request $request){
+        if($request->ajax() && $request->has('draw')){
+            $employees = Employee::query()
+                ->with(['leaveBegBal'])
+                ->permanent();
+            return \DataTables::of($employees)
+                ->editColumn('lastname',function ($data){
+                    return $data->full_name;
+                })
+                ->addColumn('action',function ($data){
+                    return view('dashboard.leave_card.dtActions')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->addColumn('vlRemaining',function ($data){
+                    return $data->leaveBegBal->vl ?? '';
+                })
+                ->addColumn('slRemaining',function ($data){
+                    return $data->leaveBegBal->sl ?? '';
+                })
+                ->addColumn('details',function ($data){
 
+                })
+                ->setRowId('slug')
+                ->escapeColumns([])
+                ->toJson();
+        }
+        return view('dashboard.leave_card.index');
         return $this->leave_card->fetch($request);
-    
     }
 
 
@@ -60,21 +89,40 @@ class LeaveCardController extends Controller{
 
 
 
-    
-    public function edit($slug){
-
-        return $this->leave_card->edit($slug);
-        
+    //EDITS THE BEGINNING BALANCES
+    public function edit($employeeSlug){
+        $employee = Employee::query()->find($employeeSlug);
+        $employee ?? abort(404,'Employee not found.');
+        $leaveBegBal = LeaveBeginningBalance::query()
+            ->where('employee_slug','=',$employeeSlug)
+            ->first();
+        return view('dashboard.leave_card.edit')->with([
+            'employee' => $employee,
+            'begBal' => $leaveBegBal,
+        ]);
     }
 
     
 
 
-    
-    public function update(LeaveCardFormRequest $request, $slug){
-
-        return $this->leave_card->update($request, $slug);
-        
+    //UPDATES THE BEGINNING BALANCES
+    public function update(LeaveCardBegBalFormRequest $request, $employeeSlug){
+        $employee = Employee::query()->find($employeeSlug);
+        $leaveBegBal = LeaveBeginningBalance::query()->where('employee_slug','=',$employee)->first();
+        $employee ?? abort(404,'Employee not found.');
+        $uoc = LeaveBeginningBalance::query()->updateOrCreate(
+            ['employee_slug' => $employeeSlug],
+            [
+                'slug' => \Str::random(),
+                'as_of' => $request->as_of,
+                'sl' => $request->sl,
+                'vl' => $request->vl,
+            ]
+        );
+        if($uoc){
+            return $employee->only('slug');
+        }
+        abort(503,'Error updating beginning balance.');
     }
 
     

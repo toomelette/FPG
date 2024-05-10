@@ -47,7 +47,7 @@
         var active = '';
 
         var empScrollable = new scrollableTable('empScrollable','employeeScrollable');
-        empScrollable.setTableHeader(["Name","Id"]);
+        empScrollable.setTableHeader(["Name"]);
         var testData = {!! $emps->map(function ($data){
                 return [
                     'full_name' => $data->full_name,
@@ -55,8 +55,8 @@
                     'slug' => $data->slug,
                 ];
             }) !!};
-        empScrollable.setTableHeight( () => {return $( window ).height() - 300 } );
-        empScrollable.setTableContent(testData,"testDataEventType", ["full_name","employee_no"]);
+        empScrollable.setTableHeight( () => {return $( window ).height() } );
+        empScrollable.setTableContent(testData,"testDataEventType", ["full_name"]);
 
         $( document ).on("testDataEventType", function(event, data) {
             var url = '{{route("dashboard.payroll_template.edit","slug")}}';

@@ -70,7 +70,7 @@
                                 <td>{{$incentive->incentive_code}}</td>
                                 <td>
                                     {!! \App\Swep\ViewHelpers\__form2::textboxOnly('incentives['.$incentive->incentive_code.']',[
-                                        'class' => 'input-xs text-right',
+                                        'class' => 'input-xs text-right autonum_'.$rand,
                                         'autocomplete' => 'off',
                                     ],$employeeIncentivesArray[$incentive->incentive_code] ?? null) !!}
                                 </td>
@@ -104,7 +104,7 @@
                                 <td>{{$deduction->deduction_code}} </td>
                                 <td>
                                     {!! \App\Swep\ViewHelpers\__form2::textboxOnly('deductions['.$deduction->deduction_code.']',[
-                                        'class' => 'input-xs text-right',
+                                        'class' => 'input-xs text-right autonum_'.$rand,
                                         'autocomplete' => 'off',
                                     ],$employeeDeductionsArray[$deduction->deduction_code] ?? null) !!}
                                 </td>
@@ -120,6 +120,7 @@
 </form>
 
 <script>
+    const autonumericElement_{{$rand}} =  AutoNumeric.multiple('.autonum_{{$rand}}');
     $("#edit_template_form_{{$rand}}").submit(function (e){
         e.preventDefault();
         var url = '{{route("dashboard.payroll_template.update", $employee->slug)}}';
@@ -138,4 +139,5 @@
             }
         })
     })
+
 </script>

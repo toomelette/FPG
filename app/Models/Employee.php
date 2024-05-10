@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\HRU\HrOtherActions;
+use App\Models\HRU\LeaveBeginningBalance;
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
 use App\Models\PPU\PPURespCodes;
@@ -41,7 +42,8 @@ class Employee extends Model{
 	use Sortable, LogsActivity;
 //	protected $connection = 'mysql_qc_server';
     protected $table = 'hr_employees';
-
+    protected $primaryKey = 'slug';
+    public $incrementing = false;
     protected $dates = ['date_of_birth', 'firstday_gov', 'firstday_sra', 'appointment_date', 'adjustment_date', 'created_at', 'updated_at'];
 
     public $timestamps = true;
@@ -268,6 +270,10 @@ class Employee extends Model{
         return $this->hasOne(HrOtherActions::class,'employee_slug','slug')->orderBy('created_at','desc');
     }
 
+    public function leaveBegBal(){
+        return $this->hasOne(LeaveBeginningBalance::class,'employee_slug','slug');
+    }
+
 
 
     /** Scopes **/
@@ -384,4 +390,6 @@ class Employee extends Model{
                 ->where('locations','!=','LUZON/MINDANAO');
         });
     }
+
+
 }
