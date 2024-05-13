@@ -285,8 +285,13 @@ class HomeController extends Controller{
             ->where('locations','!=','RETIREE')
             ->where('is_active','!=','INACTIVE')
             ->orderBy('firstday_gov','desc')
-            ->orderBy('lastname','asc')
-            ->get();
+            ->orderBy('lastname','asc');
+        if(Auth::user()->project_id == 1){
+            $loyaltys = $loyaltys->where('locations','=','VISAYAS');
+        }else if (Auth::user()->project_id == 2){
+            $loyaltys = $loyaltys->where('locations','=','LUZON/MINDANAO');
+        }
+        $loyaltys = $loyaltys->get();
         $loyaltysArr = [];
         foreach ($loyaltys as $loyalty) {
             $loyaltysArr[$loyalty->slug] = $loyalty;
