@@ -63,7 +63,7 @@
                                     Requisitioner:
                                 </td>
                                 <td class="td-style bold">
-                                    {{strtoupper($user->employeeUnion->firstname)}} {{strtoupper($user->employeeUnion->lastname)}}
+                                    {{strtoupper($user->employee->firstname)}} {{strtoupper($user->employee->lastname)}}
                                 </td>
                             </tr>
                             <tr>
