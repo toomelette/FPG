@@ -15,16 +15,6 @@
                 })
                 ->groupBy('code');
 
-                $groupedDeductions = $payrollMaster->hmtDetails
-                ->where('type','DEDUCTION')
-                ->sortBy(function($data){
-                    if($data->priority == null){
-                        return 100000;
-                    }else{
-                        return $data->priority;
-                    }
-                })
-                ->groupBy('code');
             @endphp
 
             @forelse($groupedIncentives as $incentive => $null)
@@ -32,10 +22,6 @@
             @empty
             @endforelse
 
-            @forelse($groupedDeductions as $ded => $null)
-                <th class="text-center">{{$ded}}</th>
-            @empty
-            @endforelse
         </tr>
         </thead>
         <tbody>
@@ -46,10 +32,6 @@
                     <td class="text-right">
                         {{Helper::toNumber($employee->employeePayrollDetails->where('code',$incentive)->first()->amount ?? null,2)}}
                     </td>
-                @empty
-                @endforelse
-                @forelse($groupedDeductions as $ded => $null)
-                    <td class="text-right">{{Helper::toNumber($employee->employeePayrollDetails->where('code',$ded)->first()->amount ?? null,2)}}</td>
                 @empty
                 @endforelse
             </tr>

@@ -55,42 +55,35 @@ class PayrollPreparationController
             ])
             ->find($payrollMasterSlug);
 
-//         $detailsRata = [];
-//         $incentivesArrayAll = Arrays::incentives();
+        $detailsRata = [];
+        $incentivesArrayAll = Arrays::incentives();
 
-//         foreach($payrollMstrRata->payrollMstrRataEmply as $emplyLst){
+        foreach($payrollMstrRata->payrollMasterEmployees as $emplyLst){
 
-//             // array_push($detailsRata,[
-//             //     'employee_slug' => $emplyLst->employee_slug,
-//             //     'pay_master_employee_listing_slug' => $emplyLst->slug,
-//             //     'slug' => Str::random(),
-//             // ]);
+            $codes = ['RA', 'TA'];
 
-//             $codes = ['RA', 'TA'];
+            if ($emplyLst->employee->templateIncentives) {
+                foreach ($codes as $code) {
+                    $incentive = $emplyLst->employee->templateIncentives->where('incentive_code', '=', $code)->first();
 
-// if ($emplyLst->employee->templateIncentives) {
-//     foreach ($codes as $code) {
-//         $incentive = $emplyLst->employee->templateIncentives->where('incentive_code', '=', $code)->first();
+                    if ($incentive) {
+                        $amount = $incentive->amount ?? $incentivesArrayAll[$code]['fixed_values'];
 
-//         if ($incentive) {
-//             $amount = $incentive->amount ?? $incentivesArrayAll[$code]['fixed_values'];
+                        array_push($detailsRata, [
+                            'employee_slug' => $emplyLst->employee_slug,
+                            'pay_master_employee_listing_slug' => $emplyLst->slug,
+                            'slug' => Str::random(),
+                            'type' => 'INCENTIVE',
+                            'code' => $code,
+                            'amount' => $amount,
+                            'priority' => $incentivesArrayAll[$code]['n_priority'],
+                        ]);
+                    }
+                }
+            }
+        }
 
-//             array_push($detailsRata, [
-//                 'employee_slug' => $emplyLst->employee_slug,
-//                 'pay_master_employee_listing_slug' => $emplyLst->slug,
-//                 'slug' => Str::random(),
-//                 'type' => 'INCENTIVE',
-//                 'code' => $code,
-//                 'amount' => $amount,
-//                 'priority' => $incentivesArrayAll[$code]['n_priority'],
-//             ]);
-//         }
-//     }
-// }
-//         }
-
-
-        dd($payrollMstrRata);
+        PayrollMasterDetails::query()->insert($detailsRata);
     }
 
     public function edit($slug,Request $request){
