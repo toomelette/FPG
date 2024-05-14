@@ -216,6 +216,7 @@
                                 <div class="box-body" style="">
                                     @php
                                         $savedNosa = $employee->otherNosa;
+
                                     @endphp
                                     <div class="row">
                                         <div class="col-md-4">
@@ -229,7 +230,7 @@
                                                     'class' => 'input-sm currents_'.$rand,
                                                     'type' => 'number',
                                                     'id' => 'cur_sg_'.$rand,
-                                                ], $employee->otherNosa->values['salary_grade'] ?? $employee) !!}
+                                                ], (isset($employee->otherNosa->values['salary_grade']) ? $employee->otherNosa->values['salary_grade'] : null) ?? $employee) !!}
 
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('step_inc',[
                                                     'label' => 'Step Inc:',
@@ -238,14 +239,15 @@
                                                     'type' => 'number',
                                                     'value' => $employee,
                                                     'id' => 'cur_si_'.$rand,
-                                                ], $employee->otherNosa->values['step_inc'] ?? $employee) !!}
+                                                ], (isset($employee->otherNosa->values['step_inc']) ? $employee->otherNosa->values['step_inc'] : null) ?? $employee) !!}
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('monthly_basic',[
                                                     'label' => 'Monthly Sal.:',
                                                     'cols' => 4,
                                                     'class' => 'input-sm',
                                                     'id' => 'cur_monthly_salary_'.$rand,
                                                     'tab_index' => -1,
-                                                ], number_format(Helper::sanitizeNumFormat($employee->otherNosa->values['monthly_basic']) ?? $employee->monthly_basic,2)) !!}
+                                                    'required' => 'required',
+                                                ], Helper::toNumber(Helper::sanitizeAutonum(isset($employee->otherNosa->values['monthly_basic']) ? $employee->otherNosa->values['monthly_basic'] : null),2)) !!}
                                             </div>
                                         </div>
 
@@ -259,14 +261,14 @@
                                                     'cols' => 2,
                                                     'class' => 'input-sm',
                                                     'required' => 'required',
-                                                ],$employee->otherNosa->values['new_item_no'] ?? null) !!}
+                                                ],(isset($employee->otherNosa->values['new_item_no']) ? $employee->otherNosa->values['new_item_no'] : null) ?? null) !!}
 
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('new_position',[
                                                     'label' => 'Position:',
                                                     'cols' => 4,
                                                     'class' => 'input-sm',
                                                     'required' => 'required',
-                                                ],$employee->otherNosa->values['new_position'] ?? null) !!}
+                                                ],(isset($employee->otherNosa->values['new_position']) ? $employee->otherNosa->values['new_position'] : null) ?? null) !!}
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('new_salary_grade',[
                                                     'label' => 'Job Grade:',
                                                     'cols' => 2,
@@ -275,7 +277,7 @@
                                                     'id' => 'new_sg_'.$rand,
                                                     'required' => 'required',
 
-                                                ],$employee->otherNosa->values['new_salary_grade'] ?? null) !!}
+                                                ],(isset($employee->otherNosa->values['new_salary_grade']) ? $employee->otherNosa->values['new_salary_grade'] : null) ?? null) !!}
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('new_step_inc',[
                                                     'label' => 'Step Inc:',
                                                     'cols' => 2,
@@ -283,14 +285,15 @@
                                                     'type' => 'number',
                                                     'id' => 'new_si_'.$rand,
                                                     'required' => 'required',
-                                                ],$employee->otherNosa->values['new_step_inc'] ?? null) !!}
+                                                ],(isset($employee->otherNosa->values['new_step_inc']) ? $employee->otherNosa->values['new_step_inc'] : null) ?? null) !!}
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('new_monthly_salary',[
                                                     'label' => 'Monthly Sal.:',
                                                     'cols' => 2,
                                                     'class' => 'input-sm news_'.$rand,
                                                     'id' => 'new_monthly_salary_'.$rand,
                                                     'tab_index' => -1,
-                                                ],$employee->otherNosa->values['new_monthly_salary'] ?? null) !!}
+                                                    'required' => 'required',
+                                                ],Helper::toNumber(Helper::sanitizeAutonum(isset($employee->otherNosa->values['new_monthly_salary']) ? $employee->otherNosa->values['new_monthly_salary'] : null),2)) !!}
                                             </div>
                                         </div>
 
@@ -306,14 +309,14 @@
                                                     'cols' => 6,
                                                     'class' => 'input-sm',
                                                     'type' => 'date',
-                                                ],$employee->otherNosa->values['effectivity'] ?? null) !!}
+                                                ],(isset($employee->otherNosa->values['effectivity']) ? $employee->otherNosa->values['effectivity'] : null) ?? null) !!}
 
                                                 {!! \App\Swep\ViewHelpers\__form2::textbox('as_of',[
                                                     'label' => 'As of:',
                                                     'cols' => 6,
                                                     'class' => 'input-sm',
                                                     'type' => 'date',
-                                                ],$employee->otherNosa->values['as_of'] ?? null) !!}
+                                                ],(isset($employee->otherNosa->values['as_of']) ? $employee->otherNosa->values['as_of'] : null) ?? null) !!}
                                             </div>
                                         </div>
                                         <div class="col-md-5">
@@ -335,11 +338,11 @@
                                                     'label' => 'Name:',
                                                     'cols' => 6,
                                                     'class' => 'input-sm',
-                                                ],$employee->otherNosa->values['signatory_name'] ??  (($s_name == '') ? 'ATTY. BRANDO D. NOROÑA' : $s_name)) !!}
+                                                ],(isset($employee->otherNosa->values['signatory_name']) ? $employee->otherNosa->values['signatory_name'] : null) ??  (($s_name == '') ? 'ATTY. BRANDO D. NOROÑA' : $s_name)) !!}
 
                                                 <div class="col-md-6">
                                                     <label>Position:</label>
-                                                    <textarea class="form-control input-sm" rows="3" name="signatory_position">{{$employee->otherNosa->values['signatory_position'] ?? 'Deputy Administrator II
+                                                    <textarea class="form-control input-sm" rows="3" name="signatory_position">{{(isset($employee->otherNosa->values['signatory_position']) ? $employee->otherNosa->values['signatory_position'] : null) ?? 'Deputy Administrator II
 Administration and Finance' }}
 
                                                     </textarea>
