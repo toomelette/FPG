@@ -268,7 +268,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
                                          'employeeServiceRecord',
                                          'employeeMatrix',
                                          'permissionSlip',
-                                         'leaveCard')
+                                  )
                                     ->first();
 
         
