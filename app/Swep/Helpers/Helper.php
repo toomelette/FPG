@@ -707,6 +707,18 @@ class Helper
             ];
         }
         return $months;
+    }
 
+    public static function operate($first,$second,$operand){
+        switch ($operand){
+            case '+':
+                return $first + $second;
+            case '*':
+                return $first * $second;
+            case '-':
+                return $first - $second;
+            case '/':
+                return $first - $second;
+        }
     }
 }

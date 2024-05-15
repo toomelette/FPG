@@ -828,6 +828,10 @@ li.has-error>a{
     overflow-y: scroll;
     height: calc(100vh - 23em);
 }
+.tscroll table{
+    table-layout: fixed;
+    width: auto;
+}
 
 .tscroll table td.first,.tscroll table th.first {
     position: sticky;
@@ -843,4 +847,12 @@ li.has-error>a{
 
 .tscroll td, .tscroll th {
     border-bottom: dashed #888 1px;
+}
+
+.incentive-subtotal{
+    background-color: #f5fcff;
+}
+
+.deduction-subtotal{
+    background-color: #fffdf5;
 }

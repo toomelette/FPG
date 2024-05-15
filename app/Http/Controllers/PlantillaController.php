@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\HRPayPlanitilla;
 use App\Models\HrPayPlantillaEmployees;
 use App\Node;
+use App\Swep\Helpers\Arrays;
 use App\Swep\Services\PlantillaService;
 use App\Http\Requests\Plantilla\PlantillaFormRequest;
 use App\Http\Requests\Plantilla\PlantillaFilterRequest;
@@ -65,13 +66,10 @@ class PlantillaController extends Controller{
                     return $button;
                 })
                 ->addColumn('orig_jg_si',function ($data){
-                    return $data->original_job_grade.' - '.$data->original_job_grade_si;
+                    return $data->job_grade.' - '.$data->step_inc;
                 })
-                ->addColumn('incumbent',function ($data){
-                    if(!empty($data->incumbentEmployee)){
-                        return '<b>'.($data->incumbentEmployee->lastname ?? '').', '.($data->incumbentEmployee->firstname ?? '').'</b>';
-                    }
-                    return  '<small class="text-muted">-</small>';
+                ->addColumn('incumbent',function ($data){;
+                    return '<b>'.$data?->incumbentEmployee?->full_name .'</b>';
                 })
                 ->escapeColumns([])
                 ->setRowId('id')
@@ -160,9 +158,11 @@ class PlantillaController extends Controller{
         $pp = $this->find($id);
         //$pp->item_no = $request->item_no;
         $pp->position = $request->position;
-        $pp->original_job_grade = $request->original_job_grade;
-        $pp->original_job_grade_si = $request->original_job_grade_si;
+        $pp->job_grade = $request->job_grade;
+        $pp->step_inc = $request->step_inc;
         $pp->employee_no = $request->employee_no;
+        $pp->actual_salary = Arrays::jobGrades()[$request->job_grade][$request->step_inc] ?? 0;
+        $pp->actual_salary_gcg = Arrays::jobGrades()[$request->job_grade][$request->step_inc] ?? 0;
         $pp->qs_education = $request->qs_education;
         $pp->qs_training = $request->qs_training;
         $pp->qs_experience = $request->qs_experience;
@@ -197,6 +197,7 @@ class PlantillaController extends Controller{
 
         
         $pls = HRPayPlanitilla::query()
+            ->with(['incumbentEmployee.employeeEducationalBackground'])
             ->orderBy('control_no','asc')
             ->orderBy('department_header','asc')
             ->orderBy('division_header','asc')
@@ -226,7 +227,10 @@ class PlantillaController extends Controller{
 
     public function reportGenerate(Request $request){
 
-        $pls = HRPayPlanitilla::query()->with(['incumbentEmployee']);
+        $pls = HRPayPlanitilla::query()->with([
+            'incumbentEmployee.employeeEducationalBackground',
+            'incumbentEmployee.employeeEligibility',
+        ]);
 
         if($request->has('order_column') && $request->order_column != null){
             $pls = $pls->orderBy($request->order_column,$request->direction ?? 'asc');

@@ -30,19 +30,19 @@ class PlantillaFormRequest extends FormRequest{
                 Rule::unique('hr_pay_plantilla','item_no')->ignore($this->request->get('id'),'item_no'),
             ],
             'position' => 'required|string|max:255',
-            'original_job_grade' => 'required|int|max:50',
-            'original_job_grade_si' => 'required|int|max:8',
+            'job_grade' => 'required|int|max:50',
+            'step_inc' => 'required|int|max:8',
             'employee_no' => [
                 'nullable',
                 'string',
                 Rule::exists('hr_employees','employee_no'),
             ],
-            'qs_education' => 'required|string|max:512',
-            'qs_training' => 'required|string|max:512',
-            'qs_experience' => 'required|string|max:512',
-            'qs_eligibility' => 'required|string|max:512',
+            'qs_education' => 'nullable|string|max:512',
+            'qs_training' => 'nullable|string|max:512',
+            'qs_experience' => 'nullable|string|max:512',
+            'qs_eligibility' => 'nullable|string|max:512',
             'qs_competency' => 'nullable|string|max:512',
-            'place_of_assignment' => 'required|string|max:255',
+            'place_of_assignment' => 'nullable|string|max:255',
         ];
     
     }

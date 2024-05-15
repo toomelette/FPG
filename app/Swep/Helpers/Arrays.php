@@ -701,7 +701,7 @@ class Arrays
                 'name' => 'Appt. Date',
                 'checked' => 1,
             ],
-            'last_promotion' => [
+            'adjustment_date' => [
                 'name' => 'Date of Last Promotion',
                 'checked' => 1,
             ],

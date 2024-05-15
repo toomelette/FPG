@@ -62,7 +62,9 @@
                        'options' => [
                             'GSIS' => 'GSIS',
                             'HDMF' => 'HDMF',
-                            'SURRECO' => 'SURRECO',
+                            'SURECCO' => 'SURECCO',
+                            'SUDEMUPCO' => 'SUDEMUPCO',
+                            'SUGAREAP' => 'SUGAREAP',
                         ]
                    ]) !!}
                     {!! \App\Swep\ViewHelpers\__form2::textbox('file',[
