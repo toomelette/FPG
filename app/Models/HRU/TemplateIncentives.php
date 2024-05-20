@@ -11,6 +11,8 @@ class TemplateIncentives extends Model
     protected $casts = [
         'amount' => 'float',
     ];
+    public $timestamps = false;
+    protected $fillable = ['amount','priority'];
     public function incentive(){
         return $this->hasOne(Incentives::class,'incentive_code','incentive_code');
     }

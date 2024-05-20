@@ -60,8 +60,9 @@
                         <tbody>
                         @php
                             $incentives = \App\Models\HRU\Incentives::query()
-                                ->orderBy('priority','asc')
+                                ->orderByRaw('ISNULL(n_priority), n_priority asc')
                                 ->get();
+
                         @endphp
 
                         @forelse($incentives as $incentive)
@@ -93,7 +94,7 @@
                         <tbody>
                         @php
                             $deductions = \App\Models\HRU\Deductions::query()
-                                ->orderBy('priority','asc')
+                                ->orderByRaw('ISNULL(n_priority), n_priority asc')
                                 ->available()
                                 ->get();
                         @endphp

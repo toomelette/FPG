@@ -882,4 +882,13 @@ class Arrays
         });
     }
 
+    public static function employeesKeyedBySlug(){
+        $emps = Employee::query()->active()->permanent()->get();
+        return $emps->mapWithKeys(function ($data){
+            return [
+                $data->slug => $data,
+            ];
+        });
+    }
+
 }

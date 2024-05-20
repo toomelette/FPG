@@ -9,15 +9,36 @@ use App\Models\HRU\PayrollMaster;
 use App\Models\HRU\PayrollMasterDetails;
 use App\Models\HRU\PayrollMasterEmployees;
 use App\Models\HRU\TemplateDeductions;
+use App\Models\HRU\TemplateIncentives;
+use App\Models\RCCodeTree;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Html\Elements\P;
+use Yajra\DataTables\DataTables;
 
 class PayrollPreparationController
 {
+    public function index(Request $request){
+        if ($request->ajax() && $request->has('draw')){
+            $pays = PayrollMaster::query()
+                ->withCount('payrollMasterEmployees');
+            return DataTables::of($pays)
+                ->addColumn('action',function($data){
+                    return view('dashboard.hru.payroll_preparation.dtActions')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->escapeColumns([])
+                ->setRowId('slug')
+                ->toJson();
+        }
+        return view('dashboard.hru.payroll_preparation.index');
+    }
     public function create(){
         return view('dashboard.hru.payroll_preparation.create');
     }
@@ -28,6 +49,9 @@ class PayrollPreparationController
         $payMaster->date = $request->date;
         $payMaster->type = $request->type;
         $employeeArr = [];
+        $upsertTemplateMonthlyBasic = [];
+        $jobGrades = Arrays::jobGrades();
+        $employeesBySlug = Arrays::employeesKeyedBySlug();
         if(count($request->employees) > 0){
             foreach ($request->employees as $employee){
                 array_push($employeeArr,[
@@ -35,11 +59,23 @@ class PayrollPreparationController
                     'pay_master_slug' => $payMaster->slug,
                     'employee_slug' => $employee,
                 ]);
+                array_push($upsertTemplateMonthlyBasic,[
+                    'employee_slug' => $employee,
+                    'incentive_code' => 'MONTHLY',
+                    'priority' => 1,
+                    'amount' => $jobGrades[$employeesBySlug[$employee]->salary_grade ?? 0][$employeesBySlug[$employee]->step_inc ?? 0] ?? null,
+                ]);
             }
         }
         if($payMaster->save()){
             PayrollMasterEmployees::query()->insert($employeeArr);
         }
+
+        TemplateIncentives::query()->upsert($upsertTemplateMonthlyBasic,
+            ['employee_slug','incentive_code'],
+            ['priority','amount']
+        );
+
         $this->recompute($payMaster->slug);
         return $payMaster->only('slug');
     }
@@ -79,8 +115,7 @@ class PayrollPreparationController
             ->with([
                 'payrollMasterEmployees.employee.templateIncentives' => function ($q){
                     $q->whereHas('incentive',function ($query){
-                        $query->isMonthly()
-                            ->exceptBasicPay();
+                        $query->isMonthly();
                     })
                     ->nonZero();
                 },
@@ -93,37 +128,12 @@ class PayrollPreparationController
             ->find($payrollMasterSlug);
 
         $detailsArr = [];
-        $jobGrades = Arrays::jobGrades();
+
         //GET DEDUCTIONS From Payroll Template Deductions to be put to Payroll Details
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
             if(!empty($employeeFromList->employee->templateDeductions)){
 
-                /* DEDUCTIONS */
-                foreach ($employeeFromList->employee->templateDeductions as $templateDeduction){
-                    array_push($detailsArr,[
-                        'employee_slug' => $employeeFromList->employee->slug,
-                        'pay_master_employee_listing_slug' => $employeeFromList->slug,
-                        'slug' => Str::random(),
-                        'type' => 'DEDUCTION',
-                        'code' => $templateDeduction->deduction_code,
-                        'amount' => $templateDeduction->amount,
-                        'priority' => $templateDeduction->priority,
-                    ]);
-                }
-
-
-                /* INCENTIVES */
-                //Push Monthly Salary to Array
-                array_push($detailsArr,[
-                    'employee_slug' => $employeeFromList->employee->slug,
-                    'pay_master_employee_listing_slug' => $employeeFromList->slug,
-                    'slug' => Str::random(),
-                    'type' => 'INCENTIVE',
-                    'code' => 'MONTHLY',
-                    'amount' => $jobGrades[$employeeFromList->employee->salary_grade][$employeeFromList->employee->step_inc] ?? null,
-                    'priority' => 1,
-                ]);
-                //push other incentives except monthly
+                //push incentives
                 foreach ($employeeFromList->employee->templateIncentives as $templateIncentive){
                     array_push($detailsArr,[
                         'employee_slug' => $employeeFromList->employee->slug,
@@ -132,9 +142,47 @@ class PayrollPreparationController
                         'type' => 'INCENTIVE',
                         'code' => $templateIncentive->incentive_code,
                         'amount' => $templateIncentive->amount,
-                        'priority' => $templateIncentive->priority,
+                        'priority' => $templateIncentive->incentive->n_priority,
                     ]);
                 }
+
+
+                $salaryThreshold = 5000;
+                $monthlyIncentive = $employeeFromList->employee->templateIncentives->sum('amount');
+                $employeeDedectionsFromTemplate = $employeeFromList->employee->templateDeductions
+                    ->sortBy(function($data){
+                        if($data->priority == null){
+                            return 100000;
+                        }else{
+                            return $data->priority;
+                        }
+                    });
+
+                /* DEDUCTIONS */
+                $stop = 0;
+                foreach ($employeeDedectionsFromTemplate as $templateDeduction){
+                    $monthlyIncentive = $monthlyIncentive - $templateDeduction->amount;
+                    $deductionAmount  = $templateDeduction->amount;
+                    if($stop == 0){
+                        if($monthlyIncentive < $salaryThreshold){
+                            $amountToBeDeducted = $deductionAmount + ($monthlyIncentive - $salaryThreshold);
+                            $deductionAmount = $amountToBeDeducted;
+                            $stop = 1;
+                        }
+                        array_push($detailsArr,[
+                            'employee_slug' => $employeeFromList->employee->slug,
+                            'pay_master_employee_listing_slug' => $employeeFromList->slug,
+                            'slug' => Str::random(),
+                            'type' => 'DEDUCTION',
+                            'code' => $templateDeduction->deduction_code,
+                            'amount' => $deductionAmount,
+                            'priority' => $templateDeduction->deduction->n_priority,
+                        ]);
+                    }
+                }
+
+//                dd($monthlyIncentive);
+
             }
         }
 
@@ -264,7 +312,32 @@ class PayrollPreparationController
             ['employee_slug','deduction_code'],
             ['priority','amount']
         );
+    }
 
+    public function print($slug){
+        $tree = RCCodeTree::query()
+            ->with([
+                'respCenter.employees' => function(HasMany $q){
+                    $q->active()->applyProjectId()->permanent();
+                },
+            ])
+            ->tree()
+            ->get()
+            ->toTree();
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees.employee',
+                'hmtDetails',
+            ])
+            ->findOrFail($slug);
+
+        return view('printables.hru.payroll_preparation.monthly_payroll')->with([
+            'payrollMaster' => $payrollMaster,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+        ]);
     }
 
 }

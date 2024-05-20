@@ -4,6 +4,7 @@
 namespace App\Models\PPU;
 
 
+use App\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
 
 class PPURespCodes extends Model
@@ -22,4 +23,9 @@ class PPURespCodes extends Model
     public function papCodes(){
         return $this->hasMany(Pap::class,'resp_center','rc_code');
     }
+
+    public function employees(){
+        return $this->hasMany(Employee::class,'resp_center','rc_code');
+    }
+
 }
