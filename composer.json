@@ -37,6 +37,7 @@
         "spatie/laravel-html": "^3.2",
         "spatie/laravel-ignition": "^1.0",
         "spatie/pdf-to-image": "^2.2",
+        "staudenmeir/laravel-adjacency-list": "^1.0",
         "thiagoalessio/tesseract_ocr": "^2.13",
         "yajra/laravel-datatables": "^1.5",
         "yajra/laravel-datatables-html": "^4.0"

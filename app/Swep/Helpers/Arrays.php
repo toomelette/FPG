@@ -701,7 +701,7 @@ class Arrays
                 'name' => 'Appt. Date',
                 'checked' => 1,
             ],
-            'last_promotion' => [
+            'adjustment_date' => [
                 'name' => 'Date of Last Promotion',
                 'checked' => 1,
             ],
@@ -878,6 +878,15 @@ class Arrays
         return $emps->mapWithKeys(function ($data){
             return [
                 $data->employee_no => $data->slug,
+            ];
+        });
+    }
+
+    public static function employeesKeyedBySlug(){
+        $emps = Employee::query()->active()->permanent()->get();
+        return $emps->mapWithKeys(function ($data){
+            return [
+                $data->slug => $data,
             ];
         });
     }

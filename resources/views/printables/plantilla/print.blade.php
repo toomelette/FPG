@@ -171,18 +171,18 @@
                                         @case('numbering')
                                             <td class="text-center"></td>
                                         @break
+
                                         @case('actual_salary')
-                                            <td class="text-right">{{number_format($division->$column,2)}}</td>
-                                        @break
                                         @case('actual_salary_gcg')
                                         <td class="text-right">{{number_format($division->$column,2)}}</td>
                                         @break
+
+                                        @case('adjustment_date')
                                         @case('appointment_date')
-                                        <td class="text-right">{{$division->$column != null ? Carbon::parse($division->$column)->format('m/d/Y') : ''}}</td>
-                                        @break
-                                        @case('last_promotion')
-                                        <td class="text-right">{{$division->$column != null ? Carbon::parse($division->$column)->format('m/d/Y') : ''}}</td>
-                                        @break
+                                        <td class="text-right">
+                                            {{Helper::dateFormat($division->incumbentEmployee->$column ?? null,'m/d/Y')}}
+                                        </td>
+                                            @break
                                         @case('employee_name')
                                             <td class="">
                                                 {{$division->incumbentEmployee->lastname ?? ''}}
@@ -190,6 +190,20 @@
                                                 {{$division->incumbentEmployee->firstname ?? ''}}
                                             </td>
                                         @break
+                                        @case('educ_att')
+                                            <td>
+                                                {{$division->incumbentEmployee?->employeeEducationalBackground?->last()?->course}}
+                                            </td>
+                                            @break
+                                        @case('eligibility')
+                                            <td>
+                                                @if(!empty($division->incumbentEmployee->employeeEligibility))
+                                                    @foreach($division->incumbentEmployee->employeeEligibility as $elig)
+                                                        {{$elig?->eligibility}};
+                                                    @endforeach
+                                                @endif
+                                            </td>
+                                            @break
                                         @default
                                             <td class="">{{$division->$column}}</td>
                                         @break
@@ -209,23 +223,37 @@
                                                 @case('numbering')
                                                 <td class="text-center"></td>
                                                 @break
+
                                                 @case('actual_salary')
-                                                <td class="text-right">{{number_format($section->$column,2)}}</td>
-                                                @break
                                                 @case('actual_salary_gcg')
-                                                <td class="text-right">{{number_format($section->$column,2)}}</td>
+                                                    <td class="text-right">{{number_format($section->$column,2)}}</td>
                                                 @break
-                                                @case('appointment_date')
-                                                <td class="text-right">{{$section->$column != null ? Carbon::parse($section->$column)->format('m/d/Y') : ''}}</td>
-                                                @break
+
                                                 @case('last_promotion')
-                                                <td class="text-right">{{$section->$column != null ? Carbon::parse($section->$column)->format('m/d/Y') : ''}}</td>
-                                                @break
+                                                @case('appointment_date')
+                                                    <td class="text-right">
+                                                        {{Helper::dateFormat($section->incumbentEmployee->$column ?? null,'m/d/Y')}}
+                                                    </td>
+                                                    @break
                                                 @case('employee_name')
                                                     <td class="">
                                                         {{$section->incumbentEmployee->lastname ?? ''}}
                                                         {{!empty($section->incumbentEmployee) ? ',':''}}
                                                         {{$section->incumbentEmployee->firstname ?? ''}}
+                                                    </td>
+                                                    @break
+                                                @case('educ_att')
+                                                    <td>
+                                                        {{$section->incumbentEmployee?->employeeEducationalBackground?->last()?->course}}
+                                                    </td>
+                                                    @break
+                                                @case('eligibility')
+                                                    <td>
+                                                        @if(!empty($section->incumbentEmployee->employeeEligibility))
+                                                            @foreach($section->incumbentEmployee->employeeEligibility as $elig)
+                                                                {{$elig?->eligibility}};
+                                                            @endforeach
+                                                        @endif
                                                     </td>
                                                     @break
                                                 @default
@@ -246,22 +274,34 @@
                                                     <td class="text-center"></td>
                                                     @break
                                                     @case('actual_salary')
-                                                    <td class="text-right">{{number_format($item->$column,2)}}</td>
-                                                    @break
                                                     @case('actual_salary_gcg')
-                                                    <td class="text-right">{{number_format($item->$column,2)}}</td>
-                                                    @break
-                                                    @case('appointment_date')
-                                                    <td class="text-right">{{$item->$column != null ? Carbon::parse($item->$column)->format('m/d/Y') : ''}}</td>
-                                                    @break
+                                                        <td class="text-right">{{number_format($item->$column,2)}}</td>
+                                                        @break
                                                     @case('last_promotion')
-                                                    <td class="text-right">{{$item->$column != null ? Carbon::parse($item->$column)->format('m/d/Y') : ''}}</td>
-                                                    @break
+                                                    @case('appointment_date')
+                                                        <td class="text-right">
+                                                            {{Helper::dateFormat($item->incumbentEmployee->$column ?? null,'m/d/Y')}}
+                                                        </td>
+                                                        @break
                                                     @case('employee_name')
                                                         <td class="">
                                                             {{$item->incumbentEmployee->lastname ?? ''}}
                                                             {{!empty($item->incumbentEmployee) ? ',':''}}
                                                             {{$item->incumbentEmployee->firstname ?? ''}}
+                                                        </td>
+                                                        @break
+                                                    @case('educ_att')
+                                                        <td>
+                                                            {{$item->incumbentEmployee?->employeeEducationalBackground?->last()?->course}}
+                                                        </td>
+                                                        @break
+                                                    @case('eligibility')
+                                                        <td>
+                                                            @if(!empty($item->incumbentEmployee->employeeEligibility))
+                                                                @foreach($item->incumbentEmployee->employeeEligibility as $elig)
+                                                                    {{$elig?->eligibility}};
+                                                                @endforeach
+                                                            @endif
                                                         </td>
                                                         @break
                                                     @default

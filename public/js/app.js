@@ -403,11 +403,11 @@ function succeed(target_form, reset,modal){
     remove_loading_btn(target_form);
 }
 
-function wait_this_button(btn) {
+function wait_this_button(btn, text = '') {
     btn.attr('disabled','disabled');
     prent = btn.children('i').parent();
     btn.attr('old-i',prent.html());
-    btn.html('<i class="fa fa-spin fa-spinner"></i>');
+    btn.html('<i class="fa fa-spin fa-spinner"></i> '+text);
 }
 
 function unwait_this_button(btn) {

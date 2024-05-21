@@ -18,12 +18,12 @@
         ],$pp) !!}
     </div>
     <div class="row">
-        {!! \App\Swep\ViewHelpers\__form2::textbox('original_job_grade',[
-            'label' => 'Original JG:*',
+        {!! \App\Swep\ViewHelpers\__form2::textbox('job_grade',[
+            'label' => 'JG:*',
             'cols' => '4',
         ],$pp) !!}
-        {!! \App\Swep\ViewHelpers\__form2::textbox('original_job_grade_si',[
-            'label' => 'Original Step Inc:*',
+        {!! \App\Swep\ViewHelpers\__form2::textbox('step_inc',[
+            'label' => 'Step Inc:*',
             'cols' => 4,
         ],$pp) !!}
     </div>

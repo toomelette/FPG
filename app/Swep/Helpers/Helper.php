@@ -707,6 +707,32 @@ class Helper
             ];
         }
         return $months;
-
     }
+
+    public static function operate($first,$second,$operand){
+        switch ($operand){
+            case '+':
+                return $first + $second;
+            case '*':
+                return $first * $second;
+            case '-':
+                return $first - $second;
+            case '/':
+                return $first - $second;
+        }
+    }
+
+    public static function array_depth($tree)
+    {
+        $depth = 1;
+        foreach ($tree as $item) {
+            if (!empty($item->children) && $item->children->count() > 0) {
+                $depth += self::array_depth($item);
+                break;
+            }
+        }
+
+        return $depth;
+    }
+
 }

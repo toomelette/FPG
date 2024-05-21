@@ -62,7 +62,9 @@
                        'options' => [
                             'GSIS' => 'GSIS',
                             'HDMF' => 'HDMF',
-                            'SURRECO' => 'SURRECO',
+                            'SURECCO' => 'SURECCO',
+                            'SUDEMUPCO' => 'SUDEMUPCO',
+                            'SUGAREAP' => 'SUGAREAP',
                         ]
                    ]) !!}
                     {!! \App\Swep\ViewHelpers\__form2::textbox('file',[
@@ -84,8 +86,9 @@
 
 @section('scripts')
     <script type="text/javascript">
-        function recompute(){
+        function recompute(btn){
             let uri = '{{route("dashboard.payroll_preparation.edit",$payrollMaster->slug)}}?recompute=true';
+            wait_this_button(btn,'Recompute');
             $.ajax({
                 url : uri,
                 type: 'GET',
@@ -94,14 +97,17 @@
                 },
                 success: function (res) {
                     $("#payroll_table").html(res);
+                    unwait_this_button(btn);
                 },
                 error: function (res) {
                     toast('warning','Error recomputing.','Error!');
+                    unwait_this_button(btn);
                 }
             })
         }
         $("body").on("click","#recompute_btn",function () {
-            recompute();
+            let btn = $(this);
+            recompute(btn);
         })
         
         $("#upload_form").submit(function (e) {
@@ -122,7 +128,7 @@
                 },
                 success: function (res) {
                     succeed(form,true,true);
-                    recompute();
+                    recompute($("#recompute_btn"));
                     toast('info','Excel data successfully imported','Updated');
                 },
                 error: function (res) {
