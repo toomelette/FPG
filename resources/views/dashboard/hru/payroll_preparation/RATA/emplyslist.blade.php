@@ -9,17 +9,15 @@
             </thead>
             <tbody>
             @php
-                $employees = \App\Models\Employee::query()
-                    ->where(function($qry){
-                        $qry
-                        ->where('ra','!=',null)
-                        ->where('ra','!=',0)
-                        ;
-                    })
-                    ->orWhere(function($qry){
-                        $qry
-                        ->where('ta','!=',null)
-                        ->where('ta','!=',0)
+                $employees = \App\Models\Employee::query()   
+                    ->whereHas('templateIncentives',function($mpy){
+                        $mpy
+                        ->where(function($qry){
+                            $qry
+                            ->where('incentive_code','=','RA')
+                            ->orWhere('incentive_code','=','TA')
+                            ;
+                        })
                         ;
                     })
                     ->applyProjectId()
