@@ -23,7 +23,7 @@ class TemplateIncentives extends Model
 
     public function employee(){
         return $this->belongsTo(Employee::class,'employee_slug','slug');
-
+    }
 
     public function scopeNonZero(Builder $builder){
         $builder->where(function ($q){
@@ -31,5 +31,6 @@ class TemplateIncentives extends Model
                 ->orWhere('amount' ,'!=',null);
         });
 
-    }
+    
+}
 }
