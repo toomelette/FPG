@@ -4,8 +4,10 @@
 @extends('printables.print_layouts.print_layout_main')
 
 @section('wrapper')
-<div>
+<div style="font-family: Cambria">
+
     @php
+
         $chunkBy = 3;
         $groupedIncentives= $payrollMaster->hmtDetails
                 ->where('type','INCENTIVE')
@@ -39,58 +41,77 @@
                })
                ->flip()->values();
         $chunkedDeductions = $groupedDeductions->chunk($chunkBy);
+
+        $departments = $tree->mapWithKeys(function ($data){
+                        return [
+                                $data->rc_code => $data->rc_code,
+                        ];
+                    });
     @endphp
-    <table style="width: 100%" class="tbl-bordered">
-        <thead>
-        <tr>
-            <th>
-                Name of Employee
-            </th>
-            @foreach($chunkedIncentives as $grp)
-                <th class="text-center">
-                    @foreach($grp as $incentive)
-                        {{$incentive}} / <br>
+
+
+    @forelse($departments as $department)
+        <div style="break-after: page">
+            <table style="width: 100%" class="">
+                <thead>
+                <tr>
+                    <th>
+                        Name of Employee
+                    </th>
+                    @foreach($chunkedIncentives as $grp)
+                        <th class="text-center">
+                            @foreach($grp as $incentive)
+                                {{$incentive}} / <br>
+                            @endforeach
+                        </th>
                     @endforeach
-                </th>
-            @endforeach
-            @foreach($chunkedDeductions as $grp)
-                <th class="text-center">
-                    @foreach($grp as $deduction)
-                        {{$deduction}} / <br>
+                    @foreach($chunkedDeductions as $grp)
+                        <th class="text-center">
+                            @foreach($grp as $deduction)
+                                {{$deduction}} / <br>
+                            @endforeach
+                        </th>
                     @endforeach
-                </th>
-            @endforeach
-        </tr>
-        </thead>
-    @foreach($tree as $dept)
-        @if($dept->children->count() > 0)
-            @include('printables.hru.payroll_preparation.tr_respCode',[
-                'rc' => $dept,
-            ])
-            @foreach($dept->children as $division)
-                @if($division->children->count() > 0)
-                    @foreach($division->children as $section)
+                </tr>
+                </thead>
+
+                @foreach($tree->where('rc_code',$department) as $dept)
+                    @if($dept->children->count() > 0)
                         @include('printables.hru.payroll_preparation.tr_respCode',[
-                            'rc' => $section,
+                            'rc' => $dept,
                         ])
-                    @endforeach
-                @else
-                    @include('printables.hru.payroll_preparation.tr_respCode',[
-                        'rc' => $division,
-                    ])
-                @endif
-            @endforeach
+                        @foreach($dept->children as $division)
+                            @include('printables.hru.payroll_preparation.tr_respCode',[
+                                'rc' => $division,
+                            ])
+                            @if($division->children->count() > 0)
+                                @foreach($division->children as $section)
+                                    @include('printables.hru.payroll_preparation.tr_respCode',[
+                                        'rc' => $section,
+                                    ])
+                                @endforeach
+                            @else
+                                @include('printables.hru.payroll_preparation.tr_respCode',[
+                                    'rc' => $division,
+                                ])
+                            @endif
+                        @endforeach
 
 
-        @else
-            @include('printables.hru.payroll_preparation.tr_respCode',[
-                'rc' => $dept,
-            ])
-        @endif
+                    @else
+                        @include('printables.hru.payroll_preparation.tr_respCode',[
+                            'rc' => $dept,
+                        ])
+                    @endif
 
 
-    @endforeach
-    </table>
+                @endforeach
+            </table>
+            <hr class="page-break no-print">
+        </div>
+    @empty
+    @endforelse
+
 </div>
 
 @endsection

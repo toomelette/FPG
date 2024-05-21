@@ -65,6 +65,12 @@ class PayrollPreparationController
                     'priority' => 1,
                     'amount' => $jobGrades[$employeesBySlug[$employee]->salary_grade ?? 0][$employeesBySlug[$employee]->step_inc ?? 0] ?? null,
                 ]);
+                array_push($upsertTemplateMonthlyBasic,[
+                    'employee_slug' => $employee,
+                    'incentive_code' => 'PERA',
+                    'priority' => 10,
+                    'amount' => 2000,
+                ]);
             }
         }
         if($payMaster->save()){
@@ -331,6 +337,9 @@ class PayrollPreparationController
             ])
             ->findOrFail($slug);
 
+
+//        dd($tree);
+
         return view('printables.hru.payroll_preparation.monthly_payroll')->with([
             'payrollMaster' => $payrollMaster,
             'tree' => $tree,
@@ -340,4 +349,14 @@ class PayrollPreparationController
         ]);
     }
 
+
+    private function recursiveSearch($data,$depth = 0){
+        foreach ($data as $item){
+            if($item->children->count() > 0){
+                $this->recursiveSearch($item->children,$depth + 1);
+            }else{
+                echo $item->rc_code .' Depth:'.$depth.'<br>';
+            }
+        }
+    }
 }

@@ -128,7 +128,7 @@
                 },
                 success: function (res) {
                     succeed(form,true,true);
-                    recompute();
+                    recompute($("#recompute_btn"));
                     toast('info','Excel data successfully imported','Updated');
                 },
                 error: function (res) {

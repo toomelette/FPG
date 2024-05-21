@@ -721,4 +721,18 @@ class Helper
                 return $first - $second;
         }
     }
+
+    public static function array_depth($tree)
+    {
+        $depth = 1;
+        foreach ($tree as $item) {
+            if (!empty($item->children) && $item->children->count() > 0) {
+                $depth += self::array_depth($item);
+                break;
+            }
+        }
+
+        return $depth;
+    }
+
 }

@@ -1,5 +1,5 @@
 <tr>
-    <td style="padding-left: {{$rc->depth * 10}}px">{{$rc->respCenter->desc}} </td>
+    <td style="padding-left: {{$rc->depth * 10}}px" class="text-strong">{{$rc->respCenter->desc}} </td>
     @foreach($chunkedIncentives as $grp)
         <th class="text-center">
         </th>
@@ -15,7 +15,7 @@
     @forelse($payrollEmployeesGroupedByRespCenter[$rc->rc_code] as $employee)
         <tr>
             <td style="vertical-align: top" rowspan="{{$chunkBy + 1}}">
-                {{$employee->employee->full_name}}
+                <span class="text-strong">{{$employee->employee->full_name}}</span>
                 <br>
                 {{$employee->employee->position}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
                 <br>
@@ -45,6 +45,15 @@
                 @endforeach
             </tr>
         @endfor
+            <tr>
+                <td><br></td>
+                @foreach($chunkedIncentives as $grp)
+                    <td class="text-right"></td>
+                @endforeach
+                @foreach($chunkedDeductions as $grp)
+                    <td class="text-right"></td>
+                @endforeach
+            </tr>
 
 
     @empty
