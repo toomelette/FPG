@@ -23,6 +23,7 @@ use Yajra\DataTables\DataTables;
 
 class PayrollPreparationController
 {
+
     public function index(Request $request){
         if ($request->ajax() && $request->has('draw')){
             $pays = PayrollMaster::query()
@@ -39,7 +40,14 @@ class PayrollPreparationController
         }
         return view('dashboard.hru.payroll_preparation.index');
     }
-    public function create(){
+
+
+    public function create(Request $request){
+
+        if($request->update_table==true){
+            return view('dashboard.hru.payroll_preparation.'.$request->type.'.emplyslist');
+        };
+
         return view('dashboard.hru.payroll_preparation.create');
     }
 
@@ -77,46 +85,121 @@ class PayrollPreparationController
             PayrollMasterEmployees::query()->insert($employeeArr);
         }
 
+
         TemplateIncentives::query()->upsert($upsertTemplateMonthlyBasic,
             ['employee_slug','incentive_code'],
             ['priority','amount']
         );
 
-        $this->recompute($payMaster->slug);
+        $this->{'recompute'.$request->type}($payMaster->slug);
         return $payMaster->only('slug');
     }
 
-    public function edit($slug,Request $request){
-        if($request->has('recompute') && $request->recompute == true){
-            $this->recompute($slug);
+    private function recomputeRATA($payrollMasterSlug){
 
-            $payrollMaster = PayrollMaster::query()
+        $payrollMstrRata = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees.employee.templateIncentives',
+            ])
+            ->find($payrollMasterSlug);
+
+        $detailsRata = [];
+        $incentivesArrayAll = Arrays::incentives();
+
+        foreach($payrollMstrRata->payrollMasterEmployees as $emplyLst){
+
+            $codes = ['RA', 'TA'];
+
+            if ($emplyLst->employee->templateIncentives) {
+                foreach ($codes as $code) {
+                    $incentive = $emplyLst->employee->templateIncentives->where('incentive_code', '=', $code)->first();
+
+                    if ($incentive) {
+                        $amount = $incentive->amount ?? $incentivesArrayAll[$code]['fixed_values'];
+
+                        array_push($detailsRata, [
+                            'employee_slug' => $emplyLst->employee_slug,
+                            'pay_master_employee_listing_slug' => $emplyLst->slug,
+                            'slug' => Str::random(),
+                            'type' => 'INCENTIVE',
+                            'code' => $code,
+                            'amount' => $amount,
+                            'priority' => $incentivesArrayAll[$code]['n_priority'],
+                        ]);
+                    }
+                }
+            }
+        }
+
+        PayrollMasterDetails::query()->insert($detailsRata);
+    }
+
+    public function edit($slug,Request $request){
+
+        $payrollMaster = PayrollMaster::query()
                 ->with([
                     'payrollMasterEmployees.employee',
                     'payrollMasterEmployees.employeePayrollDetails',
                 ])
                 ->find($slug);
 
-                $payrollMaster ?? abort(404,'Payroll not found.');
-            return view('dashboard.hru.payroll_preparation.preview')->with([
-                'payrollMaster' => $payrollMaster,
-            ]);
-        }
-        $payrollMaster = PayrollMaster::query()
-            ->with([
-                'payrollMasterEmployees.employee',
-                'payrollMasterEmployees.employeePayrollDetails',
-            ])
-            ->find($slug);
-
         $payrollMaster ?? abort(404,'Payroll not found.');
 
-        return view('dashboard.hru.payroll_preparation.edit')->with([
-            'payrollMaster' => $payrollMaster,
-        ]);
+        switch($payrollMaster->type){
+            case 'MONTHLY':
+                if($request->has('recompute') && $request->recompute == true){
+                    $this->recomputeMONTHLY($slug);
+        
+                    
+                    return view('dashboard.hru.payroll_preparation.MONTHLY.preview')->with([
+                        'payrollMaster' => $payrollMaster,
+                    ]);
+                }
+                $payrollMaster = PayrollMaster::query()
+                    ->with([
+                        'payrollMasterEmployees.employee',
+                        'payrollMasterEmployees.employeePayrollDetails',
+                    ])
+                    ->find($slug);
+        
+                $payrollMaster ?? abort(404,'Payroll not found.');
+        
+                return view('dashboard.hru.payroll_preparation.MONTHLY.edit')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
+                break;
+            case 'RATA':
+                if($request->has('recompute') && $request->recompute == true){
+                    $this->recomputeRATA($slug);
+        
+                    
+                    return view('dashboard.hru.payroll_preparation.MONTHLY.preview')->with([
+                        'payrollMaster' => $payrollMaster,
+                    ]);
+                }
+                $payrollMaster = PayrollMaster::query()
+                    ->with([
+                        'payrollMasterEmployees.employee',
+                        'payrollMasterEmployees.employeePayrollDetails',
+                    ])
+                    ->find($slug);
+        
+                $payrollMaster ?? abort(404,'Payroll not found.');
+        
+                return view('dashboard.hru.payroll_preparation.RATA.edit_rata')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
+            break;
+        }
+        
     }
 
-    public function recompute($payrollMasterSlug){
+
+
+    public function recomputeMONTHLY($payrollMasterSlug){
+
+        //update basic pay based on employee master file
+
         $payrollMaster = PayrollMaster::query()
             ->with([
                 'payrollMasterEmployees.employee.templateIncentives' => function ($q){
@@ -289,6 +372,7 @@ class PayrollPreparationController
             ['priority','amount']
         );
     }
+
     private function gsisUpload($payrollMaster, Request $request){
         $excel = Excel::toArray(new GSISImport(),$request->file('file'));
         $data = $excel[0];

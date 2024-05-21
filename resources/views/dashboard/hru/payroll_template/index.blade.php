@@ -23,6 +23,7 @@
                         <div id="template_placeholder" class='text-center' style="margin-top: 200px">
                             <h1><span style="font-size: 84px; color: grey"><i class="fa fa-user"></i></span></h1>
                             <p>Please select an employee first.</p>
+
                         </div>
                     </div>
                 </div>

@@ -24,41 +24,13 @@
                             'label' => 'Payroll Type:',
                             'cols' => 3,
                             'options' => \App\Swep\Helpers\Arrays::payrollTypes(),
+                            'id' => 'payroll_type',
                         ]) !!}
                     </div>
-                    <input id="search">
-                    <div style="overflow-y: scroll; height: calc(60vh - 3rem)">
-                        <table class="table table-condensed table-striped table-hover" id="employees_table">
-                            <thead>
-                            <tr>
-                                <th></th>
-                                <th>Employee</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @php
-                                $employees = \App\Models\Employee::query()
-                                    ->applyProjectId()
-                                    ->active()
-                                    ->permanent()
-                                    ->orderBy('lastname','asc')
-                                    ->get();
-                            @endphp
-                            @forelse($employees as $employee)
-                                <tr>
-                                    <td>
-                                        <label>
-                                            <input class="emp_selector" type="checkbox" checked name="employees[]" value="{{$employee->slug}}">
-                                        </label>
-                                    </td>
-                                    <td>{{$employee->full_name}}</td>
-                                </tr>
-                            @empty
-                            @endforelse
-                            </tbody>
-                        </table>
-
+                    <div id="emplytbl">
+                        
                     </div>
+                    
                 </div>
             </div>
 
@@ -118,6 +90,28 @@
                 }
             }
         }
+
+        $("#payroll_type").change(function (){
+
+            let type=$(this).val();
+
+            $.ajax({
+                url : '{{route("dashboard.payroll_preparation.create")}}?update_table=true',
+                data : {
+                    type:type,
+                },
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    $("#emplytbl").html(res)
+                },
+                error: function (res) {
+                    
+                }
+            })
+        });
 
     </script>
 @endsection

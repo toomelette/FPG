@@ -26,14 +26,12 @@
             <div class="box box-solid">
                 <div class="box-header">
                     <div class="btn-group pull-right">
-                        <button type="button" data-target="#upload_modal" data-toggle="modal" class="btn btn-default btn-sm"> <i class="fa fa-folder-open"></i> Upload Excel File </button>
-
                         <button type="button" id="recompute_btn" class="btn btn-primary btn-sm"> <i class="fa fa-refresh"></i> Recompute </button>
                     </div>
                 </div>
                 <div class="box-body" id="payroll_table">
 
-                    @include('dashboard.hru.payroll_preparation.preview',[
+                    @include('dashboard.hru.payroll_preparation.RATA.preview',[
                         'payrollMaster' => $payrollMaster,
                     ])
                 </div>
@@ -46,49 +44,14 @@
 
 
 @section('modals')
-    <div class="modal fade" id="upload_modal" tabindex="-1" role="dialog" aria-labelledby="upload_modal_label">
-      <div class="modal-dialog modal-sm" role="document">
-          <form id="upload_form">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                    {!! \App\Swep\ViewHelpers\__form2::select('type',[
-                       'label' => 'Type:',
-                       'cols' => 12,
-                       'options' => [
-                            'GSIS' => 'GSIS',
-                            'HDMF' => 'HDMF',
-                            'SURECCO' => 'SURECCO',
-                            'SUDEMUPCO' => 'SUDEMUPCO',
-                            'SUGAREAP' => 'SUGAREAP',
-                        ]
-                   ]) !!}
-                    {!! \App\Swep\ViewHelpers\__form2::textbox('file',[
-                        'label' => 'Type:',
-                        'cols' => 12,
-                        'type' => 'file'
-                    ]) !!}
-                </div>
-              </div>
-              <div class="modal-footer">
-                 <button type="submit" class="btn btn-primary btn-sm"> <i class="fa fa-check"></i> Upload</button>
-              </div>
-            </div>
-          </form>
-      </div>
-    </div>
+    
 @endsection
 
 
 @section('scripts')
     <script type="text/javascript">
-        function recompute(btn){
+        function recompute(){
             let uri = '{{route("dashboard.payroll_preparation.edit",$payrollMaster->slug)}}?recompute=true';
-            wait_this_button(btn,'Recompute');
             $.ajax({
                 url : uri,
                 type: 'GET',
@@ -97,17 +60,14 @@
                 },
                 success: function (res) {
                     $("#payroll_table").html(res);
-                    unwait_this_button(btn);
                 },
                 error: function (res) {
                     toast('warning','Error recomputing.','Error!');
-                    unwait_this_button(btn);
                 }
             })
         }
         $("body").on("click","#recompute_btn",function () {
-            let btn = $(this);
-            recompute(btn);
+            recompute();
         })
         
         $("#upload_form").submit(function (e) {
@@ -128,7 +88,7 @@
                 },
                 success: function (res) {
                     succeed(form,true,true);
-                    recompute($("#recompute_btn"));
+                    recompute();
                     toast('info','Excel data successfully imported','Updated');
                 },
                 error: function (res) {
