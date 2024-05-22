@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpParser\Builder\Function_;
+use PhpParser\Node\Expr\FuncCall;
 use Spatie\Html\Elements\P;
 use Yajra\DataTables\DataTables;
 
@@ -99,7 +101,7 @@ class PayrollPreparationController
 
         $payrollMstrRata = PayrollMaster::query()
             ->with([
-                'payrollMasterEmployees.employee.templateIncentives',
+                'payrollMasterEmployees.employee.templateIncentives.incentive',
             ])
             ->find($payrollMasterSlug);
 
@@ -112,24 +114,26 @@ class PayrollPreparationController
 
             if ($emplyLst->employee->templateIncentives) {
                 foreach ($codes as $code) {
-                    $incentive = $emplyLst->employee->templateIncentives->where('incentive_code', '=', $code)->first();
+                    $templateIncentive = $emplyLst->employee->templateIncentives->where('incentive_code', '=', $code)->first();
 
-                    if ($incentive) {
-                        $amount = $incentive->amount ?? $incentivesArrayAll[$code]['fixed_values'];
+                    if (!empty($templateIncentive)) {
 
                         array_push($detailsRata, [
                             'employee_slug' => $emplyLst->employee_slug,
                             'pay_master_employee_listing_slug' => $emplyLst->slug,
                             'slug' => Str::random(),
                             'type' => 'INCENTIVE',
-                            'code' => $code,
-                            'amount' => $amount,
-                            'priority' => $incentivesArrayAll[$code]['n_priority'],
+                            'code' => $templateIncentive->incentive_code,
+                            'amount' => $templateIncentive->amount,
+                            'priority' => $templateIncentive->incentive->n_priority,
                         ]);
                     }
                 }
             }
         }
+
+        $toDelete = $payrollMstrRata->hmtDetails();
+        $toDelete->delete();
 
         PayrollMasterDetails::query()->insert($detailsRata);
     }
@@ -173,7 +177,7 @@ class PayrollPreparationController
                     $this->recomputeRATA($slug);
         
                     
-                    return view('dashboard.hru.payroll_preparation.MONTHLY.preview')->with([
+                    return view('dashboard.hru.payroll_preparation.RATA.preview')->with([
                         'payrollMaster' => $payrollMaster,
                     ]);
                 }
@@ -329,6 +333,29 @@ class PayrollPreparationController
                     return $this->hdmfUpload($payrollMaster,$request);
             }
         }
+
+    }
+
+    public function updateRataDed(Request $request,$payrollMasterSlug){
+
+        $dys= [];
+
+        foreach($request->dayNo as $employee_slug=>$rata_actldays){
+            array_push($dys,[
+                'slug' => $employee_slug,
+                'rata_actualdays' => $rata_actldays,
+            ]);
+        }
+        PayrollMasterEmployees::query()->upsert($dys,
+            ['slug'],
+            ['rata_actualdays']
+        );
+
+        // dd($request->all());
+    }
+
+    private function compDed($rata_actldays){
+
     }
 
     private function hdmfUpload($payrollMaster, Request $request){

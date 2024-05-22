@@ -1,3 +1,4 @@
+
 <div class="tscroll">
     <table class="table table-condensed table-striped table-bordered">
         <thead>
@@ -13,7 +14,8 @@
                         return $data->priority;
                     }
                 })
-                ->groupBy('code');
+                ->groupBy('code')
+                ;
 
             @endphp
 
@@ -21,6 +23,10 @@
                 <th class="text-center">{{$incentive}}</th>
             @empty
             @endforelse
+
+            <th>
+                Number of Days
+            </th>
 
         </tr>
         </thead>
@@ -34,6 +40,9 @@
                     </td>
                 @empty
                 @endforelse
+                <td>
+                    <input type="text" name="dayNo[{{ $employee->slug }}]">
+                </td>
             </tr>
         @empty
         @endforelse
