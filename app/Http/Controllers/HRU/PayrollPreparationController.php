@@ -99,39 +99,40 @@ class PayrollPreparationController
 
         $payrollMstrRata = PayrollMaster::query()
             ->with([
-                'payrollMasterEmployees.employee.templateIncentives',
+                'payrollMasterEmployees.employee.templateIncentives.incentive',
             ])
             ->find($payrollMasterSlug);
 
         $detailsRata = [];
-        $incentivesArrayAll = Arrays::incentives();
 
         foreach($payrollMstrRata->payrollMasterEmployees as $emplyLst){
-
+            //Copy RA and TA values from Template of this employee then add to array for INSERT
             $codes = ['RA', 'TA'];
-
-            if ($emplyLst->employee->templateIncentives) {
+            if (!empty($emplyLst->employee->templateIncentives)) {
                 foreach ($codes as $code) {
-                    $incentive = $emplyLst->employee->templateIncentives->where('incentive_code', '=', $code)->first();
-
-                    if ($incentive) {
-                        $amount = $incentive->amount ?? $incentivesArrayAll[$code]['fixed_values'];
-
+                    $templateIncentive = $emplyLst->employee->templateIncentives->where('incentive_code', '=', $code)->first();
+                    if (!empty($templateIncentive)) {
                         array_push($detailsRata, [
                             'employee_slug' => $emplyLst->employee_slug,
                             'pay_master_employee_listing_slug' => $emplyLst->slug,
                             'slug' => Str::random(),
                             'type' => 'INCENTIVE',
-                            'code' => $code,
-                            'amount' => $amount,
-                            'priority' => $incentivesArrayAll[$code]['n_priority'],
+                            'code' => $templateIncentive->incentive_code,
+                            'amount' => $templateIncentive->amount,
+                            'priority' => $templateIncentive->n_priority,
                         ]);
                     }
                 }
             }
         }
 
+        //delete exiting data in hr_pay_master_details before inserting new data
+        $toDelete = $payrollMstrRata->hmtDetails();
+        $toDelete->delete();
+
+        //Insert data to the database
         PayrollMasterDetails::query()->insert($detailsRata);
+
     }
 
     public function edit($slug,Request $request){
