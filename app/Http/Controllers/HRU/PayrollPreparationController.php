@@ -354,8 +354,12 @@ class PayrollPreparationController
         // dd($request->all());
     }
 
-    private function compDed($rata_actldays){
+    private function compRATADed($rata_actldays){
 
+        switch($rata_actldays){
+            case 
+        }
+        
     }
 
     private function hdmfUpload($payrollMaster, Request $request){
