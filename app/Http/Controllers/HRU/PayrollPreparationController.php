@@ -198,8 +198,6 @@ class PayrollPreparationController
         
     }
 
-
-
     public function recomputeMONTHLY($payrollMasterSlug){
 
         //update basic pay based on employee master file
@@ -274,7 +272,7 @@ class PayrollPreparationController
                     }
                 }
 
-//                dd($monthlyIncentive);
+        //dd($monthlyIncentive);
 
             }
         }
@@ -336,31 +334,82 @@ class PayrollPreparationController
 
     }
 
-    public function updateRataDed(Request $request,$payrollMasterSlug){
+    public function updateRataDed(Request $request, $payrollMasterSlug)
+    {
+        // Validate incoming request
+        $request->validate([
+            'dayNo' => 'required|array',
+            'dayNo.*' => 'required|integer|min:0', // Assuming rata_actualdays should be a non-negative integer
+        ]);
 
-        $dys= [];
+        // Initialize an array to store the updates
+        $updates = [];
 
-        foreach($request->dayNo as $employee_slug=>$rata_actldays){
-            array_push($dys,[
-                'slug' => $employee_slug,
-                'rata_actualdays' => $rata_actldays,
-            ]);
+        // Iterate through each employee's slug and actual days worked
+        foreach ($request->dayNo as $employeeSlug => $rataActualDays) {
+            // Compute RA and TA deduction for the employee
+            $rataDeduction = $this->compRATADed($payrollMasterSlug, $rataActualDays);
+
+            // Add the data to the updates array
+            $updates[] = [
+                'slug' => $employeeSlug,
+                'rata_actualdays' => $rataActualDays,
+                'rata_deduction' => $rataDeduction,
+            ];
         }
-        PayrollMasterEmployees::query()->upsert($dys,
-            ['slug'],
-            ['rata_actualdays']
+
+        // Perform the upsert operation
+        PayrollMasterEmployees::query()->upsert(
+            $updates,
+            ['slug'], // Unique constraint columns
+            ['rata_actualdays', 'rata_deduction'] // Columns to update
         );
-
-        // dd($request->all());
     }
 
-    private function compRATADed($rata_actldays){
+    private function compRATADed($payrollMasterSlug, $rataActualDays)
+    {
+        // Fetch the employee record with related incentive details
+        $payrollMstrRata = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees.employee.templateIncentives.incentive',
+            ])
+            ->find($payrollMasterSlug);
 
-        switch($rata_actldays){
-            case 
+        $totalRATA = 0;
+
+        // Determine the proportion based on the actual working days
+        if ($rataActualDays >= 1 && $rataActualDays <= 5) {
+            $proportion = 0.25;
+        } elseif ($rataActualDays >= 6 && $rataActualDays <= 11) {
+            $proportion = 0.50;
+        } elseif ($rataActualDays >= 12 && $rataActualDays <= 16) {
+            $proportion = 0.75;
+        } elseif ($rataActualDays >= 17) {
+            $proportion = 1.00;
+        } else {
+            $proportion = 0; // If no working days, no RATA
         }
-        
+
+        // dd($payrollMstrRata);
+
+
+        foreach (['RA', 'TA'] as $code) {
+            $templateIncentive = $payrollMstrRata->templateIncentives->where('incentive_code', '=', $code)->first();
+
+            if ($templateIncentive && $templateIncentive->amount !== null) {
+                // Calculate the incentive amount based on the proportion
+                $computedAmount = $templateIncentive->amount * $proportion;
+
+                // Add the computed amount to the total RATA
+                $totalRATA += $computedAmount;
+            }
+        }
+
+        // Return the total RATA
+        return $totalRATA;
     }
+
+
 
     private function hdmfUpload($payrollMaster, Request $request){
         $employeeSlugToPayMasterEmployeeSlug = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
@@ -453,7 +502,7 @@ class PayrollPreparationController
             ->findOrFail($slug);
 
 
-//        dd($tree);
+        //dd($tree);
 
         return view('printables.hru.payroll_preparation.monthly_payroll')->with([
             'payrollMaster' => $payrollMaster,
@@ -463,7 +512,6 @@ class PayrollPreparationController
             }),
         ]);
     }
-
 
     private function recursiveSearch($data,$depth = 0){
         foreach ($data as $item){
