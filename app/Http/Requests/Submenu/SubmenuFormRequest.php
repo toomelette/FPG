@@ -20,7 +20,7 @@ class SubmenuFormRequest extends FormRequest{
         return [
 
             'name' => 'required|string|max:45',
-            'route' => 'nullable|string|max:45',
+            'route' => 'nullable|string|max:95',
             'nav_name' => 'nullable|string|max:45',
             'is_nav' => 'required|int|max:3',
             'menu_id' => 'required|string|max:45',

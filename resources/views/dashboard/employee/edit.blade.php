@@ -29,7 +29,7 @@
 
 @section('content')
   <section class="content-header">
-    <h1>Edit Employee</h1>
+    <h1>{{$employee->full_name}} | <small>Edit</small> </h1>
   </section>
 
   <section class="content">
@@ -547,7 +547,7 @@
                         ],$employee ?? null) !!}
 
                         {!! \App\Swep\ViewHelpers\__form2::textbox('firstday_gov',[
-                         'label' => 'First Day to serve Government:',
+                         'label' => 'Date of Original Appointment:',
                          'cols' => 2,
                          'type' => 'date',
                         ],$employee ?? null) !!}
@@ -602,7 +602,7 @@
                       <div class="box-body" style="">
                         <div class="row">
                           {!! \App\Swep\ViewHelpers\__form2::textbox('gsis',[
-                           'label' => 'GSIS:',
+                           'label' => 'GSIS BP No.:',
                            'cols' => 2,
                           ],$employee ?? null) !!}
                           {!! \App\Swep\ViewHelpers\__form2::textbox('philhealth',[

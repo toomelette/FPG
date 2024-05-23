@@ -891,4 +891,32 @@ class Arrays
         });
     }
 
+    public static function appointmentStatus(){
+        $oraohra = [
+            'PERMANENT' => 'PERMANENT',
+            'CONTRACTUAL' => 'CONTRACTUAL',
+            'TEMPORARY' => 'TEMPORARY',
+            'COTERMINOUS' => 'COTERMINOUS',
+            'FIXED TERM' => 'FIXED TERM',
+            'SUBSTITUTE' => 'SUBSTITUTE',
+            'PROVISIONAL' => 'PROVISIONAL',
+            'REAPPOINTMENT' => 'REAPPOINTMENT'
+        ];
+        $others = [
+            'PROBATIONARY' => 'PROBATIONARY',
+            'PART-TIME' => 'PART-TIME',
+            'PACKIAO' => 'PACKIAO',
+            'JOB ORDER' => 'JOB ORDER',
+            'COS' => 'COS',
+            'PROJECT-BASED' => 'PROJECT-BASED',
+            'CASUAL' => 'CASUAL',
+        ];
+        ksort($oraohra);
+        ksort($others);
+        return [
+            'ORAOHRA' => $oraohra,
+            'OTHERS' => $others,
+        ];
+    }
+
 }

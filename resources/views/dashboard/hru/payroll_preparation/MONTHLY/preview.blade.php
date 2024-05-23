@@ -37,10 +37,10 @@
                 <th class="text-center" style="min-width: 90px">{{$ded}}</th>
             @empty
             @endforelse
-            <th style="min-width: 90px">SUBTOTAL</th>
-            <th style="min-width: 90px">TAKE HOME PAY</th>
-            <th style="min-width: 90px">15th</th>
-            <th style="min-width: 90px">30th</th>
+            <th class="text-center" style="min-width: 90px">SUBTOTAL</th>
+            <th class="text-center" style="min-width: 90px">TAKE HOME PAY</th>
+            <th class="text-center" style="min-width: 90px">15th</th>
+            <th class="text-center" style="min-width: 90px">30th</th>
         </tr>
         </thead>
         <tbody>

@@ -102,8 +102,11 @@ class PayrollPreparationController
                 'payrollMasterEmployees.employee.templateIncentives.incentive',
             ])
             ->find($payrollMasterSlug);
-
+        if($payrollMstrRata->is_locked ){
+            abort(503,'This Payroll is locked. Unlock it first to perform action.');
+        }
         $detailsRata = [];
+
 
         foreach($payrollMstrRata->payrollMasterEmployees as $emplyLst){
             //Copy RA and TA values from Template of this employee then add to array for INSERT
@@ -119,7 +122,7 @@ class PayrollPreparationController
                             'type' => 'INCENTIVE',
                             'code' => $templateIncentive->incentive_code,
                             'amount' => $templateIncentive->amount,
-                            'priority' => $templateIncentive->n_priority,
+                            'priority' => $templateIncentive->incentive->n_priority,
                         ]);
                     }
                 }
@@ -216,6 +219,9 @@ class PayrollPreparationController
                 'payrollMasterEmployees.employee.templateDeductions.deduction',
             ])
             ->find($payrollMasterSlug);
+        if($payrollMaster->is_locked ){
+            abort(503,'This Payroll is locked. Unlock it first to perform action.');
+        }
 
         $detailsArr = [];
 
@@ -311,13 +317,16 @@ class PayrollPreparationController
     }
 
     public function update(Request $request,$payrollMasterSlug){
+
         if($request->has('import') && $request->import == true){
             $payrollMaster = PayrollMaster::query()
                 ->with([
                     'payrollMasterEmployees.employee',
                 ])
                 ->find($payrollMasterSlug);
-
+            if($payrollMaster->is_locked ){
+                abort(503,'This Payroll is locked. Unlock it first to perform action.');
+            }
             switch ($request->type){
                 case 'GSIS':
                     return $this->gsisUpload($payrollMaster,$request);
@@ -443,5 +452,26 @@ class PayrollPreparationController
                 echo $item->rc_code .' Depth:'.$depth.'<br>';
             }
         }
+    }
+
+    public function updateLockStatus($payrollSlug,$status){
+
+        $payroll = PayrollMaster::query()->find($payrollSlug);
+        if($status == 'lock'){
+            $payroll->is_locked = 1;
+            $payroll->user_locked = \Auth::user()->user_id;
+            $payroll->locked_at = \Carbon::now();
+            $payroll->save();
+            return 'locked';
+        }
+
+        if($status == 'unlock'){
+            $payroll->is_locked = null;
+            $payroll->user_unlocked = \Auth::user()->user_id;
+            $payroll->unlocked_at = \Carbon::now();
+            $payroll->save();
+            return 'unlocked';
+        }
+        abort(503,$status);
     }
 }
