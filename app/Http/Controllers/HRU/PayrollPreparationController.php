@@ -369,6 +369,11 @@ class PayrollPreparationController
     private function compRATADed($payrollMasterSlug, $rataActualDays)
     {
         // Fetch the employee record with related incentive details
+        $templateIncentives = TemplateIncentives::with('incentive')
+        ->where('employee_slug', $payrollMasterSlug)
+        ->nonZero()
+        ->get();
+
         $payrollMstrRata = PayrollMaster::query()
             ->with([
                 'payrollMasterEmployees.employee.templateIncentives.incentive',
@@ -390,13 +395,10 @@ class PayrollPreparationController
             $proportion = 0; // If no working days, no RATA
         }
 
-        // dd($payrollMstrRata);
-
-
         foreach (['RA', 'TA'] as $code) {
-            $templateIncentive = $payrollMstrRata->templateIncentives->where('incentive_code', '=', $code)->first();
+            $templateIncentive = $payrollMstrRata->payrollMasterEmployees->employee->templateIncentives->incentive->where('incentive_code', $code)->first();
 
-            if ($templateIncentive && $templateIncentive->amount !== null) {
+            if ($templateIncentive->amount) {
                 // Calculate the incentive amount based on the proportion
                 $computedAmount = $templateIncentive->amount * $proportion;
 
@@ -407,8 +409,8 @@ class PayrollPreparationController
 
         // Return the total RATA
         return $totalRATA;
-    }
 
+    }
 
 
     private function hdmfUpload($payrollMaster, Request $request){
@@ -522,4 +524,5 @@ class PayrollPreparationController
             }
         }
     }
+
 }
