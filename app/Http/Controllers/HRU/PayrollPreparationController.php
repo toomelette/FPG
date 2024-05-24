@@ -369,11 +369,6 @@ class PayrollPreparationController
     private function compRATADed($payrollMasterSlug, $rataActualDays)
     {
         // Fetch the employee record with related incentive details
-        $templateIncentives = TemplateIncentives::with('incentive')
-        ->where('employee_slug', $payrollMasterSlug)
-        ->nonZero()
-        ->get();
-
         $payrollMstrRata = PayrollMaster::query()
             ->with([
                 'payrollMasterEmployees.employee.templateIncentives.incentive',
@@ -381,6 +376,8 @@ class PayrollPreparationController
             ->find($payrollMasterSlug);
 
         $totalRATA = 0;
+
+        // dd($payrollMstrRata->payrollMasterEmployees->employee->templateIncentives);
 
         // Determine the proportion based on the actual working days
         if ($rataActualDays >= 1 && $rataActualDays <= 5) {
@@ -396,7 +393,7 @@ class PayrollPreparationController
         }
 
         foreach (['RA', 'TA'] as $code) {
-            $templateIncentive = $payrollMstrRata->payrollMasterEmployees->employee->templateIncentives->incentive->where('incentive_code', $code)->first();
+            $templateIncentive = $payrollMstrRata->payrollMasterEmployees->employee->templateIncentives->where('incentive_code', $code)->first();
 
             if ($templateIncentive->amount) {
                 // Calculate the incentive amount based on the proportion
