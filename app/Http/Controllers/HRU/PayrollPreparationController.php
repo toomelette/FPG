@@ -376,11 +376,11 @@ class PayrollPreparationController
             ])
             ->find($payrollMasterSlug);
 
-            // $payrollMstrRata->where('incentive_code', 'RA');
-
         $totalRATA = 0;
 
-        // dd($payrollMstrRata);
+        $test = $payrollMstrRata->payrollMasterEmployees->employee;
+
+        dd($test);
 
         // Determine the proportion based on the actual working days
         if ($rataActualDays >= 1 && $rataActualDays <= 5) {
@@ -398,8 +398,6 @@ class PayrollPreparationController
         foreach (['RA', 'TA'] as $code) {
             // $templateIncentive = $payrollMstrRata->payrollMasterEmployees->employee->templateIncentives->where('incentive_code', $code)->first();
             $templateIncentive = $payrollMstrRata->payrollMasterEmployees->employee->templateIncentives->where('incentive_code', $code);
-
-            dd($templateIncentive);
 
             if ($templateIncentive->amount) {
                 // Calculate the incentive amount based on the proportion
