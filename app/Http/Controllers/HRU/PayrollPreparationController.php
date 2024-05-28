@@ -372,15 +372,11 @@ class PayrollPreparationController
         // Fetch the employee record with related incentive details
         $payrollMstrRata = PayrollMaster::query()
             ->with([
-                'payrollMasterEmployees.employee.templateIncentives.incentive',
+                'payrollMasterEmployees.employeePayrollDetails',
             ])
             ->find($payrollMasterSlug);
 
         $totalRATA = 0;
-
-        $test = $payrollMstrRata->payrollMasterEmployees->employee;
-
-        dd($test);
 
         // Determine the proportion based on the actual working days
         if ($rataActualDays >= 1 && $rataActualDays <= 5) {
@@ -395,17 +391,23 @@ class PayrollPreparationController
             $proportion = 0; // If no working days, no RATA
         }
 
-        foreach (['RA', 'TA'] as $code) {
-            // $templateIncentive = $payrollMstrRata->payrollMasterEmployees->employee->templateIncentives->where('incentive_code', $code)->first();
-            $templateIncentive = $payrollMstrRata->payrollMasterEmployees->employee->templateIncentives->where('incentive_code', $code);
+        foreach($payrollMstrRata->payrollMasterEmployees as $cmpRATAemply){
 
-            if ($templateIncentive->amount) {
-                // Calculate the incentive amount based on the proportion
-                $computedAmount = $templateIncentive->amount * $proportion;
+            if($cmpRATAemply->employeePayrollDetails){
+                foreach (['RA', 'TA'] as $code) {
 
-                // Add the computed amount to the total RATA
-                $totalRATA += $computedAmount;
+                    $templateIncentive = $cmpRATAemply->employeePayrollDetails->where('code', '=', $code)->first();
+    
+                    if ($templateIncentive->amount) {
+                        // Calculate the incentive amount based on the proportion
+                        $computedAmount = $templateIncentive->amount * $proportion;
+        
+                        // Add the computed amount to the total RATA
+                        $totalRATA += $computedAmount;
+                    }
+                }
             }
+            
         }
 
         // Return the total RATA
