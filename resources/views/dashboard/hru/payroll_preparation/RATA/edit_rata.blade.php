@@ -116,7 +116,7 @@
                 success: function (res) {
                     succeed(form,true,true);
                     recompute();
-                    toast('info','Excel data successfully imported','Updated');
+                    toast('success','Number of Days updated!','Saved');
                 },
                 error: function (res) {
                     errored(form,res);
