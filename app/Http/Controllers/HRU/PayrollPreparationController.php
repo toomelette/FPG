@@ -432,10 +432,10 @@ class PayrollPreparationController
     public function updateRataDed(Request $request, $payrollMasterSlug)
 {
     // Validate incoming request
-    $request->validate([
-        'dayNo' => 'required|array',
-        'dayNo.*' => 'required|integer|min:0',
-    ]);
+    // $request->validate([
+    //     'dayNo' => 'required|array',
+    //     'dayNo.*' => 'required|integer|min:0',
+    // ]);
 
     // Initialize an array to store the updates
     $updates = [];
@@ -444,6 +444,8 @@ class PayrollPreparationController
     foreach ($request->dayNo as $employeeSlug => $rataActualDays) {
         // Compute RA and TA deduction for the employee
         $rataDeduction = $this->compRATADed($payrollMasterSlug, $rataActualDays, $employeeSlug);
+
+        // dd($employeeSlug);
 
         // Add the data to the updates array
         $updates[] = [
@@ -469,12 +471,27 @@ private function compRATADed($payrollMasterSlug, $rataActualDays, $employeeSlug)
         'payrollMasterEmployees.employee.templateIncentives.incentive',
     ])->findOrFail($payrollMasterSlug);
 
-    $employeeRecord = $payrollMaster->payrollMasterEmployees->where('employee_slug', $employeeSlug)->first();
+    $payrollMstrRata = PayrollMasterDetails::query()
+        // ->with([
+        //     'payrollMasterEmployees.employeePayrollDetails',
+        // ])
+        ->
+        where('pay_master_employee_listing_slug', $employeeSlug)
+        ;
+
+        // dd($payrollMstrRata);
+
+    $employeeRecord = $payrollMstrRata->where('pay_master_employee_listing_slug', $employeeSlug)->get();
     if (!$employeeRecord) {
         return 0; // Employee not found in this payroll master
     }
 
     // dd($employeeRecord);
+
+    // $employeeRecord = $payrollMaster->payrollMasterEmployees->where('pay_master_employee_listing_slug', $employeeSlug)->first();
+    // if (!$employeeRecord) {
+    //     return 0; // Employee not found in this payroll master
+    // }
 
     // Determine the proportion based on the actual working days
     $proportion = match(true) {
@@ -488,22 +505,30 @@ private function compRATADed($payrollMasterSlug, $rataActualDays, $employeeSlug)
     $totalRATA = 0;
 
     // Debug: Ensure that we are fetching the employee and their incentives correctly
-    if (!isset($employeeRecord->employee->templateIncentives)) {
-        logger()->error("No template incentives found for employee slug: {$employeeSlug}");
-        return 0;
-    }
+    // if (!isset($employeeRecord->employee->templateIncentives)) {
+    //     logger()->error("No template incentives found for employee slug: {$employeeSlug}");
+    //     return 0;
+    // }
 
-    // Calculate RA and TA deductions
-    foreach (['RA', 'TA'] as $code) {
-        $templateIncentive = $employeeRecord->employee->templateIncentives->where('incentive.code', $code)->first();
+        // Calculate RA and TA deductions
+        foreach (['RA', 'TA'] as $code) {
+            // $templateIncentive = $test->where('code', $code)->first();
+            $templateIncentive = $employeeRecord->where('code', $code);
 
-        if ($templateIncentive && $templateIncentive->amount) {
-            $computedAmount = $templateIncentive->amount * $proportion;
-            $totalRATA += $computedAmount;
-        } else {
-            logger()->warning("Template incentive not found or amount is zero for employee slug: {$employeeSlug}, code: {$code}");
-        }
+            foreach ($templateIncentive as $x) {
+
+                if ($x->amount) {
+                    $computedAmount = $x->amount * $proportion;
+                    $totalRATA += $computedAmount;
+                } else {
+                    logger()->warning("Template incentive not found or amount is zero for employee slug: {$employeeSlug}, code: {$code}");
+                }
+
+            }
+
+            // dd($templateIncentive);
     }
+        
 
     return $totalRATA;
 }
