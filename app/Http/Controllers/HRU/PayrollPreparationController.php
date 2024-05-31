@@ -336,8 +336,8 @@ class PayrollPreparationController
 {
     // Validate incoming request
     $request->validate([
-        'dayNo' => 'required|array',
-        'dayNo.*' => 'required|integer|min:0',
+        'dayNo' => 'array',
+        'dayNo.*' => 'nullable|integer|min:0',
     ]);
 
     // Initialize an array to store the updates
@@ -345,6 +345,12 @@ class PayrollPreparationController
 
     // Iterate through each employee's slug and actual days worked
     foreach ($request->dayNo as $employeeSlug => $rataActualDays) {
+
+        // If rataActualDays is not set or is empty, set it to 22
+        if (empty($rataActualDays)) {
+            $rataActualDays = 22;
+        }
+
         // Compute RA and TA deduction for the employee
         $rataDeduction = $this->compRATADed($payrollMasterSlug, $rataActualDays, $employeeSlug);
 
@@ -368,10 +374,10 @@ class PayrollPreparationController
 private function compRATADed($payrollMasterSlug, $rataActualDays, $employeeSlug)
 {
     // Fetch the payroll master with related employee and incentive details
-    $employeeRecord = PayrollMasterDetails::query()->where('pay_master_employee_listing_slug', $employeeSlug)->get();
-    if (!$employeeRecord) {
-        return 0; // Employee not found in this payroll master
-    }
+    $employeeRecord = PayrollMasterDetails::query()
+        ->where('pay_master_employee_listing_slug', $employeeSlug)
+        ->get()
+        ;
 
     // Determine the proportion based on the actual working days
     $proportion = match(true) {
@@ -402,7 +408,6 @@ private function compRATADed($payrollMasterSlug, $rataActualDays, $employeeSlug)
 
     return $totalRATA;
 }
-
 
     private function hdmfUpload($payrollMaster, Request $request){
         $employeeSlugToPayMasterEmployeeSlug = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){

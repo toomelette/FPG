@@ -25,7 +25,15 @@
             @endforelse
 
             <th>
+                Enter Number of Days
+            </th>
+
+            <th>
                 Number of Days
+            </th>
+
+            <th>
+                Total RA & TA
             </th>
 
         </tr>
@@ -33,16 +41,30 @@
         <tbody>
         @forelse($payrollMaster->payrollMasterEmployees as $employee)
             <tr>
-                <td class="first" >{{$employee->employee->full_name ?? ''}}</td>
+
+                <td class="first" >
+                    {{$employee->employee->full_name ?? ''}}
+                </td>
+
                 @forelse($groupedIncentives as $incentive => $null)
                     <td class="text-right">
                         {{Helper::toNumber($employee->employeePayrollDetails->where('code',$incentive)->first()->amount ?? null,2)}}
                     </td>
                 @empty
                 @endforelse
+
                 <td>
-                    <input type="text" name="dayNo[{{ $employee->slug }}]">
+                    <input type="number" name="dayNo[{{ $employee->slug }}]">
                 </td>
+                
+                <td class="text-right">
+                    {{Helper::toNumber($employee->rata_actualdays)}}
+                </td>
+
+                <td class="text-right">
+                    {{Helper::toNumber($employee->rata_deduction,2)}}
+                </td>
+
             </tr>
         @empty
         @endforelse
