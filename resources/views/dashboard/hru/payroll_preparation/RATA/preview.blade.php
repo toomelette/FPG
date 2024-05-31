@@ -1,6 +1,6 @@
 
 <div class="tscroll">
-    <table class="table table-condensed table-striped table-bordered">
+    <table class="table table-condensed table-hovered table-bordered">
         <thead>
         <tr>
             <th class="first">Employee Name</th>
@@ -42,7 +42,7 @@
         @forelse($payrollMaster->payrollMasterEmployees as $employee)
             <tr>
 
-                <td class="first" >
+                <td class="first">
                     {{$employee->employee->full_name ?? ''}}
                 </td>
 
@@ -54,11 +54,11 @@
                 @endforelse
 
                 <td>
-                    <input type="number" name="dayNo[{{ $employee->slug }}]">
+                    <input class="text-right" type="number" name="dayNo[{{ $employee->slug }}]">
                 </td>
                 
-                <td class="text-right">
-                    {{Helper::toNumber($employee->rata_actualdays)}}
+                <td class="text-center">
+                    {{Helper::toNumber($employee->rata_actualdays,0)}}
                 </td>
 
                 <td class="text-right">

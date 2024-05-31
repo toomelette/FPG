@@ -333,81 +333,81 @@ class PayrollPreparationController
     }
 
     public function updateRataDed(Request $request, $payrollMasterSlug)
-{
-    // Validate incoming request
-    $request->validate([
-        'dayNo' => 'array',
-        'dayNo.*' => 'nullable|integer|min:0',
-    ]);
+    {
+        // Validate incoming request
+        $request->validate([
+            'dayNo' => 'array',
+            'dayNo.*' => 'nullable|integer|min:0',
+        ]);
 
-    // Initialize an array to store the updates
-    $updates = [];
+        // Initialize an array to store the updates
+        $updates = [];
 
-    // Iterate through each employee's slug and actual days worked
-    foreach ($request->dayNo as $employeeSlug => $rataActualDays) {
+        // Iterate through each employee's slug and actual days worked
+        foreach ($request->dayNo as $employeeSlug => $rataActualDays) {
 
-        // If rataActualDays is not set or is empty, set it to 22
-        if (empty($rataActualDays)) {
-            $rataActualDays = 22;
-        }
-
-        // Compute RA and TA deduction for the employee
-        $rataDeduction = $this->compRATADed($payrollMasterSlug, $rataActualDays, $employeeSlug);
-
-        // Add the data to the updates array
-        $updates[] = [
-            'slug' => $employeeSlug,
-            'rata_actualdays' => $rataActualDays,
-            'rata_deduction' => $rataDeduction,
-        ];
-    }
-
-    // Perform the upsert operation
-    PayrollMasterEmployees::query()->upsert(
-        $updates,
-        ['slug'], // Unique constraint columns
-        ['rata_actualdays', 'rata_deduction'] // Columns to update
-    );
-
-}
-
-private function compRATADed($payrollMasterSlug, $rataActualDays, $employeeSlug)
-{
-    // Fetch the payroll master with related employee and incentive details
-    $employeeRecord = PayrollMasterDetails::query()
-        ->where('pay_master_employee_listing_slug', $employeeSlug)
-        ->get()
-        ;
-
-    // Determine the proportion based on the actual working days
-    $proportion = match(true) {
-        $rataActualDays >= 1 && $rataActualDays <= 5 => 0.25,
-        $rataActualDays >= 6 && $rataActualDays <= 11 => 0.50,
-        $rataActualDays >= 12 && $rataActualDays <= 16 => 0.75,
-        $rataActualDays >= 17 => 1.00,
-        default => 0, // If no working days, no RATA
-    };
-
-    $totalRATA = 0;
-
-    // Calculate RA and TA deductions
-    foreach (['RA', 'TA'] as $code) {
-        $templateIncentive = $employeeRecord->where('code', $code);
-
-        foreach ($templateIncentive as $empRata) {
-
-            if ($empRata->amount) {
-                $computedAmount = $empRata->amount * $proportion;
-                $totalRATA += $computedAmount;
-            } else {
-                logger()->warning("Template incentive not found or amount is zero for employee slug: {$employeeSlug}, code: {$code}");
+            // If rataActualDays is not set or is empty, set it to 22
+            if (empty($rataActualDays)) {
+                $rataActualDays = 22;
             }
 
+            // Compute RA and TA deduction for the employee
+            $rataDeduction = $this->compRATADed($rataActualDays, $employeeSlug);
+
+            // Add the data to the updates array
+            $updates[] = [
+                'slug' => $employeeSlug,
+                'rata_actualdays' => $rataActualDays,
+                'rata_deduction' => $rataDeduction,
+            ];
         }
+
+        // Perform the upsert operation
+        PayrollMasterEmployees::query()->upsert(
+            $updates,
+            ['slug'], // Unique constraint columns
+            ['rata_actualdays', 'rata_deduction'] // Columns to update
+        );
+
     }
 
-    return $totalRATA;
-}
+    private function compRATADed($rataActualDays, $employeeSlug)
+    {
+        // Fetch the payroll master with related employee and incentive details
+        $employeeRecord = PayrollMasterDetails::query()
+            ->where('pay_master_employee_listing_slug', $employeeSlug)
+            ->get()
+            ;
+
+        // Determine the proportion based on the actual working days
+        $proportion = match(true) {
+            $rataActualDays >= 1 && $rataActualDays <= 5 => 0.25,
+            $rataActualDays >= 6 && $rataActualDays <= 11 => 0.50,
+            $rataActualDays >= 12 && $rataActualDays <= 16 => 0.75,
+            $rataActualDays >= 17 => 1.00,
+            default => 0, // If no working days, no RATA
+        };
+
+        $totalRATA = 0;
+
+        // Calculate RA and TA deductions
+        foreach (['RA', 'TA'] as $code) {
+            $templateIncentive = $employeeRecord->where('code', $code);
+
+            foreach ($templateIncentive as $empRata) {
+
+                if ($empRata->amount) {
+                    $computedAmount = $empRata->amount * $proportion;
+                    $totalRATA += $computedAmount;
+                } else {
+                    logger()->warning("Template incentive not found or amount is zero for employee slug: {$employeeSlug}, code: {$code}");
+                }
+
+            }
+        }
+
+        return $totalRATA;
+    }
 
     private function hdmfUpload($payrollMaster, Request $request){
         $employeeSlugToPayMasterEmployeeSlug = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
