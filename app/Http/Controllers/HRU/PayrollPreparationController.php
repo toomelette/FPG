@@ -134,6 +134,7 @@ class PayrollPreparationController
         $payrollMstrRata->hmtDetails()->delete();
 
         PayrollMasterDetails::query()->insert($detailsRata);
+        
     }
 
     public function edit($slug,Request $request){
