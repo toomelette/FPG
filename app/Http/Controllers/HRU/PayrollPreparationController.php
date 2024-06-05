@@ -10,6 +10,7 @@ use App\Models\HRU\PayrollMasterDetails;
 use App\Models\HRU\PayrollMasterEmployees;
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
+use App\Models\PPU\PPURespCodes;
 use App\Models\RCCodeTree;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
@@ -104,18 +105,17 @@ class PayrollPreparationController
                 'payrollMasterEmployees.employee.templateIncentives.incentive',
             ])
             ->find($payrollMasterSlug);
-
+        if($payrollMstrRata->is_locked ){
+            abort(503,'This Payroll is locked. Unlock it first to perform action.');
+        }
         $detailsRata = [];
         $incentiveCodes = ['RA', 'TA'];
-
-        foreach($payrollMstrRata->payrollMasterEmployees as $emplyLst){
 
             if ($emplyLst->employee->templateIncentives) {
                 foreach ($incentiveCodes as $code) {
                     $templateIncentive = $emplyLst->employee->templateIncentives->where('incentive_code', '=', $code)->first();
 
                     if (!empty($templateIncentive)) {
-
                         array_push($detailsRata, [
                             'employee_slug' => $emplyLst->employee_slug,
                             'pay_master_employee_listing_slug' => $emplyLst->slug,
@@ -129,7 +129,7 @@ class PayrollPreparationController
                 }
             }
         }
-
+  
         // Delete existing HMT details related to the payroll master record
         $payrollMstrRata->hmtDetails()->delete();
 
@@ -216,6 +216,9 @@ class PayrollPreparationController
                 'payrollMasterEmployees.employee.templateDeductions.deduction',
             ])
             ->find($payrollMasterSlug);
+        if($payrollMaster->is_locked ){
+            abort(503,'This Payroll is locked. Unlock it first to perform action.');
+        }
 
         $detailsArr = [];
 
@@ -311,13 +314,16 @@ class PayrollPreparationController
     }
 
     public function update(Request $request,$payrollMasterSlug){
+
         if($request->has('import') && $request->import == true){
             $payrollMaster = PayrollMaster::query()
                 ->with([
                     'payrollMasterEmployees.employee',
                 ])
                 ->find($payrollMasterSlug);
-
+            if($payrollMaster->is_locked ){
+                abort(503,'This Payroll is locked. Unlock it first to perform action.');
+            }
             switch ($request->type){
                 case 'GSIS':
                     return $this->gsisUpload($payrollMaster,$request);
@@ -484,24 +490,23 @@ class PayrollPreparationController
     }
 
     public function print($slug){
-        $tree = RCCodeTree::query()
+        $tree = PPURespCodes::query()
             ->with([
-                'respCenter.employees' => function(HasMany $q){
+                'employees' => function(HasMany $q){
                     $q->active()->applyProjectId()->permanent();
                 },
             ])
             ->tree()
             ->get()
             ->toTree();
+
         $payrollMaster = PayrollMaster::query()
             ->with([
                 'payrollMasterEmployees.employee',
+                'payrollMasterEmployees.employeePayrollDetails',
                 'hmtDetails',
             ])
             ->findOrFail($slug);
-
-
-        //dd($tree);
 
         return view('printables.hru.payroll_preparation.monthly_payroll')->with([
             'payrollMaster' => $payrollMaster,
@@ -509,6 +514,12 @@ class PayrollPreparationController
             'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
                 return $data->employee->resp_center;
             }),
+
+            'payrollEmployeesBySlug' => $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            })
         ]);
     }
 
@@ -520,6 +531,27 @@ class PayrollPreparationController
                 echo $item->rc_code .' Depth:'.$depth.'<br>';
             }
         }
+    }
+
+    public function updateLockStatus($payrollSlug,$status){
+
+        $payroll = PayrollMaster::query()->find($payrollSlug);
+        if($status == 'lock'){
+            $payroll->is_locked = 1;
+            $payroll->user_locked = \Auth::user()->user_id;
+            $payroll->locked_at = \Carbon::now();
+            $payroll->save();
+            return 'locked';
+        }
+
+        if($status == 'unlock'){
+            $payroll->is_locked = null;
+            $payroll->user_unlocked = \Auth::user()->user_id;
+            $payroll->unlocked_at = \Carbon::now();
+            $payroll->save();
+            return 'unlocked';
+        }
+        abort(503,$status);
     }
 
 }

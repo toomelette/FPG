@@ -86,6 +86,10 @@ table.tbl{
     border: 1px dashed red;
 }
 
+.brk{
+    break-after: page;
+}
+
 .tbl-bordered>thead>tr>th, .tbl-bordered>tbody>tr>th, .tbl-bordered>tfoot>tr>th, .tbl-bordered>thead>tr>td, .tbl-bordered>tbody>tr>td, .tbl-bordered>tfoot>tr>td{
     border: 1px solid black;
 }

@@ -21,8 +21,9 @@ class TemplateIncentives extends Model
         return $this->hasOne(Incentives::class,'incentive_code','incentive_code');
     }
 
-    public function employee(){
-        return $this->belongsTo(Employee::class,'employee_slug','slug');
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'employee_slug', 'slug');
     }
 
     public function scopeNonZero(Builder $builder){

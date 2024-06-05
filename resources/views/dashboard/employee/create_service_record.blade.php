@@ -37,9 +37,10 @@
                 'cols' => 6,
             ]) !!}
 
-            {!! \App\Swep\ViewHelpers\__form2::textbox('appointment_status',[
+            {!! \App\Swep\ViewHelpers\__form2::select('appointment_status',[
                'label' => 'Appointment Status:*',
                'cols' => 6,
+               'options' => \App\Swep\Helpers\Arrays::appointmentStatus(),
             ]) !!}
         </div>
 

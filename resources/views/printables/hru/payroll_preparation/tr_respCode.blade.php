@@ -1,5 +1,5 @@
 <tr>
-    <td style="padding-left: {{$rc->depth * 10}}px" class="text-strong">{{$rc->respCenter->desc}} </td>
+    <td style="padding-left: {{$rc->depth * 10}}px" class="text-strong">{{$rc->desc}} </td>
     @foreach($chunkedIncentives as $grp)
         <th class="text-center">
         </th>
@@ -37,7 +37,8 @@
                 @foreach($chunkedDeductions as $grp)
                     <td class="text-right">
                         @if(isset($grp->values()[$x]))
-                            {{Helper::toNumber($employee->employeePayrollDetails->where('code',$grp->values()[$x])->first()->amount ?? null,2)}}
+                            {{Helper::toNumber($amt = $employee->employeePayrollDetails->where('code',$grp->values()[$x])->first()->amount ?? null,2)}}
+
                         @else
                             <br>
                         @endif
@@ -45,15 +46,15 @@
                 @endforeach
             </tr>
         @endfor
-            <tr>
-                <td><br></td>
-                @foreach($chunkedIncentives as $grp)
-                    <td class="text-right"></td>
-                @endforeach
-                @foreach($chunkedDeductions as $grp)
-                    <td class="text-right"></td>
-                @endforeach
-            </tr>
+        <tr>
+            <td><br></td>
+            @foreach($chunkedIncentives as $grp)
+                <td class="text-right"></td>
+            @endforeach
+            @foreach($chunkedDeductions as $grp)
+                <td class="text-right"></td>
+            @endforeach
+        </tr>
 
 
     @empty

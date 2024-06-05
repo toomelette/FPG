@@ -49,10 +49,10 @@ function autonum_init_modal_new(btn){
 $(document).ready(function($){
     autonum_init();
    $("#filter_form").submit(function() {
-        $(this).find(":input").filter(function(){ return !this.value; }).attr("disabled", "disabled");
+        // $(this).find(":input").filter(function(){ return !this.value; }).attr("disabled", "disabled");
         return true;
     });
-    $("form").find( ":input" ).prop( "disabled", false );
+    // $("form").find( ":input" ).prop( "disabled", false );
     $(".tree_active").parents('.treeview').addClass('menu-open');
     $(".tree_active").parents('li').addClass('active');
     $(".tree_active").parents('.treeview-menu').slideDown();
@@ -155,10 +155,10 @@ $(document).on('ready pjax:success', function() {
     // Filter Form Submit Rule
     $(document).ready(function($){
        $("#filter_form").submit(function() {
-            $(this).find(":input").filter(function(){ return !this.value; }).attr("disabled", "disabled");
+            // $(this).find(":input").filter(function(){ return !this.value; }).attr("disabled", "disabled");
             return true;
         });
-        $("form").find( ":input" ).prop( "disabled", false );
+        //$("form").find( ":input" ).prop( "disabled", false );
     });
 
 

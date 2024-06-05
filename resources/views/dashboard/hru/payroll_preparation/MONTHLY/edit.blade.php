@@ -26,9 +26,9 @@
             <div class="box box-solid">
                 <div class="box-header">
                     <div class="btn-group pull-right">
-                        <button type="button" data-target="#upload_modal" data-toggle="modal" class="btn btn-default btn-sm"> <i class="fa fa-folder-open"></i> Upload Excel File </button>
-
-                        <button type="button" id="recompute_btn" class="btn btn-primary btn-sm"> <i class="fa fa-refresh"></i> Recompute </button>
+                        <button type="button" id="lock_btn" class="btn btn-default btn-sm" action="{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"> <span class="text-danger"><i class="fa fa-{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"></i> {{$payrollMaster->is_locked == 1 ? 'Unlock':'Lock'}} </span></button>
+                        <button type="button" id="upload_btn" data-target="#upload_modal" data-toggle="modal" class="btn btn-default btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-folder-open"></i> Upload Excel File </button>
+                        <button type="button" id="recompute_btn" class="btn btn-primary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recompute </button>
                     </div>
                 </div>
                 <div class="box-body" id="payroll_table">
@@ -100,7 +100,7 @@
                     unwait_this_button(btn);
                 },
                 error: function (res) {
-                    toast('warning','Error recomputing.','Error!');
+                    toast('warning',res.responseJSON.message,'Error!');
                     unwait_this_button(btn);
                 }
             })
@@ -135,7 +135,72 @@
                     errored(form,res);
                 }
             })
-        
+        })
+
+        $("#lock_btn").click(function (){
+            let btn = $(this);
+            let url = '{{route('dashboard.payroll_preparation.updateLockStatus',[$payrollMaster->slug,"status"])}}';
+            let text;
+            let action = btn.attr('action');
+            if(btn.attr('action') === 'lock'){
+                text = 'Lock';
+                html = 'This payroll cannot be edited anymore unless unlocked.';
+            }else{
+                text = 'Unlock';
+                html = 'Actions will be enabled after unlocking.';
+            }
+            url = url.replace('status',btn.attr('action'));
+            Swal.fire({
+                title: text+' this payroll?',
+                // input: 'text',
+                html: html,
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: '<i class="fa fa-'+btn.attr('action')+'"></i> '+text,
+                showLoaderOnConfirm: true,
+                preConfirm: (email) => {
+                    return $.ajax({
+                        url : url,
+                        type: 'POST',
+                        headers: {
+                            {!! __html::token_header() !!}
+                        },
+                        success: function (res){
+                            let lockBnt = $("#lock_btn");
+                            if(res === 'locked'){
+                                $("#upload_btn").attr('disabled','disabled');
+                                $("#recompute_btn").attr('disabled','disabled');
+                                lockBnt.attr('action','unlock');
+                                lockBnt.html('<span class="text-danger"><i class="fa fa-unlock">  </i> Unlock</span>' );
+                            }else{
+                                $("#upload_btn").removeAttr('disabled');
+                                $("#recompute_btn").removeAttr('disabled');
+                                lockBnt.attr('action','lock');
+                                lockBnt.html('<span class="text-danger"><i class="fa fa-lock">  </i> Lock</span>' );
+                            }
+                        }
+                    })
+                        .then(response => {
+                            return  response;
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            Swal.showValidationMessage(
+                                'Error : '+ error.responseJSON.message,
+                            )
+                        })
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Payroll successfully '+action+'ed',
+                        icon : 'success',
+                    })
+                }
+            })
         })
     </script>
 @endsection

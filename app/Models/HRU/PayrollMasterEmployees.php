@@ -3,6 +3,7 @@
 namespace App\Models\HRU;
 
 use App\Models\Employee;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class PayrollMasterEmployees extends Model
@@ -19,5 +20,18 @@ class PayrollMasterEmployees extends Model
 
     public function employee(){
         return $this->hasOne(Employee::class,'slug','employee_slug');
+    }
+
+    protected function totals(): Attribute
+    {
+        $incentive = $this->employeePayrollDetails->where('type','=','INCENTIVE')->sum('amount');
+        $deduction = $this->employeePayrollDetails->where('type','=','DEDUCTION')->sum('amount');
+        return  new Attribute(
+            get: fn() => [
+                'incentive' => $incentive,
+                'deduction' => $deduction,
+                'takeHomePay' => $incentive - $deduction,
+            ],
+        );
     }
 }
