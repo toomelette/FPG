@@ -586,7 +586,14 @@ class EmployeeController extends Controller{
     public function reportGenerate(EmployeeReportRequest $request){
 
         $employees = Employee::query()
-            ->with(['employeeTraining','employeeServiceRecord','employeeEducationalBackground','employeeEligibility','employeeChildren'])
+            ->with([
+//                'employeeTraining',
+//                'employeeServiceRecord',
+//                'employeeEducationalBackground',
+//                'employeeEligibility',
+//                'employeeChildren',
+                'responsibilityCenter.description',
+            ])
         ;
         $filters = [];
 
@@ -842,6 +849,10 @@ class EmployeeController extends Controller{
             ],
             'dept_name' => [
                 'name' => 'Department',
+                'checked' => 0,
+            ],
+            'resp_center' => [
+                'name' => 'Resp. Center',
                 'checked' => 0,
             ],
             'unit_name' => [

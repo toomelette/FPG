@@ -175,6 +175,16 @@
                                              </td>
                                              @break
 
+                                             @case('dept_name')
+                                                 <td>
+                                                     {{$employee->responsibilityCenter->description->descriptive_name ?? ''}}
+                                                 </td>
+                                             @break
+                                             @case('resp_center')
+                                                 <td>
+                                                     {{$employee->responsibilityCenter->desc ?? ''}}
+                                                 </td>
+                                                 @break
                                              @default
                                              <td>{{$employee->$s_cols}}</td>
                                          @endswitch
