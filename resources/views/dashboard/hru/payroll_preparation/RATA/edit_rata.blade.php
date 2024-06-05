@@ -26,6 +26,9 @@
             <div class="box box-solid">
                 <div class="box-header">
                     <div class="btn-group pull-right">
+                        <button type="submit" id="" class="btn btn-primary btn-sm"> <i class="fa fa-refresh"></i> Days </button>
+                    </div>
+                    <div class="btn-group pull-right">
                         <button type="button" id="recompute_btn" class="btn btn-primary btn-sm"> <i class="fa fa-refresh"></i> Recompute </button>
                     </div>
                 </div>
@@ -97,5 +100,30 @@
             })
         
         })
+
+        $("#prepare_payroll_form").submit(function (e) {
+            e.preventDefault();
+            let form = $(this);
+            let uri = '{{route("dashboard.payroll_preparation.updateRataDed",$payrollMaster->slug)}}';
+            loading_btn(form);
+            $.ajax({
+                url : uri,
+                data: form.serialize(),
+                type: 'POST',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    succeed(form,true,true);
+                    recompute();
+                    toast('success','Number of Days updated!','Saved');
+                },
+                error: function (res) {
+                    errored(form,res);
+                }
+            })
+        } )
+
+
     </script>
 @endsection

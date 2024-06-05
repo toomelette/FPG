@@ -1,5 +1,6 @@
+
 <div class="tscroll">
-    <table class="table table-condensed table-striped table-bordered">
+    <table class="table table-condensed table-hovered table-bordered">
         <thead>
         <tr>
             <th class="first">Employee Name</th>
@@ -13,7 +14,8 @@
                         return $data->priority;
                     }
                 })
-                ->groupBy('code');
+                ->groupBy('code')
+                ;
 
             @endphp
 
@@ -22,18 +24,47 @@
             @empty
             @endforelse
 
+            <th>
+                Enter Number of Days
+            </th>
+
+            <th>
+                Number of Days
+            </th>
+
+            <th>
+                Total RA & TA
+            </th>
+
         </tr>
         </thead>
         <tbody>
         @forelse($payrollMaster->payrollMasterEmployees as $employee)
             <tr>
-                <td class="first" >{{$employee->employee->full_name ?? ''}}</td>
+
+                <td class="first">
+                    {{$employee->employee->full_name ?? ''}}
+                </td>
+
                 @forelse($groupedIncentives as $incentive => $null)
                     <td class="text-right">
                         {{Helper::toNumber($employee->employeePayrollDetails->where('code',$incentive)->first()->amount ?? null,2)}}
                     </td>
                 @empty
                 @endforelse
+
+                <td>
+                    <input class="text-right" type="number" name="dayNo[{{ $employee->slug }}]">
+                </td>
+                
+                <td class="text-center">
+                    {{Helper::toNumber($employee->rata_actualdays,0)}}
+                </td>
+
+                <td class="text-right">
+                    {{Helper::toNumber($employee->rata_deduction,2)}}
+                </td>
+
             </tr>
         @empty
         @endforelse
