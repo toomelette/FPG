@@ -2,6 +2,7 @@
 
 namespace App\Models\HRU;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class PayrollMaster extends Model
@@ -39,4 +40,6 @@ class PayrollMaster extends Model
             'slug'
         );
     }
+
+
 }

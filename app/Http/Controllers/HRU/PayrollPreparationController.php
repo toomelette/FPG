@@ -10,6 +10,7 @@ use App\Models\HRU\PayrollMasterDetails;
 use App\Models\HRU\PayrollMasterEmployees;
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
+use App\Models\PPU\PPURespCodes;
 use App\Models\RCCodeTree;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
@@ -415,24 +416,24 @@ class PayrollPreparationController
     }
 
     public function print($slug){
-        $tree = RCCodeTree::query()
+        $tree = PPURespCodes::query()
             ->with([
-                'respCenter.employees' => function(HasMany $q){
+                'employees' => function(HasMany $q){
                     $q->active()->applyProjectId()->permanent();
                 },
             ])
             ->tree()
             ->get()
             ->toTree();
+
         $payrollMaster = PayrollMaster::query()
             ->with([
                 'payrollMasterEmployees.employee',
+                'payrollMasterEmployees.employeePayrollDetails',
                 'hmtDetails',
             ])
             ->findOrFail($slug);
 
-
-//        dd($tree);
 
         return view('printables.hru.payroll_preparation.monthly_payroll')->with([
             'payrollMaster' => $payrollMaster,
@@ -440,6 +441,12 @@ class PayrollPreparationController
             'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
                 return $data->employee->resp_center;
             }),
+
+            'payrollEmployeesBySlug' => $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            })
         ]);
     }
 

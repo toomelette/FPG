@@ -6,6 +6,7 @@ namespace App\Models\PPU;
 
 use App\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class PPURespCodes extends Model
 {
@@ -28,4 +29,15 @@ class PPURespCodes extends Model
         return $this->hasMany(Employee::class,'resp_center','rc_code');
     }
 
+
+    use HasRecursiveRelationships;
+    public function getLocalKeyName()
+    {
+        return 'rc_code';
+    }
+
+    public function getParentKeyName()
+    {
+        return 'parent_rc_code';
+    }
 }

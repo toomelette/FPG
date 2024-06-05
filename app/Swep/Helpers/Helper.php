@@ -735,4 +735,34 @@ class Helper
         return $depth;
     }
 
+    public static function recursiveTree($tree,$passedValues,$depth = 0){
+        foreach ($tree as $item){
+            if(!empty($item->children) && $item->children->count() > 0){
+                echo view('printables.hru.payroll_preparation.tr_employee')
+                    ->with([
+                        'rc' => $item,
+                        'chunkedIncentives' => $passedValues['chunkedIncentives'],
+                        'chunkedDeductions' => $passedValues['chunkedDeductions'],
+                        'payrollEmployeesBySlug' => $passedValues['payrollEmployeesBySlug'],
+                        'chunkBy' => 3,
+                        'depth' => $depth,
+                    ])
+                    ->render();
+                self::recursiveTree($item->children,$passedValues, $depth + 1);
+            }else{
+                echo view('printables.hru.payroll_preparation.tr_employee')
+                    ->with([
+                        'rc' => $item,
+                        'chunkedIncentives' => $passedValues['chunkedIncentives'],
+                        'chunkedDeductions' => $passedValues['chunkedDeductions'],
+                        'payrollEmployeesBySlug' => $passedValues['payrollEmployeesBySlug'],
+                        'chunkBy' => 3,
+                        'depth' => $depth,
+                    ])
+                    ->render();
+            }
+        }
+    }
+
+
 }
