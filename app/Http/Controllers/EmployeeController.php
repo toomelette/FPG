@@ -940,8 +940,8 @@ class EmployeeController extends Controller{
                 'name' => 'HDMF',
                 'checked' => 0,
             ],
-            'place_of_assignment' => [
-                'name' => 'Place of Assignment',
+            'assignment' => [
+                'name' => 'Assignment',
                 'checked' => 0,
             ]
 
