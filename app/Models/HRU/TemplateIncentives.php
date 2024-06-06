@@ -32,5 +32,6 @@ class TemplateIncentives extends Model
                 ->orWhere('amount' ,'!=',null);
         });
 
-    }
+    
+}
 }

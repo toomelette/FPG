@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpParser\Builder\Function_;
+use PhpParser\Node\Expr\FuncCall;
 use Spatie\Html\Elements\P;
 use Yajra\DataTables\DataTables;
 
@@ -107,14 +109,12 @@ class PayrollPreparationController
             abort(503,'This Payroll is locked. Unlock it first to perform action.');
         }
         $detailsRata = [];
+        $incentiveCodes = ['RA', 'TA'];
 
-
-        foreach($payrollMstrRata->payrollMasterEmployees as $emplyLst){
-            //Copy RA and TA values from Template of this employee then add to array for INSERT
-            $codes = ['RA', 'TA'];
-            if (!empty($emplyLst->employee->templateIncentives)) {
-                foreach ($codes as $code) {
+            if ($emplyLst->employee->templateIncentives) {
+                foreach ($incentiveCodes as $code) {
                     $templateIncentive = $emplyLst->employee->templateIncentives->where('incentive_code', '=', $code)->first();
+
                     if (!empty($templateIncentive)) {
                         array_push($detailsRata, [
                             'employee_slug' => $emplyLst->employee_slug,
@@ -129,14 +129,12 @@ class PayrollPreparationController
                 }
             }
         }
+  
+        // Delete existing HMT details related to the payroll master record
+        $payrollMstrRata->hmtDetails()->delete();
 
-        //delete exiting data in hr_pay_master_details before inserting new data
-        $toDelete = $payrollMstrRata->hmtDetails();
-        $toDelete->delete();
-
-        //Insert data to the database
         PayrollMasterDetails::query()->insert($detailsRata);
-
+        
     }
 
     public function edit($slug,Request $request){
@@ -178,7 +176,7 @@ class PayrollPreparationController
                     $this->recomputeRATA($slug);
         
                     
-                    return view('dashboard.hru.payroll_preparation.MONTHLY.preview')->with([
+                    return view('dashboard.hru.payroll_preparation.RATA.preview')->with([
                         'payrollMaster' => $payrollMaster,
                     ]);
                 }
@@ -198,8 +196,6 @@ class PayrollPreparationController
         }
         
     }
-
-
 
     public function recomputeMONTHLY($payrollMasterSlug){
 
@@ -278,7 +274,7 @@ class PayrollPreparationController
                     }
                 }
 
-//                dd($monthlyIncentive);
+        //dd($monthlyIncentive);
 
             }
         }
@@ -340,6 +336,84 @@ class PayrollPreparationController
                     return $this->hdmfUpload($payrollMaster,$request);
             }
         }
+
+    }
+
+    public function updateRataDed(Request $request, $payrollMasterSlug)
+    {
+        // Validate incoming request
+        $request->validate([
+            'dayNo' => 'array',
+            'dayNo.*' => 'nullable|integer|min:0',
+        ]);
+
+        // Initialize an array to store the updates
+        $updates = [];
+
+        // Iterate through each employee's slug and actual days worked
+        foreach ($request->dayNo as $employeeSlug => $rataActualDays) {
+
+            // If rataActualDays is not set or is empty, set it to 22
+            if (empty($rataActualDays)) {
+                $rataActualDays = 22;
+            }
+
+            // Compute RA and TA deduction for the employee
+            $rataDeduction = $this->compRATADed($rataActualDays, $employeeSlug);
+
+            // Add the data to the updates array
+            $updates[] = [
+                'slug' => $employeeSlug,
+                'rata_actualdays' => $rataActualDays,
+                'rata_deduction' => $rataDeduction,
+            ];
+        }
+
+        // Perform the upsert operation
+        PayrollMasterEmployees::query()->upsert(
+            $updates,
+            ['slug'], // Unique constraint columns
+            ['rata_actualdays', 'rata_deduction'] // Columns to update
+        );
+
+    }
+
+    private function compRATADed($rataActualDays, $employeeSlug)
+    {
+        // Fetch the payroll master with related employee and incentive details
+        $employeeRecord = PayrollMasterDetails::query()
+            ->where('pay_master_employee_listing_slug', $employeeSlug)
+            ->get()
+            ;
+
+        // Determine the proportion based on the actual working days
+        $proportion = match(true) {
+            $rataActualDays >= 1 && $rataActualDays <= 5 => 0.25,
+            $rataActualDays >= 6 && $rataActualDays <= 11 => 0.50,
+            $rataActualDays >= 12 && $rataActualDays <= 16 => 0.75,
+            $rataActualDays >= 17 => 1.00,
+            default => 0, // If no working days, no RATA
+        };
+
+        $totalRATA = 0;
+
+        // Calculate RA and TA deductions
+        foreach (['RA', 'TA'] as $code) {
+            $templateIncentive = $employeeRecord->where('code', $code);
+
+            foreach ($templateIncentive as $empRata) {
+
+                if ($empRata->amount) {
+                    $computedAmount = $empRata->amount * $proportion;
+                    $totalRATA += $computedAmount;
+                } else {
+                    logger()->warning("Template incentive not found or amount is zero for employee slug: {$employeeSlug}, code: {$code}");
+                }
+
+            }
+        }
+
+        return $totalRATA;
     }
 
     private function hdmfUpload($payrollMaster, Request $request){
@@ -434,7 +508,6 @@ class PayrollPreparationController
             ])
             ->findOrFail($slug);
 
-
         return view('printables.hru.payroll_preparation.monthly_payroll')->with([
             'payrollMaster' => $payrollMaster,
             'tree' => $tree,
@@ -449,7 +522,6 @@ class PayrollPreparationController
             })
         ]);
     }
-
 
     private function recursiveSearch($data,$depth = 0){
         foreach ($data as $item){
@@ -481,4 +553,5 @@ class PayrollPreparationController
         }
         abort(503,$status);
     }
+
 }

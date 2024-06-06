@@ -18,6 +18,7 @@
                             ->orWhere('incentive_code','=','TA')
                             ;
                         })
+                        ->where('amount','!=',null)
                         ;
                     })
                     ->applyProjectId()
