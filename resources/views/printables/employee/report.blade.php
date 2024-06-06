@@ -177,14 +177,20 @@
 
                                              @case('dept_name')
                                                  <td>
-                                                     {{$employee->responsibilityCenter->description->descriptive_name ?? ''}}
+                                                     {{$employee->responsibilityCenter->department ?? ''}}
                                                  </td>
                                              @break
-                                             @case('resp_center')
+                                             @case('division')
                                                  <td>
-                                                     {{$employee->responsibilityCenter->desc ?? ''}}
+                                                     {{$employee->responsibilityCenter->division ?? ''}}
                                                  </td>
                                                  @break
+                                             @case('section')
+                                                 <td>
+                                                     {{$employee->responsibilityCenter->section ?? ''}}
+                                                 </td>
+                                                 @break
+
                                              @default
                                              <td>{{$employee->$s_cols}}</td>
                                          @endswitch

@@ -851,14 +851,15 @@ class EmployeeController extends Controller{
                 'name' => 'Department',
                 'checked' => 0,
             ],
-            'resp_center' => [
-                'name' => 'Resp. Center',
+            'division' => [
+                'name' => 'Division',
                 'checked' => 0,
             ],
-            'unit_name' => [
-                'name' => 'Unit',
+            'section' => [
+                'name' => 'Section',
                 'checked' => 0,
             ],
+
             'monthly_basic' => [
                 'name' => 'Monthly Basic',
                 'checked' => 1,
