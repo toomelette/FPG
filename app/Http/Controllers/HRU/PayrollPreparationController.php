@@ -111,6 +111,7 @@ class PayrollPreparationController
         $detailsRata = [];
         $incentiveCodes = ['RA', 'TA'];
 
+        foreach($payrollMstrRata->payrollMasterEmployees as $emplyLst){
             if ($emplyLst->employee->templateIncentives) {
                 foreach ($incentiveCodes as $code) {
                     $templateIncentive = $emplyLst->employee->templateIncentives->where('incentive_code', '=', $code)->first();
