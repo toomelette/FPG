@@ -351,6 +351,11 @@ class Employee extends Model{
             ->orderBy('priority','asc');
     }
 
+    public function templateMonthlyBasic(){
+        return $this->hasOne(TemplateIncentives::class,'employee_slug','slug')
+                ->where('incentive_code','=','MONTHLY');
+    }
+
     public function templateDeductions(){
         return $this->hasMany(TemplateDeductions::class,'employee_slug','slug')
             ->orderBy('priority','asc');

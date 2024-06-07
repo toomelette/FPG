@@ -28,9 +28,9 @@
                         ]) !!}
                     </div>
                     <div id="emplytbl">
-                        
+
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -69,7 +69,7 @@
                 }
             })
         })
-        $("#search").keyup(function (){
+        $("body").on('keyup','#search',function (){
             myFunction();
         });
         function myFunction() {
@@ -113,5 +113,33 @@
             })
         });
 
+        $("body").on('ifUnchecked','#overall_selector',function (event){
+            $('.emp_selector').iCheck('uncheck');
+        })
+        $("body").on('ifChecked','#overall_selector',function (event){
+            $('.emp_selector').iCheck('check');
+
+        })
+
+        $("body").on('ifChanged','.emp_selector',function (event){
+            setTimeout(function (){
+                let selected = $(".checkbox-counter.checked").length;
+                let total = parseInt($("span#total").html());
+                $("#checked").html(selected);
+                if(selected === 0){
+                    $("#overall_selector").iCheck('uncheck');
+                }else if(selected === total){
+                    $("#overall_selector").iCheck('check');
+                }else{
+                    $("#overall_selector").iCheck('indeterminate');
+                }
+            },100)
+        })
+
+        function updateMainCheckbox(){
+            setTimeout(function (){
+                console.log($(".checkbox-counter.checked").length);
+            },100)
+        }
     </script>
 @endsection
