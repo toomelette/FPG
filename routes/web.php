@@ -1349,7 +1349,7 @@ Route::get('/appearance',function (\Illuminate\Http\Request $request){
 
 
 
-Route::get('/appointment',function (\Illuminate\Http\Request $request){
+Route::get('/appointmentxxxxx',function (\Illuminate\Http\Request $request){
     $emps = \App\Models\Employee::query()
         ->where(function ($q){
             $q->where('locations','=','COS-VISAYAS')
