@@ -92,6 +92,9 @@
                                  @if(!empty($selected_columns))
                                      @foreach($selected_columns as $s_cols)
                                          @switch($s_cols)
+                                             @case('fullname')
+                                             <td>{{$employee->full_name}} {{$employee->middle_initial}}</td>
+                                             @break
                                              @case('age')
                                              <td>{{\Illuminate\Support\Carbon::parse($employee->date_of_birth)->age}}</td>
                                              @break

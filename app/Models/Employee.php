@@ -13,6 +13,7 @@ use App\Swep\Helpers\Arrays;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Kyslik\ColumnSortable\Sortable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -126,6 +127,25 @@ class Employee extends Model{
     {
         return  new Attribute(
             get: fn() => $this->lastname.', '.$this->firstname,
+        );
+    }
+
+    protected function middleInitial(): Attribute
+    {
+        return  new Attribute(
+            get: function (){
+                if($this->middlename != null && $this->middlename != ''){
+                    if(strlen($this->middlename) == 1){
+                        return $this->middlename.'.';
+                    }else{
+                        return Str::limit($this->middlename,1,'.');
+                    }
+
+                }else{
+                    return '';
+                }
+
+            },
         );
     }
     protected function photoPath(): Attribute{
