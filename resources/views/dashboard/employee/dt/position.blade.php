@@ -1,4 +1,6 @@
-<b>{{$data->plantilla->position ?? $data->position}}</b>
+<span class="{{empty($data->plantilla) && ($data->appointment_status != 'COS' ) ? 'text-danger' : ''}}">
+    <b>{{$data->plantilla->position ?? $data->position}}</b>
+</span>
 <span class="pull-right text-strong text-success">{{$data->item_no ?? ''}}</span>
 <div class="table-subdetail">
     JG-Step: {{$data->salary_grade}} - {{$data->step_inc}}
