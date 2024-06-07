@@ -83,7 +83,7 @@
                     <thead>
                     <tr class="">
                         <th >Full Name</th>
-                        <th class="th-20">Emp No.</th>
+                        <th class="th-20">Employment Details</th>
                         <th >Position</th>
                         <th >Photo</th>
                         <th >BM id</th>
@@ -270,7 +270,7 @@
       "ajax" : '{{route('dashboard.employee.index')}}',
       "columns": [
         { "data": "fullname" },
-        { "data": "employee_no" },
+        { "data": "employment_details" },
         { "data": "position" },
         { "data": "photo" },
         { "data": "biometric_user_id" },
@@ -287,8 +287,8 @@
           "class" : 'action4'
         },
           {
-              "targets" : 1,
-              "class" : 'w-6p'
+              "targets" : 4,
+              "visible" : false,
           },
         {
           "targets" : 0,

@@ -155,6 +155,11 @@ class EmployeeController extends Controller{
                     'sql_server_is_on' => $sql_server_is_on,
                 ]);
             })
+            ->addColumn('employment_details',function($data){
+                return view('dashboard.employee.dt.employment_details')->with([
+                    'data' => $data,
+                ]);
+            })
             ->addColumn('photo',function($data){
                 return view('dashboard.employee.dt.photo')->with([
                     'data' => $data,

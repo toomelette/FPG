@@ -73,117 +73,53 @@
 
 
 
-                    @if(\App\Swep\Helpers\Helper::sqlServerIsOn() == true)
-                        @php
-                            $empMaster = \App\Models\SqlServer\EmpMaster::query()->where('EmpNo','=',$employee->employee_no)->first();
-                        @endphp
-                        @if(!empty($empMaster))
+                    <div class="col-md-6">
+                        <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1">
+                            Appointment Details
+                        </p>
 
-                            <div class="col-md-6">
-                                <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1">
-                                    Appointment Details
-                                </p>
+                        <div class="well well-sm">
+                            <dl class="dl-horizontal">
+                                <dt>Employee No:</dt>
+                                <dd>{{ $employee->employee_no }}</dd>
+                                <dt>Status:</dt>
+                                <dd>{{ $employee->is_active }}</dd>
+                                <dt>Position:</dt>
+                                <dd>{{ $employee->plantilla->position ?? $employee->position}}</dd>
+                                <dt>Salary/Job Grade:</dt>
+                                <dd>{{ $employee->salary_grade }}</dd>
+                                <dt>Step Increment:</dt>
+                                <dd>{{ $employee->step_inc }}</dd>
+                                <dt>Appointment Status:</dt>
+                                <dd>{{ $employee->appointment_status }}</dd>
+                                <dt>Item No:</dt>
+                                <dd>{{ $employee->item_no }}</dd>
+                                <dt>Monthly Basic:</dt>
+                                <dd>
+                                    {{ Helper::toNumber($employee->incentive_monthly_basic, 2) }}
+                                </dd>
+                                <dt>ACA:</dt>
+                                <dd>{{ Helper::toNumber($employee->aca, 2) }}</dd>
+                                <dt>PERA:</dt>
+                                <dd>{{ Helper::toNumber($employee->pera, 2) }}</dd>
+                                <dt>Food Subsidy:</dt>
+                                <dd>{{ Helper::toNumber($employee->food_subsidy, 2) }}</dd>
+                                <dt>RA:</dt>
+                                <dd>{{ Helper::toNumber($employee->ra, 2) }}</dd>
+                                <dt>TA:</dt>
+                                <dd>{{ Helper::toNumber($employee->ta, 2) }}</dd>
+                                <dt>Government Service:</dt>
+                                <dd>{{ __dataType::date_parse($employee->firstday_gov, 'M d, Y') }}</dd>
+                                <dt>First Day in  SRA:</dt>
+                                <dd>{{ __dataType::date_parse($employee->firstday_sra, 'M d, Y') }}</dd>
+                                <dt>Appointment Date:</dt>
+                                <dd>{{ __dataType::date_parse($employee->appointment_date, 'M d, Y') }}</dd>
+                                <dt>Adjustment Date:</dt>
+                                <dd>{{ __dataType::date_parse($employee->adjustment_date, 'M d, Y') }}</dd>
 
-                                <div class="well well-sm">
-                                    <dl class="dl-horizontal">
-                                        <dt>Employee No:</dt>
-                                        <dd class="text-green">{{ $empMaster->EmpNo }}</dd>
-                                        <dt>Status:</dt>
-                                        <dd>{{ $employee->is_active }}</dd>
-                                        <dt>Position:</dt>
-                                        <dd class="text-green">{{ $empMaster->Position }}</dd>
-                                        <dt>Job Grade:</dt>
-                                        <dd class="text-green">{{ $empMaster->SalGrade }}</dd>
-                                        <dt>Step Increment:</dt>
-                                        <dd class="text-green">{{ $empMaster->StepInc }}</dd>
-                                        <dt>Appointment Status:</dt>
-                                        <dd class="text-green">{{ $empMaster->ApptStat }}</dd>
-                                        <dt>Item No:</dt>
-                                        <dd class="text-green">{{ $empMaster->ItemNo }}</dd>
-                                        <dt>Monthly Basic:</dt>
-                                        <dd class="text-green">{{ number_format($empMaster->MonthlyBasic, 2) }}</dd>
-    {{--                                    <dt>ACA:</dt>--}}
-    {{--                                    <dd class="text-green">{{ number_format($empMaster->ACA, 2) }}</dd>--}}
-    {{--                                    <dt>PERA:</dt>--}}
-    {{--                                    <dd class="text-green">{{ number_format($empMaster->PERA, 2) }}</dd>--}}
-                                        <dt>Food Subsidy:</dt>
-                                        <dd class="text-green">{{ number_format($empMaster->FoodSubsi, 2) }}</dd>
-    {{--                                    <dt>RA:</dt>--}}
-    {{--                                    <dd class="text-green">{{ number_format($empMaster->RA, 2) }}</dd>--}}
-    {{--                                    <dt>TA:</dt>--}}
-    {{--                                    <dd class="text-green">{{ number_format($empMaster->TA, 2) }}</dd>--}}
-                                        <dt>Government Service:</dt>
-                                        <dd>{{ __dataType::date_parse($employee->firstday_gov, 'M d, Y') }}</dd>
-                                        <dt>First Day:</dt>
-                                        <dd>{{ __dataType::date_parse($employee->firstday_sra, 'M d, Y') }}</dd>
-                                        <dt>Last Promotion:</dt>
-                                        <dd>{{ __dataType::date_parse($employee->appointment_date, 'M d, Y') }}</dd>
-                                        <dt>Adjustment Date:</dt>
-                                        <dd>{{ __dataType::date_parse($employee->adjustment_date, 'M d, Y') }}</dd>
-
-    {{--                                    <dt>Allowance 1:</dt>--}}
-    {{--                                    <dd class="text-green">{{ number_format($empMaster->Allow1, 2) }}</dd>--}}
-
-    {{--                                    <dt>Allowance 2:</dt>--}}
-    {{--                                    <dd class="text-green">{{ number_format($empMaster->Allow2, 2) }}</dd>--}}
-
-                                        <dt>HDMF Premium:</dt>
-                                        @if(!empty($empMaster))
-                                            <dd  class="text-green">{{ number_format($empMaster->HDMFPREMIUMS, 2) }}</dd>
-                                        @else
-                                            <dd>{{ number_format($employee->hdmfpremiums, 2) }}</dd>
-                                        @endif
-                                    </dl>
-                                </div>
-                            </div>
-                        @endif
-                    @else
-                        <div class="col-md-6">
-                            <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1">
-                                Appointment Details
-                            </p>
-
-                            <div class="well well-sm">
-                                <dl class="dl-horizontal">
-                                    <dt>Employee No:</dt>
-                                    <dd>{{ $employee->employee_no }}</dd>
-                                    <dt>Status:</dt>
-                                    <dd>{{ $employee->is_active }}</dd>
-                                    <dt>Position:</dt>
-                                    <dd>{{ $employee->position }}</dd>
-                                    <dt>Salary Grade:</dt>
-                                    <dd>{{ $employee->salary_grade }}</dd>
-                                    <dt>Step Increment:</dt>
-                                    <dd>{{ $employee->step_inc }}</dd>
-                                    <dt>Appointment Status:</dt>
-                                    <dd>{{ $employee->appointment_status }}</dd>
-                                    <dt>Item No:</dt>
-                                    <dd>{{ $employee->item_no }}</dd>
-                                    <dt>Monthly Basic:</dt>
-                                    <dd>{{ number_format($employee->monhtly_basic, 2) }}</dd>
-                                    <dt>ACA:</dt>
-                                    <dd>{{ number_format($employee->aca, 2) }}</dd>
-                                    <dt>PERA:</dt>
-                                    <dd>{{ number_format($employee->pera, 2) }}</dd>
-                                    <dt>Food Subsidy:</dt>
-                                    <dd>{{ number_format($employee->food_subsidy, 2) }}</dd>
-                                    <dt>RA:</dt>
-                                    <dd>{{ number_format($employee->ra, 2) }}</dd>
-                                    <dt>TA:</dt>
-                                    <dd>{{ number_format($employee->ta, 2) }}</dd>
-                                    <dt>Government Service:</dt>
-                                    <dd>{{ __dataType::date_parse($employee->firstday_gov, 'M d, Y') }}</dd>
-                                    <dt>First Day:</dt>
-                                    <dd>{{ __dataType::date_parse($employee->firstday_sra, 'M d, Y') }}</dd>
-                                    <dt>Appointment Date:</dt>
-                                    <dd>{{ __dataType::date_parse($employee->appointment_date, 'M d, Y') }}</dd>
-                                    <dt>Adjustment Date:</dt>
-                                    <dd>{{ __dataType::date_parse($employee->adjustment_date, 'M d, Y') }}</dd>
-
-                                </dl>
-                            </div>
+                            </dl>
                         </div>
-                    @endif
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">

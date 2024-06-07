@@ -532,7 +532,7 @@
                         {!! \App\Swep\ViewHelpers\__form2::select('resp_center',[
                          'label' => 'Responsibility Center:',
                          'cols' => 4,
-                         'options' => \App\Swep\Helpers\Arrays::groupedRespCodes(),
+                         'options' => \App\Swep\Helpers\Arrays::groupedRespCodes('all'),
                           'id' => 'resp_center',
                         ],$employee ?? null) !!}
 
@@ -1514,7 +1514,11 @@
           form.get(0).reset();
           remove_loading_btn(form);
           markTabs(form);
-          window.location.replace('{{route("dashboard.employee.index")}}?toPage='+page+'&mark='+res.slug);
+          @if($employee->locations == 'COS-VISAYAS' || $employee->locations == 'COS-LUZMIN')
+            window.location.replace('{{route("dashboard.employee.index_cos")}}?toPage='+page+'&mark='+res.slug);
+          @else
+            window.location.replace('{{route("dashboard.employee.index")}}?toPage='+page+'&mark='+res.slug);
+          @endif
         },
         error: function (res) {
           errored(form,res);

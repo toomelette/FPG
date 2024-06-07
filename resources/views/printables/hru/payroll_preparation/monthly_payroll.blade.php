@@ -121,7 +121,7 @@
                                 <td style="vertical-align: top" rowspan="{{$chunkBy + 1}}">
                                     <span class="text-strong">{{$employee->employee->full_name}}</span>
                                     <br>
-                                    {{$employee->employee->position}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
+                                    {{$employee->employee->plantilla->position ?? ''}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
                                     <br>
                                     {{$employee->employee->employee_no}}
                                 </td>
@@ -228,7 +228,7 @@
                                         <td style="vertical-align: top" rowspan="{{$chunkBy + 1}}">
                                             <span class="text-strong">{{$employee->employee->full_name}}</span>
                                             <br>
-                                            {{$employee->employee->position}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
+                                            {{$employee->employee->plantilla->position ?? ''}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
                                             <br>
                                             {{$employee->employee->employee_no}}
                                         </td>
@@ -337,7 +337,7 @@
                                                 <td style="vertical-align: top" rowspan="{{$chunkBy + 1}}">
                                                     <span class="text-strong">{{$employee->employee->full_name}}</span>
                                                     <br>
-                                                    {{$employee->employee->position}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
+                                                    {{$employee->employee->plantilla->position ?? ''}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
                                                     <br>
                                                     {{$employee->employee->employee_no}}
                                                 </td>
@@ -449,7 +449,7 @@
                                                         <td style="vertical-align: top" rowspan="{{$chunkBy + 1}}">
                                                             <span class="text-strong">{{$employee->employee->full_name}}</span>
                                                             <br>
-                                                            {{$employee->employee->position}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
+                                                            {{$employee->employee->plantilla->position ?? ''}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
                                                             <br>
                                                             {{$employee->employee->employee_no}}
                                                         </td>

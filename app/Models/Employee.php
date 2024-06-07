@@ -37,7 +37,9 @@ class Employee extends Model{
         });
     }
 
-
+    protected $with = [
+        'plantilla',
+    ];
 
 
 	use Sortable, LogsActivity;
@@ -145,6 +147,15 @@ class Employee extends Model{
                     return '';
                 }
 
+            },
+        );
+    }
+
+    protected function incentiveMonthlyBasic(): Attribute
+    {
+        return  new Attribute(
+            get: function (){
+                return $this->templateIncentives->where('incentive_code','MONTHLY')->first()->amount ?? 0;
             },
         );
     }
@@ -414,6 +425,10 @@ class Employee extends Model{
             $q->where('locations','!=','VISAYAS')
                 ->where('locations','!=','LUZON/MINDANAO');
         });
+    }
+
+    public function plantilla(){
+        return $this->hasOne(HRPayPlanitilla::class,'item_no','item_no');
     }
 
 

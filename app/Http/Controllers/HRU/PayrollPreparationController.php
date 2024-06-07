@@ -503,8 +503,10 @@ class PayrollPreparationController
 
         $payrollMaster = PayrollMaster::query()
             ->with([
-                'payrollMasterEmployees.employee',
-                'payrollMasterEmployees.employeePayrollDetails',
+                'payrollMasterEmployees' => [
+                    'employee.plantilla',
+                    'employeePayrollDetails',
+                ],
                 'hmtDetails',
             ])
             ->findOrFail($slug);

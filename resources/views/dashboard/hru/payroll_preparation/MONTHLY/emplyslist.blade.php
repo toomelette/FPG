@@ -2,6 +2,7 @@
     $employees = \App\Models\Employee::query()
         ->with([
             'templateMonthlyBasic',
+            'plantilla',
         ])
         ->applyProjectId()
         ->active()
@@ -50,7 +51,7 @@
                 </td>
                 <td>{{$employee->full_name}}</td>
                 <td>{{$employee->employee_no}}</td>
-                <td>{{$employee->position}}</td>
+                <td>{{$employee->plantilla->position ?? ''}}</td>
                 <td>{{$employee->salary_grade}}</td>
                 <td>{{$employee->step_inc}}</td>
                 <td class="text-right">{{Helper::toNumber($employee->templateMonthlyBasic->amount ?? null,2)}}</td>
