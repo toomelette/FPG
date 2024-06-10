@@ -110,7 +110,9 @@
                                 'label' => 'Name: ',
                             ]) !!}
 
-
+                            {!! __form::select_static(
+                                '12 type', 'type', 'Type', '', \App\Swep\Helpers\Helper::holiday_types(), '', '', '', ''
+                            ) !!}
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -1347,3 +1347,29 @@ Route::get('/appearance',function (\Illuminate\Http\Request $request){
     return view('printables.hru.certificate_of_appearance');
 });
 
+
+
+Route::get('/appointmentxxxxx',function (\Illuminate\Http\Request $request){
+    $emps = \App\Models\Employee::query()
+        ->where(function ($q){
+            $q->where('locations','=','COS-VISAYAS')
+                ->orWhere('locations','=','COS-LUZMIN')
+                ->orWhere('locations','=','VISAYAS')
+                ->orWhere('locations','=','LUZON/MINDANAO');
+        })
+        ->get();
+    foreach ($emps as $emp) {
+        switch ($emp->locations) {
+            case 'VISAYAS':
+            case 'LUZON':
+                $emp->appointment_status = 'Permanent';
+                break;
+            case 'COS-VISAYAS':
+            case 'COS-LUZMIN':
+                $emp->appointment_status = 'COS';
+                break;
+
+        }
+        $emp->save();
+    }
+});

@@ -92,6 +92,9 @@
                                  @if(!empty($selected_columns))
                                      @foreach($selected_columns as $s_cols)
                                          @switch($s_cols)
+                                             @case('fullname')
+                                             <td>{{$employee->full_name}} {{$employee->middle_initial}}</td>
+                                             @break
                                              @case('age')
                                              <td>{{\Illuminate\Support\Carbon::parse($employee->date_of_birth)->age}}</td>
                                              @break
@@ -177,14 +180,20 @@
 
                                              @case('dept_name')
                                                  <td>
-                                                     {{$employee->responsibilityCenter->description->descriptive_name ?? ''}}
+                                                     {{$employee->responsibilityCenter->department ?? ''}}
                                                  </td>
                                              @break
-                                             @case('resp_center')
+                                             @case('division')
                                                  <td>
-                                                     {{$employee->responsibilityCenter->desc ?? ''}}
+                                                     {{$employee->responsibilityCenter->division ?? ''}}
                                                  </td>
                                                  @break
+                                             @case('section')
+                                                 <td>
+                                                     {{$employee->responsibilityCenter->section ?? ''}}
+                                                 </td>
+                                                 @break
+
                                              @default
                                              <td>{{$employee->$s_cols}}</td>
                                          @endswitch

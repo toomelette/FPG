@@ -20,6 +20,12 @@
                         <dd>{{$payrollMaster->type}}</dd>
                     </dl>
                 </div>
+                <div class="col-md-3">
+                    <dl>
+                        <dt>Employees:</dt>
+                        <dd>{{$payrollMaster->payrollMasterEmployees->count()}}</dd>
+                    </dl>
+                </div>
             </div>
         </div>
         <form id="prepare_payroll_form">

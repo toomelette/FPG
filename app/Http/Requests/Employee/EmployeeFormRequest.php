@@ -107,8 +107,6 @@ class EmployeeFormRequest extends FormRequest{
             'position'=>'required|string|max:90',
 
             'item_no'=>[
-                'nullable',
-                'int',
                 'max:10000',
                 function (string $attribute, mixed $value, \Closure $fail){
                     $employee = Employee::query()
@@ -119,12 +117,24 @@ class EmployeeFormRequest extends FormRequest{
                         ->where('slug','!=',$this->slug)
                         ->first();
                     if($employee){
-                        $fail('This item is assigned to an ACTIVE employee: '.$employee->lastname.', '.$employee->firstname);
+                        if($value != null || $value != '') {
+                            $fail('This item is assigned to an ACTIVE employee: ' . $employee->lastname . ', ' . $employee->firstname);
+                        }
                     }
-                }
+                    if($this->get('appointment_status') == 'COS'){
+                        if($value != null || $value != '') {
+                            $fail('Item number cannot be assigned if Appointment Status is COS');
+                        }
+                    }
+                    if($this->get('appointment_status') == 'Permanent'){
+                        if($value == null){
+                            $fail('This field is required.');
+                        }
+                    }
+                },
             ],
 
-            'appointment_status'=>'nullable|string|max:45',
+            'appointment_status'=>'required|string|max:45',
             'salary_grade'=>'nullable|int',
             'step_inc'=>'nullable|int',
             'department_id'=>'nullable|string|max:11',

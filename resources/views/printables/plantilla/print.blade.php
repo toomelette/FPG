@@ -185,9 +185,7 @@
                                             @break
                                         @case('employee_name')
                                             <td class="">
-                                                {{$division->incumbentEmployee->lastname ?? ''}}
-                                                {{!empty($division->incumbentEmployee) ? ',':''}}
-                                                {{$division->incumbentEmployee->firstname ?? ''}}
+                                                {{$division->incumbentEmployee->full_name ?? ''}} {{$division->incumbentEmployee->middle_initial ?? ''}}
                                             </td>
                                         @break
                                         @case('educ_att')
@@ -229,7 +227,7 @@
                                                     <td class="text-right">{{number_format($section->$column,2)}}</td>
                                                 @break
 
-                                                @case('last_promotion')
+                                                @case('adjustment_date')
                                                 @case('appointment_date')
                                                     <td class="text-right">
                                                         {{Helper::dateFormat($section->incumbentEmployee->$column ?? null,'m/d/Y')}}
@@ -237,9 +235,7 @@
                                                     @break
                                                 @case('employee_name')
                                                     <td class="">
-                                                        {{$section->incumbentEmployee->lastname ?? ''}}
-                                                        {{!empty($section->incumbentEmployee) ? ',':''}}
-                                                        {{$section->incumbentEmployee->firstname ?? ''}}
+                                                        {{$section->incumbentEmployee->full_name ?? ''}} {{$section->incumbentEmployee->middle_initial ?? ''}}
                                                     </td>
                                                     @break
                                                 @case('educ_att')
@@ -277,7 +273,7 @@
                                                     @case('actual_salary_gcg')
                                                         <td class="text-right">{{number_format($item->$column,2)}}</td>
                                                         @break
-                                                    @case('last_promotion')
+                                                    @case('adjustment_date')
                                                     @case('appointment_date')
                                                         <td class="text-right">
                                                             {{Helper::dateFormat($item->incumbentEmployee->$column ?? null,'m/d/Y')}}
@@ -285,9 +281,7 @@
                                                         @break
                                                     @case('employee_name')
                                                         <td class="">
-                                                            {{$item->incumbentEmployee->lastname ?? ''}}
-                                                            {{!empty($item->incumbentEmployee) ? ',':''}}
-                                                            {{$item->incumbentEmployee->firstname ?? ''}}
+                                                            {{$item->incumbentEmployee->full_name ?? ''}} {{$item->incumbentEmployee->middle_initial ?? ''}}
                                                         </td>
                                                         @break
                                                     @case('educ_att')

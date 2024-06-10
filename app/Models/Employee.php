@@ -13,6 +13,7 @@ use App\Swep\Helpers\Arrays;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Kyslik\ColumnSortable\Sortable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -36,7 +37,9 @@ class Employee extends Model{
         });
     }
 
-
+    protected $with = [
+        'plantilla',
+    ];
 
 
 	use Sortable, LogsActivity;
@@ -126,6 +129,34 @@ class Employee extends Model{
     {
         return  new Attribute(
             get: fn() => $this->lastname.', '.$this->firstname,
+        );
+    }
+
+    protected function middleInitial(): Attribute
+    {
+        return  new Attribute(
+            get: function (){
+                if($this->middlename != null && $this->middlename != ''){
+                    if(strlen($this->middlename) == 1){
+                        return $this->middlename.'.';
+                    }else{
+                        return Str::limit($this->middlename,1,'.');
+                    }
+
+                }else{
+                    return '';
+                }
+
+            },
+        );
+    }
+
+    protected function incentiveMonthlyBasic(): Attribute
+    {
+        return  new Attribute(
+            get: function (){
+                return $this->templateIncentives->where('incentive_code','MONTHLY')->first()->amount ?? 0;
+            },
         );
     }
     protected function photoPath(): Attribute{
@@ -351,6 +382,11 @@ class Employee extends Model{
             ->orderBy('priority','asc');
     }
 
+    public function templateMonthlyBasic(){
+        return $this->hasOne(TemplateIncentives::class,'employee_slug','slug')
+                ->where('incentive_code','=','MONTHLY');
+    }
+
     public function templateDeductions(){
         return $this->hasMany(TemplateDeductions::class,'employee_slug','slug')
             ->orderBy('priority','asc');
@@ -389,6 +425,10 @@ class Employee extends Model{
             $q->where('locations','!=','VISAYAS')
                 ->where('locations','!=','LUZON/MINDANAO');
         });
+    }
+
+    public function plantilla(){
+        return $this->hasOne(HRPayPlanitilla::class,'item_no','item_no');
     }
 
 

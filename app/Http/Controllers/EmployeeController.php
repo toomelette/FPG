@@ -155,6 +155,11 @@ class EmployeeController extends Controller{
                     'sql_server_is_on' => $sql_server_is_on,
                 ]);
             })
+            ->addColumn('employment_details',function($data){
+                return view('dashboard.employee.dt.employment_details')->with([
+                    'data' => $data,
+                ]);
+            })
             ->addColumn('photo',function($data){
                 return view('dashboard.employee.dt.photo')->with([
                     'data' => $data,
@@ -851,14 +856,15 @@ class EmployeeController extends Controller{
                 'name' => 'Department',
                 'checked' => 0,
             ],
-            'resp_center' => [
-                'name' => 'Resp. Center',
+            'division' => [
+                'name' => 'Division',
                 'checked' => 0,
             ],
-            'unit_name' => [
-                'name' => 'Unit',
+            'section' => [
+                'name' => 'Section',
                 'checked' => 0,
             ],
+
             'monthly_basic' => [
                 'name' => 'Monthly Basic',
                 'checked' => 1,
