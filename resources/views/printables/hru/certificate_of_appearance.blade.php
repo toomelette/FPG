@@ -54,25 +54,25 @@
             <p class="no-margin">North Avenue, Diliman, Quezon City</p>
         </div>
         <h4 class="text-strong text-center" style="margin-top: 15px">CERTIFICATE OF APPEARANCE</h4>
-        <p class="no-margin text-right">Date: <b><u>Jan..</u></b></p>
+        <p class="no-margin text-right">Date: <b><u>{{Helper::dateFormat(request()->get('date'),'F d, Y')}}</u></b></p>
         <p class="no-margin">TO WHOM IT MAY CONCERN:<br><br></p>
         <p class="" style="text-align: justify; line-height: 50px">
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This is to certify that
 
-                <span class="above">
-                    <b>GERALD JESTER S. GUANCE</b>
+            <span class="above">
+                    <b>{{strtoupper(request()->get('employee'))}}</b>
                 </span>
             has reported to this
             Office/Station on
-                <span class="above">
-                    <b>Dec. 13, 2023 | 9:30AM</b>
+            <span class="above">
+                    <b>{{Helper::dateFormat(request()->get('date_from'),'F d, Y | h:i A')}}</b>
                     <span class="below">
                         (Date & Time)
                     </span>
                 </span>
             up to
-                <span class="above">
-                    <b>Dec. 13, 2023 | 9:30AM</b>
+            <span class="above">
+                    <b>{{Helper::dateFormat(request()->get('date_to'),'F d, Y | h:i A')}}</b>
                     <span class="below">
                         (Date & Time)
                     </span>
@@ -85,7 +85,7 @@
         <table style="width: 100%; font-size: 16px">
             <tr>
                 <td style="width: 50%"></td>
-                <td class="text-center text-strong">DIGNA D. GONZALES</td>
+                <td class="text-center text-strong"><u>{{strtoupper(request()->get('sig_name'))}}</u></td>
             </tr>
             <tr>
                 <td style="width: 50%"></td>
@@ -93,7 +93,7 @@
             </tr>
             <tr>
                 <td style="width: 50%"></td>
-                <td class="text-center text-strong"><br> Manager III, PPSPD</td>
+                <td class="text-center text-strong"><br> <u>{{strtoupper(request()->get('sig_pos'))}}</u></td>
             </tr>
             <tr>
                 <td style="width: 50%"></td>
@@ -102,7 +102,7 @@
         </table>
         <p class="text-right" style="font-size: 8px">
             FM-AFD-ACC-022, Rev. 00 <br>
-                Effectivity Date: March 12, 2015
+            Effectivity Date: March 12, 2015
         </p>
     </div>
     <hr style="border: 1px solid black">
@@ -147,7 +147,7 @@
         <table style="width: 100%; font-size: 16px">
             <tr>
                 <td style="width: 50%"></td>
-                <td class="text-center text-strong">{{strtoupper(request()->get('sig_name'))}}</td>
+                <td class="text-center text-strong"><u>{{strtoupper(request()->get('sig_name'))}}</u></td>
             </tr>
             <tr>
                 <td style="width: 50%"></td>
@@ -155,7 +155,7 @@
             </tr>
             <tr>
                 <td style="width: 50%"></td>
-                <td class="text-center text-strong"><br> {{strtoupper(request()->get('sig_pos'))}}</td>
+                <td class="text-center text-strong"><br> <u>{{strtoupper(request()->get('sig_pos'))}}</u></td>
             </tr>
             <tr>
                 <td style="width: 50%"></td>
