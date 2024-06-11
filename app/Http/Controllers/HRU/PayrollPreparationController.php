@@ -490,7 +490,35 @@ class PayrollPreparationController
         );
     }
 
-    public function print($slug){
+    public function print($slug,$type){
+        switch ($type){
+            case 'MONTHLY':
+                return $this->printMonthly($slug);
+                break;
+            case 'PAYSLIP_ALL':
+                return $this->payslipAll($slug);
+                break;
+
+        }
+    }
+
+    private function payslipAll($slug){
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => [
+                    'employee.plantilla',
+                    'employeePayrollDetails',
+                ],
+                'hmtDetails',
+            ])
+            ->findOrFail($slug);
+
+        return view('printables.hru.payroll_preparation.monthly_payslip_all')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
+    }
+
+    private function printMonthly($slug){
         $tree = PPURespCodes::query()
             ->with([
                 'employees' => function(HasMany $q){
