@@ -270,7 +270,7 @@
       "ajax" : '{{route('dashboard.employee.index')}}',
       "columns": [
         { "data": "fullname" },
-        { "data": "employment_details" },
+        { "data": "employee_no" },
         { "data": "position" },
         { "data": "photo" },
         { "data": "biometric_user_id" },

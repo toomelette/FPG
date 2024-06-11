@@ -208,7 +208,8 @@ class EmployeeFormRequest extends FormRequest{
             'being_treated_yes_details' => 'nullable|string|max:45',
             'chronic_injuries' => 'nullable|string|max:20',
             'chronic_injuries_yes_details' => 'nullable|string|max:45',
-
+            'date_of_separation' => 'required_unless:is_active,ACTIVE',
+            'reason_of_separation' => 'required_unless:is_active,ACTIVE',
         ];
 
 
@@ -317,7 +318,13 @@ class EmployeeFormRequest extends FormRequest{
     }
 
 
-
+    public function messages()
+    {
+        return [
+            'date_of_separation.required_unless' => 'The field is required unless STATUS is ACTIVE.',
+            'reason_of_separation.required_unless' => 'The field is required unless STATUS is ACTIVE.',
+        ];
+    }
 
 
 }

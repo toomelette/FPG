@@ -20,7 +20,7 @@
             <td>{{Helper::dateFormat($data->adjustment_date,'M. d, Y')}}</td>
         </tr>
         <tr>
-            <td style="padding-right: 10px">Assignement:</td>
+            <td style="padding-right: 10px">Assignment:</td>
             <td>{{$data->assignment}}</td>
         </tr>
         </tbody>
