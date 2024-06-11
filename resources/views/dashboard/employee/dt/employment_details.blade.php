@@ -23,6 +23,19 @@
             <td style="padding-right: 10px">Assignment:</td>
             <td>{{$data->assignment}}</td>
         </tr>
+
+        @if($data->date_of_separation != null)
+            <tr class="text-danger">
+                <td style="padding-right: 10px">Date of Separation:</td>
+                <td>{{Helper::dateFormat($data->date_of_separation,'M. d, Y')}}</td>
+            </tr>
+        @endif
+        @if($data->reason_of_separation != null || $data->reason_of_separation != '')
+        <tr class="text-danger">
+            <td style="padding-right: 10px">Reason of Separation:</td>
+            <td>{{$data->reason_of_separation}}</td>
+        </tr>
+        @endif
         </tbody>
     </table>
 </div>
