@@ -45,21 +45,21 @@
                ->flip()->values();
 
         $chunkedIncentives = $groupedIncentives->chunk($chunkBy);
-        $groupedDeductions = $payrollMaster->hmtDetails
-                ->where('type','DEDUCTION')
-                ->sortBy(function($data){
-                    if($data->priority == null){
-                        return 100000;
-                    }else{
-                        return $data->priority;
-                    }
-                })->mapWithKeys(function ($data){
-                   return [
-                       $data->code => \Illuminate\Support\Str::random(),
-                   ];
-               })
-               ->flip()->values();
-        $chunkedDeductions = $groupedDeductions->chunk($chunkBy);
+        // $groupedDeductions = $payrollMaster->hmtDetails
+        //         ->where('type','DEDUCTION')
+        //         ->sortBy(function($data){
+        //             if($data->priority == null){
+        //                 return 100000;
+        //             }else{
+        //                 return $data->priority;
+        //             }
+        //         })->mapWithKeys(function ($data){
+        //            return [
+        //                $data->code => \Illuminate\Support\Str::random(),
+        //            ];
+        //        })
+        //        ->flip()->values();
+        // $chunkedDeductions = $groupedDeductions->chunk($chunkBy);
 
 
 
@@ -84,13 +84,13 @@
                         @endforeach
                     </th>
                 @endforeach
-                @foreach($chunkedDeductions as $grp)
+                {{-- @foreach($chunkedDeductions as $grp)
                     <th class="text-center">
                         @foreach($grp as $deduction)
                             {{$deduction}} / <br>
                         @endforeach
                     </th>
-                @endforeach
+                @endforeach --}}
                 <th class="text-center">Take Home Pay</th>
                 <th class="text-center">RA / TA</th>
                 <th class="text-center">Signature</th>
@@ -100,10 +100,10 @@
                 {{-- DEPARTMENT LEVEL --}}
                 @foreach($tree as $dept)
                     @php
-                        $totals[$dept->rc_code] = [];
-                        foreach ($groupedDeductions as $ded) {
-                            $totals[$dept->rc_code][$ded] = 0;
-                        }
+                        // $totals[$dept->rc_code] = [];
+                        // foreach ($groupedDeductions as $ded) {
+                        //     $totals[$dept->rc_code][$ded] = 0;
+                        // }
                         foreach ($groupedIncentives as $inc) {
                             $totals[$dept->rc_code][$inc] = null;
                         }
@@ -160,7 +160,7 @@
                                                         $totals[$dept->rc_code]['rata_deduction'] = $totals[$dept->rc_code]['rata_deduction'] + $employee->pay15;
                                                     @endphp
                                                 </td>
-                                                <td style="padding-left: 7px">15TH</td>
+                                                <td style="padding-left: 7px">RA / TA</td>
                                                 <td>____________________</td>
                                                 @break
                                             @case(2)
@@ -259,7 +259,7 @@
                                                             $totals[$secondLevel->rc_code]['pay15'] = $totals[$secondLevel->rc_code]['pay15'] + $employee->pay15;
                                                         @endphp
                                                     </td>
-                                                    <td style="padding-left: 7px">15TH</td>
+                                                    <td style="padding-left: 7px">RA / TA</td>
                                                     <td>____________________</td>
                                                     @break
                                                 @case(1)
@@ -718,21 +718,21 @@
                                     @endif
                                 </td>
                             @endforeach
-                            @foreach($chunkedDeductions as $grp)
+                            {{-- @foreach($chunkedDeductions as $grp)
                                 <td class="text-right {{$x==0?'b-top':''}}">
                                     @if(isset($grp->values()[$x]))
                                         {{Helper::toNumber($totals[$dept->rc_code][$grp->values()[$x]] ?? null,2)}}
                                     @else
                                         <br>
                                     @endif
-                                </td>
+                                </td> --}}
                             @endforeach
                             @switch($x)
                                 @case(0)
                                     <td class="text-right b-top">
                                         {{\App\Swep\Helpers\Helper::toNumber($totals[$dept->rc_code]['rata_deduction'])}}
                                     </td>
-                                    <td style="padding-left: 7px" class="b-top">15TH</td>
+                                    <td style="padding-left: 7px" class="b-top">RA / TA</td>
                                     <td class="b-top"></td>
                                     @break
                                 @case(2)
