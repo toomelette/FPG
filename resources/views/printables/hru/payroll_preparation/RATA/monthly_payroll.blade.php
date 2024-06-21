@@ -140,7 +140,7 @@
                                             @endif
                                         </td>
                                     @endforeach
-                                    @foreach($chunkedDeductions as $grp)
+                                    {{-- @foreach($chunkedDeductions as $grp)
                                         <td class="text-right">
                                             @if(isset($grp->values()[$x]))
                                                 {{Helper::toNumber($amt = $employee->employeePayrollDetails->where('code',$grp->values()[$x])->first()->amount ?? null,2)}}
@@ -151,7 +151,7 @@
                                                 <br>
                                             @endif
                                         </td>
-                                    @endforeach
+                                    @endforeach --}}
                                         @switch($x)
                                             @case(0)
                                                 <td class="text-right">
@@ -181,9 +181,9 @@
                                 @foreach($chunkedIncentives as $grp)
                                     <td class="text-right"></td>
                                 @endforeach
-                                @foreach($chunkedDeductions as $grp)
+                                {{-- @foreach($chunkedDeductions as $grp)
                                     <td class="text-right"></td>
-                                @endforeach
+                                @endforeach --}}
                             </tr>
                         @empty
                         @endforelse
@@ -725,8 +725,8 @@
                                     @else
                                         <br>
                                     @endif
-                                </td> --}}
-                            @endforeach
+                                </td>
+                            @endforeach --}}
                             @switch($x)
                                 @case(0)
                                     <td class="text-right b-top">
