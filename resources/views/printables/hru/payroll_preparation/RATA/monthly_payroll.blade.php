@@ -29,20 +29,20 @@
     @php
         $chunkBy = 3;
         $groupedIncentives= $payrollMaster->hmtDetails
-                ->where('type','INCENTIVE')
-                ->sortBy(function($data){
-                    if($data->priority == null){
-                        return 100000;
-                    }else{
-                        return $data->priority;
-                    }
-                })
-               ->mapWithKeys(function ($data){
-                   return [
-                       $data->code => \Illuminate\Support\Str::random(),
-                   ];
-               })
-               ->flip()->values();
+            ->where('type','INCENTIVE')
+            ->sortBy(function($data){
+                if($data->priority == null){
+                    return 100000;
+                }else{
+                    return $data->priority;
+                }
+            })
+            ->mapWithKeys(function ($data){
+                return [
+                    $data->code => \Illuminate\Support\Str::random(),
+                ];
+            })
+            ->flip()->values();
 
         $chunkedIncentives = $groupedIncentives->chunk($chunkBy);
         // $groupedDeductions = $payrollMaster->hmtDetails
@@ -59,9 +59,7 @@
         //            ];
         //        })
         //        ->flip()->values();
-        // $chunkedDeductions = $groupedDeductions->chunk($chunkBy);
-
-
+        // $chunkedDeductions = $groupedDeductions->chunk($chunkBy)
 
         $departments = $tree->mapWithKeys(function ($data){
                         return [
@@ -153,7 +151,7 @@
                                         </td>
                                     @endforeach --}}
                                         @switch($x)
-                                            @case(0)
+                                            @case(0)    
                                                 <td class="text-right">
                                                     {{\App\Swep\Helpers\Helper::toNumber($employee->pay15)}}
                                                     @php

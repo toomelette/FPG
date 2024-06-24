@@ -44,7 +44,6 @@ class PayrollPreparationController
         return view('dashboard.hru.payroll_preparation.index');
     }
 
-
     public function create(Request $request){
 
         if($request->update_table==true){
