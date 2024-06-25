@@ -45,6 +45,8 @@
             ->flip()->values();
 
         $chunkedIncentives = $groupedIncentives->chunk($chunkBy);
+
+        // dd($chunkedIncentives);
         // $groupedDeductions = $payrollMaster->hmtDetails
         //         ->where('type','DEDUCTION')
         //         ->sortBy(function($data){
@@ -77,11 +79,21 @@
                 </th>
                 @foreach($chunkedIncentives as $grp)
                     <th class="text-center">
+                        @foreach($grp as $index => $incentive)
+                            {{$incentive}}
+                            @if(!$loop->last)
+                                /<br>
+                            @endif
+                        @endforeach
+                    </th>
+                @endforeach
+                {{-- @foreach($chunkedIncentives as $grp)
+                    <th class="text-center">
                         @foreach($grp as $incentive)
                             {{$incentive}} / <br>
                         @endforeach
                     </th>
-                @endforeach
+                @endforeach --}}
                 {{-- @foreach($chunkedDeductions as $grp)
                     <th class="text-center">
                         @foreach($grp as $deduction)
@@ -89,8 +101,8 @@
                         @endforeach
                     </th>
                 @endforeach --}}
-                <th class="text-center">Take Home Pay</th>
-                <th class="text-center">RA / TA</th>
+                <th class="text-center">Total RA /  TA</th>
+                {{-- <th class="text-center"></th> --}}
                 <th class="text-center">Signature</th>
             </tr>
             </thead>
@@ -111,7 +123,7 @@
                     <tr>
                         <td class="text-strong">{{$dept->desc}}</td>
                     </tr>
-                    {{-- FIRST LEVEL EMPLOYEES--}}
+                    {{-- FIRST LEVEL EMPLOYEES --}}
                     @if(isset($payrollEmployeesGroupedByRespCenter[$dept->rc_code]))
                         @forelse($payrollEmployeesGroupedByRespCenter[$dept->rc_code] as $employee)
                             <tr>
@@ -152,14 +164,14 @@
                                     @endforeach --}}
                                         @switch($x)
                                             @case(0)    
-                                                <td class="text-right">
+                                                {{-- <td class="text-right">
                                                     {{\App\Swep\Helpers\Helper::toNumber($employee->pay15)}}
                                                     @php
-                                                        $totals[$dept->rc_code]['rata_deduction'] = $totals[$dept->rc_code]['rata_deduction'] + $employee->pay15;
+                                                        $totals[$dept->rc_code]['rata_deduction'] = $totals[$dept->rc_code]['rata_deduction'];
                                                     @endphp
-                                                </td>
-                                                <td style="padding-left: 7px">RA / TA</td>
-                                                <td>____________________</td>
+                                                </td> --}}
+                                                {{-- <td style="padding-left: 7px">RA / TA</td>
+                                                <td>____________________</td> --}}
                                                 @break
                                             @case(2)
                                                 <td class="text-right">
@@ -168,8 +180,8 @@
                                                         $totals[$dept->rc_code]['takeHomePay'] = $totals[$dept->rc_code]['takeHomePay'] + $employee->totals['takeHomePay'];
                                                     @endphp
                                                 </td>
-                                                <td style="padding-left: 7px">TOTAL</td>
-                                                <td>____________________ </td>
+                                                {{-- <td style="padding-left: 7px"></td> --}}
+                                                <td class="text-center"> ____________________ </td>
                                                 @break
                                         @endswitch
                                 </tr>
@@ -727,18 +739,20 @@
                             @endforeach --}}
                             @switch($x)
                                 @case(0)
-                                    <td class="text-right b-top">
+                                    {{-- <td class="text-right b-top">
                                         {{\App\Swep\Helpers\Helper::toNumber($totals[$dept->rc_code]['rata_deduction'])}}
-                                    </td>
-                                    <td style="padding-left: 7px" class="b-top">RA / TA</td>
+                                    </td> --}}
+                                    <td style="padding-left: 7px" class="b-top">&nbsp;</td>
                                     <td class="b-top"></td>
                                     @break
                                 @case(2)
                                     <td class="text-right">
-                                        {{\App\Swep\Helpers\Helper::toNumber($totals[$dept->rc_code]['takeHomePay'])}}
+                                        <strong>
+                                            {{\App\Swep\Helpers\Helper::toNumber($totals[$dept->rc_code]['takeHomePay'])}}
+                                        </strong>
                                     </td>
-                                    <td style="padding-left: 7px">TOTAL</td>
-                                    <td style="break-after: page"> </td>
+                                    {{-- <td style="padding-left: 7px">&nbsp;</td>
+                                    <td style="break-after: page"> </td> --}}
                                     @break
                             @endswitch
                         </tr>
@@ -755,18 +769,21 @@
 @endsection
 
 @section('scripts')
-    <script type="text/javascript">
 
-        $(document).ready(function () {
-            let set = 625;
-            if ($("#items_table_{{$rand}}").height() < set) {
-                let rem = set - $("#items_table_{{$rand}}").height();
-                $("#adjuster").css('height', rem)
-                print();
-            }
-        })
-        window.onafterprint = function () {
-            window.close();
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        let set = 625;
+        if ($("#items_table_{{$rand}}").height() < set) {
+            let rem = set - $("#items_table_{{$rand}}").height();
+            $("#adjuster").css('height', rem)
+            print();
         }
-    </script>
+    })
+    window.onafterprint = function () {
+        window.close();
+    }
+
+</script>
+
 @endsection
