@@ -20,6 +20,7 @@
                         <tr class="">
                             <th >Folder Code</th>
                             <th >Folder Name</th>
+                            <th >Retention Period</th>
                             <th >Documents</th>
                             <th class="action">Action</th>
                         </tr>
@@ -37,7 +38,7 @@
 
 
 @section('modals')
-
+{!! __html::blank_modal('edit_folder_modal','sm') !!}
 @endsection
 
 @section('scripts')
@@ -53,6 +54,7 @@
             "columns": [
                 { "data": "folder_code" },
                 { "data": "description" },
+                { "data": "retention_period" },
                 { "data": "documents" },
                 { "data": "action"}
             ],
@@ -61,7 +63,7 @@
             ],
             "columnDefs":[
                 {
-                    "targets" : 3,
+                    "targets" : 4,
                     "orderable" : false,
                     "searchable": false,
                     "class" : 'action4'
@@ -101,6 +103,24 @@
             }
         });
 
-
+        $("body").on("click",".edit_folder_btn",function () {
+            let btn = $(this);
+            load_modal2(btn);
+            let uri = '{{route("dashboard.document_folder.edit","slug")}}';
+            uri = uri.replace('slug',btn.attr('data'));
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
     </script>
 @endsection

@@ -9,7 +9,21 @@ use Kyslik\ColumnSortable\Sortable;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class DocumentFolder extends Model{
+public static function boot()
+{
+    parent::boot();
+    static::updating(function($a){
+        $a->user_updated = Auth::user()->user_id;
+        $a->ip_updated = request()->ip();
+        $a->updated_at = \Carbon::now();
+    });
 
+    static::creating(function ($a){
+        $a->user_created = Auth::user()->user_id;
+        $a->ip_created = request()->ip();
+        $a->created_at = \Carbon::now();
+    });
+}
 
 //	use Sortable,LogsActivity;
 
@@ -21,26 +35,17 @@ class DocumentFolder extends Model{
 
 	public $timestamps = false;
 
+    protected $casts = [
+        'is_permanent' => 'boolean',
+    ];
+
+    public $incrementing = false;
+    protected $primaryKey = 'slug';
 
 //    protected static $logName = 'document folder';
 //    protected static $logAttributes = ['*'];
 //    protected static $ignoreChangedAttributes = ['updated_at','ip_updated','user_updated'];
 //    protected static $logOnlyDirty = true;
-
-    protected $attributes = [
-        
-        'slug' => '',
-        'folder_code' => '',
-        'description' => '',
-        'created_at' => null, 
-        'updated_at' => null,
-        'ip_created' => '',
-        'ip_updated' => '',
-        'user_created' => '',
-        'user_updated' => '',
-
-
-    ];
 
     public function getTable(){
         $user_access = 'VIS';
