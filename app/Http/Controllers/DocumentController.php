@@ -85,8 +85,13 @@ class DocumentController extends Controller{
         return \DataTables::of($documents)
             ->addColumn('view_document',function($data) use ($storage){
                 if($storage->exists($data->path.$data->filename)){
-                    if($data->folder->is_permanent || $data->folder2->is_permanent){
+                    if($data->folder->is_permanent){
                         $class = 'danger';
+                        if(!empty($data->folder2)){
+                            if($data->folder2->is_permanent){
+                                $class = 'danger';
+                            }
+                        }
                     }else{
                         $class = 'success';
                     }
