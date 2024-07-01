@@ -67,7 +67,10 @@ Route::controller(\App\Http\Controllers\Api\AuthController::class)->group(functi
     Route::post('refresh', 'refresh');
 });
 
-Route::controller(App\Http\Controllers\Api\Employee\ApiEmployeeController::class)->group(function (){
-    Route::get('getEmployees','getAll');
-    Route::get('getEmployeeByEmployeeNo/{employee_no}','getEmployeeByEmployeeNo');
-})->middleware('auth:api');
+Route::group(['middleware' => ['auth:api'], 'prefix' => 'employees'],function (){
+    Route::controller(App\Http\Controllers\Api\Employee\ApiEmployeeController::class)->group(function (){
+        Route::get('all','all');
+        Route::get('getByEmployeeNo/{employee_no}','getByEmployeeNo');
+        Route::post('store','store');
+    });
+});

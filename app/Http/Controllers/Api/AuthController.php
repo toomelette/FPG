@@ -25,17 +25,19 @@ class AuthController extends Controller
 
         $credentials = $request->only('username', 'password');
 
+
         $token = Auth::guard('api')->attempt($credentials);
 
         if (!$token) {
             return response()->json([
+                'status' => 'error',
                 'message' => 'Unauthorized',
             ], 401);
         }
 
         $user = Auth::guard('api')->user();
         return response()->json([
-            'user' => $user,
+            'user' => $user->only('username'),
             'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',

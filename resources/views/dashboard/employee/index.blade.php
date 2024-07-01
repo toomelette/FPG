@@ -11,6 +11,17 @@
                         $q->where('item_no','=',null)
                         ->orWhere('item_no','=','');
                     })
+                    ->where('appointment_status','!=','Coterminous')
+                    ->applyProjectId()
+                    ->permanent()
+                    ->active()
+                    ->get();
+
+            $appointmentStatuss = \App\Models\Employee::query()
+                    ->where(function ($q){
+                        $q->where('appointment_status','=',null)
+                        ->orWhere('appointment_status','=','');
+                    })
                     ->applyProjectId()
                     ->permanent()
                     ->active()
@@ -28,7 +39,7 @@
         @endphp
         @if(!empty($noItems) && $noItems->count() > 0)
             <div class="callout callout-danger" style="margin-top: 10px">
-                <h4>Warning! Please assign Plantilla Item No. on the following active employees: {{$noItems->count()}}</h4>
+                <h4>Warning! Please assign Plantilla Item No. on the following active {{str_plural('employee',$noItems)}}: {{$noItems->count()}}</h4>
                 <div class="row">
                     @forelse($noItems as $noItem)
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
@@ -40,9 +51,23 @@
             </div>
         @endif
 
+        @if(!empty($appointmentStatuss) && $appointmentStatuss->count() > 0)
+            <div class="callout callout-danger" style="margin-top: 10px">
+                <h4>Warning! Please indicate appointment status on the following active {{str_plural('employee',$appointmentStatuss)}}: {{$appointmentStatuss->count()}}</h4>
+                <div class="row">
+                    @forelse($appointmentStatuss as $appointmentStatus)
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+                            • <a href="{{route('dashboard.employee.edit',$appointmentStatus->slug)}}">{{$appointmentStatus->full_name}}</a>
+                        </div>
+                    @empty
+                    @endforelse
+                </div>
+            </div>
+        @endif
+
         @if(!empty($noRcs) && $noRcs->count() > 0)
             <div class="callout callout-danger" style="margin-top: 10px">
-                <h4>Warning! Please assign Responsibility Center on the following active employees: {{$noRcs->count()}}</h4>
+                <h4>Warning! Please assign Responsibility Center on the following active {{str_plural('employee',$noRcs)}}: {{$noRcs->count()}}</h4>
                 <div class="row">
                     @forelse($noRcs as $noRc)
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">

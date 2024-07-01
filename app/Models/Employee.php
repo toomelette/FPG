@@ -412,6 +412,8 @@ class Employee extends Model{
         $query->where('is_active','=','ACTIVE');
     }
 
+
+
     public function scopePermanent(Builder $query){
         $query->where(function ($q){
             $q->where('locations','=','VISAYAS')

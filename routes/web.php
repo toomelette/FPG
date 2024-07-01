@@ -1373,3 +1373,27 @@ Route::get('/appointmentxxxxx',function (\Illuminate\Http\Request $request){
         $emp->save();
     }
 });
+
+
+Route::get('/apiGetData',function (){
+    $client = new \GuzzleHttp\Client(['base_uri' => 'http://localhost:8001/api/employees/getByEmployeeNo/KDD224']);
+    $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEvYXBpL2xvZ2luIiwiaWF0IjoxNzE4ODY3MDc1LCJleHAiOjE3MTg4NzA2NzUsIm5iZiI6MTcxODg2NzA3NSwianRpIjoiRFFaeHhsTmx4QzVBVEluRCIsInN1YiI6IjEiLCJwcnYiOiI0MGE5N2ZjYTJkNDI0ZTc3OGEwN2EwYTJmMTJkYzUxN2E4NWNiZGMxIn0.JgY21NuwtT5PMYqGYzt-FQoitvLjg8iMOOPuN0oJ5JI';
+    $headers = [
+        'Authorization' => 'Bearer ' . $token,
+        'Accept'        => 'application/json',
+        'Content-type' => 'application/json',
+    ];
+    try {
+        // Make a GET request to the OpenWeather API
+        $response = $client->request('GET','',[
+            'headers' => $headers,
+        ]);
+        // Get the response body as an array
+        $data = json_decode($response->getBody(), true);
+
+        dd($data);
+
+    } catch (\Exception $e) {
+        // Handle any errors that occur during the API request
+    }
+});
