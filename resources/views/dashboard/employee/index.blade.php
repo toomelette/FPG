@@ -36,6 +36,7 @@
                     ->permanent()
                     ->active()
                     ->get();
+            $errs = 0;
         @endphp
         @if(!empty($noItems) && $noItems->count() > 0)
             <div class="callout callout-danger" style="margin-top: 10px">
@@ -49,6 +50,9 @@
                     @endforelse
                 </div>
             </div>
+            @php
+            $errs++;
+            @endphp
         @endif
 
         @if(!empty($appointmentStatuss) && $appointmentStatuss->count() > 0)
@@ -63,6 +67,9 @@
                     @endforelse
                 </div>
             </div>
+            @php
+                $errs++;
+            @endphp
         @endif
 
         @if(!empty($noRcs) && $noRcs->count() > 0)
@@ -77,7 +84,38 @@
                     @endforelse
                 </div>
             </div>
+            @php
+                $errs++;
+            @endphp
         @endif
+
+        @if($errs < 3)
+            @php
+                $middles = \App\Models\Employee::query()
+                        ->whereRaw('LENGTH(middlename) = 1')
+                        ->applyProjectId()
+                        ->permanent()
+                        ->active()
+                        ->get();
+            @endphp
+            @if(!empty($middles) && $middles->count() > 0)
+                <div class="callout callout-danger" style="margin-top: 10px">
+                    <h4>Warning! Please indicate the full MIDDLE NAME of the following {{str_plural('employee',$middles)}}: {{$middles->count()}}</h4>
+                    <div class="row">
+                        @forelse($middles as $middle)
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+                                • <a href="{{route('dashboard.employee.edit',$middle->slug)}}">{{$middle->full_name}}</a>
+                            </div>
+                        @empty
+                        @endforelse
+                    </div>
+                </div>
+            @endif
+        @endif
+
+
+
+
     @else
         <h1>Manage COS Employees</h1>
     @endif
