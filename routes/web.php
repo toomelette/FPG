@@ -378,8 +378,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::resource('payroll_template',\App\Http\Controllers\HRU\PayrollTemplateController::class);
 
     Route::post('/payroll_preparation/{slug}/{status}/updateLockStatus',\App\Http\Controllers\HRU\PayrollPreparationController::class.'@updateLockStatus')->name('payroll_preparation.updateLockStatus');
+
     Route::get('/payroll_preparation/{slug}/print',\App\Http\Controllers\HRU\PayrollPreparationController::class.'@print')->name('payroll_preparation.print');
     Route::get('/payroll_preparation/{slug}/printRT',\App\Http\Controllers\HRU\PayrollPreparationController::class.'@printRT')->name('payroll_preparation.printRT');
+
     Route::post('/payroll_preparation/{slug}/update',\App\Http\Controllers\HRU\PayrollPreparationController::class.'@update')->name('payroll_preparation.update');
     Route::post('/payroll_preparation/{slug}/updateRataDed',\App\Http\Controllers\HRU\PayrollPreparationController::class.'@updateRataDed')->name('payroll_preparation.updateRataDed');
     Route::resource('payroll_preparation',\App\Http\Controllers\HRU\PayrollPreparationController::class)->except(['update']);
@@ -1372,5 +1374,29 @@ Route::get('/appointmentxxxxx',function (\Illuminate\Http\Request $request){
 
         }
         $emp->save();
+    }
+});
+
+
+Route::get('/apiGetData',function (){
+    $client = new \GuzzleHttp\Client(['base_uri' => 'http://localhost:8001/api/employees/getByEmployeeNo/KDD224']);
+    $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEvYXBpL2xvZ2luIiwiaWF0IjoxNzE4ODY3MDc1LCJleHAiOjE3MTg4NzA2NzUsIm5iZiI6MTcxODg2NzA3NSwianRpIjoiRFFaeHhsTmx4QzVBVEluRCIsInN1YiI6IjEiLCJwcnYiOiI0MGE5N2ZjYTJkNDI0ZTc3OGEwN2EwYTJmMTJkYzUxN2E4NWNiZGMxIn0.JgY21NuwtT5PMYqGYzt-FQoitvLjg8iMOOPuN0oJ5JI';
+    $headers = [
+        'Authorization' => 'Bearer ' . $token,
+        'Accept'        => 'application/json',
+        'Content-type' => 'application/json',
+    ];
+    try {
+        // Make a GET request to the OpenWeather API
+        $response = $client->request('GET','',[
+            'headers' => $headers,
+        ]);
+        // Get the response body as an array
+        $data = json_decode($response->getBody(), true);
+
+        dd($data);
+
+    } catch (\Exception $e) {
+        // Handle any errors that occur during the API request
     }
 });

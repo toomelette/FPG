@@ -21,12 +21,16 @@ class DocumentFolderFormRequest extends FormRequest{
 
     public function rules(){
 
-        return [
-
+        $rules = [
             'folder_code' => 'required|max:45|string',
             'description' => 'nullable|max:255|string',
-            
         ];
+
+
+        if($this->getMethod() == 'PATCH'){
+            $rules['folder_code'] = 'nullable';
+        }
+        return $rules;
     
     }
 

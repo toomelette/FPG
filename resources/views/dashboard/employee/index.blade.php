@@ -5,6 +5,117 @@
 <section class="content-header">
     @if(Route::currentRouteName() == 'dashboard.employee.index')
         <h1>Manage Permanent Employees</h1>
+        @php
+            $noItems = \App\Models\Employee::query()
+                    ->where(function ($q){
+                        $q->where('item_no','=',null)
+                        ->orWhere('item_no','=','');
+                    })
+                    ->where('appointment_status','!=','Coterminous')
+                    ->applyProjectId()
+                    ->permanent()
+                    ->active()
+                    ->get();
+
+            $appointmentStatuss = \App\Models\Employee::query()
+                    ->where(function ($q){
+                        $q->where('appointment_status','=',null)
+                        ->orWhere('appointment_status','=','');
+                    })
+                    ->applyProjectId()
+                    ->permanent()
+                    ->active()
+                    ->get();
+
+            $noRcs = \App\Models\Employee::query()
+                    ->where(function ($q){
+                        $q->where('resp_center','=',null)
+                        ->orWhere('resp_center','=','');
+                    })
+                    ->applyProjectId()
+                    ->permanent()
+                    ->active()
+                    ->get();
+            $errs = 0;
+        @endphp
+        @if(!empty($noItems) && $noItems->count() > 0)
+            <div class="callout callout-danger" style="margin-top: 10px">
+                <h4>Warning! Please assign Plantilla Item No. on the following active {{str_plural('employee',$noItems)}}: {{$noItems->count()}}</h4>
+                <div class="row">
+                    @forelse($noItems as $noItem)
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+                            • <a href="{{route('dashboard.employee.edit',$noItem->slug)}}">{{$noItem->full_name}}</a>
+                        </div>
+                    @empty
+                    @endforelse
+                </div>
+            </div>
+            @php
+            $errs++;
+            @endphp
+        @endif
+
+        @if(!empty($appointmentStatuss) && $appointmentStatuss->count() > 0)
+            <div class="callout callout-danger" style="margin-top: 10px">
+                <h4>Warning! Please indicate appointment status on the following active {{str_plural('employee',$appointmentStatuss)}}: {{$appointmentStatuss->count()}}</h4>
+                <div class="row">
+                    @forelse($appointmentStatuss as $appointmentStatus)
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+                            • <a href="{{route('dashboard.employee.edit',$appointmentStatus->slug)}}">{{$appointmentStatus->full_name}}</a>
+                        </div>
+                    @empty
+                    @endforelse
+                </div>
+            </div>
+            @php
+                $errs++;
+            @endphp
+        @endif
+
+        @if(!empty($noRcs) && $noRcs->count() > 0)
+            <div class="callout callout-danger" style="margin-top: 10px">
+                <h4>Warning! Please assign Responsibility Center on the following active {{str_plural('employee',$noRcs)}}: {{$noRcs->count()}}</h4>
+                <div class="row">
+                    @forelse($noRcs as $noRc)
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+                            • <a href="{{route('dashboard.employee.edit',$noRc->slug)}}">{{$noRc->full_name}}</a>
+                        </div>
+                    @empty
+                    @endforelse
+                </div>
+            </div>
+            @php
+                $errs++;
+            @endphp
+        @endif
+
+        @if($errs < 3)
+            @php
+                $middles = \App\Models\Employee::query()
+                        ->whereRaw('LENGTH(middlename) = 1')
+                        ->applyProjectId()
+                        ->permanent()
+                        ->active()
+                        ->get();
+            @endphp
+            @if(!empty($middles) && $middles->count() > 0)
+                <div class="callout callout-danger" style="margin-top: 10px">
+                    <h4>Warning! Please indicate the full MIDDLE NAME of the following {{str_plural('employee',$middles)}}: {{$middles->count()}}</h4>
+                    <div class="row">
+                        @forelse($middles as $middle)
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+                                • <a href="{{route('dashboard.employee.edit',$middle->slug)}}">{{$middle->full_name}}</a>
+                            </div>
+                        @empty
+                        @endforelse
+                    </div>
+                </div>
+            @endif
+        @endif
+
+
+
+
     @else
         <h1>Manage COS Employees</h1>
     @endif
@@ -270,7 +381,7 @@
       "ajax" : '{{route('dashboard.employee.index')}}',
       "columns": [
         { "data": "fullname" },
-        { "data": "employment_details" },
+        { "data": "employee_no" },
         { "data": "position" },
         { "data": "photo" },
         { "data": "biometric_user_id" },

@@ -218,6 +218,8 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
         $employee->assignment_details = $request->assignment_details;
         $employee->station = $request->station;
         $employee->resp_center = $request->resp_center;
+        $employee->date_of_separation = $request->date_of_separation;
+        $employee->reason_of_separation = $request->reason_of_separation;
         $employee->save();
 
         $this->destroyDependencies($employee);

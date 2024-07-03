@@ -48,6 +48,17 @@ class DocumentFolderController extends Controller{
                         return '-';
                     }
                 })
+                ->editColumn('retention_period',function($data){
+                    if($data->retention_period != null){
+                        $year = $data->retention_period / 12;
+                        return $year . ' '. str_plural('year',$year) ;
+                    }
+                })
+                ->editColumn('description',function($data){
+                    return view('dashboard.document_folder.dtDescription')->with([
+                        'data' => $data,
+                    ]);
+                })
                 ->escapeColumns([])
                 ->setRowId('slug')
                 ->toJson();
@@ -121,8 +132,13 @@ class DocumentFolderController extends Controller{
 
 
     public function edit($slug){
-        
-        return $this->doc_folder->edit($slug);
+
+        $docFolder = DocumentFolder::query()->find($slug) ?? abort(404);
+        return view('dashboard.document_folder.edit')->with([
+            'docFolder' => $docFolder,
+        ]);
+
+
 
     }
 
@@ -131,9 +147,14 @@ class DocumentFolderController extends Controller{
 
 
     public function update(DocumentFolderFormRequest $request, $slug){
-            
-        return $this->doc_folder->update($request, $slug);
-
+        $docFolder = DocumentFolder::query()->find($slug) ?? abort(404);
+        $docFolder->description = $request->description;
+        $docFolder->retention_period = $request->retention_period;
+        $docFolder->is_permanent = $request->is_permanent == 1 ? 1 : null;
+        if($docFolder->update()){
+            return $docFolder->only('slug');
+        }
+        abort(503,'Error updating Document Folder.');
     }
 
     

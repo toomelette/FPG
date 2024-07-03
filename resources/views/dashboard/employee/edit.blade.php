@@ -578,6 +578,20 @@
                          'label' => 'Status *:',
                          'cols' => 2,
                          'options' => \App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeStatus(),'option','value'),
+                         'id' => 'is_active',
+                        ],$employee ?? null) !!}
+
+                        {!! \App\Swep\ViewHelpers\__form2::textbox('date_of_separation',[
+                         'label' => 'Date of Separation *:',
+                         'cols' => 2,
+                         'container_class' => 'is_active_toggle '.($employee?->is_active == 'ACTIVE' ? 'hidden' : ''),
+                         'type' => 'date',
+                        ],$employee ?? null) !!}
+
+                        {!! \App\Swep\ViewHelpers\__form2::textbox('reason_of_separation',[
+                         'label' => 'Reason of Separation *:',
+                         'cols' => 2,
+                         'container_class' => 'is_active_toggle '.($employee?->is_active == 'ACTIVE' ? 'hidden' : ''),
                         ],$employee ?? null) !!}
 
                         {!! \App\Swep\ViewHelpers\__form2::select('locations',[
@@ -1917,6 +1931,15 @@
         }
       })
     });
+
+    $("#is_active").change(function (){
+      let val = $(this).val();
+      if(val === 'ACTIVE'){
+        $(".is_active_toggle").addClass('hidden');
+      }else{
+        $(".is_active_toggle").removeClass('hidden');
+      }
+    })
   </script>
 
 @endsection

@@ -14,6 +14,7 @@
         "codedge/laravel-fpdf": "^1.9",
         "doctrine/dbal": "^2.12.1",
         "gguance/swep-helpers": "^1.1",
+        "guzzlehttp/guzzle": "^7.8",
         "howtomakeaturn/pdfinfo": "1.*",
         "intervention/image": "^3.6",
         "intervention/image-laravel": "^1.2",

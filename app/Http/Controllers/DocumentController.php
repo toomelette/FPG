@@ -85,10 +85,21 @@ class DocumentController extends Controller{
         return \DataTables::of($documents)
             ->addColumn('view_document',function($data) use ($storage){
                 if($storage->exists($data->path.$data->filename)){
-                    return '<a href="'.route("dashboard.document.view_file", $data->slug).'" class="btn btn-sm btn-success" target="_blank">
+                    if($data->folder->is_permanent){
+                        $class = 'danger';
+                        if(!empty($data->folder2)){
+                            if($data->folder2->is_permanent){
+                                $class = 'danger';
+                            }
+                        }
+                    }else{
+                        $class = 'success';
+                    }
+                    return '<a href="'.route("dashboard.document.view_file", $data->slug).'" class="btn btn-sm btn-'.$class.'" target="_blank">
                                     <i class="fa fa-file-o"></i>
                                   </a>';
                 }else{
+
                     return '<button class="btn btn-sm btn-warning" title="File not found" disabled><i class="fa fa-exclamation-circle" ></i></button>';
                 }
             })
