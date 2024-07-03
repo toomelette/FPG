@@ -8,7 +8,7 @@ use App\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
-class PPURespCodes extends Model
+class  PPURespCodes extends Model
 {
     protected $table = 'budget_resp_codes';
 //    protected $connection = 'mysql_ppu';
