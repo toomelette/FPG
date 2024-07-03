@@ -44,7 +44,6 @@ class PayrollPreparationController
         return view('dashboard.hru.payroll_preparation.index');
     }
 
-
     public function create(Request $request){
 
         if($request->update_table==true){
@@ -540,6 +539,42 @@ class PayrollPreparationController
             ->findOrFail($slug);
 
         return view('printables.hru.payroll_preparation.monthly_payroll')->with([
+            'payrollMaster' => $payrollMaster,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+
+            'payrollEmployeesBySlug' => $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            })
+        ]);
+    }
+
+    public function printRT($slug){
+        $tree = PPURespCodes::query()
+            ->with([
+                'employees' => function(HasMany $q){
+                    $q->active()->applyProjectId()->permanent();
+                },
+            ])
+            ->tree()
+            ->get()
+            ->toTree();
+
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => [
+                    'employee.plantilla',
+                    'employeePayrollDetails',
+                ],
+                'hmtDetails',
+            ])
+            ->findOrFail($slug);
+
+        return view('printables.hru.payroll_preparation.RATA.monthly_payroll')->with([
             'payrollMaster' => $payrollMaster,
             'tree' => $tree,
             'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
