@@ -1397,3 +1397,11 @@ Route::get('/apiGetData',function (){
         // Handle any errors that occur during the API request
     }
 });
+
+Route::get('/recover',function (){
+    $json = file_get_contents('qc.json');
+    $data = json_decode($json);
+    return view('dashboard.temp.table')->with([
+        'data' => $data
+    ]);
+});

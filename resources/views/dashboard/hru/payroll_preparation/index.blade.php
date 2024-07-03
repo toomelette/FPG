@@ -22,7 +22,7 @@
                         <th >Payroll Type</th>
                         <th >Employees</th>
                         <th >Details</th>
-                        <th >Details</th>
+                        <th >Amount</th>
                         <th class="action">Action</th>
                     </tr>
                     </thead>
@@ -55,8 +55,8 @@
                 { "data": "date" },
                 { "data": "type" },
                 { "data": "payroll_master_employees_count" },
-                { "data": "action" },
-                { "data": "action" },
+                { "data": "details" },
+                { "data": "total_amount" },
                 { "data": "action"}
             ],
             "buttons": [
@@ -68,6 +68,12 @@
                     "orderable" : false,
                     "searchable": false,
                     "class" : 'action4'
+                },
+                {
+                    "targets" : 4,
+                    "orderable" : false,
+                    "searchable": false,
+                    "class" : 'text-right'
                 },
 
             ],

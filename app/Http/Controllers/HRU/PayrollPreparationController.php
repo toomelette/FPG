@@ -30,12 +30,22 @@ class PayrollPreparationController
     public function index(Request $request){
         if ($request->ajax() && $request->has('draw')){
             $pays = PayrollMaster::query()
-                ->withCount('payrollMasterEmployees');
+                ->withCount('payrollMasterEmployees')
+                ->withSum('payrollMasterEmployees','pay15')
+                ->withSum('payrollMasterEmployees','pay30');
             return DataTables::of($pays)
                 ->addColumn('action',function($data){
                     return view('dashboard.hru.payroll_preparation.dtActions')->with([
                         'data' => $data,
                     ]);
+                })
+                ->addColumn('total_amount',function($data){
+                    $total15 = $data->payroll_master_employees_sum_pay15;
+                    $total30 = $data->payroll_master_employees_sum_pay30;
+                    return Helper::toNumber($total15 + $total30,2);
+                })
+                ->addColumn('details',function($data){
+                    
                 })
                 ->escapeColumns([])
                 ->setRowId('slug')

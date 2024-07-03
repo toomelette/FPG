@@ -1,0 +1,36 @@
+<table>
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>uid</th>
+        <th>user</th>
+        <th>state</th>
+        <th>type</th>
+        <th>timestamp</th>
+        <th>device</th>
+        <th>created_at</th>
+        <th>updated_at</th>
+        <th>prorcessed</th>
+        <th>location</th>
+        <th>uploaded</th>
+    </tr>
+    </thead>
+    @forelse($data as $d)
+        <tr>
+            <td></td>
+            <td>{{$d->uid}}</td>
+            <td>{{$d->id}}</td>
+            <td>{{$d->state}}</td>
+            <td>{{$d->type}}</td>
+            <td>{{$d->timestamp}}</td>
+            <td>6160062171721</td>
+            <td>NULL</td>
+            <td>NULL</td>
+            <td>NULL</td>
+            <td>QC</td>
+            <td>NULL</td>
+        </tr>
+    @empty
+    @endforelse
+</table>
+
