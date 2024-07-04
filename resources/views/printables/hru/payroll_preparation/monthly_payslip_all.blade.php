@@ -14,14 +14,14 @@
                 @forelse($chunk as $payrollEmployee)
                     <table style="width: 100%; border-bottom: 1px solid black; font-size: 14px">
                         <tr>
-                            <td class="text-bottom">EMP. NO.: <b>{{$payrollEmployee->employee->employee_no}}</b></td>
+                            <td class="text-bottom" style="width: 20%">EMP. NO.: <b>{{$payrollEmployee->employee->employee_no}}</b></td>
                             <td class="text-center">
                                 <small>SUGAR REGULATORY ADMINISTRATION</small> <br>
                                 <span class="text-strong">STATEMENT OF EARNINGS & DEDUCTIONS FOR {{strtoupper(Helper::dateFormat($payrollMaster->date,'F Y'))}}</span> <br>
                                 <span class="text-strong"> {{$payrollEmployee->employee->full_name}} </span>
                             </td>
-                            <td>
-                                LOGO
+                            <td style="width: 20%">
+                                <img style="width: 50px; float: right; margin-right: 20px" src="{{asset('images/sra_only2_low.png')}}">
                             </td>
                         </tr>
                     </table>
@@ -104,7 +104,7 @@
 
 @section('scripts')
     <script type="text/javascript">
-
+        print();
         $(document).ready(function () {
             let set = 625;
             if ($("#items_table_{{$rand}}").height() < set) {
@@ -114,7 +114,7 @@
             }
         })
         window.onafterprint = function () {
-            window.close();
+            //window.close();
         }
     </script>
 @endsection

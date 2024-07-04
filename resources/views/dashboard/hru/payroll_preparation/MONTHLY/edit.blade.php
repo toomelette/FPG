@@ -32,7 +32,8 @@
             <div class="box box-solid">
                 <div class="box-header">
                     <div class="btn-group pull-right">
-                        <button type="button"  class="btn btn-default btn-sm"> <i class="fa fa-print"></i> Print Payroll </button>
+                        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'MONTHLY'])}}" target="_blank" class="btn btn-default btn-sm"> <i class="fa fa-print"></i> Print Payroll </a>
+                        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}" target="_blank" class="btn btn-default btn-sm"> <i class="fa fa-print"></i> Print Payslips </a>
                         <button type="button" id="lock_btn" class="btn btn-default btn-sm" action="{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"> <span class="text-danger"><i class="fa fa-{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"></i> {{$payrollMaster->is_locked == 1 ? 'Unlock':'Lock'}} </span></button>
                         <button type="button" id="upload_btn" data-target="#upload_modal" data-toggle="modal" class="btn btn-default btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-folder-open"></i> Upload Excel File </button>
                         <button type="button" id="recompute_btn" class="btn btn-primary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recompute </button>

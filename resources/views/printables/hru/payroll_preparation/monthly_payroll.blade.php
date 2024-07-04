@@ -776,7 +776,7 @@
 
 @section('scripts')
     <script type="text/javascript">
-
+        print();
         $(document).ready(function () {
             let set = 625;
             if ($("#items_table_{{$rand}}").height() < set) {
@@ -786,7 +786,7 @@
             }
         })
         window.onafterprint = function () {
-            window.close();
+           // window.close();
         }
     </script>
 @endsection

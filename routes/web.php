@@ -379,7 +379,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     Route::post('/payroll_preparation/{slug}/{status}/updateLockStatus',\App\Http\Controllers\HRU\PayrollPreparationController::class.'@updateLockStatus')->name('payroll_preparation.updateLockStatus');
 
-    Route::get('/payroll_preparation/{slug}/print',\App\Http\Controllers\HRU\PayrollPreparationController::class.'@print')->name('payroll_preparation.print');
+    Route::get('/payroll_preparation/{slug}/{type}/print',\App\Http\Controllers\HRU\PayrollPreparationController::class.'@print')->name('payroll_preparation.print');
     Route::get('/payroll_preparation/{slug}/printRT',\App\Http\Controllers\HRU\PayrollPreparationController::class.'@printRT')->name('payroll_preparation.printRT');
 
     Route::post('/payroll_preparation/{slug}/update',\App\Http\Controllers\HRU\PayrollPreparationController::class.'@update')->name('payroll_preparation.update');

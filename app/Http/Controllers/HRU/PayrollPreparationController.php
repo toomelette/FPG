@@ -664,6 +664,7 @@ class PayrollPreparationController
     }
 
     public function print($slug,$type){
+
         switch ($type){
             case 'MONTHLY':
                 return $this->printMonthly($slug);
