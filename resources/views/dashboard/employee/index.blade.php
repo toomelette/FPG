@@ -32,6 +32,7 @@
                         $q->where('resp_center','=',null)
                         ->orWhere('resp_center','=','');
                     })
+                    ->removeBoardMember()
                     ->applyProjectId()
                     ->permanent()
                     ->active()
@@ -128,6 +129,7 @@
                     ->applyProjectId()
                     ->permanent()
                     ->active()
+                    ->removeBoardMember()
                     ->get();
             @endphp
             @if(!empty($noSgSi) && $noSgSi->count() > 0)

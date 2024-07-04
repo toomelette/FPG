@@ -41,6 +41,9 @@ class Employee extends Model{
         'plantilla',
     ];
 
+    protected $casts = [
+        'is_board_member' => 'boolean',
+    ];
 
 	use Sortable, LogsActivity;
 //	protected $connection = 'mysql_qc_server';
@@ -433,5 +436,7 @@ class Employee extends Model{
         return $this->hasOne(HRPayPlanitilla::class,'item_no','item_no');
     }
 
-
+    public function scopeRemoveBoardMember(Builder $query){
+        $query->where('is_board_member','=',null);
+    }
 }

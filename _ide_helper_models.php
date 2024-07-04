@@ -1724,6 +1724,7 @@ namespace App\Models{
  * @property string|null $date_of_separation
  * @property string|null $reason_of_separation
  * @property string|null $tax_rate
+ * @property bool|null $is_board_member
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\Department|null $department
@@ -1803,6 +1804,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Employee newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Employee permanent()
  * @method static \Illuminate\Database\Eloquent\Builder|Employee query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Employee removeBoardMember()
  * @method static \Illuminate\Database\Eloquent\Builder|Employee sortable($defaultParameters = null)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereAca($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereAdjustmentDate($value)
@@ -1844,6 +1846,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereIpCreated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereIpUpdated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Employee whereIsBoardMember($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereItemNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereLastname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereLicensePassportNo($value)
@@ -2934,9 +2937,11 @@ namespace App\Models\HRU{
  * @property string|null $excel_header
  * @property string|null $groupings
  * @property string|null $factor_operand
+ * @property int|null $pre_tax_deduction
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions available()
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Deductions preTaxDeduction()
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions query()
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereAccountCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereAvailables($value)
@@ -2951,6 +2956,7 @@ namespace App\Models\HRU{
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereGroupings($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereNPriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Deductions wherePreTaxDeduction($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions wherePriority($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereSundryAccount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereTaxable($value)
