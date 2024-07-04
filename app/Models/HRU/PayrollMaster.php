@@ -14,12 +14,14 @@ class PayrollMaster extends Model
             $a->user_updated = \Auth::user()->user_id;
             $a->ip_updated = request()->ip();
             $a->updated_at = \Carbon::now();
+            $a->project_id = \Auth::user()->project_id;
         });
 
         static::creating(function ($a){
             $a->user_created = \Auth::user()->user_id;
             $a->ip_created = request()->ip();
             $a->created_at = \Carbon::now();
+            $a->project_id = \Auth::user()->project_id;
         });
     }
     protected $table = 'hr_pay_master';
