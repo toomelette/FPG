@@ -4,7 +4,7 @@
 <span class="pull-right text-strong text-success">{{$data->item_no ?? ''}}</span>
 <div class="table-subdetail">
     JG-Step: {{$data->salary_grade}} - {{$data->step_inc}}
-    <span class="pull-right">Monthly Basic: {{number_format($data->monthly_basic,2)}}</span>
+    <span class="pull-right">Monthly Basic: {{number_format($jobGrades[$data->salary_grade][$data->step_inc] ?? 0,2)}}</span>
 </div>
 
 <div class="table-subdetail">

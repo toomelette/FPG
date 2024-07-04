@@ -112,6 +112,8 @@ class EmployeeController extends Controller{
         if($request->has('resp_center') && $request->resp_center != null){
             $employees = $employees->where('resp_center','=',$request->resp_center);
         }
+
+        $jobGrades = Arrays::jobGrades();
         return DataTables::of($employees)
             ->addColumn('action', function ($data){
                 $destroy_route = "'".route("dashboard.employee.destroy","slug")."'";
@@ -149,10 +151,10 @@ class EmployeeController extends Controller{
                     return 'N/A';
                 }
                 return $data->biometric_user_id;
-            })->editColumn('position',function ($data) use($sql_server_is_on){
+            })->editColumn('position',function ($data) use($jobGrades){
                 return view('dashboard.employee.dt.position')->with([
                     'data' => $data,
-                    'sql_server_is_on' => $sql_server_is_on,
+                    'jobGrades' => $jobGrades,
                 ]);
             })
             ->editColumn('employee_no',function($data){
