@@ -1,0 +1,646 @@
+[
+ {
+   "employee_no": "6206-2",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6169-1",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6233-5",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6125-1",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "5919-7",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "JZA223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "AGA223",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "5688-8",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6122-8",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "JDA223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6115-9",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "RAA224",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "PSA223",
+   "tax_rate": 0.3
+ },
+ {
+   "employee_no": "5783-7",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5749-5",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "DEB223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6230-2",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "ACB214",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6229-9",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6213-1",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "JB223",
+   "tax_rate": 0.15
+ },
+ {
+   "employee_no": "6209-5",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6218-6",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6108-0",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6054-2",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "5716-6",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5608-2",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6195-5",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5691-3",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6196-6",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6140-8",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "MVC222",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "JGC223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5730-4",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6231-3",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "MSC223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5689-9",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5940-4",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6153-3",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "IDC224",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5801-3",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "JTC223",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6182-5",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6163-4",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "ASD221",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6034-8",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6174-6",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6131-9",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "RLD223",
+   "tax_rate": 0.15
+ },
+ {
+   "employee_no": "6219-7",
+   "tax_rate": 0.15
+ },
+ {
+   "employee_no": "6043-9",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6027-9",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6079-1",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6055-3",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "MBD221",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "AED223",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6234-6",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6066-6",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "RPD223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5692-4",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "5703-1",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "BME221",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "5876-2",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6024-6",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6214-2",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6224-4",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6178-1",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6064-4",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "JFG223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "NOG223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "JEG223",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6117-1",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "5720-2",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6172-4",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5779-1",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6198-8",
+   "tax_rate": 0.15
+ },
+ {
+   "employee_no": "6106-8",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5713-3",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "5756-4",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6018-8",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6175-7",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6023-5",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6136-4",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6232-4",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "5943-7",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6015-5",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5722-4",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6107-9",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6103-5",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "5741-7",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "5786-0",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6045-1",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6127-3",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "5800-2",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "5877-3",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "RHM223",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6189-7",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "RAM223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6128-4",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "JEM223",
+   "tax_rate": 0.15
+ },
+ {
+   "employee_no": "6197-7",
+   "tax_rate": 0.15
+ },
+ {
+   "employee_no": "6171-3",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6129-5",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5690-2",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6204-0",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6007-5",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6040-6",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6212-0",
+   "tax_rate": 0.15
+ },
+ {
+   "employee_no": "6228-8",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "RRO223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6126-2",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6013-3",
+   "tax_rate": 0.15
+ },
+ {
+   "employee_no": "DCO221",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "JCP224",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "5744-0",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5702-0",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6047-3",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6065-5",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6211-9",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5697-9",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6067-7",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5934-6",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5710-0",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "MZR223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6194-4",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6235-7",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6168-9",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "RER222",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "MBR223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6118-2",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "BTR224",
+   "tax_rate": 0.15
+ },
+ {
+   "employee_no": "RKR223",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "5679-7",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "JMS223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "JBS223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "MBS223",
+   "tax_rate": 0.15
+ },
+ {
+   "employee_no": "DCS223",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6059-7",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6185-8",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5784-8",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5729-1",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "5775-7",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "5734-8",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "6116-0",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6114-8",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "ATS221",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "KGS223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "JVTA223",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "5683-3",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5715-5",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5595-3",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6078-0",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "BPT223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6217-5",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6183-6",
+   "tax_rate": 0
+ },
+ {
+   "employee_no": "5791-7",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "JV223",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "6180-3",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "5918-6",
+   "tax_rate": 0.25
+ },
+ {
+   "employee_no": "6170-2",
+   "tax_rate": 0.2
+ },
+ {
+   "employee_no": "Total No. of Employees (160)",
+   "tax_rate": 0
+ }
+]

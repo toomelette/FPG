@@ -18,4 +18,6 @@ class PayrollMasterDetails extends Model
     public function employeePayroll(){
         return $this->belongsTo(PayrollMasterEmployees::class,'pay_master_employee_listing_slug','slug');
     }
+
+
 }

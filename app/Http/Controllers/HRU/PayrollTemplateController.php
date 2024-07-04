@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
+use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\HRU\PayrollTemplateService;
 use Illuminate\Http\Request;
@@ -21,6 +22,25 @@ class PayrollTemplateController extends Controller
     }
 
     public function index(Request $request){
+        if($request->ajax() && $request->has('updateAllTaxRates') && $request->updateAllTaxRates == true){
+            $emps = Employee::query()
+                    ->active()
+                    ->permanent()
+                    ->applyProjectId()
+                    ->orderBy('lastname','asc')
+                    ->get();
+            $jobGrades = Arrays::jobGrades();
+            foreach ($emps as $emp){
+                if(isset($jobGrades[$emp->salary_grade][$emp->step_inc])){
+                    $monthlyBasic = $jobGrades[$emp->salary_grade][$emp->step_inc];
+                    $taxRate = $emp->tax_rate;
+                    $taxAmount = $monthlyBasic * $taxRate;
+                    if($taxAmount != 0){
+                        dd($taxAmount, $monthlyBasic, $taxRate);
+                    }
+                }
+            }
+        }
         if($request->ajax() && $request->has('draw')){
             $employees = Employee::query()
                 ->with([

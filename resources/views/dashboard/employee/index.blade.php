@@ -36,6 +36,7 @@
                     ->permanent()
                     ->active()
                     ->get();
+
             $errs = 0;
         @endphp
         @if(!empty($noItems) && $noItems->count() > 0)
@@ -111,6 +112,40 @@
                     </div>
                 </div>
             @endif
+            @php
+                $errs++;
+            @endphp
+        @endif
+        @if($errs < 3)
+            @php
+                $noSgSi = \App\Models\Employee::query()
+                    ->where(function ($q){
+                        $q->orWhere('salary_grade','=',null)
+                        ->orWhere('salary_grade','=','')
+                        ->orWhere('step_inc','=',null)
+                        ->orWhere('step_inc','=','');
+                    })
+                    ->applyProjectId()
+                    ->permanent()
+                    ->active()
+                    ->get();
+            @endphp
+            @if(!empty($noSgSi) && $noSgSi->count() > 0)
+                <div class="callout callout-danger" style="margin-top: 10px">
+                    <h4>Warning! Please indicate the JOB GRADE and/or STEP INC of the following {{str_plural('employee',$noSgSi)}}: {{$noSgSi->count()}}</h4>
+                    <div class="row">
+                        @forelse($noSgSi as $e)
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+                                • <a href="{{route('dashboard.employee.edit',$e->slug)}}">{{$e->full_name}}</a>
+                            </div>
+                        @empty
+                        @endforelse
+                    </div>
+                </div>
+            @endif
+            @php
+                $errs++;
+            @endphp
         @endif
 
 

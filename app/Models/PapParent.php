@@ -26,7 +26,7 @@ class PapParent extends Model
     }
 
 
-    use Sortable, LogsActivity;
+//    use Sortable, LogsActivity;
 
     protected $table = 'pap_parents';
 

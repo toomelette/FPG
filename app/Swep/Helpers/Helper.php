@@ -764,5 +764,50 @@ class Helper
         }
     }
 
+    public static function computeTax($monthlyBasic,$preTaxDeductions){
+        $taxableAmount = $monthlyBasic - $preTaxDeductions;
+
+        $taxRate = 0;
+        $threshold = 0;
+        $additional = 0;
+        switch ($monthlyBasic){
+            case $monthlyBasic <= 20833:
+                $taxRate = 0;
+                $threshold = 0;
+                $additional = 0;
+                break;
+            case $monthlyBasic <= 33332:
+                $taxRate = 0.15;
+                $threshold = 20833;
+                $additional = 0;
+                break;
+            case $monthlyBasic <= 66666:
+                $taxRate = 0.2;
+                $threshold = 33333;
+                $additional = 1875;
+                break;
+            case $monthlyBasic <= 166666:
+                $taxRate = 0.25;
+                $threshold = 66667;
+                $additional = 8541.8;
+                break;
+            case $monthlyBasic <= 666666:
+                $taxRate = 0.3;
+                $threshold = 166667;
+                $additional = 33541.8;
+                break;
+            default:
+                $taxRate = 0.35;
+                $threshold = 666667;
+                $additional = 183541.8;
+                break;
+        }
+
+
+        $taxableAmount = $taxableAmount - $threshold;
+
+        $tax = $taxableAmount * $taxRate + $additional;
+        return $tax;
+    }
 
 }

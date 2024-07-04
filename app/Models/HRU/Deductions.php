@@ -12,4 +12,8 @@ class Deductions extends Model
     public function scopeAvailable(Builder $query){
         $query->where('availables','=',1);
     }
+
+    public function scopePreTaxDeduction(Builder $query){
+        $query->where('pre_tax_deduction','=',1);
+    }
 }

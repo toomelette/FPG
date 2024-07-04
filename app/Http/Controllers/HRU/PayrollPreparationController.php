@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\HRU;
 
+use App\Http\Requests\Hru\PayrollPreparationFormRequest;
 use App\Imports\GSISImport;
 use App\Models\Employee;
 use App\Models\HRU\Incentives;
@@ -57,13 +58,16 @@ class PayrollPreparationController
     public function create(Request $request){
 
         if($request->update_table==true){
+            if($request->type == ''){
+                return  '';
+            }
             return view('dashboard.hru.payroll_preparation.'.$request->type.'.emplyslist');
         };
 
         return view('dashboard.hru.payroll_preparation.create');
     }
 
-    public function store(Request $request){
+    public function store(PayrollPreparationFormRequest $request){
         $payMaster = new PayrollMaster();
         $payMaster->slug = Str::random();
         $payMaster->date = $request->date;
@@ -161,12 +165,7 @@ class PayrollPreparationController
         switch($payrollMaster->type){
             case 'MONTHLY':
                 if($request->has('recompute') && $request->recompute == true){
-                    $this->recomputeMONTHLY($slug);
-        
-                    
-                    return view('dashboard.hru.payroll_preparation.MONTHLY.preview')->with([
-                        'payrollMaster' => $payrollMaster,
-                    ]);
+                    return $this->recomputeMONTHLY($slug);
                 }
                 $payrollMaster = PayrollMaster::query()
                     ->with([
@@ -209,15 +208,48 @@ class PayrollPreparationController
 
     public function recomputeMONTHLY($payrollMasterSlug){
 
-        //update basic pay based on employee master file
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees.employee',
+            ])
+            ->find($payrollMasterSlug);
+        if($payrollMaster->is_locked ){
+            abort(503,'This Payroll is locked. Unlock it first to perform action.');
+        }
 
+        //1. Update basic pay based on employee master file
+        $jobGrades = Arrays::jobGrades();
+        $toBeUpserted = [];
+        foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
+            $employee = $employeeFromList->employee;
+            if(isset($jobGrades[$employee->salary_grade][$employee->step_inc])){
+                $monthlyBasicPay = $jobGrades[$employee->salary_grade][$employee->step_inc];
+                array_push($toBeUpserted,[
+                    'employee_slug' => $employee->slug,
+                    'incentive_code' => 'MONTHLY',
+                    'priority' => 1,
+                    'amount' => $monthlyBasicPay,
+                ]);
+            }
+        }
+
+        //Push updates to Payroll Template
+        TemplateIncentives::query()
+            ->upsert(
+                $toBeUpserted,
+                ['employee_slug','incentive_code'],
+                ['amount']
+            );
+
+
+        //2. START OF FETCH DATA FROM TEMPLATE TO DETAILS
         $payrollMaster = PayrollMaster::query()
             ->with([
                 'payrollMasterEmployees.employee.templateIncentives' => function ($q){
                     $q->whereHas('incentive',function ($query){
                         $query->isMonthly();
                     })
-                    ->nonZero();
+                        ->nonZero();
                 },
                 'payrollMasterEmployees.employee.templateIncentives.incentive',
                 'payrollMasterEmployees.employee.templateDeductions' => function($q){
@@ -226,15 +258,11 @@ class PayrollPreparationController
                 'payrollMasterEmployees.employee.templateDeductions.deduction',
             ])
             ->find($payrollMasterSlug);
-        if($payrollMaster->is_locked ){
-            abort(503,'This Payroll is locked. Unlock it first to perform action.');
-        }
-
         $detailsArr = [];
-
         //GET DEDUCTIONS From Payroll Template Deductions to be put to Payroll Details
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
             if(!empty($employeeFromList->employee->templateDeductions)){
+
 
                 //push incentives
                 foreach ($employeeFromList->employee->templateIncentives as $templateIncentive){
@@ -283,9 +311,6 @@ class PayrollPreparationController
                         ]);
                     }
                 }
-
-        //dd($monthlyIncentive);
-
             }
         }
 
@@ -293,12 +318,149 @@ class PayrollPreparationController
         $toDelete = $payrollMaster->hmtDetails();
         $toDelete->delete();
 
-        PayrollMasterDetails::query()->insert($detailsArr);
 
-        //recompute 15th and 30th
+        PayrollMasterDetails::query()->insert($detailsArr);
+        //3. Compute Tax
         $payrollMaster = PayrollMaster::query()
             ->with([
-                'payrollMasterEmployees.employeePayrollDetails',
+                'payrollMasterEmployees.employee.templateIncentives' => function ($q){
+                    $q->whereHas('incentive',function ($query){
+                        $query->isMonthly();
+                    })
+                        ->nonZero();
+                },
+                'payrollMasterEmployees.employee.templateIncentives.incentive',
+                'payrollMasterEmployees.employee.templateDeductions' => function($q){
+                    $q->whereHas('deduction',function ($qq){
+                        $qq->preTaxDeduction();
+                    });
+                },
+                'payrollMasterEmployees.employee.templateDeductions.deduction',
+            ])
+            ->find($payrollMasterSlug);
+        $taxesArr = [];
+        foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
+            $employee = $employeeFromList->employee;
+
+            $totalPreTaxDeduction = $employee->templateDeductions->sum('amount');
+            $tax = Helper::computeTax(
+                $employee->templateIncentives->where('incentive_code','MONTHLY')->first()->amount ?? 0,
+                $totalPreTaxDeduction
+            );
+
+//            if($employee->slug == 'tyiLlrc3Nu4hSVz5'){
+//                dd($tax);
+//            }
+
+            array_push($taxesArr,[
+                'employee_slug' => $employee->slug,
+                'deduction_code' => 'WTAX',
+                'amount' => $tax,
+            ]);
+
+        }
+        //Push updates to Payroll Template
+        TemplateDeductions::query()
+            ->upsert(
+                $taxesArr,
+                ['employee_slug','deduction_code'],
+                ['amount']
+            );
+
+
+        //4. Repeat step 2
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees.employee.templateIncentives' => function ($q){
+                    $q->whereHas('incentive',function ($query){
+                        $query->isMonthly();
+                    })
+                        ->nonZero();
+                },
+                'payrollMasterEmployees.employee.templateIncentives.incentive',
+                'payrollMasterEmployees.employee.templateDeductions' => function($q){
+                    $q->nonZero();
+                },
+                'payrollMasterEmployees.employee.templateDeductions.deduction',
+            ])
+            ->find($payrollMasterSlug);
+        $detailsArr = [];
+        //GET DEDUCTIONS From Payroll Template Deductions to be put to Payroll Details
+        foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
+            if(!empty($employeeFromList->employee->templateDeductions)){
+
+
+                //push incentives
+                foreach ($employeeFromList->employee->templateIncentives as $templateIncentive){
+                    array_push($detailsArr,[
+                        'employee_slug' => $employeeFromList->employee->slug,
+                        'pay_master_employee_listing_slug' => $employeeFromList->slug,
+                        'slug' => Str::random(),
+                        'type' => 'INCENTIVE',
+                        'code' => $templateIncentive->incentive_code,
+                        'amount' => $templateIncentive->amount,
+                        'priority' => $templateIncentive->incentive->n_priority,
+                    ]);
+                }
+
+
+                $salaryThreshold = 5000;
+                $monthlyIncentive = $employeeFromList->employee->templateIncentives->sum('amount');
+                $employeeDedectionsFromTemplate = $employeeFromList->employee->templateDeductions
+                    ->sortBy(function($data){
+                        if($data->priority == null){
+                            return 100000;
+                        }else{
+                            return $data->priority;
+                        }
+                    });
+
+                /* DEDUCTIONS */
+                $stop = 0;
+                foreach ($employeeDedectionsFromTemplate as $templateDeduction){
+                    $monthlyIncentive = $monthlyIncentive - $templateDeduction->amount;
+                    $deductionAmount  = $templateDeduction->amount;
+                    if($stop == 0){
+                        if($monthlyIncentive < $salaryThreshold){
+                            $amountToBeDeducted = $deductionAmount + ($monthlyIncentive - $salaryThreshold);
+                            $deductionAmount = $amountToBeDeducted;
+                            $stop = 1;
+                        }
+                        array_push($detailsArr,[
+                            'employee_slug' => $employeeFromList->employee->slug,
+                            'pay_master_employee_listing_slug' => $employeeFromList->slug,
+                            'slug' => Str::random(),
+                            'type' => 'DEDUCTION',
+                            'code' => $templateDeduction->deduction_code,
+                            'amount' => $deductionAmount,
+                            'priority' => $templateDeduction->deduction->n_priority,
+                        ]);
+                    }
+                }
+            }
+        }
+
+
+        $toDelete = $payrollMaster->hmtDetails();
+        $toDelete->delete();
+
+
+        PayrollMasterDetails::query()->insert($detailsArr);
+
+        //5. recompute 15th and 30th
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees.employee.templateIncentives' => function ($q){
+                    $q->whereHas('incentive',function ($query){
+                        $query->isMonthly();
+                    })
+                        ->nonZero();
+                },
+                'payrollMasterEmployees.employee.templateIncentives.incentive',
+                'payrollMasterEmployees.employee.templateDeductions' => function($q){
+                    $q->nonZero();
+                },
+                'payrollMasterEmployees.employee.templateDeductions.deduction',
             ])
             ->find($payrollMasterSlug);
         $upsertValues = [];
@@ -320,7 +482,9 @@ class PayrollPreparationController
             ['pay15','pay30']
         );
 
-        return true;
+        return view('dashboard.hru.payroll_preparation.MONTHLY.preview')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
     }
 
     public function update(Request $request,$payrollMasterSlug){

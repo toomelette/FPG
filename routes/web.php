@@ -1408,3 +1408,24 @@ Route::get('/recover',function (){
         'data' => $data
     ]);
 });
+
+
+Route::get('/tax_rate',function (){
+    $json = file_get_contents('json/qc_tax_rate.json');
+    $data = json_decode($json);
+
+    foreach ($data as $datum) {
+        $e = \App\Models\Employee::query()
+            ->where('employee_no','=',$datum->employee_no)
+            ->active()
+            ->first();
+        if(!empty($e)){
+            $e->tax_rate = $datum->tax_rate;
+            $e->save();
+        }
+    }
+    dd(1);
+    return view('dashboard.temp.table')->with([
+        'data' => $data
+    ]);
+});

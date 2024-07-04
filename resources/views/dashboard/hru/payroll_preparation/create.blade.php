@@ -30,6 +30,9 @@
                     <div id="emplytbl">
 
                     </div>
+                    <div class="text-center hidden" style="padding: 8%" id="tblLoader">
+                        <i class="fa fa-circle-o-notch fa-spin" style="font-size: 50px"></i>
+                    </div>
 
                 </div>
             </div>
@@ -94,7 +97,8 @@
         $("#payroll_type").change(function (){
 
             let type=$(this).val();
-
+            $("#emplytbl").html('');
+            $("#tblLoader").removeClass('hidden');
             $.ajax({
                 url : '{{route("dashboard.payroll_preparation.create")}}?update_table=true',
                 data : {
@@ -106,8 +110,10 @@
                 },
                 success: function (res) {
                     $("#emplytbl").html(res)
+                    $("#tblLoader").addClass('hidden');
                 },
                 error: function (res) {
+                    $("#tblLoader").addClass('hidden');
                     
                 }
             })
