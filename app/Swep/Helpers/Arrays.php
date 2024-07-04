@@ -919,4 +919,19 @@ class Arrays
         ];
     }
 
+    public static function jobGradeLevels(){
+        $levels = [];
+        for ($i = 1;$i <= 33; $i ++){
+            $levels[$i] = $i;
+        }
+        return $levels;
+    }
+
+    public static function stepIncements(){
+        $levels = [];
+        for ($i = 1;$i <= 8; $i ++){
+            $levels[$i] = $i;
+        }
+        return $levels;
+    }
 }

@@ -516,16 +516,17 @@
                         ],$employee ?? null) !!}
 
 
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('salary_grade',[
-                         'label' => 'SG *:',
+                        {!! \App\Swep\ViewHelpers\__form2::select('salary_grade',[
+                         'label' => 'JG *:',
                          'cols' => 1,
                          'placeholder' => 'Salagry Grade',
+                         'options' => \App\Swep\Helpers\Arrays::jobGradeLevels(),
                         ],$employee ?? null) !!}
-
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('step_inc',[
+                        {!! \App\Swep\ViewHelpers\__form2::select('step_inc',[
                          'label' => 'SI *:',
                          'cols' => 1,
                          'placeholder' => 'Step Increment',
+                         'options' => \App\Swep\Helpers\Arrays::stepIncements(),
                         ],$employee ?? null) !!}
                       </div>
                       <div class="row">

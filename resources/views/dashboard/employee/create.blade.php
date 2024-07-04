@@ -464,16 +464,17 @@
                          'options' => \App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeApptStatus(),'option','value'),
                         ]) !!}
 
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('salary_grade',[
-                         'label' => 'SG *:',
+                        {!! \App\Swep\ViewHelpers\__form2::select('salary_grade',[
+                         'label' => 'JG *:',
                          'cols' => 1,
                          'placeholder' => 'Salagry Grade',
+                         'options' => \App\Swep\Helpers\Arrays::jobGradeLevels(),
                         ]) !!}
-
-                        {!! \App\Swep\ViewHelpers\__form2::textbox('step_inc',[
+                        {!! \App\Swep\ViewHelpers\__form2::select('step_inc',[
                          'label' => 'SI *:',
                          'cols' => 1,
                          'placeholder' => 'Step Increment',
+                         'options' => \App\Swep\Helpers\Arrays::stepIncements(),
                         ]) !!}
                       </div>
                       <div class="row">
