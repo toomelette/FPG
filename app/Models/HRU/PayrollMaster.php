@@ -2,6 +2,7 @@
 
 namespace App\Models\HRU;
 
+use App\Models\Scopes\ProjectScope;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,6 +25,11 @@ class PayrollMaster extends Model
             $a->project_id = \Auth::user()->project_id;
         });
     }
+    public static function booted()
+    {
+        static::addGlobalScope(new ProjectScope());
+    }
+
     protected $table = 'hr_pay_master';
     protected $primaryKey = 'slug';
     public $incrementing = false;
