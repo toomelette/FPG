@@ -31,7 +31,7 @@ class User extends Authenticatable{
     }
 
 
-    use Notifiable, Sortable, LogsActivity;
+    use Notifiable, Sortable;
 
     protected $dates = ['created_at', 'updated_at'];
 
@@ -40,11 +40,6 @@ class User extends Authenticatable{
     public $timestamps = true;
 
     protected $hidden = ['password', 'remember_token',];
-
-    protected static $logAttributes = ['*'];
-    protected static $ignoreChangedAttributes = ['updated_at','ip_updated','user_updated','last_login_time','is_online','last_activity'];
-    protected static $logOnlyDirty = true;
-
 
 
 
@@ -74,9 +69,7 @@ class User extends Authenticatable{
 
     ];
 
-    public function getActivitylogOptions():LogOptions {
-        return LogOptions::defaults();
-    }
+
 
 
 

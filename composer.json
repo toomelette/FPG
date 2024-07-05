@@ -10,9 +10,9 @@
         "ext-imagick": "*",
         "ext-json": "*",
         "ext-zip": "*",
-        "barryvdh/laravel-dompdf": "^1.0.0",
+        "barryvdh/laravel-dompdf": "^2.0.0",
         "codedge/laravel-fpdf": "^1.9",
-        "doctrine/dbal": "^2.12.1",
+        "doctrine/dbal": "^3.0",
         "gguance/swep-helpers": "^1.1",
         "guzzlehttp/guzzle": "^7.8",
         "howtomakeaturn/pdfinfo": "1.*",
@@ -20,10 +20,10 @@
         "intervention/image-laravel": "^1.2",
         "jacobbennett/pjax": "~1.0",
         "kyslik/column-sortable": "6.*",
-        "laravel/framework": "^9.0",
+        "laravel/framework": "^10.0",
         "laravel/helpers": "^1.5",
         "laravel/tinker": "^2.0",
-        "laravel/ui": "^3.0",
+        "laravel/ui": "^4.0",
         "php-open-source-saver/jwt-auth": "^2.2",
         "phpmailer/phpmailer": "^6.8",
         "phpoffice/phpspreadsheet": "^1.29",
@@ -34,14 +34,14 @@
         "setasign/fpdf": "1.8.*",
         "setasign/fpdi": "^2.0",
         "simplesoftwareio/simple-qrcode": "~4",
-        "spatie/laravel-activitylog": "^4.0",
+        "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-html": "^3.2",
-        "spatie/laravel-ignition": "^1.0",
+        "spatie/laravel-ignition": "^2.0",
         "spatie/pdf-to-image": "^2.2",
         "staudenmeir/laravel-adjacency-list": "^1.0",
         "thiagoalessio/tesseract_ocr": "^2.13",
-        "yajra/laravel-datatables": "^1.5",
-        "yajra/laravel-datatables-html": "^4.0"
+        "yajra/laravel-datatables": "^10",
+        "yajra/laravel-datatables-html": "^10"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
@@ -94,6 +94,6 @@
             "symfony/thanks": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

@@ -10,6 +10,7 @@ use App\Models\PPU\PPURespCodes;
 use App\Models\SqlServer\EmpMaster;
 use App\Models\SqlServer\IncentiveTemplate;
 use App\Swep\Helpers\Arrays;
+use App\Swep\Traits\Ownership;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -54,10 +55,6 @@ class Employee extends Model{
 
     public $timestamps = true;
 
-    protected static $logName = 'employee';
-    protected static $logAttributes = ['*'];
-    protected static $ignoreChangedAttributes = ['updated_at','ip_updated','user_updated'];
-    protected static $logOnlyDirty = true;
 
 
 
@@ -128,6 +125,21 @@ class Employee extends Model{
 
     protected $guarded = ['id','slug'];
 
+
+    use LogsActivity, Ownership;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName($this->table)
+            ->logAll()
+            ->logExcept([
+                'created_at','updated_at','user_updated','user_created'
+            ])
+            ->logOnlyDirty()
+            ;
+    }
+
+
     protected function fullName(): Attribute
     {
         return  new Attribute(
@@ -174,9 +186,6 @@ class Employee extends Model{
     }
 
 
-    public function getActivitylogOptions():LogOptions {
-        return LogOptions::defaults();
-    }
 
 
     /** RELATIONSHIPS **/

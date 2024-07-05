@@ -208,6 +208,7 @@ class DocumentController extends Controller{
         $storage->delete('/QRCODE_TEMP/'.$document_id.'.png');
 
         if($document->save()){
+
             return $document->only('slug');
         }
         abort(503,'Error saving data');

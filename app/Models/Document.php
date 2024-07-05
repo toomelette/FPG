@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Scopes\ProjectIdScope;
+use App\Swep\Traits\Ownership;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +19,7 @@ class Document extends Model{
         static::updating(function($a){
             $a->user_updated = Auth::user()->user_id;
             $a->ip_updated = request()->ip();
-            $a->created_at = \Carbon::now();
+            $a->updated_at = \Carbon::now();
         });
 
         static::creating(function ($a){
@@ -38,12 +39,6 @@ class Document extends Model{
 
     protected $table = 'rec_documents';
 
-    use Sortable, LogsActivity;
-
-
-    public function getActivitylogOptions():LogOptions {
-        return LogOptions::defaults();
-    }
 
     use SoftDeletes;
 
@@ -53,42 +48,21 @@ class Document extends Model{
 
 	public $timestamps = false;
 
-    protected static $logAttributes = ['*'];
-    protected static $ignoreChangedAttributes = ['updated_at','ip_updated','user_updated'];
-    protected static $logOnlyDirty = true;
 
-
-
-
-    protected $attributes = [
-        
-        'slug' => '',
-        'document_id' => '',
-        'folder_code' => '',
-        'folder_code2' => '',
-        'reference_no' => '',
-        'date' => null,
-        'person_to' => '',
-        'person_from' => '',
-        'type' => '',
-        'subject' => '',
-        'category' => '',
-        'filename' => '',
-        'year' => null,
-        'remarks' => '',
-        'created_at' => null, 
-        'updated_at' => null,
-        'ip_created' => '',
-        'ip_updated' => '',
-        'user_created' => '',
-        'user_updated' => '',
-
-    ];
-
-    
+    use LogsActivity, Ownership;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName($this->table)
+            ->logAll()
+            ->logExcept([
+                'created_at','updated_at','user_updated','user_created'
+            ])
+            ->logOnlyDirty()
+            ;
+    }
 
     // Relationships
-
     public function documentDisseminationLogAll(){
         return $this->hasMany(DocumentDisseminationLog::class, 'document_id', 'document_id');
     }
@@ -113,7 +87,7 @@ class Document extends Model{
     }
 
     public function creator(){
-        return $this->hasOne("App\Models\User","user_id","user_created");
+        return $this->belongsTo("App\Models\User","user_id","");
     }
 
     public function updater(){

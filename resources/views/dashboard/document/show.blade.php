@@ -65,7 +65,7 @@
 
 @section('modal-footer')
     <div class="row">
-        {!! \App\Swep\ViewHelpers\__html::timestamp($document ?? null,'5') !!}
+        <x-html.timestamp-footer :source-data="$document" cols="10"/>
         <div class="col-md-2">
             <button class="btn btn-default" data-dismiss="modal">Close</button>
         </div>

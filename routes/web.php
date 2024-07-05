@@ -91,6 +91,27 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     /** PERMISSION SLIPS **/
     Route::get('/permission_slips/my_permission_slips','PermissionSlipController@myPermissionSlips')->name('permission_slip.my_permission_slips');
 
+
+    Route::get('/showLogs/{tableName}/{subjectId}',function ($tableName,$subjectId){
+
+        $activities = \Spatie\Activitylog\Models\Activity::query()
+            ->where('log_name','=',$tableName)
+            ->where('subject_id','=',$subjectId)
+            ->orderBy('created_at','desc')
+            ->get();
+        $first = $activities->first();
+        if(!empty($first)){
+            $subject = new $first->subject_type();
+            $subject = $subject->query()->where('id',$subjectId)->first();
+        }else{
+            $subject = null;
+        }
+
+        return view('dashboard.public.activity_log_single')->with([
+            'activities' => $activities,
+            'subject' => $subject,
+        ]);
+    })->name('show_activity');
 });
 
 

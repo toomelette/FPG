@@ -103,6 +103,7 @@ class LoginController extends Controller{
                 $activity = activity()
                     ->performedOn(new User())
                     ->causedBy($this->auth->user()->id)
+                    ->event('login')
                     ->withProperties(['attributes' => 'Logged in'])
                     ->log('auth');
 
