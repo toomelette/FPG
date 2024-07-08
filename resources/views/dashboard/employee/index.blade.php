@@ -46,7 +46,7 @@
                 <div class="row">
                     @forelse($noItems as $noItem)
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
-                            • <a href="{{route('dashboard.employee.edit',$noItem->slug)}}">{{$noItem->full_name}}</a>
+                            • <a href="{{route('dashboard.employee.edit',$noItem->slug)}}">{{$noItem->full['FMiLE']}}}}</a>
                         </div>
                     @empty
                     @endforelse
@@ -63,7 +63,7 @@
                 <div class="row">
                     @forelse($appointmentStatuss as $appointmentStatus)
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
-                            • <a href="{{route('dashboard.employee.edit',$appointmentStatus->slug)}}">{{$appointmentStatus->full_name}}</a>
+                            • <a href="{{route('dashboard.employee.edit',$appointmentStatus->slug)}}">{{$appointmentStatus->full['FMiLE']}}}}</a>
                         </div>
                     @empty
                     @endforelse
@@ -80,7 +80,7 @@
                 <div class="row">
                     @forelse($noRcs as $noRc)
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
-                            • <a href="{{route('dashboard.employee.edit',$noRc->slug)}}">{{$noRc->full_name}}</a>
+                            • <a href="{{route('dashboard.employee.edit',$noRc->slug)}}">{{$noRc->full['FMiLE']}}}}</a>
                         </div>
                     @empty
                     @endforelse
@@ -106,7 +106,7 @@
                     <div class="row">
                         @forelse($middles as $middle)
                             <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
-                                • <a href="{{route('dashboard.employee.edit',$middle->slug)}}">{{$middle->full_name}}</a>
+                                • <a href="{{route('dashboard.employee.edit',$middle->slug)}}">{{$middle->full['FMiLE']}}}}</a>
                             </div>
                         @empty
                         @endforelse
@@ -138,7 +138,7 @@
                     <div class="row">
                         @forelse($noSgSi as $e)
                             <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
-                                • <a href="{{route('dashboard.employee.edit',$e->slug)}}">{{$e->full_name}}</a>
+                                • <a href="{{route('dashboard.employee.edit',$e->slug)}}">{{$e->full['FMiLE']}}}}</a>
                             </div>
                         @empty
                         @endforelse
@@ -178,7 +178,7 @@
                     <div class="row">
                         @forelse($exts as $e)
                             <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
-                                • <a href="{{route('dashboard.employee.edit',$e->slug)}}">{{$e->full_name}}</a>
+                                • <a href="{{route('dashboard.employee.edit',$e->slug)}}">{{$e->full['FMiLE']}}</a>
                             </div>
                         @empty
                         @endforelse
