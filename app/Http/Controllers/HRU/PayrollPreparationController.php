@@ -712,7 +712,20 @@ class PayrollPreparationController
                 'hmtDetails',
             ])
             ->findOrFail($slug);
-
+        $usedRc = [];
+        $employees = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+            return [
+                $data->employee->slug => $data,
+            ];
+        });
+        foreach ($employees as $employee){
+            if(!empty($employee->employee->responsibilityCenter)){
+                $usedRc[$employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.$employee->employee->responsibilityCenter->sec] = $employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.$employee->employee->responsibilityCenter->sec;
+                $usedRc[$employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.'0'] = $employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.'0';
+                $usedRc[$employee->employee->responsibilityCenter->rc.'0'.'0'] = $employee->employee->responsibilityCenter->rc.'0'.'0';
+            }
+        }
+        ksort($usedRc);
         return view('printables.hru.payroll_preparation.monthly_payroll')->with([
             'payrollMaster' => $payrollMaster,
             'tree' => $tree,
@@ -724,7 +737,8 @@ class PayrollPreparationController
                 return [
                     $data->employee->slug => $data,
                 ];
-            })
+            }),
+            'usedRc' => $usedRc,
         ]);
     }
 
