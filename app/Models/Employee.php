@@ -143,7 +143,50 @@ class Employee extends Model{
     protected function fullName(): Attribute
     {
         return  new Attribute(
-            get: fn() => $this->lastname.', '.$this->firstname,
+            get: function (){
+                if($this->name_ext != null || $this->name_ext != ''){
+                    return $this->lastname.', '.$this->firstname.' '.$this->name_ext;
+                }
+                return $this->lastname.', '.$this->firstname;
+            },
+        );
+    }
+
+    protected function full(): Attribute
+    {
+        return  new Attribute(
+            get: function (){
+                //LAST FIRST EXT MIDDLE
+                $LFEM = $this->lastname.', '.$this->firstname.' '.$this->name_ext.' '.$this->middlename;
+
+                if($this->middlename != '' || $this->middlname != null){
+                    $LFEMi = $this->lastname.', '.$this->firstname.' '.$this->name_ext.' '.Str::limit($this->middlename,1,'.');
+                }else{
+                    $LFEMi = $LFEM;
+                }
+
+                $LFE = $this->lastname.', '.$this->firstname.' '.$this->name_ext;
+
+                // FIRST MIDDLE LAST EXT
+                $FMLE = $this->firstname.' '.$this->middlename.' '.$this->lastname.' '.$this->name_ext;
+
+                // FIRST MI LAST EXT
+                if($this->middlename != '' || $this->middlname != null){
+                    $FMiLE = $this->firstname.' '.Str::limit($this->middlename,1,'.').' '.$this->lastname.' '.$this->name_ext;
+                }else{
+                    $FMiLE = $FMLE;
+                }
+
+                $FLE = $this->firstname.' '.$this->lastname.' '.$this->name_ext;
+                return [
+                    'LFEM' => $LFEM,
+                    'FMLE' => $FMLE,
+                    'FMiLE' => $FMiLE,
+                    'LFEMi' => $LFEMi,
+                    'LFE' => $LFE,
+                    'FLE' => $FLE,
+                ];
+            },
         );
     }
 

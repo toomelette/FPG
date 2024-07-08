@@ -10,7 +10,7 @@
 @endphp
 
 <p class="text-strong no-margin">
-    {{$data->fullname}} <span style="font-weight: normal">{{$data->middlename}}</span> {{$data->name_ext}}
+    {{$data->full['LFE']}} <span style="font-weight: normal">{{$data->middlename}}</span>
     @switch($data->locations)
         @case('RETIREE')
             <span class="label label-danger pull-right" title="{{$data->locations}}">RETIREE</span>
