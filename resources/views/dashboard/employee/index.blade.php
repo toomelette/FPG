@@ -150,7 +150,45 @@
             @endphp
         @endif
 
+        {{-- check for juniors --}}
+        @if($errs < 3)
+            @php
+                $exts = \App\Models\Employee::query()
+                    ->where(function ($q){
+                        $q->orWhere('firstname','like','% JR%')
+                        ->orWhere('lastname','like','% JR%')
+                        ->orWhere('firstname','like','% SR%')
+                        ->orWhere('lastname','like','% SR%')
+                        ->orWhere('firstname','like','% III%')
+                        ->orWhere('lastname','like','% III%')
+                        ->orWhere('firstname','like','% IV%')
+                        ->orWhere('lastname','like','% IV%');
+                    })
+                    ->applyProjectId()
+                    ->permanent()
+                    ->active()
+                    ->removeBoardMember()
+                    ->get();
 
+            @endphp
+            @if(!empty($exts) && $exts->count() > 0)
+                <div class="callout callout-danger" style="margin-top: 10px">
+                    <h4>
+                        Please update the last names and first names of the following  {{$exts->count()}} {{str_plural('employee',$exts)}} by removing any name extensions and indicating them to a dedicated field labeled "Name Ext." </h4>
+                    <div class="row">
+                        @forelse($exts as $e)
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+                                • <a href="{{route('dashboard.employee.edit',$e->slug)}}">{{$e->full_name}}</a>
+                            </div>
+                        @empty
+                        @endforelse
+                    </div>
+                </div>
+            @endif
+            @php
+                $errs++;
+            @endphp
+        @endif
 
 
     @else
