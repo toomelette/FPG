@@ -1450,3 +1450,6 @@ Route::get('/tax_rate',function (){
         'data' => $data
     ]);
 });
+
+Route::get('sendEvent',[\App\Http\Controllers\Test\TestController::class,'test']);
+Route::get('monitor',[\App\Http\Controllers\Test\TestController::class,'monitor']);
