@@ -1431,24 +1431,26 @@ Route::get('/recover',function (){
 });
 
 
-Route::get('/tax_rate',function (){
-    $json = file_get_contents('json/qc_tax_rate.json');
-    $data = json_decode($json);
-
-    foreach ($data as $datum) {
-        $e = \App\Models\Employee::query()
-            ->where('employee_no','=',$datum->employee_no)
-            ->active()
-            ->first();
-        if(!empty($e)){
-            $e->tax_rate = $datum->tax_rate;
-            $e->save();
-        }
+Route::get('/udpateFromExcel',function (){
+    $temps = \App\Models\Temp\Temp::query()->get();
+    $nonExistent = [];
+    foreach ($temps as $temp /** @var \App\Models\Temp\Temp $temp **/){
+        $emp = \App\Models\Employee::query()->find($temp->slug);
+        $emp->lastname = $temp->lastname;
+        $emp->firstname = $temp->firstname;
+        $emp->middlename = $temp->middlename;
+        $emp->name_ext = $temp->name_ext;
+        $emp->date_of_birth = Helper::dateFormat($temp->birthday,'Y-m-d');
+        $emp->civil_status = $temp->civil_status;
+        $emp->item_no = $temp->item_no;
+        $emp->tin = $temp->tin;
+        $emp->appointment_date = Helper::dateFormat($temp->date_of_original_appt,'Y-m-d');
+        $emp->adjustment_date = Helper::dateFormat($temp->date_of_last_promotion,'Y-m-d');
+        $emp->gsis = $temp->bp_number;
+        $emp->save();
     }
-    dd(1);
-    return view('dashboard.temp.table')->with([
-        'data' => $data
-    ]);
+    dd($nonExistent);
+    return 1;
 });
 
 Route::get('sendEvent',[\App\Http\Controllers\Test\TestController::class,'test']);

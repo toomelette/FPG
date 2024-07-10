@@ -218,7 +218,7 @@ namespace App\Models\Api{
  * @property string|null $password
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $project_id
+ * @property int $project_id
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
@@ -252,16 +252,16 @@ namespace App\Models{
  * @property string|null $name_ext
  * @property string|null $fullname
  * @property string|null $gender
- * @property \Illuminate\Support\Carbon|null $date_of_birth
+ * @property string|null $date_of_birth
  * @property string|null $civil_status
  * @property string|null $address
  * @property string|null $contact_no
  * @property string|null $school
  * @property string|null $remarks
  * @property int|null $is_on_short_list
- * @property \Illuminate\Support\Carbon|null $received_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $received_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -369,7 +369,7 @@ namespace App\Models{
  * @property string|null $level
  * @property float|null $rating
  * @property string|null $exam_place
- * @property \Illuminate\Support\Carbon|null $exam_date
+ * @property string|null $exam_date
  * @property-read \App\Models\Applicant|null $applicant
  * @method static \Illuminate\Database\Eloquent\Builder|ApplicantEligibility newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ApplicantEligibility newQuery()
@@ -391,8 +391,8 @@ namespace App\Models{
  *
  * @property int $id
  * @property string|null $applicant_id
- * @property \Illuminate\Support\Carbon|null $date_from
- * @property \Illuminate\Support\Carbon|null $date_to
+ * @property string|null $date_from
+ * @property string|null $date_to
  * @property string|null $position
  * @property string|null $company
  * @property int|null $is_gov_service
@@ -439,8 +439,8 @@ namespace App\Models{
  * @property int $id
  * @property string|null $applicant_id
  * @property string|null $title
- * @property \Illuminate\Support\Carbon|null $date_from
- * @property \Illuminate\Support\Carbon|null $date_to
+ * @property string|null $date_from
+ * @property string|null $date_to
  * @property string|null $venue
  * @property string|null $conducted_by
  * @property string|null $remarks
@@ -978,8 +978,8 @@ namespace App\Models{
  * @property string|null $course_id
  * @property string|null $acronym
  * @property string|null $name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -1246,8 +1246,8 @@ namespace App\Models{
  * @property string|null $department_name
  * @property string|null $name
  * @property string|null $description
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -1290,7 +1290,7 @@ namespace App\Models{
  * @property string|null $user_id
  * @property string|null $doc_no
  * @property string|null $dv_no
- * @property \Illuminate\Support\Carbon|null $date
+ * @property string|null $date
  * @property string|null $project_id
  * @property string|null $fund_source_id
  * @property string|null $fund_source
@@ -1311,10 +1311,10 @@ namespace App\Models{
  * @property string|null $certified_by_position
  * @property string|null $approved_by
  * @property string|null $approved_by_position
- * @property \Illuminate\Support\Carbon|null $processed_at
- * @property \Illuminate\Support\Carbon|null $checked_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $processed_at
+ * @property string|null $checked_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -1420,7 +1420,7 @@ namespace App\Models{
  * @property string|null $path2
  * @property int|null $filesize
  * @property string|null $reference_no
- * @property \Illuminate\Support\Carbon|null $date
+ * @property string|null $date
  * @property string|null $person_to
  * @property string|null $person_from
  * @property string|null $type
@@ -1430,8 +1430,8 @@ namespace App\Models{
  * @property string|null $remarks
  * @property string|null $category
  * @property int|null $year
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -1443,6 +1443,7 @@ namespace App\Models{
  * @property string|null $outgoing_control_no
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
+ * @property-read \App\Models\User|null $createdBy
  * @property-read \App\Models\User|null $creator
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DocumentDisseminationLog> $documentDisseminationLog
  * @property-read int|null $document_dissemination_log_count
@@ -1452,12 +1453,12 @@ namespace App\Models{
  * @property-read int|null $document_dissemination_log_send_copy_count
  * @property-read \App\Models\DocumentFolder|null $folder
  * @property-read \App\Models\DocumentFolder|null $folder2
+ * @property-read \App\Models\User|null $updatedBy
  * @property-read \App\Models\User|null $updater
  * @method static \Illuminate\Database\Eloquent\Builder|Document newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Document newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Document onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Document query()
- * @method static \Illuminate\Database\Eloquent\Builder|Document sortable($defaultParameters = null)
  * @method static \Illuminate\Database\Eloquent\Builder|Document whereCategory($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Document whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Document whereDate($value)
@@ -1509,7 +1510,7 @@ namespace App\Models{
  * @property string|null $content
  * @property string|null $status
  * @property int|null $send_copy
- * @property \Illuminate\Support\Carbon|null $sent_at
+ * @property string|null $sent_at
  * @property string|null $ip_sent
  * @property string|null $user_sent
  * @property string|null $received_at
@@ -1546,8 +1547,8 @@ namespace App\Models{
  * @property string|null $slug
  * @property string|null $folder_code
  * @property string|null $description
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -1587,8 +1588,8 @@ namespace App\Models{
  * @property string|null $name
  * @property string|null $email
  * @property string|null $contact_no
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -1664,7 +1665,7 @@ namespace App\Models{
  * @property string|null $name_ext
  * @property string|null $prefix
  * @property string|null $fullname
- * @property \Illuminate\Support\Carbon|null $date_of_birth
+ * @property string|null $date_of_birth
  * @property string|null $place_of_birth
  * @property string|null $sex
  * @property string|null $civil_status
@@ -1700,10 +1701,10 @@ namespace App\Models{
  * @property string|null $ta
  * @property string|null $cs_eligibility
  * @property string|null $cs_eligibility_level
- * @property \Illuminate\Support\Carbon|null $firstday_gov
- * @property \Illuminate\Support\Carbon|null $firstday_sra
- * @property \Illuminate\Support\Carbon|null $appointment_date
- * @property \Illuminate\Support\Carbon|null $adjustment_date
+ * @property string|null $firstday_gov
+ * @property string|null $firstday_sra
+ * @property string|null $appointment_date
+ * @property string|null $adjustment_date
  * @property string|null $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -1727,6 +1728,7 @@ namespace App\Models{
  * @property bool|null $is_board_member
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
+ * @property-read \App\Models\User|null $createdBy
  * @property-read \App\Models\Department|null $department
  * @property-read \App\Models\DepartmentUnit|null $departmentUnit
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DocumentDisseminationLog> $documentDisseminationLog
@@ -1766,6 +1768,7 @@ namespace App\Models{
  * @property-read int|null $employee_voluntary_work_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EmployeeFile201> $file201s
  * @property-read int|null $file201s_count
+ * @property-read mixed $full
  * @property-read mixed $full_name
  * @property-read mixed $incentive_monthly_basic
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SqlServer\IncentiveTemplate> $incentiveTemplate
@@ -1793,6 +1796,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\HRU\TemplateIncentives> $templateIncentives
  * @property-read int|null $template_incentives_count
  * @property-read \App\Models\HRU\TemplateIncentives|null $templateMonthlyBasic
+ * @property-read \App\Models\User|null $updatedBy
  * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|Employee active()
  * @method static \Illuminate\Database\Eloquent\Builder|Employee applyProjectId()
@@ -1942,7 +1946,7 @@ namespace App\Models{
  * @property string|null $employee_slug
  * @property string|null $employee_no
  * @property string|null $fullname
- * @property \Illuminate\Support\Carbon|null $date_of_birth
+ * @property string|null $date_of_birth
  * @property string|null $school_company
  * @property string|null $civil_status
  * @property-read \App\Models\Employee|null $employee
@@ -2019,7 +2023,7 @@ namespace App\Models{
  * @property string|null $level
  * @property float|null $rating
  * @property string|null $exam_place
- * @property \Illuminate\Support\Carbon|null $exam_date
+ * @property string|null $exam_date
  * @property string|null $license_no
  * @property string|null $license_validity
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -2057,8 +2061,8 @@ namespace App\Models{
  * @property string|null $slug
  * @property string|null $employee_slug
  * @property string|null $employee_no
- * @property \Illuminate\Support\Carbon|null $date_from
- * @property \Illuminate\Support\Carbon|null $date_to
+ * @property string|null $date_from
+ * @property string|null $date_to
  * @property string|null $position
  * @property string|null $company
  * @property string|null $salary
@@ -2513,8 +2517,8 @@ namespace App\Models{
  * @property string|null $spdate
  * @property string|null $status
  * @property string|null $remarks
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -2593,16 +2597,16 @@ namespace App\Models{
  * @property int|null $sequence_no
  * @property string|null $title
  * @property string|null $type
- * @property \Illuminate\Support\Carbon|null $date_from
- * @property \Illuminate\Support\Carbon|null $date_to
+ * @property string|null $date_from
+ * @property string|null $date_to
  * @property string|null $detailed_period
  * @property float|null $hours
  * @property string|null $conducted_by
  * @property string|null $venue
  * @property string|null $remarks
  * @property int|null $is_relevant
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -2653,8 +2657,8 @@ namespace App\Models{
  * @property string|null $employee_no
  * @property string|null $name
  * @property string|null $address
- * @property \Illuminate\Support\Carbon|null $date_from
- * @property \Illuminate\Support\Carbon|null $date_to
+ * @property string|null $date_from
+ * @property string|null $date_to
  * @property float|null $hours
  * @property string|null $position
  * @property-read \App\Models\Employee|null $employee
@@ -2683,8 +2687,8 @@ namespace App\Models{
  * @property string|null $slug
  * @property string|null $fund_source_id
  * @property string|null $description
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -3353,6 +3357,7 @@ namespace App\Models\HRU{
  * @property string|null $locked_at
  * @property string|null $user_unlocked
  * @property string|null $unlocked_at
+ * @property int|null $project_id
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\HRU\PayrollMasterDetails> $hmtDetails
  * @property-read int|null $hmt_details_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\HRU\PayrollMasterEmployees> $payrollMasterEmployees
@@ -3367,6 +3372,7 @@ namespace App\Models\HRU{
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereIpUpdated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereIsLocked($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereLockedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereProjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereUnlockedAt($value)
@@ -3940,8 +3946,8 @@ namespace App\Models{
  * @property string|null $user_updated
  * @property string|null $ip_created
  * @property string|null $ip_updated
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\Employee|null $employee
@@ -4442,17 +4448,37 @@ namespace App\Models\PPU{
  * @property int|null $lm
  * @property int|null $payroll_vis
  * @property int|null $payroll_lm
- * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection<int, PPURespCodes> $children
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\PPU\PPURespCodes[] $children
  * @property-read int|null $children_count
  * @property-read \App\Models\PPU\RCDesc|null $description
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Employee> $employees
  * @property-read int|null $employees_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PPU\Pap> $papCodes
  * @property-read int|null $pap_codes_count
- * @property-read PPURespCodes|null $parent
+ * @property-read \App\Models\PPU\PPURespCodes|null $parent
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\PPU\PPURespCodes[] $ancestors The model's recursive parents.
+ * @property-read int|null $ancestors_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\PPU\PPURespCodes[] $ancestorsAndSelf The model's recursive parents and itself.
+ * @property-read int|null $ancestors_and_self_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\PPU\PPURespCodes[] $bloodline The model's ancestors, descendants and itself.
+ * @property-read int|null $bloodline_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\PPU\PPURespCodes[] $childrenAndSelf The model's direct children and itself.
+ * @property-read int|null $children_and_self_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\PPU\PPURespCodes[] $descendants The model's recursive children.
+ * @property-read int|null $descendants_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\PPU\PPURespCodes[] $descendantsAndSelf The model's recursive children and itself.
+ * @property-read int|null $descendants_and_self_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\PPU\PPURespCodes[] $parentAndSelf The model's direct parent and itself.
+ * @property-read int|null $parent_and_self_count
+ * @property-read \App\Models\PPU\PPURespCodes|null $rootAncestor The model's topmost parent.
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\PPU\PPURespCodes[] $siblings The parent's other children.
+ * @property-read int|null $siblings_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\PPU\PPURespCodes[] $siblingsAndSelf All the parent's children.
+ * @property-read int|null $siblings_and_self_count
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection<int, static> all($columns = ['*'])
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes breadthFirst()
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes depthFirst()
+ * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes doesntHaveChildren()
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection<int, static> get($columns = ['*'])
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes getExpressionGrammar()
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes hasChildren()
@@ -4463,7 +4489,7 @@ namespace App\Models\PPU{
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes newQuery()
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes query()
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes tree($maxDepth = null)
- * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes treeOf(callable $constraint, $maxDepth = null)
+ * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes treeOf(\Illuminate\Database\Eloquent\Model|callable $constraint, $maxDepth = null)
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes whereAlias($value)
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes whereCreatedAt($value)
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|PPURespCodes whereDepartment($value)
@@ -4636,12 +4662,12 @@ namespace App\Models{
  * @property string|null $slug
  * @property string|null $ps_id
  * @property string|null $employee_no
- * @property \Illuminate\Support\Carbon|null $date
+ * @property string|null $date
  * @property string|null $time_out
  * @property string|null $time_in
  * @property int|null $with_ps
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -4684,8 +4710,8 @@ namespace App\Models{
  * @property string|null $department_unit_id
  * @property string|null $name
  * @property int|null $is_vacant
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -4725,8 +4751,8 @@ namespace App\Models{
  * @property string|null $color
  * @property int|null $is_active
  * @property string|null $project_address
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -4765,11 +4791,11 @@ namespace App\Models{
  * @property string|null $description
  * @property string|null $mooe
  * @property string|null $co
- * @property \Illuminate\Support\Carbon|null $date_started
- * @property \Illuminate\Support\Carbon|null $projected_date_end
+ * @property string|null $date_started
+ * @property string|null $projected_date_end
  * @property string|null $project_in_charge
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -4821,7 +4847,7 @@ namespace App\Models\QC{
  * @property string|null $middlename
  * @property string|null $name_ext
  * @property string|null $fullname
- * @property \Illuminate\Support\Carbon|null $date_of_birth
+ * @property string|null $date_of_birth
  * @property string|null $place_of_birth
  * @property string|null $sex
  * @property string|null $civil_status
@@ -4857,13 +4883,13 @@ namespace App\Models\QC{
  * @property string|null $ta
  * @property string|null $cs_eligibility
  * @property string|null $cs_eligibility_level
- * @property \Illuminate\Support\Carbon|null $firstday_gov
- * @property \Illuminate\Support\Carbon|null $firstday_sra
- * @property \Illuminate\Support\Carbon|null $appointment_date
- * @property \Illuminate\Support\Carbon|null $adjustment_date
+ * @property string|null $firstday_gov
+ * @property string|null $firstday_sra
+ * @property string|null $appointment_date
+ * @property string|null $adjustment_date
  * @property string|null $is_active
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -5060,7 +5086,7 @@ namespace App\Models\QC{
  * @property int $id
  * @property string|null $employee_no
  * @property string|null $fullname
- * @property \Illuminate\Support\Carbon|null $date_of_birth
+ * @property string|null $date_of_birth
  * @property string|null $school_company
  * @property string|null $civil_status
  * @property-read \App\Models\Employee|null $employee
@@ -5133,7 +5159,7 @@ namespace App\Models\QC{
  * @property string|null $level
  * @property float|null $rating
  * @property string|null $exam_place
- * @property \Illuminate\Support\Carbon|null $exam_date
+ * @property string|null $exam_date
  * @property string|null $license_no
  * @property string|null $license_validity
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -5169,8 +5195,8 @@ namespace App\Models\QC{
  * @property int $id
  * @property string|null $slug
  * @property string|null $employee_no
- * @property \Illuminate\Support\Carbon|null $date_from
- * @property \Illuminate\Support\Carbon|null $date_to
+ * @property string|null $date_from
+ * @property string|null $date_to
  * @property string|null $position
  * @property string|null $company
  * @property string|null $salary
@@ -5603,8 +5629,8 @@ namespace App\Models\QC{
  * @property string|null $spdate
  * @property string|null $status
  * @property string|null $remarks
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -5679,16 +5705,16 @@ namespace App\Models\QC{
  * @property int|null $sequence_no
  * @property string|null $title
  * @property string|null $type
- * @property \Illuminate\Support\Carbon|null $date_from
- * @property \Illuminate\Support\Carbon|null $date_to
+ * @property string|null $date_from
+ * @property string|null $date_to
  * @property string|null $detailed_period
  * @property float|null $hours
  * @property string|null $conducted_by
  * @property string|null $venue
  * @property string|null $remarks
  * @property int|null $is_relevant
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -5737,8 +5763,8 @@ namespace App\Models\QC{
  * @property string|null $employee_no
  * @property string|null $name
  * @property string|null $address
- * @property \Illuminate\Support\Carbon|null $date_from
- * @property \Illuminate\Support\Carbon|null $date_to
+ * @property string|null $date_from
+ * @property string|null $date_to
  * @property float|null $hours
  * @property string|null $position
  * @property-read \App\Models\Employee|null $employee
@@ -5816,13 +5842,33 @@ namespace App\Models{
  * @property int $id
  * @property string|null $rc_code
  * @property string|null $parent_rc_code
- * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection<int, RCCodeTree> $children
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\RCCodeTree[] $children
  * @property-read int|null $children_count
- * @property-read RCCodeTree|null $parent
+ * @property-read \App\Models\RCCodeTree|null $parent
  * @property-read \App\Models\PPU\PPURespCodes|null $respCenter
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\RCCodeTree[] $ancestors The model's recursive parents.
+ * @property-read int|null $ancestors_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\RCCodeTree[] $ancestorsAndSelf The model's recursive parents and itself.
+ * @property-read int|null $ancestors_and_self_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\RCCodeTree[] $bloodline The model's ancestors, descendants and itself.
+ * @property-read int|null $bloodline_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\RCCodeTree[] $childrenAndSelf The model's direct children and itself.
+ * @property-read int|null $children_and_self_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\RCCodeTree[] $descendants The model's recursive children.
+ * @property-read int|null $descendants_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\RCCodeTree[] $descendantsAndSelf The model's recursive children and itself.
+ * @property-read int|null $descendants_and_self_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\RCCodeTree[] $parentAndSelf The model's direct parent and itself.
+ * @property-read int|null $parent_and_self_count
+ * @property-read \App\Models\RCCodeTree|null $rootAncestor The model's topmost parent.
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\RCCodeTree[] $siblings The parent's other children.
+ * @property-read int|null $siblings_count
+ * @property-read \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection|\App\Models\RCCodeTree[] $siblingsAndSelf All the parent's children.
+ * @property-read int|null $siblings_and_self_count
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection<int, static> all($columns = ['*'])
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree breadthFirst()
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree depthFirst()
+ * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree doesntHaveChildren()
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection<int, static> get($columns = ['*'])
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree getExpressionGrammar()
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree hasChildren()
@@ -5833,7 +5879,7 @@ namespace App\Models{
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree newQuery()
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree query()
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree tree($maxDepth = null)
- * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree treeOf(callable $constraint, $maxDepth = null)
+ * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree treeOf(\Illuminate\Database\Eloquent\Model|callable $constraint, $maxDepth = null)
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree whereDepth($operator, $value = null)
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree whereId($value)
  * @method static \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder|RCCodeTree whereParentRcCode($value)
@@ -5887,8 +5933,8 @@ namespace App\Models{
  * @property string|null $employee_name
  * @property string|null $employee_position
  * @property int|null $type
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property string|null $user_created
@@ -6607,6 +6653,45 @@ namespace App\Models\Temp\Sida{
 	class Regions extends \Eloquent {}
 }
 
+namespace App\Models\Temp{
+/**
+ * App\Models\Temp\Temp
+ *
+ * @property int $id
+ * @property string|null $slug
+ * @property string|null $lastname
+ * @property string|null $firstname
+ * @property string|null $middlename
+ * @property string|null $name_ext
+ * @property string|null $birthday
+ * @property string|null $sex
+ * @property string|null $civil_status
+ * @property int|null $item_no
+ * @property string|null $tin
+ * @property string|null $date_of_original_appt
+ * @property string|null $date_of_last_promotion
+ * @property string|null $bp_number
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereBirthday($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereBpNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereCivilStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereDateOfLastPromotion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereDateOfOriginalAppt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereFirstname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereItemNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereLastname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereMiddlename($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereNameExt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereSex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Temp whereTin($value)
+ */
+	class Temp extends \Eloquent {}
+}
+
 namespace App\Models{
 /**
  * App\Models\User
@@ -6648,8 +6733,6 @@ namespace App\Models{
  * @property-read int|null $access_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $actions
  * @property-read int|null $actions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
- * @property-read int|null $activities_count
  * @property-read \App\Models\Employee|null $employee
  * @property-read \App\Models\Employee|null $employeeUnion
  * @property-read mixed $fullname

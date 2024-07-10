@@ -42,11 +42,11 @@
         @endphp
         @if(!empty($noItems) && $noItems->count() > 0)
             <div class="callout callout-danger" style="margin-top: 10px">
-                <h4>Warning! Please assign Plantilla Item No. on the following active {{str_plural('employee',$noItems)}}: {{$noItems->count()}}</h4>
+                <h4>Warning! Please assign Plantilla Item No. on the following ACTIVE {{str_plural('employee',$noItems)}} (or mark them as inactive): {{$noItems->count()}}</h4>
                 <div class="row">
                     @forelse($noItems as $noItem)
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
-                            • <a href="{{route('dashboard.employee.edit',$noItem->slug)}}">{{$noItem->full['FMiLE']}}}}</a>
+                            • <a href="{{route('dashboard.employee.edit',$noItem->slug)}}">{{$noItem->full['FMiLE']}}</a>
                         </div>
                     @empty
                     @endforelse
