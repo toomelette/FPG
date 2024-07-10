@@ -500,7 +500,7 @@
                         {!! \App\Swep\ViewHelpers\__form2::select('item_no',[
                          'label' => 'Item No.:',
                          'cols' => 3,
-                         'options' => \App\Swep\Helpers\Arrays::payPlantillasWithItemNumber(),
+                         'options' => [],
                          'id' => 'item_no',
                         ],$employee ?? null) !!}
 
@@ -519,13 +519,13 @@
                         {!! \App\Swep\ViewHelpers\__form2::select('salary_grade',[
                          'label' => 'JG *:',
                          'cols' => 1,
-                         'placeholder' => 'Salagry Grade',
+                         'class' => 'sgXsi',
                          'options' => \App\Swep\Helpers\Arrays::jobGradeLevels(),
                         ],$employee ?? null) !!}
                         {!! \App\Swep\ViewHelpers\__form2::select('step_inc',[
                          'label' => 'SI *:',
                          'cols' => 1,
-                         'placeholder' => 'Step Increment',
+                         'class' => 'sgXsi',
                          'options' => \App\Swep\Helpers\Arrays::stepIncements(),
                         ],$employee ?? null) !!}
                       </div>
@@ -540,6 +540,7 @@
                         {!! \App\Swep\ViewHelpers\__form2::textbox('monthly_basic',[
                          'label' => 'Monthly Basic:',
                          'cols' => 2,
+                         'id' => 'monthly_basic',
                         ],$employee ?? null) !!}
 
                         {!! \App\Swep\ViewHelpers\__form2::textbox('food_subsidy',[
@@ -1841,7 +1842,19 @@
       }
     })
 
-  $("#item_no").select2();
+    var data = {!! \App\Swep\Helpers\Arrays::payPlantillasWithItemNumberAndDetails() !!};
+    $("#item_no").select2({data: data});
+    $('#item_no').on('select2:select', function (e) {
+      var data = e.params.data;
+      $("input[name='position']").val(data.position);
+      $("select[name='salary_grade']").val(data.salary_grade);
+      $("select[name='step_inc']").val(data.step_inc);
+      $('.sgXsi').trigger('change');
+    });
+
+    $('#item_no').val({{$employee->item_no}});
+    $('#item_no').trigger('change');
+
     $("#employee_photo").uploader({
       defaultValue: [
         @if($employee->photo != null && File::exists(public_path('symlink/employee_pics/uploaded/'.$employee->photo)))
@@ -1941,6 +1954,11 @@
         $(".is_active_toggle").removeClass('hidden');
       }
     })
+
+    $("body").on('change','.sgXsi',function(){
+        var jobGrades = {!! \App\Swep\Helpers\Arrays::jobGrades() !!};
+        $("#monthly_basic").val($.number(jobGrades[$('select[name="salary_grade"]').val()][$('select[name="step_inc"]').val()],2));
+    });
   </script>
 
 @endsection

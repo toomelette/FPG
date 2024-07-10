@@ -3,6 +3,7 @@
 namespace App\Swep\Repositories;
  
 use App\Swep\BaseClasses\BaseRepository;
+use App\Swep\Helpers\Helper;
 use App\Swep\Interfaces\EmployeeInterface;
 
 use App\Models\EmployeeAddress;
@@ -124,7 +125,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
         $employee->item_no = $request->item_no;
         $employee->salary_grade = $request->salary_grade;
         $employee->step_inc = $request->step_inc;
-        $employee->monthly_basic = $this->__dataType->string_to_num($request->monthly_basic);
+        $employee->monthly_basic = Helper::sanitizeAutonum($request->monthly_basic);
         $employee->aca = $this->__dataType->string_to_num($request->aca);
         $employee->pera = $this->__dataType->string_to_num($request->pera);
         $employee->food_subsidy = $this->__dataType->string_to_num($request->food_subsidy);

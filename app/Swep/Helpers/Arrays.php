@@ -86,6 +86,20 @@ class Arrays
         })->toArray();
     }
 
+    public static function payPlantillasWithItemNumberAndDetails(){
+
+        $pps = HRPayPlanitilla::query()->select('item_no','position','original_job_grade','original_job_grade_si')->get();
+        return $pps->map(function ($data){
+            return [
+                'id' =>$data->item_no,
+                'text' => $data->item_no.' - '.$data->position,
+                'position' => $data->position,
+                'salary_grade' => $data->original_job_grade,
+                'step_inc' => $data->original_job_grade_si,
+            ];
+        });
+    }
+
     public static function portals(){
         return [
             'ACCOUNTING' => 'ACCOUNTING',
