@@ -34,6 +34,18 @@ class Helper
         ];
     }
 
+    public static function sortEduc($level){
+        if($level == 'COLLEGE'){
+            return 10;
+        }elseif($level == 'GRADUATE STUDIES'){
+            return  11;
+        }elseif($level == 'SECONDARY'){
+            return  9;
+        }else{
+            return  1;
+        }
+    }
+
 
     public static function online_badge($lastActivity,$fullwidth = true){
 

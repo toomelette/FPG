@@ -117,6 +117,8 @@
 
 {{--<body onload="window.print();" onafterprint="window.close()">--}}
 <body>
+
+
     @foreach($planitillaArray as $k => $pls)
     <div class="printable"
          style="break-after: {{$request->separate_page_per_table == true ? 'page' : 'none'}};
@@ -190,7 +192,18 @@
                                         @break
                                         @case('educ_att')
                                             <td>
-                                                {{$division->incumbentEmployee?->employeeEducationalBackground?->last()?->course}}
+                                                {{$division->incumbentEmployee?->employeeEducationalBackground
+                                                    ?->sortBy(function ($data){
+                                                        Helper::sortEduc($data->level);
+                                                    })
+                                                    ?->last()
+                                                    ?->course
+                                                }}
+                                            </td>
+                                            @break
+                                        @case('appointment_status')
+                                            <td>
+                                                {{$division->incumbentEmployee?->appointment_status}}
                                             </td>
                                             @break
                                         @case('eligibility')
@@ -240,7 +253,18 @@
                                                     @break
                                                 @case('educ_att')
                                                     <td>
-                                                        {{$section->incumbentEmployee?->employeeEducationalBackground?->last()?->course}}
+                                                        {{$section->incumbentEmployee?->employeeEducationalBackground
+                                                            ?->sortBy(function ($data){
+                                                                Helper::sortEduc($data->level);
+                                                            })
+                                                            ?->last()
+                                                            ?->course
+                                                        }}
+                                                    </td>
+                                                    @break
+                                                @case('appointment_status')
+                                                    <td>
+                                                        {{$section->incumbentEmployee?->appointment_status}}
                                                     </td>
                                                     @break
                                                 @case('eligibility')
@@ -286,7 +310,19 @@
                                                         @break
                                                     @case('educ_att')
                                                         <td>
-                                                            {{$item->incumbentEmployee?->employeeEducationalBackground?->last()?->course}}
+                                                            {{$item->incumbentEmployee?->employeeEducationalBackground
+                                                                ?->sortBy(function ($data){
+                                                                    Helper::sortEduc($data->level);
+                                                                })
+                                                                ?->last()
+                                                                ?->course
+                                                            }}
+
+                                                        </td>
+                                                        @break
+                                                    @case('appointment_status')
+                                                        <td>
+                                                            {{$item->incumbentEmployee?->appointment_status}}
                                                         </td>
                                                         @break
                                                     @case('eligibility')
