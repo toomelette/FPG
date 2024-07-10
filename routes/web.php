@@ -1447,7 +1447,7 @@ Route::get('/udpateFromExcel',function (){
         $emp->appointment_date = Helper::dateFormat($temp->date_of_original_appt,'Y-m-d');
         $emp->adjustment_date = Helper::dateFormat($temp->date_of_last_promotion,'Y-m-d');
         $emp->gsis = $temp->bp_number;
-        $emp->save();
+//        $emp->save();
     }
     dd($nonExistent);
     return 1;

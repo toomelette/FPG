@@ -47,7 +47,7 @@ class Employee extends Model{
     ];
 
 	use Sortable, LogsActivity;
-//	protected $connection = 'mysql_qc_server';
+//	protected $connection = 'server5';
     protected $table = 'hr_employees';
     protected $primaryKey = 'slug';
     public $incrementing = false;

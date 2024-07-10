@@ -34,6 +34,7 @@
 <script type="text/javascript" src="{{asset('template/plugins/autoNumeric/autoNumeric.js')}}"></script>
 
 <script type="text/javascript" src="{{ asset('js/app.js') }}?a={{\Illuminate\Support\Str::random()}}"></script>
+<script type="text/javascript" src="{{ asset('js/app2.js') }}?a={{\Illuminate\Support\Str::random()}}"></script>
 
 <script type="text/javascript" src="{{asset('template/plugins/moment/moment.js')}}"></script>
 <script type="text/javascript" src="{{ asset('template/bower_components/fullcalendar/dist/fullcalendar.min.js') }}"></script>
