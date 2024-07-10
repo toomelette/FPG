@@ -37,7 +37,7 @@
             broadcaster: 'pusher',
             key: 'abcdefg',
             wsHost: window.location.hostname,
-            wsPort: 3232,
+            wsPort: 5001,
             forceTLS: false,
             disableStats: true,
         });

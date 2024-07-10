@@ -38,7 +38,7 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'host' => '127.0.0.1',
-                'port' => 3232,
+                'port' => env('SWEP_AFD_WS_PORT'),
                 'scheme' => 'http',
                 'encrypted' => true,
             ],
