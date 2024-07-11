@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Events\MisRequest\NewRequest;
 use App\Http\Requests\MisRequests\MisRequestsFormRequest;
 use App\Models\MisRequests;
 use App\Models\MisRequestsEmailRecipients;
@@ -75,6 +76,7 @@ class MisRequestsController extends Controller
                 abort(503,'Error sending email verification: '.$e->getMessage());
             }
 
+            event(new NewRequest($r));
             return $r->only(['slug','request_no']);
 
         }
