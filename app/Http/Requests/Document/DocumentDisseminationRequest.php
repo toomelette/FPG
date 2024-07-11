@@ -27,7 +27,7 @@ class DocumentDisseminationRequest extends FormRequest{
         	'employee'=>'nullable|array',
             'email_contact'=>'nullable|array',
             'subject'=>'required|string|max:255',
-            'content'=>'nullable|string',
+            'content'=>'nullable|string|max:10000',
 
         ];
 
