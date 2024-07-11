@@ -105,6 +105,14 @@
 <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 <script type="text/javascript" src="{{ asset('template/plugins/sortable-scrollable-fixed-header/js/scrollableTable.js') }}"></script>
 
+@if(Auth::check())
+    @if(Carbon::now()->format('m-d') == substr(Auth::user()->employee->date_of_birth,5))
+        @if(!isset($_COOKIE['bdayBanner-'.Auth::user()->user_id.'-'.Carbon::now()->format('Ymd')]) || $_COOKIE['bdayBanner-'.Auth::user()->user_id.'-'.Carbon::now()->format('Ymd')] != 1)
+            @include('layouts.js-bday')
+        @endif
+    @endif
+@endif
+
 <script type="text/javascript">
 
 </script>

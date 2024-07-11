@@ -23,6 +23,7 @@
 
   <body class="hold-transition fixed {!! Auth::check() ? __sanitize::html_encode(Auth::user()->color) : '' !!}" theme="{!! Auth::check() ? __sanitize::html_encode(Auth::user()->color) : '' !!}">
 
+
     <div id="loader"></div>
 
     <div class="wrapper">
@@ -66,6 +67,14 @@
       <span style="color:white;font-size: 56px;"><i class="fa fa-spin fa-spinner"></i></span>
       <img src="">
     </div>
+
+    @if(Auth::check())
+      @if(Carbon::now()->format('m-d') == substr(Auth::user()->employee->date_of_birth,5))
+        @if(!isset($_COOKIE['bdayBanner-'.Auth::user()->user_id.'-'.Carbon::now()->format('Ymd')]) || $_COOKIE['bdayBanner-'.Auth::user()->user_id.'-'.Carbon::now()->format('Ymd')] != 1)
+          @include('dashboard.public.bday-banner')
+        @endif
+      @endif
+    @endif
     @include('layouts.js-plugins')
 
     @yield('modals')
@@ -257,6 +266,7 @@
             }
         })
       })
+
 
     </script>
 

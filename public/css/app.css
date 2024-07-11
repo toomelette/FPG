@@ -859,3 +859,18 @@ li.has-error>a{
 .jq-toast-heading{
     font-weight: bold;
 }
+
+
+#bday_box{
+    top: 0px;
+    left: 0px;
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: fixed;
+    cursor: pointer;
+    text-align: center;
+    z-index: 999;
+    background-color: rgba(12, 59, 35, 0.85);
+}

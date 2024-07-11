@@ -9,7 +9,7 @@
 @section('content2')
 
     <section class="content">
-        Content
+
 
     </section>
 
@@ -23,7 +23,9 @@
 
 @section('scripts')
     <script>
-        var module = { };
+
+
+
     </script>
 
 
