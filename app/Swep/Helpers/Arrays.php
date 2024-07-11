@@ -871,7 +871,6 @@ class Arrays
             $deds->where('groupings','=',$groupings);
         }
         $deds = $deds->get();
-
         return $deds->mapWithKeys(function ($data){
             return [
                 $data->excel_header => $data,

@@ -507,6 +507,7 @@ class PayrollPreparationController
                 case 'SUGAREAP' :
                 case 'ACCTREC' :
                 case 'HDMF' :
+                case 'AR' :
                     return $this->hdmfUpload($payrollMaster,$request);
             }
         }
@@ -600,8 +601,11 @@ class PayrollPreparationController
         $data = $excel[0];
 
         $headers = $data[0];
+
         $headersFlipped = collect($headers)->flip();
+
         array_forget($data,0);
+
         $rowsExceptHeaders = $data;
         $deductionsToBeInserted = [];
         $deductions = Arrays::deductionsExcelHeader($request->type);
@@ -623,9 +627,9 @@ class PayrollPreparationController
                         'amount' => $row[$headersFlipped[$excelHeader]] ?? 0,
                     ]);
                 }
+
             }
         }
-
         TemplateDeductions::query()->upsert($upsertValues,
             ['employee_slug','deduction_code'],
             ['priority','amount']

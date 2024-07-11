@@ -73,6 +73,7 @@
                             'SURECCO' => 'SURECCO',
                             'SUDEMUPCO' => 'SUDEMUPCO',
                             'SUGAREAP' => 'SUGAREAP',
+                            'AR' => 'AR',
                         ]
                    ]) !!}
                     {!! \App\Swep\ViewHelpers\__form2::textbox('file',[
@@ -106,10 +107,12 @@
                 success: function (res) {
                     $("#payroll_table").html(res);
                     unwait_this_button(btn);
+                    toast('info','Payroll successfully recomputed.','Success!');
                 },
                 error: function (res) {
                     toast('warning',res.responseJSON.message,'Error!');
                     unwait_this_button(btn);
+
                 }
             })
         }
