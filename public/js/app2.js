@@ -484,6 +484,7 @@ $("body").on("click",".remove_row_btn",function () {
 })
 
 
+
 function toast(type,message,heading = null,hideAfter = 5000) {
     $.toast({
         text: message, // Text that is to be shown in the toast

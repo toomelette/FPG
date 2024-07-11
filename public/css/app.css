@@ -856,3 +856,6 @@ li.has-error>a{
 .deduction-subtotal{
     background-color: #fffdf5;
 }
+.jq-toast-heading{
+    font-weight: bold;
+}
