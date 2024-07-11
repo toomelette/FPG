@@ -601,6 +601,8 @@ class PayrollPreparationController
         $data = $excel[0];
 
         $headers = $data[0];
+        //remove null values
+        $headers = array_filter($headers,function ($value){ return !is_null($value) && $value != ''; });
 
         $headersFlipped = collect($headers)->flip();
 
