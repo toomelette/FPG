@@ -30,12 +30,17 @@ class CheckUserStatus{
 
     public function handle($request, Closure $next){
         if($this->auth->guard()->check()){
+            $user = Auth::user();
+            if($user->employee->is_active == 'INACTIVE'){
+                $user->is_activated = 0;
+                $user->save();
+            }
 
             if($this->auth->user()->is_activated == false){
 
                 $this->auth->logout();
                 $this->session->flush();
-                $this->session->flash('CHECK_NOT_ACTIVE', 'You have been DEACTIVATED! Please contact the designated IT Personel.');
+                $this->session->flash('CHECK_NOT_ACTIVE', 'Your account has been deactivated! It may be possible that you were marked as INACTIVE employee.');
                 return redirect('/');
 
             }

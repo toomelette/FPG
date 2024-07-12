@@ -90,7 +90,7 @@ class LoginController extends Controller{
             if($this->auth->user()->is_activated == false){
 
                 $this->session->flush();
-                $this->session->flash('AUTH_UNACTIVATED','Your account is currently UNACTIVATED! Please contact the designated IT Personel to activate your account.');
+                $this->session->flash('AUTH_UNACTIVATED','Your accounting is in DEACTIVATED status or you must have been an inactive employee. Please contact the designated IT Personnel to activate your account.');
                 $this->auth->logout();
 
             }else{
