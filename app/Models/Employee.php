@@ -123,7 +123,7 @@ class Employee extends Model{
 
     ];
 
-    protected $guarded = ['id','slug'];
+
 
 
     use LogsActivity, Ownership;
@@ -133,7 +133,7 @@ class Employee extends Model{
             ->useLogName($this->table)
             ->logAll()
             ->logExcept([
-                'created_at','updated_at','user_updated','user_created'
+                'created_at','updated_at','user_updated','user_created','ip_created','ip_updated',
             ])
             ->logOnlyDirty()
             ;

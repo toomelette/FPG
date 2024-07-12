@@ -1,5 +1,7 @@
 @extends('layouts.modal-content')
-
+@php
+  $rand = Str::random();
+@endphp
 @section('modal-header')
 {{(!empty($user->employee) ? $user->employee->lastname : $user->lastname)}}, {{(!empty($user->employee) ? $user->employee->firstname : $user->firstname)}}
 @endsection
@@ -60,13 +62,15 @@
             <div>
               <div class="row">
                 <div class="col-md-8">
-                  <i class="fa {{$menu['menu_obj']->icon}}"></i>
-                  <label>{{$menu['menu_obj']->name}}</label>
+                  <i class="fa {{$menu['menu_obj']->icon ?? ''}}"></i>
+                  <label>{{$menu['menu_obj']->name ?? ''}}</label>
                 </div>
                 <div class="col-md-4">
                   <div class="progress xs">
+                    @if($menus_with_count_submenus[$key] != 0)
                     <div class="progress-bar bg-green" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:{{count($menu['submenus'])/$menus_with_count_submenus[$key]*100}}%">
                     </div>
+                    @endif
                   </div>
                 </div>
 
@@ -75,7 +79,7 @@
                 @if(count($menu['submenus']) > 0)
                   @foreach($menu['submenus'] as $submenu)
                     <div class="col-md-4">
-                      <li>{{$submenu->name}}</li>
+                      <li>{{$submenu->name ?? ''}}</li>
                     </div>
                   @endforeach
                 @endif
@@ -87,45 +91,16 @@
       </div>
       <!-- /.tab-pane -->
       <div class="tab-pane" id="tab_3">
-        <table class="table table-condensed" id="table_logs">
+        <table class="table table-condensed" id="table_logs_{{$rand}}" style="width: 100%;">
           <thead>
             <tr>
-              <th>Action made</th>
-              <th>Task</th>
               <th>Timestamp</th>
-              <th></th>
+              <th>Event</th>
+              <th>Module</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
-            @if($user->actions->count() > 0)
-              @foreach($user->actions as $action)
-                <tr>
-                  <td>
-                    {{ucfirst($action->description)}} :
-                    {{substr($action->subject_type, strrpos($action->subject_type, "\\") + 1)}}
-                  </td>
-                  <td>
-                    @if(!empty($action->subject))
-                      {{$action->subject->slug}}
-                    @else
-                      @if(isset($action->properties['attributes']['slug']))
-                        {{$action->properties['attributes']['slug']}}
-                      @else
-                        N/A
-                      @endif
-                    @endif
-                  </td>
-                  <td>
-                    {{Carbon::parse($action->created_at)->format('Y-m-d | H:i:s')}}
-                  </td>
-
-                  <td>
-                    <button class="btn btn-success btn-xs activity_properties_btn" data="{{$action->id}}"><i class="fa fa-comment"></i></button>
-                  </td>
-
-                </tr>
-              @endforeach
-            @endif
 
           </tbody>
         </table>
@@ -142,8 +117,49 @@
 
 @section('scripts')
   <script>
-    $("#table_logs").DataTable({
-      "order": [[ 2, "desc" ]]
+    var logsTbl_{{$rand}} = $("#table_logs_{{$rand}}").DataTable({
+      'dom' : 'lBfrtip',
+      "processing": true,
+      "serverSide": true,
+      "ajax" : '{{route('dashboard.user.show',$user->user_id)}}',
+      "columns": [
+        { "data": "created_at" },
+        { "data": "event" },
+        { "data": "log_name" },
+        { "data": "details" },
+      ],
+      "buttons": [
+        {!! __js::dt_buttons() !!}
+      ],
+      "columnDefs":[
+        {
+          targets: 0,
+          class: 'w-30p'
+        },
+
+      ],
+      "responsive": true,
+      "initComplete": function( settings, json ) {
+
+      },
+      order:[[0,'desc']],
+      "language":
+              {
+                "processing": "<center><img style='width: 70px' src='{{asset("images/loader.gif")}}'></center>",
+              },
+      "drawCallback": function(settings){
+
+      }
+    })
+
+    style_datatable("#table_logs_{{$rand}}");
+
+    //Need to press enter to search
+    $('#table_logs_{{$rand}}_filter input').unbind();
+    $('#table_logs_{{$rand}}_filter input').bind('keyup', function (e) {
+      if (e.keyCode == 13) {
+        employees_tbl.search(this.value).draw();
+      }
     });
 
 

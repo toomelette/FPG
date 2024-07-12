@@ -291,6 +291,7 @@ class UserController extends Controller{
 
 
     public function store(UserFormRequest $request){
+
         if($request->create_from_employee == true){
 
             $employee = $this->findEmployeeBySlug($request->slug);
@@ -316,15 +317,40 @@ class UserController extends Controller{
         }
     }
 
-    public function show($slug){
+    public function show($slug,Request $request){
+
+        if($request->ajax() && $request->has('draw')){
+            $user = User::query()->where('user_id','=',$slug)->first();
+            $activityLogs = Activity::query()->where('causer_id','=',$user->id) ;
+
+            return DataTables::of($activityLogs)
+                ->addColumn('details',function($data){
+                    return $data->properties;
+                })
+                ->editColumn('created_at',function($data){
+                    return '<span style="font-family: Consolas">'.Helper::dateFormat($data->created_at,'M. d, Y | h:i A').'</span>';
+                })
+                ->editColumn('event',function($data){
+                    return strtoupper($data->event);
+                })
+                ->editColumn('log_name',function ($data){
+                    return ucwords(str_replace('_',' ',$data->log_name));
+                })
+                ->escapeColumns([])
+                ->setRowId('slug')
+                ->toJson();
+            return  1;
+        }
+
+
         $user = User::query()->with('actions')->where('slug',$slug)->first();
 
         $user_submenus = UserSubmenu::with('submenu')->where('user_id', $user->user_id)->get();
         $tree = [];
         $menus_with_count_submenus = [];
         foreach ($user_submenus as $user_submenu){
-            $tree[$user_submenu->submenu->menu->menu_id]['menu_obj'] = $user_submenu->submenu->menu;
-            $tree[$user_submenu->submenu->menu->menu_id]['submenus'][$user_submenu->submenu_id] = $user_submenu->submenu;
+            $tree[$user_submenu->submenu->menu->menu_id ?? '']['menu_obj'] = $user_submenu->submenu->menu ?? null;
+            $tree[$user_submenu->submenu->menu->menu_id ?? '']['submenus'][$user_submenu->submenu_id ?? ''] = $user_submenu->submenu ?? '';
         }
         $menus = Menu::withCount('submenu')->get();
         foreach ($menus as $menu){

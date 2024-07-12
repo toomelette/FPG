@@ -205,4 +205,9 @@ class User extends Authenticatable{
         return null;
     }
 
+
+    public function activityLogs(){
+        return $this->hasMany(Activity::class,'causer_id','id');
+    }
+
 }
