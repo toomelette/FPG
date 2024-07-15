@@ -93,8 +93,8 @@
                 "class" : 'w-8p',
             },
             {
-                "targets" : 3,
-                "class" : 'w-22p',
+                "targets" : 1,
+                "class" : 'w-40p',
             },
             {
                 "targets" : 4,

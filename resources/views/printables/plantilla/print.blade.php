@@ -176,15 +176,15 @@
 
                                         @case('actual_salary')
                                             @if(!empty($division->incumbentEmployee))
-                                                <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$division->incumbentEmployee->salary_grade][$division->incumbentEmployee->step_inc] ?? null)}} </td>
+                                                <td class="text-right">{{Helper::toNumber($jobGrades[$division->incumbentEmployee->salary_grade][$division->incumbentEmployee->step_inc] ?? null)}} </td>
                                             @else
-                                                <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$division->job_grade][$division->step_inc] ?? null)}}</td>
+                                                <td class="text-right">{{Helper::toNumber($jobGrades[$division->job_grade][$division->step_inc] ?? null)}}</td>
                                                 @break
                                             @endif
                                             @break
                                             @break
                                         @case('actual_salary_gcg')
-                                            <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$division->job_grade][$division->step_inc] ?? null)}}</td>
+                                            <td class="text-right">{{Helper::toNumber($jobGrades[$division->job_grade][$division->step_inc] ?? null)}}</td>
                                             @break
 
                                         @case('job_grade')
@@ -262,15 +262,15 @@
 
                                                 @case('actual_salary')
                                                     @if(!empty($section->incumbentEmployee))
-                                                        <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$section->incumbentEmployee->salary_grade][$section->incumbentEmployee->step_inc] ?? null)}} </td>
+                                                        <td class="text-right">{{Helper::toNumber($jobGrades[$section->incumbentEmployee->salary_grade][$section->incumbentEmployee->step_inc] ?? null)}} </td>
                                                     @else
-                                                        <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$section->job_grade][$section->step_inc] ?? null)}}</td>
+                                                        <td class="text-right">{{Helper::toNumber($jobGrades[$section->job_grade][$section->step_inc] ?? null)}}</td>
                                                         @break
                                                     @endif
                                                     @break
                                                     @break
                                                 @case('actual_salary_gcg')
-                                                    <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$section->job_grade][$section->step_inc] ?? null)}}</td>
+                                                    <td class="text-right">{{Helper::toNumber($jobGrades[$section->job_grade][$section->step_inc] ?? null)}}</td>
                                                     @break
 
                                                 @case('job_grade')
@@ -346,15 +346,15 @@
                                                     @break
                                                     @case('actual_salary')
                                                         @if(!empty($item->incumbentEmployee))
-                                                            <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$item->incumbentEmployee->salary_grade][$item->incumbentEmployee->step_inc] ?? null)}} </td>
+                                                            <td class="text-right">{{Helper::toNumber($jobGrades[$item->incumbentEmployee->salary_grade][$item->incumbentEmployee->step_inc] ?? null)}} </td>
                                                         @else
-                                                            <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$item->job_grade][$item->step_inc] ?? null)}}</td>
+                                                            <td class="text-right">{{Helper::toNumber($jobGrades[$item->job_grade][$item->step_inc] ?? null)}}</td>
                                                             @break
                                                         @endif
                                                         @break
                                                         @break
                                                     @case('actual_salary_gcg')
-                                                        <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$item->job_grade][$item->step_inc] ?? null)}}</td>
+                                                        <td class="text-right">{{Helper::toNumber($jobGrades[$item->job_grade][$item->step_inc] ?? null)}}</td>
                                                         @break
 
                                                     @case('job_grade')

@@ -36,6 +36,7 @@ class PlantillaController extends Controller{
     public function index(Request $request){
         if(request()->ajax() && $request->has('draw')){
             $plantilla = HRPayPlanitilla::query()->with('incumbentEmployee');
+            $jobGrades = Arrays::jobGrades();
             return DataTables::of($plantilla)
                 ->editColumn('position',function($data){
                     return $data->position.'
@@ -68,8 +69,11 @@ class PlantillaController extends Controller{
                 ->addColumn('orig_jg_si',function ($data){
                     return $data->job_grade.' - '.$data->step_inc;
                 })
-                ->addColumn('incumbent',function ($data){;
-                    return '<b>'.$data?->incumbentEmployee?->full_name .'</b>';
+                ->addColumn('incumbent',function ($data) use ($jobGrades){;
+                    return view('dashboard.plantilla.dtIncumbent')->with([
+                        'data' => $data,
+                        'jobGrades' => $jobGrades,
+                    ]);
                 })
                 ->escapeColumns([])
                 ->setRowId('id')
@@ -218,6 +222,7 @@ class PlantillaController extends Controller{
 //        dd($plsArr) ;
         return view('printables.plantilla.print')->with([
             'pls' => $plsArr,
+
         ]);
     }
 
@@ -282,6 +287,7 @@ class PlantillaController extends Controller{
             'planitillaArray' => $plsArr,
             'columns' => $request->columns,
             'request' => $request,
+            'jobGrades' => \App\Swep\Helpers\Arrays::jobGrades(),
         ]);
     }
 
