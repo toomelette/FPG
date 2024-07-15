@@ -39,11 +39,9 @@ class PlantillaController extends Controller{
             $jobGrades = Arrays::jobGrades();
             return DataTables::of($plantilla)
                 ->editColumn('position',function($data){
-                    return $data->position.'
-                    <div class="table-subdetail" style="margin-top: 3px">
-                    '.$data->department.($data->division != 'NONE' ? ' <i class="fa fa-chevron-right"></i> '.$data->division : '').($data->section != 'NONE' ? ' <i class="fa fa-chevron-right"></i> '.$data->section : '').'
-                    </div>
-                    ';
+                    return view('dashboard.plantilla.dtPosition')->with([
+                        'data'=> $data,
+                    ]);
                 })
                 ->addColumn('action',function ($data){
                     $uri = route('dashboard.plantilla.show',$data->id);
