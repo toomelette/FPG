@@ -145,7 +145,7 @@
                 DEPARTMENT: <b>{{$k}}</b>
             @endif
         </p>
-        <table style="width: 100%;" class="bordered">
+        <table style="width: 100%;" class="bordered tbl-padded">
             <thead>
                 <tr>
                     @foreach($columns as $column)
@@ -175,9 +175,34 @@
                                         @break
 
                                         @case('actual_salary')
+                                            @if(!empty($division->incumbentEmployee))
+                                                <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$division->incumbentEmployee->salary_grade][$division->incumbentEmployee->step_inc] ?? null)}} </td>
+                                            @else
+                                                <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$division->job_grade][$division->step_inc] ?? null)}}</td>
+                                                @break
+                                            @endif
+                                            @break
+                                            @break
                                         @case('actual_salary_gcg')
-                                        <td class="text-right">{{number_format($division->$column,2)}}</td>
-                                        @break
+                                            <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$division->job_grade][$division->step_inc] ?? null)}}</td>
+                                            @break
+
+                                        @case('job_grade')
+                                            @if(!empty($division->incumbentEmployee))
+                                                <td class="text-center">{{$division->incumbentEmployee->salary_grade}}</td>
+                                            @else
+                                                <td class="text-center">{{$division->$column}}</td>
+                                                @break
+                                            @endif
+                                            @break
+                                        @case('step_inc')
+                                            @if(!empty($division->incumbentEmployee))
+                                                <td class="text-center">{{$division->incumbentEmployee->step_inc}}</td>
+                                            @else
+                                                <td class="text-center">{{$division->$column}}</td>
+                                                @break
+                                            @endif
+                                            @break
 
                                         @case('adjustment_date')
                                         @case('appointment_date')
@@ -236,9 +261,35 @@
                                                 @break
 
                                                 @case('actual_salary')
+                                                    @if(!empty($section->incumbentEmployee))
+                                                        <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$section->incumbentEmployee->salary_grade][$section->incumbentEmployee->step_inc] ?? null)}} </td>
+                                                    @else
+                                                        <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$section->job_grade][$section->step_inc] ?? null)}}</td>
+                                                        @break
+                                                    @endif
+                                                    @break
+                                                    @break
                                                 @case('actual_salary_gcg')
-                                                    <td class="text-right">{{number_format($section->$column,2)}}</td>
-                                                @break
+                                                    <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$section->job_grade][$section->step_inc] ?? null)}}</td>
+                                                    @break
+
+                                                @case('job_grade')
+                                                    @if(!empty($section->incumbentEmployee))
+                                                        <td class="text-center">{{$section->incumbentEmployee->salary_grade}}</td>
+                                                    @else
+                                                        <td class="text-center">{{$section->$column}}</td>
+                                                        @break
+                                                    @endif
+                                                    @break
+                                                @case('step_inc')
+                                                    @if(!empty($section->incumbentEmployee))
+                                                        <td class="text-center">{{$section->incumbentEmployee->step_inc}}</td>
+                                                    @else
+                                                        <td class="text-center">{{$section->$column}}</td>
+                                                        @break
+                                                    @endif
+                                                    @break
+
 
                                                 @case('adjustment_date')
                                                 @case('appointment_date')
@@ -294,9 +345,35 @@
                                                     <td class="text-center"></td>
                                                     @break
                                                     @case('actual_salary')
-                                                    @case('actual_salary_gcg')
-                                                        <td class="text-right">{{number_format($item->$column,2)}}</td>
+                                                        @if(!empty($item->incumbentEmployee))
+                                                            <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$item->incumbentEmployee->salary_grade][$item->incumbentEmployee->step_inc] ?? null)}} </td>
+                                                        @else
+                                                            <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$item->job_grade][$item->step_inc] ?? null)}}</td>
+                                                            @break
+                                                        @endif
                                                         @break
+                                                        @break
+                                                    @case('actual_salary_gcg')
+                                                        <td class="text-right">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$item->job_grade][$item->step_inc] ?? null)}}</td>
+                                                        @break
+
+                                                    @case('job_grade')
+                                                        @if(!empty($item->incumbentEmployee))
+                                                            <td class="text-center">{{$item->incumbentEmployee->salary_grade}}</td>
+                                                        @else
+                                                            <td class="text-center">{{$item->$column}}</td>
+                                                            @break
+                                                        @endif
+                                                        @break
+                                                    @case('step_inc')
+                                                        @if(!empty($item->incumbentEmployee))
+                                                            <td class="text-center">{{$item->incumbentEmployee->step_inc}}</td>
+                                                        @else
+                                                            <td class="text-center">{{$item->$column}}</td>
+                                                            @break
+                                                        @endif
+                                                        @break
+
                                                     @case('adjustment_date')
                                                     @case('appointment_date')
                                                         <td class="text-right">
