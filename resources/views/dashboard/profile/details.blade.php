@@ -56,7 +56,7 @@
                     </div>
                     <div class="widget-user-image">
                         @if(!empty(Auth::user()->employee) && Auth::user()->employee->photo != null && file_exists(public_path(Auth::user()->employee->photo_path['50'])))
-                            <img class="img-circle" src="{{asset(Auth::user()->employee->photo_path['50'])}}" alt="User Avatar">
+                            <img class="img-circle" src="{{asset(Auth::user()->employee->photo_path['300'])}}" alt="User Avatar">
                         @else
                             <img class="img-circle" src="{{asset('images/avatar.jpeg')}}" alt="User Avatar">
                         @endif
