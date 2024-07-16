@@ -46,6 +46,7 @@ class ProfileController extends Controller{
             ->with([
                 'employee.employeeServiceRecord',
                 'employee.employeeTraining',
+                'employee.plantilla',
             ])
             ->find(\Auth::user()->id);
 

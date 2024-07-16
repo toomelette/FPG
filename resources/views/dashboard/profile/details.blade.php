@@ -37,6 +37,9 @@
 
     </style>
 
+    @php
+        /** @var User $user  **/
+    @endphp
     <section class="content">
         <div class="row">
             <div class="col-md-4">
@@ -48,7 +51,7 @@
                             {{(!empty($user->employee) ? $user->employee->firstname : $user->firstname)}}
                         </h3>
                         <h5 class="widget-user-desc">
-                            {{(!empty($user->employee) ? $user->employee->position : $user->position)}}
+                            {{$user->employee->plantilla->position ?? $user->employee->position}}
                         </h5>
                     </div>
                     <div class="widget-user-image">
@@ -94,29 +97,48 @@
 
                             <li class="bg-green" style="padding: 5px">
                                 <center>Employement Details</center>
-                                <li class="pad5">Location <span class="pull-right">{{(!empty($user->employee) ? $user->employee->locations : $user->locations)}}</span></li>
-                                @if(!empty($user->employee))
-                                    @if($user->employee->locations != 'RETIREE' && $user->employee->locations != 'COS')
-                                        <li class="pad5">Position <span class="pull-right">{{$user->employee->position}}</span></li>
-                                        <li class="pad5">Job Grade <span class="pull-right">{{$user->employee->salary_grade}}</span></li>
-                                        <li class="pad5">Step <span class="pull-right">{{$user->employee->step_inc}}</span></li>
-                                        <li class="pad5">Monthly basic <span class="pull-right">{{number_format($user->employee->monthly_basic,2)}}</span></li>
-                                        @if($user->employee->ra != 0.00)
-                                            <li class="pad5">Representation Allowance <span class="pull-right">{{number_format($user->employee->ra,2)}}</span></li>
-                                        @endif
-                                        @if($user->employee->ta != 0.00)
-                                            <li class="pad5">Transportation Allowance <span class="pull-right">{{number_format($user->employee->ta,2)}}</span></li>
-                                        @endif
-                                        <li class="pad5">First day in Government <span class="pull-right">{{\App\Swep\Helpers\Helper::dateFormat($user->employee->firstday_gov,'F d. Y')}}</span></li>
-                                        <li class="pad5">First day in SRA <span class="pull-right">{{\App\Swep\Helpers\Helper::dateFormat($user->employee->firstday_sra,'F d. Y')}}</span></li>
-                                        <li class="pad5">Date of last promotion <span class="pull-right">{{\App\Swep\Helpers\Helper::dateFormat($user->employee->adjustment_date,'F d. Y')}}</span></li>
-                                    @endif
-                                    @if($user->employee->locations == 'COS')
-                                        <li class="pad5">Position <span class="pull-right">{{$user->employee->position}}</span></li>
-                                        <li class="pad5">Monthly basic <span class="pull-right">{{number_format($user->employee->monthly_basic,2)}}</span></li>
-                                        @endif
-                                @endif
                             </li>
+                            <li class="pad5">
+                                Location
+                                <span class="pull-right">
+                                    {{$user->employee->locations ?? $user->locations}}
+                                </span>
+                            </li>
+                            <li class="pad5">
+                                Position
+                                <span class="pull-right">
+                                    {{$user->employee->plantilla->position ?? $user->employee->position}}
+                                </span>
+                            </li>
+
+                            <li class="pad5">
+                                JG/SG
+                                <span class="pull-right">
+                                        {{$user->employee->salary_grade}}
+                                    </span>
+                            </li>
+                            <li class="pad5">
+                                Step Increment
+                                <span class="pull-right">
+                                    {{$user->employee->step_inc}}
+                                </span>
+                            </li>
+                            <li class="pad5">
+                                Monthly Basic
+                                <span class="pull-right">
+                                    @if(!empty($user->employee->planitilla))
+                                        {{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$user->employee->salary_grade][$user->employee->step_inc] ?? null)}}
+                                    @else
+                                        {{\App\Swep\Helpers\Helper::toNumber($user->employee->monthly_basic)}}
+                                    @endif
+
+                                </span>
+                            </li>
+
+                            <li class="pad5">First day in Government <span class="pull-right">{{\App\Swep\Helpers\Helper::dateFormat($user->employee->firstday_gov,'F d. Y')}}</span></li>
+                            <li class="pad5">First day in SRA <span class="pull-right">{{\App\Swep\Helpers\Helper::dateFormat($user->employee->firstday_sra,'F d. Y')}}</span></li>
+                            <li class="pad5">Date of last promotion <span class="pull-right">{{\App\Swep\Helpers\Helper::dateFormat($user->employee->adjustment_date,'F d. Y')}}</span></li>
+
                             <li class="bg-blue pad5">
                                 <center>Activity</center>
                             </li>
@@ -130,15 +152,16 @@
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         @if(!empty(\Illuminate\Support\Facades\Auth::user()->employee))
-                            <li class="active"><a href="#tab_acc" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i> Account Settings</a></li>
-                            <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa icon-family"></i> Family Information</a></li>
+
+                            <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa icon-family"></i> Family Information</a></li>
                             <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false"><i class="fa icon-service-record"></i> Service Records</a></li>
                             <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false"><i class="fa icon-seminar"></i> Trainings/Seminars</a></li>
                             <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false"><i class="fa icon-seminar"></i> Credentials</a></li>
+                            <li class=""><a href="#tab_acc" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i> Account Settings</a></li>
                         @endif
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane active" id="tab_acc">
+                        <div class="tab-pane " id="tab_acc">
                             <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1">
                                 Select theme:
                             </p>
@@ -171,207 +194,141 @@
                         </div>
                         @if(!empty(\Illuminate\Support\Facades\Auth::user()->employee))
                             @php($emp = \Illuminate\Support\Facades\Auth::user()->employee)
-                            <div class="tab-pane" id="tab_1">
-                                <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
-                                    Father's Information
-                                    <span class="pull-right">
-{{--                                    <button class="btn btn-xs btn-success" id="enable_family_btn" type="button">Enable editing</button>--}}
-                                </span>
-                                </p>
-                                <form id="family_form">
-                                    <fieldset id="family_fieldset" disabled="disabled">
-                                        @php($family_detail = \Illuminate\Support\Facades\Auth::user()->employee->employeeFamilyDetail)
-                                        <div class="row">
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('father_firstname',[
-                                                'cols' => 3,
-                                                'label' => "Father's First name:",
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('father_middlename',[
-                                                'cols' => 3,
-                                                'label' => "Father's Middle name:",
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('father_lastname',[
-                                                'cols' => 3,
-                                                'label' => "Father's Last name:",
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::select('father_name_ext',[
-                                                'cols' => 3,
-                                                'label' => "Father's name extension:",
-                                                'options' => \App\Swep\Helpers\Helper::name_extensions(),
-                                            ],
-                                            $family_detail) !!}
-                                        </div>
-                                        <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1">
+                            <div class="tab-pane active" id="tab_1">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
+                                            Father's Information
+                                        </p>
+                                        <table class="table table-condensed">
+                                            <tbody>
+                                            <tr>
+                                                <td>Last Name:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->father_lastname ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>First Name:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->father_firstname ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Middle Name:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->father_middlename ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Name Ext:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->father_name_ext ?? ''}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
                                             Mother's Information
                                         </p>
-                                        <div class="row">
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('mother_firstname',[
-                                                'cols' => 3,
-                                                'label' => "Mother's First name:",
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('mother_middlename',[
-                                                'cols' => 3,
-                                                'label' => "Mother's Middle name:",
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('mother_lastname',[
-                                                'cols' => 3,
-                                                'label' => "Mother's Last name:",
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::select('mother_name_ext',[
-                                                'cols' => 3,
-                                                'label' => "Mother's name extension:",
-                                                'options' => \App\Swep\Helpers\Helper::name_extensions(),
-                                            ],
-                                            $family_detail) !!}
-                                        </div>
+                                        <table class="table table-condensed">
+                                            <tbody>
+                                            <tr>
+                                                <td>Last Name:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->mother_lastname ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>First Name:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->mother_firstname ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Middle Name:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->mother_middlename ?? ''}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
 
-                                        <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1">
+                                    <div class="col-md-4">
+                                        <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
                                             Spouse's Information
                                         </p>
-
-                                        <div class="row">
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('spouse_firstname',[
-                                                'cols' => 3,
-                                                'label' => "Spouse's First name:",
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('spouse_middlename',[
-                                                'cols' => 3,
-                                                'label' => "Spouse's Middle name:",
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('spouse_lastname',[
-                                                'cols' => 3,
-                                                'label' => "Spouse's Last name:",
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::select('spouse_name_ext',[
-                                                'cols' => 3,
-                                                'label' => "Spouse's name extension:",
-                                                'options' => \App\Swep\Helpers\Helper::name_extensions(),
-                                            ],
-                                            $family_detail) !!}
-                                        </div>
-                                        <div class="row">
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('spouse_birthdate',[
-                                                'cols' => 3,
-                                                'label' => "Spouse's Birthday:",
-                                                'type' => 'date',
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('spouse_occupation',[
-                                                'cols' => 3,
-                                                'label' => "Spouse's Occupation:",
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('spouse_employer',[
-                                                'cols' => 3,
-                                                'label' => "Spouse's Employer:",
-                                            ],
-                                            $family_detail) !!}
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('spouse_business_address',[
-                                                'cols' => 3,
-                                                'label' => "Spouse's Business Address:",
-                                            ],
-                                            $family_detail) !!}
-                                        </div>
-                                        <div class="row">
-                                            {!! \App\Swep\ViewHelpers\__form2::textbox('spouse_tel_no',[
-                                                'cols' => 3,
-                                                'label' => "Spouse's Phone Number:",
-                                            ],
-                                            $family_detail) !!}
-                                        </div>
-
-                                        <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1">
+                                        <table class="table table-condensed">
+                                            <tbody>
+                                            <tr>
+                                                <td>Last Name:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->spouse_lastname ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>First Name:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->spouse_firstname ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Middle Name:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->spouse_middlename ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Name Ext:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->spouse_name_ext ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Birthday:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->spouse_birthdate ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Occupation:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->spouse_occupation ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Employer:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->spouse_employer ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Business Address:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->spouse_business_address ?? ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tel No:</td>
+                                                <td class="text-strong text-uppercase">{{Auth::user()->employee->employeeFamilyDetail->spouse_tel_no ?? ''}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
                                             Children Information
                                         </p>
-                                        <button id="add_child_btn" type="button" class="btn btn-xs btn-info pull-right" style="margin-bottom: 5px"><i class="fa fa-plus"></i> Add child</button>
                                         @php($children = \Illuminate\Support\Facades\Auth::user()->employee->employeeChildren)
 
                                         <table id="children_table" style="width: 100%" class="table table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Birthday</th>
+                                                <th>Age</th>
+                                                <th>School/Company:</th>
+                                                <th>Civil Status</th>
+                                            </tr>
+                                            </thead>
                                             <tbody>
-                                                @if(!empty($children))
-                                                    @if($children->count() > 0)
-                                                        @foreach($children as $child)
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="row">
-                                                                        {!! \App\Swep\ViewHelpers\__form2::textbox('fullname[]',[
-                                                                            'cols' => 3,
-                                                                            'label' => "Fullname:",
-                                                                        ],
-                                                                        $child->fullname) !!}
-                                                                        {!! \App\Swep\ViewHelpers\__form2::textbox('date_of_birth[]',[
-                                                                            'cols' => 3,
-                                                                            'label' => "Birthday:",
-                                                                            'type' => 'date',
-                                                                        ],
-                                                                        Carbon::parse($child->date_of_birth)->format('Y-m-d')) !!}
-                                                                        {!! \App\Swep\ViewHelpers\__form2::textbox('school_company[]',[
-                                                                            'cols' => 3,
-                                                                            'label' => "School/Company:",
-                                                                        ],
-                                                                        $child->school_company) !!}
-                                                                        {!! \App\Swep\ViewHelpers\__form2::select('civil_status[]',[
-                                                                            'cols' => 3,
-                                                                            'label' => "Civil Status:",
-                                                                            'options' => \App\Swep\Helpers\Helper::civil_status(),
-                                                                        ],
-                                                                        $child->civil_status) !!}
-                                                                    </div>
-                                                                </td>
-                                                                <td style="width: 50px; vertical-align: middle">
-                                                                    <button class="btn btn-danger btn-sm remove_child_btn"><i class="fa fa-times"></i> </button>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @else
+                                            @if(!empty($children))
+                                                @if($children->count() > 0)
+                                                    @foreach($children as $child)
                                                         <tr>
-                                                            <td>
-                                                                <div class="row">
-                                                                    {!! \App\Swep\ViewHelpers\__form2::textbox("fullname[]",[
-                                                                        "cols" => 3,
-                                                                        "label" => "Fullname:",
-                                                                    ]) !!}
-                                                                    {!! \App\Swep\ViewHelpers\__form2::textbox("date_of_birth[]",[
-                                                                        "cols" => 3,
-                                                                        "label" => "Birthday:",
-                                                                        "type" => "date",
-                                                                    ]) !!}
-                                                                    {!! \App\Swep\ViewHelpers\__form2::textbox("school_company[]",[
-                                                                        "cols" => 3,
-                                                                        "label" => "School/Company:",
-                                                                    ]) !!}
-                                                                    {!! \App\Swep\ViewHelpers\__form2::select("civil_status[]",[
-                                                                        "cols" => 3,
-                                                                        "label" => "Civil Status:",
-                                                                        "options" => \App\Swep\Helpers\Helper::civil_status(),
-                                                                    ]) !!}
-                                                                </div>
-                                                            </td>
-                                                            <td style="width: 50px; vertical-align: middle">
-                                                                <button class="btn btn-danger btn-sm remove_child_btn"><i class="fa fa-times"></i> </button>
-                                                            </td>
+                                                            <td>{{$child->fullname}}</td>
+                                                            <td>{{Helper::dateFormat($child->date_of_birth)}}</td>
+                                                            <td>{{Carbon::parse($child->date_of_birth)->age}}</td>
+                                                            <td>{{$child->school_company}}</td>
+                                                            <td>{{$child->civil_status}}</td>
                                                         </tr>
-                                                    @endif
+                                                    @endforeach
+                                                @else
+                                                    <tr>
+                                                        <td colspan="5" class="text-center">No data found.</td>
+                                                    </tr>
                                                 @endif
+                                            @endif
                                             </tbody>
                                         </table>
+                                    </div>
+                                </div>
 
-                                        <div class="row" id="save_family_btn_container" style="display: none">
-                                            <div class="col-md-12">
-                                                <button type="submit" class="btn btn-sm btn-primary pull-right"><i class="fa fa-check"></i> Save</button>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </form>
+
                             </div>
                             <div class="tab-pane" id="tab_2">
 
