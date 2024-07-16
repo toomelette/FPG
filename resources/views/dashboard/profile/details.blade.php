@@ -47,8 +47,7 @@
 
                     <div class="widget-user-header bg-aqua-active">
                         <h3 class="widget-user-username">
-                            {{(!empty($user->employee) ? $user->employee->lastname : $user->lastname)}},
-                            {{(!empty($user->employee) ? $user->employee->firstname : $user->firstname)}}
+                            {{$user->employee->full['FMiLE'] ?? ''}}
                         </h3>
                         <h5 class="widget-user-desc">
                             {{$user->employee->plantilla->position ?? $user->employee->position}}
