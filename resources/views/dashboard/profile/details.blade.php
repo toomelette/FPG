@@ -397,103 +397,130 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="tab_4">
-                                <label>Credentials:</label>
-                                <div class="nav-tabs-custom">
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a href="#tab_educ" data-toggle="tab">Educational Background</a></li>
-                                        <li><a href="#tab_elig" data-toggle="tab">Eligibilities</a></li>
-                                        <li><a href="#tab_we" data-toggle="tab">Work Experience</a></li>
-                                    </ul>
-                                    <div class="tab-content">
+                                <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
+                                    Educational Background
+                                    <span class="pull-right">
+                                    </span>
+                                </p>
+                                <table class="table table-condensed table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Level</th>
+                                        <th>School</th>
+                                        <th>Course</th>
+                                        <th>Date from</th>
+                                        <th>Date to</th>
+                                        <th>Units earned</th>
+                                        <th>Year Graduated</th>
+                                        <th>Scholarship</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @if(!empty($emp->employeeEducationalBackground))
+                                        @if($emp->employeeEducationalBackground()->count() > 0)
+                                            @foreach($emp->employeeEducationalBackground as $educ_bg)
+                                                <tr>
+                                                    <td>{{$educ_bg->level}}</td>
+                                                    <td>{{$educ_bg->school_name}}</td>
+                                                    <td>{{$educ_bg->course}}</td>
+                                                    <td>{{$educ_bg->date_from}}</td>
+                                                    <td>{{$educ_bg->date_to}}</td>
+                                                    <td>{{$educ_bg->units}}</td>
+                                                    <td>{{$educ_bg->graduate_year}}</td>
+                                                    <td>{{$educ_bg->scholarship}}</td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="8" class="text-center"> No data found. </td>
+                                            </tr>
+                                        @endif
+                                    @endif
+                                    </tbody>
+                                </table>
 
-                                        <div class="tab-pane active" id="tab_educ">
-                                            <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
-                                                Educational Background
-                                                <span class="pull-right">
-{{--                                                    <button class="btn btn-xs btn-success" id="add_school_btn" type="button"><i class="fa fa-plus"></i> Add</button>--}}
-                                                </span>
-                                            </p>
-                                            <form id="educ_bg_form">
-                                                <table class="table table-bordered table-striped" id="educational_background_table">
-                                                    <tbody>
-                                                    @if(!empty($emp->employeeEducationalBackground))
-                                                        @if($emp->employeeEducationalBackground()->count() > 0)
-                                                            @foreach($emp->employeeEducationalBackground as $educ_bg)
-                                                                @include('ajax.employee.add_school',['data' => $educ_bg])
-                                                            @endforeach
-                                                        @else
-                                                            @include('ajax.employee.add_school')
-                                                        @endif
-                                                    @endif
-                                                    </tbody>
-                                                </table>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-{{--                                                        <button type="submit" class="btn btn-primary btn-sm pull-right"><i class="fa fa-check"></i> Save Educational Background</button>--}}
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
+                                <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
+                                    Eligibilities
+                                    <span class="pull-right">
+                                    </span>
+                                </p>
+                                <table class="table table-condensed table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Eligibility</th>
+                                        <th>Level</th>
+                                        <th>Rating</th>
+                                        <th>Place of Exam</th>
+                                        <th>Date of Exam</th>
+                                        <th>Lic. No.</th>
+                                        <th>Lic. validity</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @if(!empty($emp->employeeEligibility))
+                                        @if($emp->employeeEligibility->count() > 0)
+                                            @foreach($emp->employeeEligibility as $elig)
+                                                <tr>
+                                                    <td>{{$elig->eligibility}}</td>
+                                                    <td>{{$elig->level}}</td>
+                                                    <td>{{$elig->rating}}</td>
+                                                    <td>{{$elig->exam_place}}</td>
+                                                    <td>{{$elig->exam_date}}</td>
+                                                    <td>{{$elig->license_no}}</td>
+                                                    <td>{{$elig->license_validity}}</td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="8" class="text-center"> No data found. </td>
+                                            </tr>
+                                        @endif
+                                    @endif
+                                    </tbody>
+                                </table>
 
-                                        <div class="tab-pane" id="tab_elig">
-                                            <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
-                                                Eligibilities
-                                                <span class="pull-right">
-{{--                                                    <button class="btn btn-xs btn-success" id="add_elig_btn" type="button"><i class="fa fa-plus"></i> Add</button>--}}
-                                                </span>
-                                            </p>
-                                            <form id="elig_form">
-                                                <table class="table table-bordered table-striped" id="elig_table">
-                                                    <tbody>
-                                                        @if(!empty($emp->employeeEligibility))
-                                                            @if($emp->employeeEligibility->count() > 0)
-                                                                @foreach($emp->employeeEligibility as $elig)
-                                                                    @include('ajax.employee.add_eligibility',['data' => $elig])
-                                                                @endforeach
-                                                            @else
-                                                                @include('ajax.employee.add_eligibility')
-                                                            @endif
-                                                        @endif
-                                                    </tbody>
-                                                </table>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-{{--                                                        <button type="submit" class="btn btn-primary btn-sm pull-right"><i class="fa fa-check"></i> Save Eligibilities</button>--}}
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
 
-                                        <div class="tab-pane" id="tab_we">
-                                            <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
-                                                Work Experience
-                                                <span class="pull-right">
-{{--                                                    <button class="btn btn-xs btn-success" id="add_we_btn" type="button"><i class="fa fa-plus"></i> Add</button>--}}
-                                                </span>
-                                            </p>
-                                            <form id="we_form">
-                                                <table class="table table-bordered table-striped" id="we_table">
-                                                    <tbody>
-                                                    @if(!empty($emp->employeeExperience))
-                                                        @if($emp->employeeExperience->count() > 0)
-                                                            @foreach($emp->employeeExperience as $we)
-                                                                @include('ajax.employee.add_work_experience',['data' => $we])
-                                                            @endforeach
-                                                        @else
-                                                            @include('ajax.employee.add_work_experience')
-                                                        @endif
-                                                    @endif
-                                                    </tbody>
-                                                </table>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-{{--                                                        <button type="submit" class="btn btn-primary btn-sm pull-right"><i class="fa fa-check"></i> Save Work Experience</button>--}}
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                </div>
-                            </div>
+                                <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1; padding-bottom: 6px">
+                                    Work Experience
+                                    <span class="pull-right">
+                                    </span>
+                                </p>
+                                <table class="table table-condensed table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Company</th>
+                                        <th>Date from</th>
+                                        <th>Date to</th>
+                                        <th>Position</th>
+                                        <th>Salary</th>
+                                        <th>SG</th>
+                                        <th>Appt. Status</th>
+                                        <th>Is Gov't service</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @if(!empty($emp->employeeExperience))
+                                        @if($emp->employeeExperience->count() > 0)
+                                            @foreach($emp->employeeExperience as $we)
+                                                <tr>
+                                                    <td>{{$we->company}}</td>
+                                                    <td>{{$we->date_from}}</td>
+                                                    <td>{{$we->date_to}}</td>
+                                                    <td>{{$we->position}}</td>
+                                                    <td>{{$we->salary}}</td>
+                                                    <td>{{$we->salary_grade}}</td>
+                                                    <td>{{$we->appointment_status}}</td>
+                                                    <td>{{$we->is_gov_service}}</td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="8" class="text-center"> No data found. </td>
+                                            </tr>
+                                        @endif
+                                    @endif
+                                    </tbody>
+                                </table>
 
                         @endif
 
