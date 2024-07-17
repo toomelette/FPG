@@ -4,11 +4,13 @@ namespace App\Http\Controllers\HRU;
 
 use App\Http\Requests\Hru\PayrollPreparationFormRequest;
 use App\Imports\GSISImport;
+use App\Models\Budget\ChartOfAccounts;
 use App\Models\Employee;
 use App\Models\HRU\Incentives;
 use App\Models\HRU\PayrollMaster;
 use App\Models\HRU\PayrollMasterDetails;
 use App\Models\HRU\PayrollMasterEmployees;
+use App\Models\HRU\PayrollTree;
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
 use App\Models\PPU\PPURespCodes;
@@ -72,10 +74,21 @@ class PayrollPreparationController
         $payMaster->slug = Str::random();
         $payMaster->date = $request->date;
         $payMaster->type = $request->type;
+        $payMaster->a_name = $request->a_name;
+        $payMaster->a_position = $request->a_position;
+        $payMaster->b_name = $request->b_name;
+        $payMaster->b_position = $request->b_position;
+        $payMaster->c_name = $request->c_name;
+        $payMaster->c_position = $request->c_position;
+        $payMaster->d_name = $request->d_name;
+        $payMaster->d_position = $request->d_position;
         $employeeArr = [];
         $upsertTemplateMonthlyBasic = [];
         $jobGrades = Arrays::jobGrades();
         $employeesBySlug = Arrays::employeesKeyedBySlug();
+
+        $lbpAccountCode = ChartOfAccounts::query()->where('payroll','=',\Auth::user()->project_id)->first();
+        $payMaster->account_code = $lbpAccountCode->account_code;
         if(count($request->employees) > 0){
             foreach ($request->employees as $employee){
                 array_push($employeeArr,[
@@ -274,6 +287,8 @@ class PayrollPreparationController
                         'code' => $templateIncentive->incentive_code,
                         'amount' => $templateIncentive->amount,
                         'priority' => $templateIncentive->incentive->n_priority,
+                        'sundry_account' => null,
+                        'account_code' => $templateIncentive->incentive->account_code,
                     ]);
                 }
 
@@ -308,6 +323,8 @@ class PayrollPreparationController
                             'code' => $templateDeduction->deduction_code,
                             'amount' => $deductionAmount,
                             'priority' => $templateDeduction->deduction->n_priority,
+                            'sundry_account' => $templateDeduction->deduction->sundry_account,
+                            'account_code' => $templateDeduction->deduction->account_code,
                         ]);
                     }
                 }
@@ -319,7 +336,9 @@ class PayrollPreparationController
         $toDelete->delete();
 
 
+
         PayrollMasterDetails::query()->insert($detailsArr);
+
         //3. Compute Tax
         $payrollMaster = PayrollMaster::query()
             ->with([
@@ -400,6 +419,8 @@ class PayrollPreparationController
                         'code' => $templateIncentive->incentive_code,
                         'amount' => $templateIncentive->amount,
                         'priority' => $templateIncentive->incentive->n_priority,
+                        'sundry_account' => null,
+                        'account_code' => $templateIncentive->incentive->account_code,
                     ]);
                 }
 
@@ -434,6 +455,8 @@ class PayrollPreparationController
                             'code' => $templateDeduction->deduction_code,
                             'amount' => $deductionAmount,
                             'priority' => $templateDeduction->deduction->n_priority,
+                            'sundry_account' => $templateDeduction->deduction->sundry_account,
+                            'account_code' => $templateDeduction->deduction->account_code,
                         ]);
                     }
                 }
@@ -464,6 +487,7 @@ class PayrollPreparationController
             ])
             ->find($payrollMasterSlug);
         $upsertValues = [];
+
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
             $totalIncentives = $employeeFromList->employeePayrollDetails->where('type','INCENTIVE')->sum('amount');
             $totalDeductions = $employeeFromList->employeePayrollDetails->where('type','DEDUCTION')->sum('amount');
@@ -477,6 +501,7 @@ class PayrollPreparationController
                 'pay30' => $pay30,
             ]);
         }
+
         PayrollMasterEmployees::query()->upsert($upsertValues,
             ['slug'],
             ['pay15','pay30']
@@ -673,7 +698,7 @@ class PayrollPreparationController
 
         switch ($type){
             case 'MONTHLY':
-                return $this->printMonthly($slug);
+                return $this->printMonthly2($slug);
                 break;
             case 'PAYSLIP_ALL':
                 return $this->payslipAll($slug);
@@ -731,6 +756,74 @@ class PayrollPreparationController
                 $usedRc[$employee->employee->responsibilityCenter->rc.'0'.'0'] = $employee->employee->responsibilityCenter->rc.'0'.'0';
             }
         }
+        ksort($usedRc);
+        return view('printables.hru.payroll_preparation.monthly_payroll')->with([
+            'payrollMaster' => $payrollMaster,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+
+            'payrollEmployeesBySlug' => $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+        ]);
+    }
+
+    private function printMonthly2($slug){
+
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => [
+                    'employee.plantilla',
+                    'employeePayrollDetails',
+                ],
+                'hmtDetails.chartOfAccount',
+            ])
+            ->findOrFail($slug);
+        $usedRc = [];
+        $employees = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+            return [
+                $data->employee->slug => $data,
+            ];
+        });
+        foreach ($employees as $employee){
+            if(!empty($employee->employee->responsibilityCenter)){
+                $usedRc[$employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.$employee->employee->responsibilityCenter->sec] = $employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.$employee->employee->responsibilityCenter->sec;
+                $usedRc[$employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.'0'] = $employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.'0';
+                $usedRc[$employee->employee->responsibilityCenter->rc.'0'.'0'] = $employee->employee->responsibilityCenter->rc.'0'.'0';
+            }
+        }
+
+
+        $tree = PayrollTree::query()
+            ->with('responsibilityCenter')
+            ->whereIn('resp_center',array_flatten($usedRc))
+            ->orderBy('sort','asc')
+            ->get()
+            ->groupBy(['group','resp_center']);
+
+        $t = $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
+            return $data->employee->resp_center;
+        })->toArray();
+        ksort($t);
+        $t = array_keys($t);
+        $dbRcs = collect($tree)->flatten()->mapWithKeys(function ($data){
+            return [
+                $data->resp_center => $data,
+            ];
+        })->toArray();
+        ksort($dbRcs);
+        $dbRcs = array_keys($dbRcs);
+        $diff = array_diff($t,$dbRcs);
+        if(count($diff) > 0){
+            abort(503,'There are some RCs not found on the hierarchy of RCs. Contact database administrator. ---------------------------- '.print_r($diff,true));
+        }
+
+
         ksort($usedRc);
         return view('printables.hru.payroll_preparation.monthly_payroll')->with([
             'payrollMaster' => $payrollMaster,

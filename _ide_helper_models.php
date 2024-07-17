@@ -740,6 +740,7 @@ namespace App\Models\Budget{
  * @property int|null $treas_account
  * @property int|null $tax
  * @property string|null $account_number
+ * @property int|null $payroll
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Budget\ORSAccountEntries> $orsEntries
  * @property-read int|null $ors_entries_count
  * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts coAccountsOnly()
@@ -773,6 +774,7 @@ namespace App\Models\Budget{
  * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereNatureId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereNormalBal($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereParentAccount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts wherePayroll($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereRespCenter($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereTax($value)
@@ -936,6 +938,9 @@ namespace App\Models\Budget{
  * @property string|null $ps
  * @property string|null $co
  * @property string|null $mooe
+ * @property string|null $src_ps
+ * @property string|null $src_co
+ * @property string|null $src_mooe
  * @property string|null $type
  * @property string|null $source_slug
  * @property string|null $destination_slug
@@ -961,6 +966,9 @@ namespace App\Models\Budget{
  * @method static \Illuminate\Database\Eloquent\Builder|PapAdjustments wherePs($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PapAdjustments whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PapAdjustments whereSourceSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PapAdjustments whereSrcCo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PapAdjustments whereSrcMooe($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PapAdjustments whereSrcPs($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PapAdjustments whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PapAdjustments whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PapAdjustments whereUserCreated($value)
@@ -3021,11 +3029,13 @@ namespace App\Models\HRU{
  * @property int|null $n_is_monthly
  * @property int|null $n_priority
  * @property string|null $groupings
+ * @property string|null $account_code
  * @method static \Illuminate\Database\Eloquent\Builder|Incentives exceptBasicPay()
  * @method static \Illuminate\Database\Eloquent\Builder|Incentives isMonthly()
  * @method static \Illuminate\Database\Eloquent\Builder|Incentives newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Incentives newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Incentives query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Incentives whereAccountCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Incentives whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Incentives whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Incentives whereFixedValues($value)
@@ -3358,6 +3368,16 @@ namespace App\Models\HRU{
  * @property string|null $user_unlocked
  * @property string|null $unlocked_at
  * @property int|null $project_id
+ * @property string|null $account_code
+ * @property string|null $a_name
+ * @property string|null $a_position
+ * @property string|null $b_name
+ * @property string|null $b_position
+ * @property string|null $c_name
+ * @property string|null $c_position
+ * @property string|null $d_name
+ * @property string|null $d_position
+ * @property-read \App\Models\Budget\ChartOfAccounts|null $chartOfAccounts
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\HRU\PayrollMasterDetails> $hmtDetails
  * @property-read int|null $hmt_details_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\HRU\PayrollMasterEmployees> $payrollMasterEmployees
@@ -3365,7 +3385,16 @@ namespace App\Models\HRU{
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereAName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereAPosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereAccountCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereBName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereBPosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereCName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereCPosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereDName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereDPosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereIpCreated($value)
@@ -3399,11 +3428,15 @@ namespace App\Models\HRU{
  * @property string|null $amount
  * @property int|null $priority
  * @property string|null $source
+ * @property int|null $sundry_account
+ * @property string|null $account_code
+ * @property-read \App\Models\Budget\ChartOfAccounts|null $chartOfAccount
  * @property-read \App\Models\HRU\PayrollMasterEmployees|null $employeePayroll
  * @property-read \App\Models\HRU\PayrollMaster|null $payrollMaster
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails whereAccountCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails whereEmployeeSlug($value)
@@ -3413,6 +3446,7 @@ namespace App\Models\HRU{
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails wherePriority($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails whereSource($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails whereSundryAccount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterDetails whereType($value)
  */
 	class PayrollMasterDetails extends \Eloquent {}
@@ -3448,6 +3482,30 @@ namespace App\Models\HRU{
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterEmployees whereSlug($value)
  */
 	class PayrollMasterEmployees extends \Eloquent {}
+}
+
+namespace App\Models\HRU{
+/**
+ * App\Models\HRU\PayrollTree
+ *
+ * @property int $id
+ * @property string|null $resp_center
+ * @property string|null $group
+ * @property int|null $sort
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\PPU\PPURespCodes|null $responsibilityCenter
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTree newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTree newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTree query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTree whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTree whereGroup($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTree whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTree whereRespCenter($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTree whereSort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTree whereUpdatedAt($value)
+ */
+	class PayrollTree extends \Eloquent {}
 }
 
 namespace App\Models\HRU{
@@ -6733,6 +6791,8 @@ namespace App\Models{
  * @property-read int|null $access_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $actions
  * @property-read int|null $actions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activityLogs
+ * @property-read int|null $activity_logs_count
  * @property-read \App\Models\Employee|null $employee
  * @property-read \App\Models\Employee|null $employeeUnion
  * @property-read mixed $fullname

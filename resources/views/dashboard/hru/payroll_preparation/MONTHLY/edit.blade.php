@@ -97,7 +97,7 @@
     <script type="text/javascript">
         function recompute(btn){
             let uri = '{{route("dashboard.payroll_preparation.edit",$payrollMaster->slug)}}?recompute=true';
-            wait_this_button(btn,'Recompute');
+            //wait_this_button(btn,'Recompute');
             $.ajax({
                 url : uri,
                 type: 'GET',

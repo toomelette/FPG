@@ -2,6 +2,7 @@
 
 namespace App\Models\HRU;
 
+use App\Models\Budget\ChartOfAccounts;
 use Illuminate\Database\Eloquent\Model;
 
 class PayrollMasterDetails extends Model
@@ -19,5 +20,8 @@ class PayrollMasterDetails extends Model
         return $this->belongsTo(PayrollMasterEmployees::class,'pay_master_employee_listing_slug','slug');
     }
 
+    public function chartOfAccount(){
+        return $this->hasOne(ChartOfAccounts::class,'account_code','account_code');
+    }
 
 }

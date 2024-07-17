@@ -27,7 +27,69 @@
                             'id' => 'payroll_type',
                         ]) !!}
                     </div>
-                    <div id="emplytbl">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p class="page-header-sm text-info text-strong" style="border-bottom: 1px solid #cedbe1">
+                                BOX A (CERTIFIED)
+                            </p>
+                            <div class="row">
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('a_name',[
+                                    'label' => 'Name:',
+                                    'cols' => 12,
+                                ],\App\Swep\Helpers\Values::payrollBoxes()['a_name']) !!}
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('a_position',[
+                                    'label' => 'Position:',
+                                    'cols' => 12,
+                                ],\App\Swep\Helpers\Values::payrollBoxes()['a_position']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="page-header-sm text-info text-strong" style="border-bottom: 1px solid #cedbe1">
+                                BOX B (Head, Accounting Unit)
+                            </p>
+                            <div class="row">
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('b_name',[
+                                    'label' => 'Name:',
+                                    'cols' => 12,
+                                ],\App\Swep\Helpers\Values::payrollBoxes()['b_name']) !!}
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('b_position',[
+                                    'label' => 'Position:',
+                                    'cols' => 12,
+                                ],\App\Swep\Helpers\Values::payrollBoxes()['b_position']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="page-header-sm text-info text-strong" style="border-bottom: 1px solid #cedbe1">
+                                BOX C (Head of the Agency/Representative)
+                            </p>
+                            <div class="row">
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('c_name',[
+                                    'label' => 'Name:',
+                                    'cols' => 12,
+                                ],\App\Swep\Helpers\Values::payrollBoxes()['c_name']) !!}
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('c_position',[
+                                    'label' => 'Position:',
+                                    'cols' => 12,
+                                ],\App\Swep\Helpers\Values::payrollBoxes()['c_position']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="page-header-sm text-info text-strong" style="border-bottom: 1px solid #cedbe1">
+                                BOX D (Disbursing Officer)
+                            </p>
+                            <div class="row">
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('d_name',[
+                                    'label' => 'Name:',
+                                    'cols' => 12,
+                                ],\App\Swep\Helpers\Values::payrollBoxes()['d_name']) !!}
+                                {!! \App\Swep\ViewHelpers\__form2::textbox('d_position',[
+                                    'label' => 'Position:',
+                                    'cols' => 12,
+                                ],\App\Swep\Helpers\Values::payrollBoxes()['d_position']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div id="emplytbl" style="border-top: 1px solid lightgrey; padding: 10px 0px">
 
                     </div>
                     <div class="text-center hidden" style="padding: 8%" id="tblLoader">

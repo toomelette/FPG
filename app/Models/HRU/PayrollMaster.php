@@ -2,6 +2,7 @@
 
 namespace App\Models\HRU;
 
+use App\Models\Budget\ChartOfAccounts;
 use App\Models\Scopes\ProjectScope;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -50,4 +51,7 @@ class PayrollMaster extends Model
     }
 
 
+    public function chartOfAccounts(){
+        return $this->hasOne(ChartOfAccounts::class,'account_code','account_code');
+    }
 }
