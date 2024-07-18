@@ -14,9 +14,10 @@ class Input extends Component
 
 
     public function __construct(
-        public $label,
+
         public $cols,
         public $name,
+        public $label = null,
         public $class = null,
         public $value = null,
         public $containerClass = null,
@@ -27,6 +28,7 @@ class Input extends Component
         public $for = null,
         public $required = null,
         public $tabindex = null,
+        public $inputOnly = false,
     )
     {
         if(is_object($this->value)){

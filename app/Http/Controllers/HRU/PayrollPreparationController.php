@@ -173,6 +173,11 @@ class PayrollPreparationController
                 ])
                 ->find($slug);
 
+        //IF EDIT SIGNATORIES ONLY
+        if($request->ajax() && $request->has('signatories') && $request->signatories == true){
+            return  $this->editSignatories($payrollMaster);
+        }
+
         $payrollMaster ?? abort(404,'Payroll not found.');
 
         switch($payrollMaster->type){
@@ -217,6 +222,13 @@ class PayrollPreparationController
             break;
         }
         
+    }
+
+    public function editSignatories($payrollMaster){
+        $this->checkLockStataus($payrollMaster);
+        return view('dashboard.hru.payroll_preparation.'.$payrollMaster->type.'.edit_signatories')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
     }
 
     public function recomputeMONTHLY($payrollMasterSlug){
@@ -514,6 +526,23 @@ class PayrollPreparationController
 
     public function update(Request $request,$payrollMasterSlug){
 
+        //IF UPDATE SIGNATORIES
+        if($request->ajax() && $request->has('signatories') && $request->signatories == true){
+            $payrollMaster = PayrollMaster::findOrFail($payrollMasterSlug);
+            $payrollMaster->a_name = $request->a_name;
+            $payrollMaster->a_position = $request->a_position;
+            $payrollMaster->b_name = $request->b_name;
+            $payrollMaster->b_position = $request->b_position;
+            $payrollMaster->c_name = $request->c_name;
+            $payrollMaster->c_position = $request->c_position;
+            $payrollMaster->d_name = $request->d_name;
+            $payrollMaster->d_position = $request->d_position;
+            if($payrollMaster->update()){
+                return $payrollMaster->only('slug');
+            }
+            abort(503,'Error updating signatories');
+        }
+        //IF IMPORT EXCEL
         if($request->has('import') && $request->import == true){
             $payrollMaster = PayrollMaster::query()
                 ->with([
@@ -906,6 +935,12 @@ class PayrollPreparationController
             return 'unlocked';
         }
         abort(503,$status);
+    }
+
+    public function checkLockStataus($payrollMaster){
+        if($payrollMaster->is_locked == 1){
+            abort(503,'This Payroll is locked. Unlock it first to perform action.');
+        }
     }
 
 }

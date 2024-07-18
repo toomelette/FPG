@@ -283,7 +283,7 @@ class __html{
         return '<div style="display: none;">
 				    <div id="modal_loader">
 				      <center>
-				        <img style="width: 70px; margin: 40px 0;" src="../../images/loader.gif">
+				        <img style="width: 70px; margin: 40px 0;" src="'.asset('images/loader.gif').'">
 				      </center>
 				    </div>
 				  </div>';

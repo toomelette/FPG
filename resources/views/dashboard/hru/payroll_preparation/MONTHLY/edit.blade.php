@@ -31,6 +31,9 @@
         <form id="prepare_payroll_form">
             <div class="box box-solid">
                 <div class="box-header">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-sm edit-signatories-btn" data-toggle="modal" data-target="#edit-signatories-modal"> <i class="fa fa-edit"></i> Edit Signatories </button>
+                    </div>
                     <div class="btn-group pull-right">
                         <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'MONTHLY'])}}" target="_blank" class="btn btn-default btn-sm"> <i class="fa fa-print"></i> Print Payroll </a>
                         <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}" target="_blank" class="btn btn-default btn-sm"> <i class="fa fa-print"></i> Print Payslips </a>
@@ -54,6 +57,7 @@
 
 
 @section('modals')
+    <x-html.modal size="md" id="edit-signatories-modal"/>
     <div class="modal fade" id="upload_modal" tabindex="-1" role="dialog" aria-labelledby="upload_modal_label">
       <div class="modal-dialog modal-sm" role="document">
           <form id="upload_form">
@@ -210,6 +214,26 @@
                         title: 'Payroll successfully '+action+'ed',
                         icon : 'success',
                     })
+                }
+            })
+        })
+
+        $("body").on("click",".edit-signatories-btn",function () {
+            let btn = $(this);
+            load_modal2(btn);
+            let uri = '{{route("dashboard.payroll_preparation.edit",$payrollMaster->slug)}}?signatories=true';
+            uri = uri.replace('slug',btn.attr('data'));
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
                 }
             })
         })

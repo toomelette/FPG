@@ -71,7 +71,7 @@
                                 <td class="text-center">
                                     <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
                                     <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
-                                    <p class="no-margin">Quezon City</p>
+                                    <p class="no-margin">{{$payrollMaster->project_id == 1 ? 'Bacolod City' : 'Quezon City'}}</p>
                                 </td>
                                 <td style="width: 15%;">
                                     STATION:  <span class="text-strong">{{Auth::user()->project_id == 1 ? 'VISAYAS' : 'LUZON/MINDANAO'}}</span> <br>
@@ -380,7 +380,7 @@
                                 <td class="text-center">
                                     <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
                                     <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
-                                    <p class="no-margin">Quezon City</p>
+                                    <p class="no-margin">{{$payrollMaster->project_id == 1 ? 'Bacolod City' : 'Quezon City'}}</p>
                                 </td>
                                 <td style="width: 15%;">
                                     STATION:  <span class="text-strong">{{Auth::user()->project_id == 1 ? 'VISAYAS' : 'LUZON/MINDANAO'}}</span> <br>
@@ -482,7 +482,7 @@
                         <td class="text-center">
                             <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
                             <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
-                            <p class="no-margin">Quezon City</p>
+                            <p class="no-margin">{{$payrollMaster->project_id == 1 ? 'Bacolod City' : 'Quezon City'}}</p>
                         </td>
                         <td style="width: 15%;">
                             STATION:  <span class="text-strong">{{Auth::user()->project_id == 1 ? 'VISAYAS' : 'LUZON/MINDANAO'}}</span> <br>
@@ -581,7 +581,7 @@
                         <td class="text-center">
                             <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
                             <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
-                            <p class="no-margin">Quezon City</p>
+                            <p class="no-margin">{{$payrollMaster->project_id == 1 ? 'Bacolod City' : 'Quezon City'}}</p>
                         </td>
                         <td style="width: 15%;">
                             STATION:  <span class="text-strong">{{Auth::user()->project_id == 1 ? 'VISAYAS' : 'LUZON/MINDANAO'}}</span> <br>

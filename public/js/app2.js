@@ -352,7 +352,7 @@ function populate_modal2(btn, response){
 
 function populate_modal2_error(response){
     if(response.status == 503){
-        notify('Error: '+ response.responseJSON.message, 'danger');
+        toast('error',response.responseJSON.message, 'Error:');
     }
     else if(response.status == 405){
         notify('Error: Request denied. Not enough privilege.', 'danger');
