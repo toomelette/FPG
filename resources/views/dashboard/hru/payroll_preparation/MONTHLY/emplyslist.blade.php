@@ -18,7 +18,7 @@
         <div class="form-group">
             <label for="inputEmail3" class="col-sm-2 control-label">Search:</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control input-sm" id="search" placeholder="Search employee">
+                <input type="text" class="form-control input-sm" id="search" placeholder="Search employee" autocomplete="off">
             </div>
         </div>
     </div>

@@ -874,3 +874,8 @@ li.has-error>a{
     z-index: 999;
     background-color: rgba(12, 59, 35, 0.85);
 }
+
+.employee-options-btn:hover{
+    cursor: pointer;
+    background-color: #c9c9c9 !important;
+}

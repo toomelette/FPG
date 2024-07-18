@@ -114,7 +114,9 @@
             }
         })
         window.onafterprint = function () {
-            //window.close();
+            @if(\Illuminate\Support\Facades\Request::has('employeeList'))
+            window.close();
+            @endif
         }
     </script>
 @endsection

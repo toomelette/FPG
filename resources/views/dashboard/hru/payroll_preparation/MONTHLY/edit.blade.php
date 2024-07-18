@@ -28,29 +28,40 @@
                 </div>
             </div>
         </div>
-        <form id="prepare_payroll_form">
-            <div class="box box-solid">
-                <div class="box-header">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-sm edit-signatories-btn" data-toggle="modal" data-target="#edit-signatories-modal"> <i class="fa fa-edit"></i> Edit Signatories </button>
-                    </div>
-                    <div class="btn-group pull-right">
-                        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'MONTHLY'])}}" target="_blank" class="btn btn-default btn-sm"> <i class="fa fa-print"></i> Print Payroll </a>
-                        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}" target="_blank" class="btn btn-default btn-sm"> <i class="fa fa-print"></i> Print Payslips </a>
-                        <button type="button" id="lock_btn" class="btn btn-default btn-sm" action="{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"> <span class="text-danger"><i class="fa fa-{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"></i> {{$payrollMaster->is_locked == 1 ? 'Unlock':'Lock'}} </span></button>
-                        <button type="button" id="upload_btn" data-target="#upload_modal" data-toggle="modal" class="btn btn-default btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-folder-open"></i> Upload Excel File </button>
-                        <button type="button" id="recompute_btn" class="btn btn-primary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recompute </button>
-                    </div>
+        <div class="box box-solid">
+            <div class="box-header">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm edit-signatories-btn" data-toggle="modal" data-target="#edit-signatories-modal"> <i class="fa fa-edit"></i> Edit Signatories </button>
                 </div>
-                <div class="box-body" id="payroll_table">
-
-                    @include('dashboard.hru.payroll_preparation.MONTHLY.preview',[
-                        'payrollMaster' => $payrollMaster,
-                    ])
+                <div class="btn-group pull-right">
+                    <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'MONTHLY'])}}" target="_blank" class="btn btn-default btn-sm"> <i class="fa fa-print"></i> Print Payroll </a>
+                    <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}" target="_blank" class="btn btn-default btn-sm"> <i class="fa fa-print"></i> Print Payslips </a>
+                    <button type="button" id="lock_btn" class="btn btn-default btn-sm" action="{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"> <span class="text-danger"><i class="fa fa-{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"></i> {{$payrollMaster->is_locked == 1 ? 'Unlock':'Lock'}} </span></button>
+                    <button type="button" id="upload_btn" data-target="#upload_modal" data-toggle="modal" class="btn btn-default btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-folder-open"></i> Upload Excel File </button>
+                    <button type="button" id="recompute_btn" class="btn btn-primary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recompute </button>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-9">
+                    <p class="text-info" style="padding-left: 10px"><i class="fa fa-info-circle"></i> Click on the employee's name to print individual payslip or to view employee details.</p>
+                </div>
+                <div class="col-md-3" style="margin-bottom: 5px">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">Search:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-sm" id="search" placeholder="Search employee" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box-body" id="payroll_table">
 
-        </form>
+                @include('dashboard.hru.payroll_preparation.MONTHLY.preview',[
+                    'payrollMaster' => $payrollMaster,
+                ])
+            </div>
+        </div>
+
     </section>
 
 @endsection
@@ -237,5 +248,51 @@
                 }
             })
         })
+
+        $("#search").keyup(function (e){
+            search();
+        })
+
+        function search() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("search");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("payroll-employees-table");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        $("body").on("click",".employee-options-btn",function (){
+            let btn = $(this);
+            Swal.fire({
+                title: btn.html(),
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: "<i class='fa fa-print'></i> Print Payslip",
+                denyButtonText: "<i class='fa fa-user'></i> View Employee",
+                confirmButtonColor : '#3c8dbc',
+                denyButtonColor : '#3da162',
+                html : btn.attr('content')
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    let printRoute = '{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}?employeeList='+btn.attr('data');
+                    window.open(printRoute, "popupWindow", "width=1200, height=600, scrollbars=yes");
+                } else if (result.isDenied) {
+                    window.open('{{route('dashboard.employee.index')}}?find='+btn.attr('emp-no'), '_blank').focus();
+                }
+            });
+        });
+
     </script>
 @endsection

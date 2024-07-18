@@ -215,7 +215,7 @@
                                     {{Helper::toNumber($payrollEmployee->pay30)}} <br>
                                     {{Helper::toNumber($payrollEmployee->pay15 + $payrollEmployee->pay30)}}
                                 </td>
-                                <td class="text-left">
+                                <td class="text-left text-top">
                                     15TH <br>
                                     30TH <br>
                                     TOTAL

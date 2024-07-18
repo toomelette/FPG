@@ -723,28 +723,36 @@ class PayrollPreparationController
         );
     }
 
-    public function print($slug,$type){
+    public function print($slug,$type, Request $request){
 
         switch ($type){
             case 'MONTHLY':
                 return $this->printMonthly2($slug);
                 break;
             case 'PAYSLIP_ALL':
-                return $this->payslipAll($slug);
+                return $this->payslipAll($slug, $request);
                 break;
 
         }
     }
 
-    private function payslipAll($slug){
-        $payrollMaster = PayrollMaster::query()
-            ->with([
-                'payrollMasterEmployees' => [
-                    'employee.plantilla',
-                    'employeePayrollDetails',
-                ],
-                'hmtDetails',
-            ])
+    private function payslipAll($slug,Request $request){
+        $payrollMaster = PayrollMaster::query();
+        $with = [
+            'payrollMasterEmployees.employee.plantilla',
+            'payrollMasterEmployees.employeePayrollDetails',
+            'hmtDetails',
+        ];
+
+        //if requests for only 1 employee
+        if($request->has('employeeList') && $request->employeeList != ''){
+            $with['payrollMasterEmployees'] = function($q) use ($request){
+                return $q->where('slug','=',$request->employeeList);
+            };
+        }
+
+        $payrollMaster = $payrollMaster
+            ->with($with)
             ->findOrFail($slug);
 
         return view('printables.hru.payroll_preparation.monthly_payslip_all')->with([
