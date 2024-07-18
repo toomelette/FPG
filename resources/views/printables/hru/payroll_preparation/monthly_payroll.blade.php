@@ -491,7 +491,7 @@
                         {{Helper::toNumber($grand30 = $sumGrand['pay30'])}} <br>
                         {{Helper::toNumber($totalSalaries = $grand15 + $grand30)}}
                     </td>
-                    <td style="color: blue">
+                    <td style="color: blue" class="text-top">
                         G.15TH <br>
                         G.30TH <br>
                         G.TOTAL
