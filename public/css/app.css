@@ -879,3 +879,7 @@ li.has-error>a{
     cursor: pointer;
     background-color: #c9c9c9 !important;
 }
+
+.fifth>td{
+    border-bottom: 1px solid #c7c7c7 !important;
+}
