@@ -61,6 +61,22 @@
 
             <table style="width: 100%" class=" tbl-padded">
                 <thead>
+
+                <tr>
+                    <th style="width: 25%; padding: 0; border: none"></th>
+                    @foreach($chunkedIncentives as $grp)
+                        <th style="padding: 0; border: none"></th>
+                    @endforeach
+                    @foreach($chunkedDeductions as $grp)
+                        <th style="padding: 0; border: none"></th>
+                    @endforeach
+                    <th style="padding: 0; border: none;width: 7%"></th>
+                    <th style="padding: 0; border: none;width: 7%""></th>
+                    <th style="padding: 0; border: none;width: 8%"></th>
+                    <th style="padding: 0; border: none;width: 4%"></th>
+                    <th style="padding: 0; border: none;width: 5%"></th>
+                </tr>
+
                 <tr>
                     <td colspan="{{$colspan}}">
                         <table style="width: 100%;">
@@ -370,6 +386,20 @@
 
             <table style="width: 100%" class="tbl-padded">
                 <thead>
+                <tr>
+                    <th style="width: 25%; padding: 0; border: none"></th>
+                    @foreach($chunkedIncentives as $grp)
+                        <th style="padding: 0; border: none"></th>
+                    @endforeach
+                    @foreach($chunkedDeductions as $grp)
+                        <th style="padding: 0; border: none"></th>
+                    @endforeach
+                    <th style="padding: 0; border: none;width: 7%"></th>
+                    <th style="padding: 0; border: none;width: 7%""></th>
+                    <th style="padding: 0; border: none;width: 8%"></th>
+                    <th style="padding: 0; border: none;width: 4%"></th>
+                    <th style="padding: 0; border: none;width: 5%"></th>
+                </tr>
                 <tr>
                     <td colspan="{{$colspan}}">
                         <table style="width: 100%;">
