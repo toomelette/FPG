@@ -47,42 +47,42 @@
             </div>
         </div>
         <div class="col-md-5">
-                <div class="well well-sm">
-                    <form id="edit_request_form_{{$rand}}" data="{{$r->slug}}" >
-                        <div class="row">
-                            {!! \App\Swep\ViewHelpers\__form2::textbox('recommendations',[
-                                'cols' => 12,
-                                'label' => 'Recommendation: ',
-                            ],
-                            $r
-                            ) !!}
-                            {!! \App\Swep\ViewHelpers\__form2::textbox('summary_of_diagnostics',[
-                                'cols' => 12,
-                                'label' => 'Summary of Diagnostics: ',
-                            ],
-                            $r
-                            ) !!}
+            <div class="well well-sm">
+                <form id="edit_request_form_{{$rand}}" data="{{$r->slug}}" >
+                    <div class="row">
+                        {!! \App\Swep\ViewHelpers\__form2::textbox('recommendations',[
+                            'cols' => 12,
+                            'label' => 'Recommendation: ',
+                        ],
+                        $r
+                        ) !!}
+                        {!! \App\Swep\ViewHelpers\__form2::textbox('summary_of_diagnostics',[
+                            'cols' => 12,
+                            'label' => 'Summary of Diagnostics: ',
+                        ],
+                        $r
+                        ) !!}
 
-                            {!! \App\Swep\ViewHelpers\__form2::textbox('returned',[
-                                'cols' => 12,
-                                'label' => 'Returned: ',
-                            ],
-                            $r
-                            ) !!}
-                            {!! \App\Swep\ViewHelpers\__form2::textbox('date_returned',[
-                                'cols' => 12,
-                                'label' => 'Date Returned: (if equipment):',
-                                'type' => 'date',
-                            ],
-                            $r
-                            ) !!}
+                        {!! \App\Swep\ViewHelpers\__form2::textbox('returned',[
+                            'cols' => 12,
+                            'label' => 'Returned: ',
+                        ],
+                        $r
+                        ) !!}
+                        {!! \App\Swep\ViewHelpers\__form2::textbox('date_returned',[
+                            'cols' => 12,
+                            'label' => 'Date Returned: (if equipment):',
+                            'type' => 'date',
+                        ],
+                        $r
+                        ) !!}
 
-                            <div class="col-md-12">
-                                <button type="submit" class="btn btn-primary btn-sm pull-right"><i class="fa fa-check"></i>  Save</button>
-                            </div>
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary btn-sm pull-right"><i class="fa fa-check"></i>  Save</button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

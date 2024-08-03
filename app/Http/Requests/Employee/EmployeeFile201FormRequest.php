@@ -17,12 +17,6 @@ class EmployeeFile201FormRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'employee' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::exists('hr_employees','slug'),
-            ],
             'date' => 'nullable|date_format:"Y-m-d"',
         ];
     }

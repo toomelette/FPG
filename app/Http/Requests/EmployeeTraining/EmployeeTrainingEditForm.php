@@ -22,15 +22,15 @@ class EmployeeTrainingEditForm extends FormRequest{
 
         return [
             
-        	'e_title'=>'required|string|max:250',
-            'e_type'=>'nullable|string|max:45',
-            'e_date_from'=>'nullable|date_format:"m/d/Y"',
-            'e_date_to'=>'nullable|date_format:"m/d/Y"',
-            'e_hours'=>'required|int|max:100000',
-            'e_conducted_by'=>'nullable|string|max:250',
-            'e_venue'=>'nullable|string|max:250',
-            'e_remarks'=>'nullable|string|max:250',
-            'e_is_relevant'=>'nullable|string|max:11',
+        	'title'=>'required|string|max:250',
+            'type'=>'nullable|string|max:45',
+            'date_from'=>'nullable|date_format:"Y-m-d"',
+            'date_to'=>'nullable|date_format:"Y-m-d"',
+            'hours'=>'required|int|max:100000',
+            'conducted_by'=>'nullable|string|max:250',
+            'venue'=>'nullable|string|max:250',
+            'remarks'=>'nullable|string|max:250',
+            'is_relevant'=>'nullable|string|max:11',
 
         ];
     

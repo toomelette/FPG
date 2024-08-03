@@ -542,7 +542,10 @@ class DocumentService extends BaseService{
         return view('printables.document.sent_mails')->with('document', $document);
     }
 
-
+    public function checkIfExistsInPath($document)
+    {
+        return $this->getStorage()->exists($document->path.$document->filename);
+    }
 
     public function disseminationPost($request, $slug){
 
@@ -587,8 +590,8 @@ class DocumentService extends BaseService{
         }
 
         $content = "Good day. Please see the attached file. Thank you.";
-        if($request->content != null){
-            $content = $request->content;
+        if($request->body != null){
+            $content = $request->body;
         }
 
 
@@ -859,11 +862,11 @@ class DocumentService extends BaseService{
         $ddl->document_id = $doc->document_id;
         $ddl->email = $email;
         $ddl->subject = $request->subject;
-        $ddl->content = $request->content;
+        $ddl->content = $request->body;
         $ddl->status = 'SENT';
         $ddl->send_copy = $request->get('send_copy') ?? 0;
         $mail->Body =(
-            $request->content ?? 'Good day. Please see the attached file.').
+            $request->body ?? 'Good day. Please see the attached file.').
             view('dashboard.document.mail.footer')->with([
                 'slug' => $ddl->slug,
             ])->render()

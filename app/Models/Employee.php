@@ -123,6 +123,10 @@ class Employee extends Model{
 
     ];
 
+    protected $appends = [
+        'full_name','full'
+    ];
+
 
 
 
@@ -151,6 +155,19 @@ class Employee extends Model{
             },
         );
     }
+
+
+    protected function jgMonthlyBasic():Attribute
+    {
+        return  new Attribute(
+            get: function (){
+                $jobGrades = Arrays::jobGrades();
+                return $jobGrades[$this->salary_grade][$this->step_inc] ?? $this->monthly_basic;
+            },
+        );
+    }
+
+
 
     protected function full(): Attribute
     {
@@ -321,7 +338,7 @@ class Employee extends Model{
 
 
     public function employeeServiceRecord(){
-        return $this->hasMany(EmployeeServiceRecord::class, 'employee_slug', 'slug')->orderBy('sequence_no','asc');
+        return $this->hasMany(EmployeeServiceRecord::class, 'employee_slug', 'slug');
     }
 
     public function employeeMatrix(){

@@ -294,12 +294,13 @@ class AjaxController extends Controller
 
     }
     private function compute_monthly_salary(){
+
         $latest = SSL::query()->orderBy('date_implemented','desc')->first();
         $latest_date_implemented = $latest->date_implemented;
-        $ssl = SSL::query()->where('salary_grade','=',Request::get('sg'))
+        $ssl = SSL::query()->where('salary_grade','=',\request()->get('sg'))
             ->where('date_implemented','=',$latest_date_implemented)
             ->first();
-        $si = 'step'.Request::get('si');
+        $si = 'step'.\request()->get('si');
 
         if(!empty($ssl->$si)){
             return number_format($ssl->$si,2);

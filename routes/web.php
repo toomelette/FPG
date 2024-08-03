@@ -5,7 +5,7 @@
 use App\Swep\Helpers\Helper;
 use Rats\Zkteco\Lib\ZKTeco;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-
+use App\Http\Controllers\HRU\Employees\ServiceRecordController;
 
 
 
@@ -181,24 +181,64 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 	Route::resource('leave_application', 'LeaveApplicationController');
 
 
+
 	/** EMPLOYEE **/
     Route::get('/employee/edit_bm_uid','EmployeeController@edit_bm_uid')->name('employee.edit_bm_uid');
     Route::post('/employee/update_bm_uid','EmployeeController@update_bm_uid')->name('employee.update_bm_uid');
 	Route::get('/employee/print_pds/{slug}/{page}', 'EmployeeController@printPds')->name('employee.print_pds');
-	
-	Route::get('/employee/service_record/{slug}', 'EmployeeController@serviceRecord')->name('employee.service_record');
-	Route::post('/employee/service_record/store/{slug}', 'EmployeeController@serviceRecordStore')->name('employee.service_record_store');
-	Route::put('/employee/service_record/update/{slug}', 'EmployeeController@serviceRecordUpdate')->name('employee.service_record_update');
-	Route::delete('/employee/service_record/destroy/{slug}', 'EmployeeController@serviceRecordDestroy')->name('employee.service_record_destroy');
-	Route::get('/employee/service_record/print/{slug}', 'EmployeeController@serviceRecordPrint')->name('employee.service_record_print');
+
+    /*Service Records*/
+	Route::get('/employee/{slug}/service_record', [ServiceRecordController::class,'index'])->name('employee.service_record');
+	Route::post('/employee/{slug}/service_record', [ServiceRecordController::class,'store'])->name('employee.service_record');
+    Route::put('/employee/{slug}/service_record', [ServiceRecordController::class,'update'])->name('employee.service_record');
+    Route::delete('/employee/{slug}/service_record', [ServiceRecordController::class,'destroy'])->name('employee.service_record');
+
+    /*Trainings*/
+    Route::get('/employee/{slug}/training', [\App\Http\Controllers\HRU\Employees\TrainingsController::class,'index'])->name('employee.training');
+    Route::post('/employee/{slug}/training', [\App\Http\Controllers\HRU\Employees\TrainingsController::class,'store'])->name('employee.training');
+    Route::put('/employee/{slug}/training', [\App\Http\Controllers\HRU\Employees\TrainingsController::class,'update'])->name('employee.training');
+    Route::delete('/employee/{slug}/training', [\App\Http\Controllers\HRU\Employees\TrainingsController::class,'destroy'])->name('employee.training');
+
+    /*Education*/
+    Route::get('/employee/{slug}/education', [\App\Http\Controllers\HRU\Employees\EducationController::class,'index'])->name('employee.education');
+    Route::post('/employee/{slug}/education', [\App\Http\Controllers\HRU\Employees\EducationController::class,'store'])->name('employee.education');
+    Route::put('/employee/{slug}/education', [\App\Http\Controllers\HRU\Employees\EducationController::class,'update'])->name('employee.education');
+    Route::delete('/employee/{slug}/education', [\App\Http\Controllers\HRU\Employees\EducationController::class,'destroy'])->name('employee.education');
+
+    /*Eligibility*/
+    Route::get('/employee/{slug}/eligibility', [\App\Http\Controllers\HRU\Employees\EligibilityController::class,'index'])->name('employee.eligibility');
+    Route::post('/employee/{slug}/eligibility', [\App\Http\Controllers\HRU\Employees\EligibilityController::class,'store'])->name('employee.eligibility');
+    Route::put('/employee/{slug}/eligibility', [\App\Http\Controllers\HRU\Employees\EligibilityController::class,'update'])->name('employee.eligibility');
+    Route::delete('/employee/{slug}/eligibility', [\App\Http\Controllers\HRU\Employees\EligibilityController::class,'destroy'])->name('employee.eligibility');
+
+    /*Work */
+    Route::get('/employee/{slug}/work', [\App\Http\Controllers\HRU\Employees\WorkController::class,'index'])->name('employee.work');
+    Route::post('/employee/{slug}/work', [\App\Http\Controllers\HRU\Employees\WorkController::class,'store'])->name('employee.work');
+    Route::put('/employee/{slug}/work', [\App\Http\Controllers\HRU\Employees\WorkController::class,'update'])->name('employee.work');
+    Route::delete('/employee/{slug}/work', [\App\Http\Controllers\HRU\Employees\WorkController::class,'destroy'])->name('employee.work');
+
+    /*201 Files */
+    Route::get('/employee/{slug}/201', [\App\Http\Controllers\HRU\Employees\TwoZeroOneFilesController::class,'index'])->name('employee.201');
+    Route::post('/employee/{slug}/201', [\App\Http\Controllers\HRU\Employees\TwoZeroOneFilesController::class,'store'])->name('employee.201');
+    Route::put('/employee/{slug}/201', [\App\Http\Controllers\HRU\Employees\TwoZeroOneFilesController::class,'update'])->name('employee.201');
+    Route::delete('/employee/{slug}/201', [\App\Http\Controllers\HRU\Employees\TwoZeroOneFilesController::class,'destroy'])->name('employee.201');
+
+
+    /*Other HR Action */
+    Route::get('/other_hr_actions_print/{slug}/{type}',[\App\Http\Controllers\HRU\Employees\OtherActionsController::class,'print'])->name('employee.other_hr_actions_print');
+    Route::get('/other_hr_actions/{slug}',[\App\Http\Controllers\HRU\Employees\OtherActionsController::class,'index'])->name('employee.other_hr_actions');
+
+
+
+    Route::get('/employee/{slug}/201', [\App\Http\Controllers\HRU\Employees\TwoZeroOneFilesController::class,'index'])->name('employee.201');
 
     Route::get('/employee/credentials/{slug}', 'EmployeeCredentialsController@index')->name('employee.credentials');
 
-    Route::get('/employee/educ_bg/create/{slug}', 'Employee\EducationalBGController@create')->name('employee.educ_bg.create');
-    Route::get('/employee/educ_bg/edit/{slug}', 'Employee\EducationalBGController@edit')->name('employee.educ_bg.edit');
-    Route::patch('/employee/educ_bg/update/{slug}', 'Employee\EducationalBGController@update')->name('employee.educ_bg.update');
-    Route::delete('/employee/educ_bg/destroy/{slug}', 'Employee\EducationalBGController@destroy')->name('employee.educ_bg.destroy');
-    Route::post('/employee/educ_bg/store', 'Employee\EducationalBGController@store')->name('employee.educ_bg.store');
+//    Route::get('/employee/educ_bg/create/{slug}', 'Employee\EducationalBGController@create')->name('employee.educ_bg.create');
+//    Route::get('/employee/educ_bg/edit/{slug}', 'Employee\EducationalBGController@edit')->name('employee.educ_bg.edit');
+//    Route::patch('/employee/educ_bg/update/{slug}', 'Employee\EducationalBGController@update')->name('employee.educ_bg.update');
+//    Route::delete('/employee/educ_bg/destroy/{slug}', 'Employee\EducationalBGController@destroy')->name('employee.educ_bg.destroy');
+//    Route::post('/employee/educ_bg/store', 'Employee\EducationalBGController@store')->name('employee.educ_bg.store');
 
     Route::get('/employee/elig/create/{slug}', 'Employee\EligibilityController@create')->name('employee.elig.create');
     Route::get('/employee/elig/edit/{slug}', 'Employee\EligibilityController@edit')->name('employee.elig.edit');
@@ -216,11 +256,11 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::delete('/employee/credentials/destroy/{slug}', 'EmployeeController@serviceRecordDestroy')->name('employee.credentials_destroy');
 
 
-	Route::get('/employee/training/{slug}', 'EmployeeController@training')->name('employee.training');
-	Route::post('/employee/training/store/{slug}', 'EmployeeController@trainingStore')->name('employee.training_store');
-	Route::put('/employee/training/update/{slug}', 'EmployeeController@trainingUpdate')->name('employee.training_update');
-	Route::delete('/employee/training/destroy/{slug}', 'EmployeeController@trainingDestroy')->name('employee.training_destroy');
-	Route::get('/employee/training/print/{slug}', 'EmployeeController@trainingPrint')->name('employee.training_print');
+//	Route::get('/employee/training/{slug}', 'EmployeeController@training')->name('employee.training');
+//	Route::post('/employee/training/store/{slug}', 'EmployeeController@trainingStore')->name('employee.training_store');
+//	Route::put('/employee/training/update/{slug}', 'EmployeeController@trainingUpdate')->name('employee.training_update');
+//	Route::delete('/employee/training/destroy/{slug}', 'EmployeeController@trainingDestroy')->name('employee.training_destroy');
+//	Route::get('/employee/training/print/{slug}', 'EmployeeController@trainingPrint')->name('employee.training_print');
 
 	Route::get('/employee/matrix/{slug}', 'EmployeeController@matrix')->name('employee.matrix');
 	Route::post('/employee/matrix/update/{slug}', 'EmployeeController@matrixUpdate')->name('employee.matrix_update');
@@ -236,8 +276,6 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 	Route::resource('employee', 'EmployeeController');
 
 	Route::resource('file201','File201Controller');
-    Route::get('/other_hr_actions_print/{slug}/{type}','EmployeeController@otherHrActionsPrint')->name('employee.other_hr_actions_print');
-    Route::get('/other_hr_actions/{slug}','EmployeeController@otherHrActions')->name('employee.other_hr_actions');
 
     /** Employee Photo **/
     Route::post('/photo/{slug}','EmployeeController@updatePhoto')->name('employee.photo');
@@ -286,7 +324,11 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
 	/** Leave Card **/
 	Route::get('/leave_card/report', 'LeaveCardController@report')->name('leave_card.report');
-	Route::get('/leave_card/report_generate', 'LeaveCardController@reportGenerate')->name('leave_card.report_generate');
+
+    Route::get('/leave_card/{employeeSlug}/{leaveType}/view_per_leave_type', 'LeaveCardController@viewPerLeaveType')->name('leave_card.view_per_leave_type');
+    Route::post('/leave_card/{employeeSlug}/{leaveType}/view_per_leave_type', 'LeaveCardController@storeLeaveCredit')->name('leave_card.view_per_leave_type');
+
+    Route::get('/leave_card/report_generate', 'LeaveCardController@reportGenerate')->name('leave_card.report_generate');
     Route::get('/leave_card/{slug}/print', 'LeaveCardController@print')->name('leave_card.print');
     Route::resource('leave_card', 'LeaveCardController');
 
@@ -362,16 +404,11 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     /** PPMP **/
     Route::resource('ppmp', 'PPMPController');
 
-    /** PPDO **/
-    Route::resource('ppdo', 'PPU\PPDOController');
 
 
 
 
 
-
-    /** Annual Budget **/
-    Route::resource('annual_budget','Budget\AnnualBudgetController');
 
     /** Publication **/
     Route::get('publication/{slug}/print', 'HRU\PublicationController@print')->name('publication.print');
@@ -413,34 +450,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     'middleware' => ['check.user_status', 'check.user_route', 'last_activity','verify.email','ensureUserHasProjectId']
 ], function () {
-    /** ORS **/
-    Route::get('ors/{slug}/print','Budget\ORSController@print')->name('ors.print');
-    Route::get('ors/reports','Budget\ORSController@reports')->name('ors.reports');
-    Route::get('ors/report_generate/{type}','Budget\ORSController@reportGenerate')->name('ors.report_generate');
-    Route::resource('ors','Budget\ORSController');
 
-    /** Projects **/
-    Route::get('projects/{slug}/rs','Budget\ProjectsController@realigmentAndSupplemental')->name('projects.rs');
-    Route::post('projects/{slug}/rs','Budget\ProjectsController@realigmentAndSupplementalPost')->name('projects.rs');
-    Route::post('projects/{type}/adjustment','Budget\ProjectsController@adjustment')->name('projects.adjustment');
-    Route::resource('projects','Budget\ProjectsController');
-
-    /** ACCOUNTING **/
-    /* Cash Receipts */
-    Route::get('cash_receipts/{slug}/print', 'Accounting\CashReceiptsController@print')->name('cash_receipts.print');
-    Route::resource('cash_receipts',\App\Http\Controllers\Accounting\CashReceiptsController::class);
-
-    /* Check Disbursements */
-    Route::get('check_disbursements/{slug}/print', 'Accounting\CheckDisbursementsController@print')->name('check_disbursements.print');
-    Route::resource('check_disbursements',\App\Http\Controllers\Accounting\CheckDisbursementsController::class);
-
-    /* General Journal */
-    Route::get('general_journal/{slug}/print', 'Accounting\GeneralJournalController@print')->name('general_journal.print');
-    Route::resource('general_journal',\App\Http\Controllers\Accounting\GeneralJournalController::class);
-
-    /* Cash Disbursements Journal */
-    Route::get('cash_disbursements/{slug}/print', 'Accounting\CashDisbursementsController@print')->name('cash_disbursements.print');
-    Route::resource('cash_disbursements',\App\Http\Controllers\Accounting\CashDisbursementsController::class);
 });
 
 
@@ -468,14 +478,6 @@ Route::get('display_qr/{slug}',function ($slug, \App\Http\Controllers\DocumentCo
 Route::get('/dtr', function (){
     return redirect('/dashboard/dtr/my_dtr');
 });
-Route::get('/assign',function (){
-    $users = \App\Models\User::query()->where('user_id','=','')->get();
-    foreach ($users as $user){
-        $user->user_id = rand(1111111,9999999);
-        $user->update();
-    }
-    return 1;
-});
 
 Route::get('/dashboard/compute', function (\App\Swep\Services\DTRService $service){
 
@@ -484,26 +486,9 @@ Route::get('/dashboard/compute', function (\App\Swep\Services\DTRService $servic
 
 });
 
-Route::get('/dashboard/tree', function (){
-    return view('dashboard.blank');
-});
-
-Route::get('/file_explorer',function (){
-
-   return view('dashboard.file_explorer.index');
-})->name('dashboard.documents.file_explorer.index');
-
 /** Test Route **/
 
 Route::get('/dashboard/test', function(){
-
-//    $zk = new ZKTeco('10.36.1.23');
-//    //ini_set('max_execution_time', 300);
-//    $zk->connect();
-//    $zk->testVoice();
-//    $zk->setTime('2022-01-04 14:59:03');
-//
-//    $zk->disconnect();
 
 	return dd([
 	    'slug' => Illuminate\Support\Str::random(16),
@@ -512,42 +497,8 @@ Route::get('/dashboard/test', function(){
 
 });
 
-Route::get('dashboard/prayer', function (){
-    $path = asset('json/quotes.json');
-    $content = json_decode(file_get_contents($path),true);
-
-    $today = Carbon::now()->format('Y-m-d');
-    $qod_db = \App\Models\QuoteOfTheDay::query()->where('date',$today)->first();
-    if(empty($qod_db)){
-        $random = rand(0,1643);
-        $qod = new \App\Models\QuoteOfTheDay();
-        $qod->quote = $random;
-        $qod->date = $today;
-        $qod->save();
-
-    }
-    $qod_db_2 = \App\Models\QuoteOfTheDay::query()->where('date',$today)->first();
-    return view('dashboard.prayer.index')->with([
-        'qod' => $content[$qod_db_2->quote],
-    ]);
-})->name('dashboard.prayer');
-
-Route::get('dashboard/zk_test',function (){
-
-    $zk = new \Rats\Zkteco\Lib\ZKTeco('10.36.1.21');
-    $zk->connect();
-
-    return $zk->getUser();
-    //return $zk->serialNumber();
-});
 
 
-Route::get('jo',function (){
-   return view('dashboard.public.jo_entry')->with([
-       'user_menus_records ' => '',
-
-   ]);
-});
 
 Route::get('check_device',function (\App\Swep\Services\DTRService $DTRService){
     if(!request()->has('ip')){
@@ -593,18 +544,7 @@ Route::get('/getSerial',function (\Illuminate\Http\Request $request){
 
 
 Route::post('testMail',\App\Http\Controllers\DocumentController::class.'@mailSingle');
-Route::get('sraLogo',function (){
-    return response()->file('/SRA_DA logo.png');
-});
 
-
-Route::get('/acc',function (){
-    $a = \App\Models\UserSubmenu::query()->where('user_id','=',\Illuminate\Support\Facades\Auth::user()->user_id)
-        ->leftJoin('su_submenus','su_submenus.submenu_id','=','su_user_submenus.submenu_id')
-        ->where('su_submenus.route','=','dashboard.dtr.store')
-        ->first();
-    return $a;
-});
 
 Route::get('grab',function (){
     if(!request()->has('date')){
@@ -690,168 +630,13 @@ Route::get('summaryOfOrsWithProjects',function (\Illuminate\Http\Request $reques
             }
         }
     }
-
-
-
     return view('printables.bur.bur_with_projects')->with([
         'burs' => $arr,
         'cols' => $colss,
     ]);
 });
-Route::get('count_bur',function (){
-    $burs = \App\Models\SqlServer\BUR::query()
-        ->with(['BURDetails','BURProjApplied','certified','budget'])
-        ->where('BURDate','>=','2023-01-01')
-        ->count();
-    dd($burs);
-});
-
-Route::get('/migrate_bur',function (\Illuminate\Http\Request $request){
-    //please resume on 44,000
-    if(!$request->has('offset')){
-        return 'Offset parameter missing';
-    }
-    $offset = $request->offset;
-
-    $burs = \App\Models\SqlServer\BUR::query()
-        ->with(['BURDetails','BURProjApplied','certified','budget'])
-        ->where('BURDate','>=','2023-01-01')
-        ->offset($offset)
-        ->limit(1000)
-        ->get();
-    $orsArr = [];
-    $orsDetailsArr = [];
-    $orsProjectsAppliedArr = [];
-
-    if($burs->isEmpty()){
-        return 'NO records found';
-    }
-
-    foreach ($burs as $bur){
-        $slug = \Illuminate\Support\Str::random();
-        array_push($orsArr,[
-            'slug' => $slug,
-            'project_id' => 2,
-            'ors_id' => $bur->BURID,
-            'funds' => $bur->Funds,
-            'ors_no' => $bur->BURNo,
-            'base_ors_no' => null,
-            'ors_date' => Carbon::parse($bur->BURDate)->format('Y-m-d'),
-            'ref_book' => $bur->RefBook,
-            'ref_doc' => $bur->RefDoc,
-            'payee' => $bur->Payee,
-            'office' => $bur->Office,
-            'address' => $bur->Address,
-            'particulars' => $bur->Particulars,
-            'certified_by' => $bur->certified->SignName ?? $bur->CertifiedByInitial,
-            'certified_by_position' => $bur->Position,
-            'certified_budget_by' => $bur->budget->SignName ?? $bur->CertifiedBudget,
-            'certified_budget_by_position' => $bur->BudgetPost,
-            'amount' => $bur->BURAmt,
-        ]);
-
-        if(count($bur->BURDetailsAll) > 0){
-            foreach ($bur->BURDetailsAll as $detail){
-                array_push($orsDetailsArr,[
-                    'slug' => \Illuminate\Support\Str::random(),
-                    'project_id' => 2,
-                    'ors_slug' => $slug,
-                    'type' => $detail->BURorDV == 'BUR' ? 'ORS': $detail->BURorDV,
-                    'seq_no' => $detail->SEQNO,
-                    'resp_center' => null,
-                    'dept' => $detail->Dept,
-                    'unit' => $detail->DeptUnit,
-                    'account_code' => $detail->AcctCode,
-                    'debit' => $detail->Debit == 0 ? null : $detail->Debit,
-                    'credit' => $detail->Credit == 0 ? null: $detail->Credit,
-                ]);
-            }
-        }
-
-        if(count($bur->BURProjApplied) > 0){
-            foreach ($bur->BURProjApplied as $proj){
-                array_push($orsProjectsAppliedArr,[
-                    'slug' => Str::random(),
-                    'project_id' => 2,
-                    'ors_slug' => $slug,
-                    'pap_code' => $proj->AcctCode,
-                    'co' => $proj->CoAmt == 0 ? null : $proj->CoAmt,
-                    'mooe' => $proj->Amount == 0 ? null : $proj->Amount,
-                    'total' => $proj->CoAmt + $proj->Amount,
-                ]);
-            }
-        }
-    }
-    \App\Models\Budget\ORS::insert($orsArr);
-    \App\Models\Budget\ORSAccountEntries::insert($orsDetailsArr);
-    \App\Models\Budget\ORSProjectsApplied::insert($orsProjectsAppliedArr);
-    return $offset;
-});
-
-Route::get('migrate_coa',function (){
-    $coa = \App\Models\SqlServer\COA::query()->get();
-    $arr = [];
-    foreach ($coa as $c){
-        array_push($arr,[
-            'slug' => \Illuminate\Support\Str::random(),
-            'account_code' => $c->AccountCode,
-            'account_title' => $c->AccountTitle,
-            'account_init' => $c->AccountInit,
-            'gl_group_id' => $c->GLGroupInd,
-            'gl_group' => $c->GLGroup,
-            'nature_id' => $c->NatureID,
-            'bank_rec_account' => $c->BackRecAcct,
-            'normal_bal' => $c->NormalBal,
-            'isbs_accounts' => $c->ISBSAccts,
-            'resp_center' => $c->RespCenterCode,
-            'header_1' => $c->Header1,
-            'header_2' => $c->Header2,
-            'header_3' => $c->Header3,
-            'name_of_collecting_officer' => $c->NameOfCollOfficer,
-            'parent_account' => $c->ParentAcct,
-            'child_account' => $c->ChildAcct,
-            'has_sched' => $c->HasSched,
-            'auto_dv' => $c->AUTODV,
-            'fa_account' => $c->FAACCT,
-            'for_or' => $c->ForOR,
-            'taxable' => $c->Taxable,
-            'bur_per_account' => $c->BURPERACCT,
-            'bur_oblig' => $c->BUR_OBLIG,
-            'bur_oblig_group' => $c->BUR_OBLIG_GROUP,
-            'g1' => $c->G1,
-            'g2' => $c->G2,
-            'g4' => $c->G4,
-            'treas_account' => $c->TREASACCT,
-            'tax' => $c->TAX,
-            'account_number' => $c->ACCOUNTNUMBER,
-        ]);
-    }
-    \App\Models\Budget\ChartOfAccounts::insert($arr);
-});
-
-Route::get('/sqlsrv',function (){
-   $serverName = '10.36.1.105\SRA';
-   $connectionInfo = [
-           'Database' => 'GASS',
-           'UID' => 'sa',
-           'PWD' => 'noliboy',
-//            'Encrypt' => 'no',
-//            'TrustServerCertificate' => true,
-       ];
-   $conn = sqlsrv_connect($serverName,$connectionInfo);
-    if( $conn ) {
-        echo "Connection established.<br />";
-    }else{
-        echo "Connection could not be established.<br />";
-        die( print_r( sqlsrv_errors(), true));
-    }
-});
 
 
-Route::get('numtowords',function (){
-    $num = 1546;
-
-});
 Route::resource('mail',\App\Http\Controllers\Test\MailController::class);
 Route::get('/mails',function (){
     $connected = @fsockopen("www.google.com",80);
@@ -874,56 +659,6 @@ Route::get('/mails',function (){
 
 });
 
-
-Route::get('/checking',function (){
-    $burs = \App\Models\SqlServer\BUR::query()->with(['BURProjApplied'])
-        ->where('BURDate','>','2022-12-31')
-        ->whereHas('BURProjApplied',function ($q){
-            return $q->where('COAmt','>',0);
-        })
-        ->get();
-    foreach ($burs as $bur){
-        echo $bur->BURNo.'<hr>';
-        foreach($bur->BURProjApplied as $d){
-            echo $d->COAmt.'<br>';
-        }
-        echo '<br><br>';
-    }
-}
-);
-
-Route::get('fullPather',function (){
-    $file201s = \App\Models\EmployeeFile201::query()
-        ->whereNull('full_path')
-        ->get();
-    foreach ($file201s as $file201){
-        $file201->full_path = '/File201/'.$file201->employee_no.'/'.$file201->filename;
-        $file201->save();
-    }
-    dd(1);
-});
-
-
-
-
-
-Route::get('/update_plantilla',function(){
-    $items = DB::table('aa_temp_items')->get();
-    foreach ($items as $item){
-        $p = \App\Models\HRPayPlanitilla::query()->where('item_no','=',$item->item_no)->first();
-        if(!empty($p)){
-            $p->qs_education = $item->qs_education;
-            $p->qs_training = $item->qs_training;
-            $p->qs_experience = $item->qs_experience;
-            $p->qs_eligibility = $item->qs_eligibility;
-            $p->qs_competency = $item->qs_competency;
-            $p->place_of_assignment = $item->place_of_assignment;
-            $p->csc_position = $item->position;
-            $p->save();
-        }
-    }
-    return 1;
-});
 
 
 Route::get('regions',function (){
@@ -961,408 +696,9 @@ Route::get('regions',function (){
 });
 
 
-Route::get('update_qc_employees',function (){
-    $employeesQc = \App\Models\QC\Employee::query()->get();
-    $employeeTableColumns = Schema::connection('afd_qc')->getColumnListing('hr_employees');
 
-    unset($employeeTableColumns[array_search('biometric_user_id',$employeeTableColumns)]);
-    unset($employeeTableColumns[array_search('id',$employeeTableColumns)]);
 
-    $employeesNotFoundInBcd = [];
 
-    foreach ($employeesQc as $employeeQc){
-        $employeeBcd = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
-        if(empty($employeeBcd)){
-            $employeeBcd = new \App\Models\Employee();
-            foreach ($employeeTableColumns as $columnName){
-                $employeeBcd->$columnName = $employeeQc->$columnName;
-            }
-            $employeeBcd->save();
-        }else{
-            foreach ($employeeTableColumns as $columnName){
-                $employeeBcd->$columnName = $employeeQc->$columnName;
-            }
-            $employeeBcd->save();
-        }
-    }
-
-    dd('Finished');
-    dd($employeesQc);
-});
-
-Route::get('update_qc_employees_201',function () {
-    $employeesQc = \App\Models\QC\Employee::query()
-        ->whereHas('file201s')
-        ->get();
-
-    foreach ($employeesQc as $employeeQc){
-        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
-        $employeeBCD->file201s()->delete();
-        if($employeeQc->file201s->count() > 0){
-            $file201ToInsert = [];
-            foreach ($employeeQc->file201s as $file201){
-                $file201Array = $file201->toArray();
-                unset($file201Array['id']);
-                array_push($file201ToInsert,$file201Array);
-            }
-            \App\Models\EmployeeFile201::insert($file201ToInsert);
-        }
-    }
-    dd('Finished');
-
-});
-
-Route::get('update_qc_employees_sr',function () {
-    $employeesQc = \App\Models\QC\Employee::query()
-        ->whereHas('employeeServiceRecord')
-        ->get();
-    
-    foreach ($employeesQc as $employeeQc){
-        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
-        $employeeBCD->employeeServiceRecord()->delete();
-        if($employeeQc->employeeServiceRecord->count() > 0){
-            $employeeServiceRecordsToInsert = [];
-            foreach ($employeeQc->employeeServiceRecord as $sr){
-                $srArray = $sr->toArray();
-                unset($srArray['id']);
-
-                array_push($employeeServiceRecordsToInsert,$srArray);
-            }
-
-            \App\Models\EmployeeServiceRecord::insert($employeeServiceRecordsToInsert);
-        }
-    }
-    dd('Finished Service Record');
-});
-
-Route::get('update_qc_employees_trainings',function () {
-
-    $employeesQc = \App\Models\QC\Employee::query()
-        ->whereHas('employeeTraining')
-        ->get();
-
-    foreach ($employeesQc as $employeeQc){
-        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
-        $employeeBCD->employeeTraining()->delete();
-        if($employeeQc->employeeTraining->count() > 0){
-            $employeeTrainingsToInsert = [];
-            foreach ($employeeQc->employeeTraining as $training){
-                $trainingsArray = $training->toArray();
-                unset($trainingsArray['id']);
-
-                array_push($employeeTrainingsToInsert,$trainingsArray);
-            }
-
-            \App\Models\EmployeeTraining::insert($employeeTrainingsToInsert);
-        }
-    }
-    dd('Finished Trainings');
-});
-
-
-Route::get('update_qc_employees_educ',function () {
-
-    $employeesQc = \App\Models\QC\Employee::query()
-        ->whereHas('employeeEducationalBackground')
-        ->get();
-
-    foreach ($employeesQc as $employeeQc){
-        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
-        $employeeBCD->employeeEducationalBackground()->delete();
-        if($employeeQc->employeeEducationalBackground->count() > 0){
-            $employeeEducationalBackgroundsToInsert = [];
-            foreach ($employeeQc->employeeEducationalBackground as $educ){
-                $educsArray = $educ->toArray();
-                unset($educsArray['id']);
-
-                array_push($employeeEducationalBackgroundsToInsert,$educsArray);
-            }
-
-            \App\Models\EmployeeEducationalBackground::insert($employeeEducationalBackgroundsToInsert);
-        }
-    }
-    dd('Finished Educational Background');
-});
-
-Route::get('update_qc_employees_elig',function () {
-
-    $employeesQc = \App\Models\QC\Employee::query()
-        ->whereHas('employeeEligibility')
-        ->get();
-
-    foreach ($employeesQc as $employeeQc){
-        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
-        $employeeBCD->employeeEligibility()->delete();
-        if($employeeQc->employeeEligibility->count() > 0){
-            $employeeEligibilitysToInsert = [];
-            foreach ($employeeQc->employeeEligibility as $elig){
-                $eligsArray = $elig->toArray();
-                unset($eligsArray['id']);
-
-                array_push($employeeEligibilitysToInsert,$eligsArray);
-            }
-
-            App\Models\EmployeeEligibility::insert($employeeEligibilitysToInsert);
-        }
-    }
-    dd('Finished Eligibility');
-});
-
-
-
-
-
-Route::get('update_qc_employees_family',function () {
-
-    $about = 'employeeFamilyDetail';
-    $employeesQc = \App\Models\QC\Employee::query()
-        ->whereHas($about)
-        ->get();
-
-
-    foreach ($employeesQc as $employeeQc){
-        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
-        $employeeBCD->employeeFamilyDetail()->delete();
-
-        $employeeQc->$about;
-        $classNameOfRelationShip = get_class($employeeQc->$about()->getRelated());
-        $tableName = with(new $classNameOfRelationShip())-> getTable();
-
-        $columnsOfRelationShip = Schema::connection('afd_qc')->getColumnListing($tableName);
-        unset($columnsOfRelationShip[array_search('id',$columnsOfRelationShip)]);
-        $newEmployee = new \App\Models\EmployeeFamilyDetail();
-
-        foreach ($columnsOfRelationShip as $col){
-            $newEmployee->$col = $employeeQc->$about->$col;
-        }
-
-
-        $newEmployee->save();
-
-    }
-    dd('Finished '.$about);
-});
-Route::get('update_qc_employees_has_one',function () {
-
-    $about = \Illuminate\Support\Facades\Request::get('about');
-    $employeesQc = \App\Models\QC\Employee::query()
-        ->whereHas($about)
-        ->get();
-
-    foreach ($employeesQc as $employeeQc){
-        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
-
-        if(!empty($employeeBCD)){
-            $employeeBCD->$about()->delete();
-
-            $employeeQc->$about;
-            $classNameOfRelationShip = get_class($employeeQc->$about()->getRelated());
-            $tableName = with(new $classNameOfRelationShip())-> getTable();
-
-            $columnsOfRelationShip = Schema::connection('afd_qc')->getColumnListing($tableName);
-            unset($columnsOfRelationShip[array_search('id',$columnsOfRelationShip)]);
-            $class = str_replace('QC\\','',get_class($employeeQc->$about()->getRelated()));
-            $newEmployee =  new $class();
-
-            foreach ($columnsOfRelationShip as $col){
-                $newEmployee->$col = $employeeQc->$about->$col;
-            }
-
-            $newEmployee->save();
-        }
-    }
-    dd('Finished '.$about);
-});
-
-
-Route::get('update_qc_employees_has_many',function () {
-
-    $about = \Illuminate\Support\Facades\Request::get('about');
-    $relationClass = App\Models\EmployeeExperience::class;
-
-    $employeesQc = \App\Models\QC\Employee::query()
-        ->whereHas($about)
-        ->get();
-    $class = '';
-    foreach ($employeesQc as $employeeQc){
-        $employeeBCD = \App\Models\Employee::query()->where('slug','=',$employeeQc->slug)->first();
-        $employeeBCD->$about()->delete();
-        if($employeeQc->$about->count() > 0){
-            $toInsert = [];
-            foreach ($employeeQc->$about as $sigleData){
-                $class = str_replace('QC\\','',get_class($employeeQc->$about()->getRelated()));
-                $sigleDataArray = $sigleData->toArray();
-                unset($sigleDataArray['id']);
-
-                array_push($toInsert,$sigleDataArray);
-            }
-
-            $class::insert($toInsert);
-        }
-    }
-    dd('Finished '.$about);
-});
-
-Route::get('update',function (\Illuminate\Http\Request $request){
-
-    $relations = [
-        'employeeVoluntaryWork',
-        'employeeTraining',
-        'employeeSpecialSkill',
-        'employeeServiceRecord',
-        'employeeReference',
-        'employeeRecognition',
-        'employeeOtherQuestion',
-        'employeeOrganization',
-        'employeeMedicalHistories',
-        'employeeMatrix',
-        'employeeHealthDeclaration',
-        'file201s',
-        'employeeFamilyDetail',
-        'employeeExperience',
-        'employeeEligibility',
-        'employeeEducationalBackground',
-        'employeeChildren',
-        'employeeAddress',
-        'empBeginningCredits',
-        'dtr_records',
-        'documentDisseminationLog',
-        'user',
-    ];
-
-    if(isset($relations[$request->current])){
-        $relation = $relations[$request->current];
-        $employees = \App\Models\Employee::query()
-            ->whereHas($relation,function ($q){
-                return $q->where('employee_slug','=',null);
-            })
-            ->get();
-
-        foreach ($employees as $employee){
-            $employee->$relation()->update([
-                'employee_slug' => $employee->slug,
-            ]);
-        }
-        return redirect()->route('updateee',[
-            'current' => $request->current + 1,
-        ]);
-    }else{
-        dd('Done all.');
-    }
-})->name('updateee');
-
-
-Route::get('/user', function(){
-
-    $zk = new ZKTeco('10.36.1.23');
-    //ini_set('max_execution_time', 300);
-    $zk->connect();
-
-    $employees = \App\Models\Employee::query()
-        ->where('biometric_user_id','!=',null)
-        ->where(function ($q){
-            $q->where('locations','=','VISAYAS')
-            ->orWhere('locations','=','COS-VISAYAS');
-        })
-        ->get()
-        ->mapWithKeys(function ($data){
-            return [
-                $data->biometric_user_id => $data
-            ];
-        });
-
-    foreach (collect($zk->getUser())->toArray() as $id => $data){
-        if (isset($employees[$id])){
-
-            $new_uid = $data['uid'];
-            $new_userid = $data['userid'];
-            $new_name = \Illuminate\Support\Str::limit($employees[$id]->firstname.' '.$employees[$id]->lastname,24);
-            $new_password = $data['password'];
-            $zk->setUser($new_uid,$new_userid,$new_name,$new_password,\Rats\Zkteco\Lib\Helper\Util::LEVEL_USER,"0000000000");
-        }
-
-    }
-
-
-    return $zk->getUser();
-
-});
-
-Route::get('/lgarec', function(){
-    $last = \App\Models\DTR::query()
-        ->where('location','=','LGAREC API')
-        ->orderBy('lgarec_id','desc')
-        ->first()->lgarec_id ?? 0;
-
-    $lgarec = 'http://122.52.169.219:8001/api/dtr_data?last='.$last;
-    $response = file_get_contents($lgarec);
-    $newsData = collect(json_decode($response))->chunk(1000);
-
-    foreach ($newsData as $dtrs) {
-        $arr = [];
-        foreach ($dtrs as $dtr){
-            array_push($arr,[
-                'lgarec_id' => $dtr->id,
-                'uid' => $dtr->uid,
-                'user' => $dtr->user,
-                'state' => $dtr->state,
-                'type' => $dtr->type,
-                'timestamp' => $dtr->timestamp,
-                'device' => $dtr->device,
-                'created_at' => \Carbon\Carbon::now(),
-                'location' => 'LGAREC API',
-            ]);
-        }
-        if(\App\Models\DTR::insert($arr)){
-            $count = $newsData->flatten()->count();
-            \App\Models\CronLogs::insert([
-                'log' => 'API: Copied '.$count.' data from LGAREC',
-                'type' => 10,
-                'created_at' => Carbon::now(),
-            ]);
-        }else{
-            \App\Models\CronLogs::insert([
-                'log' => 'API Failed',
-                'type' => 11,
-                'created_at' => Carbon::now(),
-            ]);
-        }
-    }
-    dd($newsData->flatten()->count());
-});
-
-Route::get('/filesize',function (){
-   $docs  = \App\Models\Document::query()
-       ->where('filesize','=',null)
-       ->get();
-    foreach ($docs as $doc) {
-        if(\Illuminate\Support\Facades\File::exists(env('STORAGE_LOCATION').$doc->path.$doc->filename)){
-            $size = File::size(env('STORAGE_LOCATION').$doc->path.$doc->filename);
-            $doc->filesize = $size;
-            $doc->save();
-        }
-   }
-    return 1;
-});
-
-Route::get('/setTime',function (){
-    $biometrics = \App\Models\BiometricDevices::query()
-        ->where('status','=',1)
-        ->get();
-    $logs = [];
-   foreach ($biometrics as $biometric){
-       $zk = new \Rats\Zkteco\Lib\ZKTeco($biometric->ip_address);
-       $zk->connect();
-       $zk->setTime(Carbon::now()->format(\Illuminate\Support\Carbon::now()->format('Y-m-d H:i:s')));
-       array_push($logs,[
-           'log' => 'Time reset successful: '.$biometric->ip_address,
-           'type' => 4,
-           'created_at' => Carbon::now(),
-           'updated_at' => Carbon::now(),
-       ]);
-   }
-   \App\Models\CronLogs::insert($logs);
-});
 
 Route::get('/appearance',function (\Illuminate\Http\Request $request){
     if(!$request->has('date')){
@@ -1373,30 +709,6 @@ Route::get('/appearance',function (\Illuminate\Http\Request $request){
 
 
 
-Route::get('/appointmentxxxxx',function (\Illuminate\Http\Request $request){
-    $emps = \App\Models\Employee::query()
-        ->where(function ($q){
-            $q->where('locations','=','COS-VISAYAS')
-                ->orWhere('locations','=','COS-LUZMIN')
-                ->orWhere('locations','=','VISAYAS')
-                ->orWhere('locations','=','LUZON/MINDANAO');
-        })
-        ->get();
-    foreach ($emps as $emp) {
-        switch ($emp->locations) {
-            case 'VISAYAS':
-            case 'LUZON':
-                $emp->appointment_status = 'Permanent';
-                break;
-            case 'COS-VISAYAS':
-            case 'COS-LUZMIN':
-                $emp->appointment_status = 'COS';
-                break;
-
-        }
-        $emp->save();
-    }
-});
 
 
 Route::get('/apiGetData',function (){
@@ -1455,3 +767,41 @@ Route::get('/udpateFromExcel',function (){
 
 Route::get('sendEvent',[\App\Http\Controllers\Test\TestController::class,'test']);
 Route::get('monitor',[\App\Http\Controllers\Test\TestController::class,'monitor']);
+
+Route::get('fixEduc',function (){
+    $educs = \App\Models\EmployeeEducationalBackground::query()
+//        ->withoutGlobalScope(new \App\Models\Scopes\ProjectScope())
+        ->whereNull('slug')
+        ->get();
+
+    if($educs->count() > 0){
+        foreach ($educs as $educ){
+            $educ->slug = \Illuminate\Support\Str::random();
+            $educ->save();
+        }
+    }
+
+    $es = \App\Models\EmployeeEligibility::query()
+//        ->withoutGlobalScope(new \App\Models\Scopes\ProjectScope())
+        ->whereNull('slug')
+        ->get();
+
+    if($es->count() > 0){
+        foreach ($es as $e){
+            $e->slug = \Illuminate\Support\Str::random();
+            $e->save();
+        }
+    }
+    $es = \App\Models\EmployeeExperience::query()
+//        ->withoutGlobalScope(new \App\Models\Scopes\ProjectScope())
+        ->whereNull('slug')
+        ->get();
+
+    if($es->count() > 0){
+        foreach ($es as $e){
+            $e->slug = \Illuminate\Support\Str::random();
+            $e->save();
+
+        }
+    }
+});

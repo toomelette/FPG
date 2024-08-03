@@ -11,6 +11,7 @@ use App\Models\Document;
 use App\Models\DocumentDisseminationLog;
 use App\Models\EmailContact;
 use App\Models\Employee;
+use App\Models\HRPayPlanitilla;
 use App\Models\JoEmployees;
 use App\Models\LeaveApplication;
 use App\Models\News;
@@ -79,68 +80,60 @@ class HomeController extends Controller{
             }
 
 
-
-            $per_course = DB::table("swep_afd.hr_courses")
-                ->leftJoin("hr_applicants", function($join){
-                    $join->on("hr_courses.course_id", "=", "hr_applicants.course_id");
-                })
-                ->select("name", DB::raw('count(hr_applicants.slug) as count'))
-                ->orderBy("name","asc")
-                ->groupBy("name")
-                ->get();
-
-            $per_date_received = DB::table('hr_applicants')
-                ->select('received_at', DB::raw("count('slug') as count"))
-                ->where('received_at','!=', null)
-                ->groupBy('received_at')
-                ->orderBy('received_at','asc')
-                ->get();
-
             $all_leave_applications = LeaveApplication::count();
-            $all_ps = PermissionSlip::count();
-            $male_employees = Employee::where('sex','MALE')
-                ->where(function ($query){
-                    $query->where('locations','=','VISAYAS')
-                        ->orWhere('locations','=','LUZON/MINDANAO');
-                })
-                ->where('is_active','ACTIVE')->count();
-            $female_employees = Employee::where('sex','FEMALE')
-                ->where(function ($query){
-                    $query->where('locations','=','VISAYAS')
-                        ->orWhere('locations','=','LUZON/MINDANAO');
-                })
-                ->where('is_active','ACTIVE')->count();
-            $all_employees = Employee::where('is_active','ACTIVE')
-                ->where(function ($query){
-                    $query->where('locations','=','VISAYAS')
-                        ->orWhere('locations','=','LUZON/MINDANAO');
-                })
-                ->count();
+
+
             $all_applicants = Applicant::count();
 
-            $male_jo_employees = Employee::query()
-                ->where('locations','like','%COS%')
+
+
+            $vacantPlantilla = HRPayPlanitilla::query()
+                ->whereDoesntHave('incumbentEmployee')
+                ->count();
+            $allPlantilla = HRPayPlanitilla::query()
+                ->count();
+            $filledPlantilla = HRPayPlanitilla::query()
+                ->whereHas('incumbentEmployee')
+                ->count();
+            $activeOrganicMaleEmployees = Employee::query()
                 ->where('sex','=','MALE')
+                ->active()
+                ->permanent()
                 ->count();
-            $female_jo_employees = Employee::query()
-                ->where('locations','like','%COS%')
+            $activeOrganicFemaleEmployees = Employee::query()
                 ->where('sex','=','FEMALE')
+                ->active()
+                ->permanent()
                 ->count();
-            return view('dashboard.home.hru_index')->with([
-                'male_employees' => $male_employees,
-                'female_employees' => $female_employees,
-                'all_employees' => $all_employees,
-                'per_course' => $per_course,
-                'per_date_received' => $per_date_received,
+
+            $activeCosMaleEmployees = Employee::query()
+                ->where('sex','=','MALE')
+                ->active()
+                ->cos()
+                ->count();
+            $activeCosFemaleEmployees = Employee::query()
+                ->where('sex','=','FEMALE')
+                ->active()
+                ->cos()
+                ->count();
+
+            return view('_hru.dashboard.index')->with([
+
+
                 'all_applicants' => $all_applicants,
                 'all_leave_applications' => $all_leave_applications,
-                'all_ps' => $all_ps,
-                'male_jo_employees' => $male_jo_employees,
-                'female_jo_employees' => $female_jo_employees,
-                'all_jo_employees' => $male_jo_employees+$female_jo_employees,
+
                 'bday_celebrants_view' => $this->birthdayCelebrantsView(Carbon::now()->format('Y-m-d')),
                 'step_increments_view' => $this->stepIncrements(Carbon::now()->format('m'),Carbon::now()->format('Y')),
                 'loyaltys' => $this->milestones(),
+
+                'vacantPlantilla' => $vacantPlantilla,
+                'allPlantilla' => $allPlantilla,
+                'filledPlantilla' => $filledPlantilla,
+                'activeOrganicMaleEmployees' => $activeOrganicMaleEmployees,
+                'activeOrganicFemaleEmployees' => $activeOrganicFemaleEmployees,
+                'activeCosMaleEmployees' => $activeCosMaleEmployees,
+                'activeCosFemaleEmployees' => $activeCosFemaleEmployees,
             ]);
         }
 
@@ -180,7 +173,7 @@ class HomeController extends Controller{
             ksort($documents_per_month_arr);
 
 
-            return view('dashboard.home.records_index')->with([
+            return view('_records.dashboard.index')->with([
                 'all_documents' => Document::count(),
                 'all_emails_sent' => DocumentDisseminationLog::where('status','sent')->count(),
                 'all_contacts' => EmailContact::count(),
@@ -190,30 +183,7 @@ class HomeController extends Controller{
             ]);
         }
 
-        if(Auth::user()->dash == 'budget'){
-            $orsNoErrors = ORS::query()
-                ->where(DB::raw('length(ors_no)'),'!=',13)
-                ->get();
-
-            $appliedProjects = ORSProjectsApplied::query()
-                ->with('ors')
-                ->whereDoesntHave('pap')
-                ->get();
-            $orsAppliedProjectErrors = [];
-            if(!empty($appliedProjects)){
-                foreach ($appliedProjects as $appliedProject){
-                    $orsAppliedProjectErrors[$appliedProject->ors->slug] = $appliedProject->ors;
-                }
-            }
-
-            return view('dashboard.home.budget_index')->with([
-                'orsNoErrors' => $orsNoErrors,
-                'orsAppliedProjectErrors' => $orsAppliedProjectErrors,
-            ]);
-        }
-
         return redirect()->route('dashboard.dtr.my_dtr');
-    	return $this->home->view();
     }
 
     private function birthdayCelebrantsView($this_month){
@@ -241,7 +211,7 @@ class HomeController extends Controller{
         }
         krsort($bday_celebrants['prev']);
         ksort($bday_celebrants['upcoming']);
-        return view('dashboard.home.birthday_celebrants')->with([
+        return view('_hru.dashboard.birthday-celebrants')->with([
             'bday_celebrants' => $bday_celebrants,
             'requested_month' => $this_month,
         ])->render();
@@ -269,7 +239,7 @@ class HomeController extends Controller{
             }
         }
 
-        return view('dashboard.home.step_increments')->with([
+        return view('_hru.dashboard.step-increments')->with([
             'employees_with_adjustments' => $employees_with_adjustments,
             'year_step' => $year
         ])->render();
@@ -296,7 +266,7 @@ class HomeController extends Controller{
         foreach ($loyaltys as $loyalty) {
             $loyaltysArr[$loyalty->slug] = $loyalty;
         }
-        return view('dashboard.home.milestones')->with([
+        return view('_hru.dashboard.milestones')->with([
                 'loyaltys' => $loyaltysArr,
             ]
         )->render();

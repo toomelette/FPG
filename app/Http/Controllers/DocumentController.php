@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Document;
 use App\Models\DocumentDisseminationLog;
+use App\Models\EmailContact;
+use App\Models\Employee;
 use App\Swep\Helpers\__static;
 use App\Swep\Repositories\DocumentRepository;
 use App\Swep\Services\DocumentService;
@@ -41,20 +43,14 @@ class DocumentController extends Controller{
 
     
     public function index(DocumentFilterRequest $request){
-
-//        Auth::user()->hasAccessToDocuments('QC','VIS');
-
         $documents = Document::with(['folder','folder2']);
-
         if ($request->ajax() && !empty($request->draw)){
-//            return 1;
             if(!empty($request->folder_code)){
                 $documents->where('folder_code','=',$request->folder_code);
             }
             return $this->dataTable($request, $documents);
         }
-
-        return view('dashboard.document.index');
+        return view('_records.documents.index');
 
     }
 
@@ -84,6 +80,10 @@ class DocumentController extends Controller{
 
         return \DataTables::of($documents)
             ->addColumn('view_document',function($data) use ($storage){
+                return view('_records.documents.dtViewFile')->with([
+                    'data' => $data,
+                    'storage' => $storage,
+                ]);
                 if($storage->exists($data->path.$data->filename)){
                     if($data->folder->is_permanent){
                         $class = 'danger';
@@ -104,7 +104,7 @@ class DocumentController extends Controller{
                 }
             })
             ->addColumn('action',function($data){
-                return view('dashboard.document.dtActions')->with([
+                return view('_records.documents.dtActions')->with([
                     'data' => $data,
                 ]);
             })
@@ -112,27 +112,12 @@ class DocumentController extends Controller{
                 return Carbon::parse($data->date)->format('m/d/Y');
             })
             ->editColumn('reference_no',function($data){
-                $one = '<i class="fa fa-folder"></i> '.$data->folder_code;
-                if(!empty($data->folder)){
-                    $one = '<a title="'.$data->folder->description.'" href="'.route("dashboard.document_folder.browse",$data->folder_code).'" target="_blank"><i class="fa fa-folder"></i> '.$data->folder_code.'</a>';
-                }
-                if($data->folder_code2 == ''){
-                    $two = '';
-                }else{
-                    if(!empty($data->folder2)){
-                        $two = ' & <a title="'.$data->folder2->description.'" href="'.route("dashboard.document_folder.browse",$data->folder_code2).'" target="_blank">'.$data->folder_code2.'</a>';
-                    }else{
-                        $two = ' & '. $data->folder_code2;
-                    }
-                }
-                $folder_sub = '<span class="pull-right">'.$one.$two.'</span>';
-                return $data->reference_no.'
-                    <div class="table-subdetail" style="margin-top: 3px">
-                         '.array_search($data->type,__static::document_types()).$folder_sub.'
-                    </div>';
+                return view('_records.documents.dtReferenceNo')->with([
+                    'data' => $data,
+                ]);
             })
             ->editColumn('subject',function($data){
-                return view('dashboard.document.dtSubject')->with([
+                return view('_records.documents.dtSubject')->with([
                     'data' => $data,
                 ]);
             })
@@ -142,10 +127,10 @@ class DocumentController extends Controller{
     }
 
     public function create(){
-        return view('dashboard.document.create');
+        return redirect(route('dashboard.document.index').'?initiator=create');
     }
 
-    private function getStorage(){
+    public function getStorage(){
         $auth = Auth::user();
         if($auth->project_id == 1){
             return Storage::disk('local');
@@ -304,7 +289,7 @@ class DocumentController extends Controller{
 
     public function edit($slug){
         $document = $this->findBySlug($slug);
-        return view('dashboard.document.edit')->with([
+        return view('_records.documents.edit')->with([
             'document' => $document
         ]);
         return $this->document->edit($slug);
@@ -472,7 +457,7 @@ class DocumentController extends Controller{
         foreach ($years as $year) {
             $ys[$year] = $year;
         }
-        return view('dashboard.document.download')->with(['years'=> $ys]);
+        return view('_records.documents.download')->with(['years'=> $ys]);
 
     }
 
@@ -572,10 +557,35 @@ class DocumentController extends Controller{
 
 
     public function dissemination(Request $request, $slug){
+        $document = Document::query()
+            ->where('slug','=',$slug)
+            ->first();
 
-       return $this->document->dissemination($request,$slug); 
+        if(!$this->document->checkIfExistsInPath($document)){
+            abort(510,'Document not found in the storage.');
+        }
+        $emailContacts = EmailContact::query()->get();
+        $emailContacts = $emailContacts->mapWithKeys(function ($data){return[$data->email_contact_id => $data->name .' | '.$data->email];});
+        $employeesWithEmail = Employee::query()
+            ->where('email','!=',null)
+            ->where('email','!=','')
+            ->active()
+            ->get()
+            ->mapWithKeys(function ($data){
+                return [
+                    $data->slug => $data->full['LFEMi'] .' | '. $data->email,
+                ];
+            });
 
+
+        return view('_records.documents.dissemination')->with([
+            'document'=>$document,
+            'request' => $request,
+            'emailContacts' => $emailContacts,
+            'employeesWithEmail' => $employeesWithEmail,
+        ]);
     }
+
 
 
 
@@ -587,7 +597,7 @@ class DocumentController extends Controller{
                 'subject' => $request->subject,
                 'employees' => $request->employee,
                 'email_contacts' => $request->email_contact,
-                'content' => $request->content,
+                'content' => $request->body,
             ]);
 
             return view('dashboard.document.dissemination_status')->with([
@@ -611,7 +621,7 @@ class DocumentController extends Controller{
     }
 
     public function report(){
-        return view('dashboard.document.report');
+        return view('_records.documents.reports');
     }
     
     public function report_generate(Request $request){

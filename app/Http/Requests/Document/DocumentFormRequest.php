@@ -37,7 +37,7 @@ class DocumentFormRequest extends FormRequest{
                 'max:45',
                 'alpha_dash',
                 Rule::unique('rec_documents','reference_no')
-                    ->ignore($this->get('slug'),'slug')
+                    ->ignore($this->route('document'),'slug')
                     ->where('deleted_at',null),
 
             ],

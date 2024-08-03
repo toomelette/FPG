@@ -23,6 +23,9 @@ class Select extends Component
         public $for = null,
         public $required = null,
         public $tabindex = null,
+        public $select2Preselected = null,
+        public $multiple = false,
+        public $includeEmpty = true,
     )
     {
         if(is_object($this->value)){

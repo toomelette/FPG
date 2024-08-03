@@ -33,21 +33,12 @@
                         <div class="box-body" style="display: none">
                             <form id="filter_form">
                                 <div class="row">
-                                    <div class="col-md-4 dt_filter-parent-div">
-                                        <label>Course:</label>
-                                        <select name="course"  class="form-control dt_filter filters select2_course_filter">
-                                            <option value="">Don't filter</option>
+                                    <x-forms.select label="Course" cols="2" container-class="dt_filter-parent-div" name="course" class="dt_filter filters select2_course_filter" :options="[]"/>
+                                    <x-forms.select label="Sex" cols="2" container-class="dt_filter-parent-div" name="sex" class="dt_filter filter_sex" :options="['MALE' => 'MALE','FEMALE' => 'FEMALE']"/>
 
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2 dt_filter-parent-div">
-                                        <label>Sex:</label>
-                                        <select name="sex"  class="form-control dt_filter filter_sex filters select22">
-                                            <option value="">Don't filter</option>
-                                            <option value="MALE">Male</option>
-                                            <option value="FEMALE">Female</option>
-                                        </select>
-                                    </div>
+
+
+
                                     <div class="col-md-2 dt_filter-parent-div">
                                         <label>Civil Status:</label>
                                         <select name="civil_status"  class="form-control dt_filter filter_locations filters select22">

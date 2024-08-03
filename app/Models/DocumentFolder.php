@@ -33,7 +33,6 @@ public static function boot()
 
     public $sortable = ['folder_code', 'description'];
 
-	public $timestamps = false;
 
     protected $casts = [
         'is_permanent' => 'boolean',

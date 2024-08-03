@@ -15,7 +15,7 @@ class HolidayFormRequest extends FormRequest
 
     public function rules(){
         return [
-            'holiday_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'date' => 'required|date',
             'type' => 'required|string|max:255|in:'.Helper::implode_assoc(Helper::holiday_types()),
         ];

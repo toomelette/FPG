@@ -26,7 +26,7 @@ class MisRequestsStatusController extends Controller
             abort(503,'Missing parameters');
         }
         $r = $this->findBySlug($request->slug);
-        return view('dashboard.mis_requests_status.index')->with([
+        return view('_mis.ict-requests.status')->with([
             'r' => $r,
         ]);
     }
@@ -40,7 +40,7 @@ class MisRequestsStatusController extends Controller
         if(Auth::user()->user_id != $r->user_created){
             abort(503,'This request is not of your ownership');
         }
-        return view('dashboard.mis_requests_status.index')->with([
+        return view('_mis.ict-requests.status')->with([
             'r' => $r,
         ]);
     }

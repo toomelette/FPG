@@ -39,36 +39,20 @@ class PlantillaController extends Controller{
             $jobGrades = Arrays::jobGrades();
             return DataTables::of($plantilla)
                 ->editColumn('position',function($data){
-                    return view('dashboard.plantilla.dtPosition')->with([
+                    return view('_hru.plantilla.dtPosition')->with([
                         'data'=> $data,
                     ]);
                 })
                 ->addColumn('action',function ($data){
-                    $uri = route('dashboard.plantilla.show',$data->id);
-                    $uri_edit = route('dashboard.plantilla.edit',$data->id);
-                    $button = '<div class="btn-group">
-                                    <button type="button" uri="'.$uri.'" class="btn btn-default btn-sm show_item_btn" data="'.$data->slug.'" data-toggle="modal" data-target ="#show_item_modal" title="View more" data-placement="left">
-                                        <i class="fa fa-file-text"></i>
-                                    </button>
-                                    <button type="button" uri ="'.$uri_edit.'" data="'.$data->slug.'" class="btn btn-default btn-sm edit_item_btn" data-toggle="modal" data-target="#edit_item_modal" title="Edit" data-placement="top">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-right">
-                                          <li><a href="#" class="mark_as_vacant_btn" data="'.$data->id.'"><i class="fa icon-service-record"></i> Mark as Vacant</a></li>
-                                        </ul>
-                                    </div>
-                                </div>';
-                    return $button;
+                    return view('_hru.plantilla.dtActions')->with([
+                        'data' => $data,
+                    ]);
                 })
                 ->addColumn('orig_jg_si',function ($data){
                     return $data->job_grade.' - '.$data->step_inc;
                 })
                 ->addColumn('incumbent',function ($data) use ($jobGrades){;
-                    return view('dashboard.plantilla.dtIncumbent')->with([
+                    return view('_hru.plantilla.dtIncumbent')->with([
                         'data' => $data,
                         'jobGrades' => $jobGrades,
                     ]);
@@ -89,7 +73,7 @@ class PlantillaController extends Controller{
             }
             abort(503,'Error updating item.');
         }
-        return view('dashboard.plantilla.index');
+        return view('_hru.plantilla.index');
     
     }
 
@@ -97,7 +81,7 @@ class PlantillaController extends Controller{
 
 
     public function create(){
-
+        return redirect(route('dashboard.plantilla.index'));
         return view('dashboard.plantilla.create');
 
     }
@@ -146,9 +130,9 @@ class PlantillaController extends Controller{
         if(request('typeahead') == true){
             return $this->typeAhead(request());
         }
-        $pp = $this->find($id);
-        return view('dashboard.plantilla.edit')->with([
-            'pp' => $pp,
+        $plantilla = $this->find($id);
+        return view('_hru.plantilla.edit')->with([
+            'plantilla' => $plantilla,
         ]);
         
     }
@@ -157,8 +141,8 @@ class PlantillaController extends Controller{
 
 
     public function update(PlantillaFormRequest $request, $id){
+
         $pp = $this->find($id);
-        //$pp->item_no = $request->item_no;
         $pp->position = $request->position;
         $pp->job_grade = $request->job_grade;
         $pp->step_inc = $request->step_inc;
@@ -172,18 +156,9 @@ class PlantillaController extends Controller{
         $pp->qs_competency = $request->qs_competency;
         $pp->place_of_assignment = $request->place_of_assignment;
         if($pp->update()){
-            if(isset($pp->getChanges()['employee_no'])){
-                $emp = Employee::query()->where('employee_no','=',$pp->employee_no)->first();
-                $emp_appt_date = $emp->appointment_date;
-                $emp_appt_date =  \Carbon::parse($emp_appt_date)->format('Y-m-d');
-                $pp_e = HrPayPlantillaEmployees::query()->updateOrCreate(
-                ['item_no' => $request->item_no, 'employee_no' => $pp->employee_no, 'appointment_date' => $emp_appt_date]
-                );
-            }
             return $pp->only('id');
         }
-
-
+        abort(503,'Error saving data.');
     }
 
     
@@ -225,7 +200,7 @@ class PlantillaController extends Controller{
     }
 
     public function report(){
-        return view('dashboard.plantilla.report');
+        return view('_hru.plantilla.report');
     }
 
     public function reportGenerate(Request $request){

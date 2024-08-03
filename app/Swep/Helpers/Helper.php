@@ -314,7 +314,7 @@ class Helper
         if(!empty($natures)){
 
             foreach ($natures as $nature){
-                $array[$nature->group][$nature->nature_of_request] = $nature->slug;
+                $array[$nature->group][$nature->slug] = $nature->nature_of_request;
             }
         }
         return $array;

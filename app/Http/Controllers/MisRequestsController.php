@@ -18,25 +18,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use Yajra\DataTables\DataTables;
+
 
 class MisRequestsController extends Controller
 {
     public function myRequests(){
         if(\request()->ajax() && \request()->has('draw')){
-            $mis_requests = MisRequests::with('status')->where('user_created','=',Auth::user()->user_id);
-            return DataTables::of($mis_requests)
+            $mis_requests = MisRequests::with('status')
+                ->where('user_created','=',Auth::user()->user_id);
+
+            return \DataTables::of($mis_requests)
                 ->addColumn('action',function ($data){
-                    if($data->cancelled_at != null){
-                        return '<p class="text-muted no-margin">Cancelled</p>';
-                    }
-                    return '<div class="btn-group">
-                            <button class="btn btn-default btn-sm status_btn" data="'.$data->slug.'" data-toggle="modal" data-target="#status_modal"><i class="fa fa-refresh"></i> Status</button>
-                            <button class="btn btn-default btn-sm print_request_btn" data="'.$data->slug.'" text="Request no: <b>'.$data->request_no.'</b>"><i class="fa fa-print"></i> Print</button>
-                        </div>';
+                    return view('_mis.ict-requests.my-dtActions')->with([
+                        'data' => $data,
+                    ]);
                 })
                 ->addColumn('status', function ($data){
-                   $status = $data->status()->orderBy('created_at','desc')->first();
+                   $status = $data->status->sortByDesc('created_at')->first();
                    if(!empty($status)){
                        return $status->status;
                    }
@@ -48,7 +46,7 @@ class MisRequestsController extends Controller
                 ->setRowId('slug')
                 ->toJson();
         }
-        return view('dashboard.mis_requests.my_requests');
+        return view('_mis.ict-requests.my-index');
     }
 
     public  function store(MisRequestsFormRequest $request){
@@ -76,7 +74,11 @@ class MisRequestsController extends Controller
                 abort(503,'Error sending email verification: '.$e->getMessage());
             }
 
-            event(new NewRequest($r));
+            try{
+                event(new NewRequest($r));
+            }catch (\Exception $exception){
+
+            }
             return $r->only(['slug','request_no']);
 
         }
@@ -133,23 +135,11 @@ class MisRequestsController extends Controller
             $request = \request();
 
             $table = MisRequests::query()->with(['user','user.employee']);
-            return DataTables::of($table)
+            return \DataTables::of($table)
                 ->addColumn('action',function ($data){
-
-                    return '<div class="btn-group">
-                            <button class="btn btn-default btn-sm print_request_btn" data="'.$data->slug.'" text="Request no: <b>'.$data->request_no.'</b>"><i class="fa fa-print"></i></button>
-                            <button class="btn btn-default btn-sm status_btn" data="'.$data->slug.'" text="Request no: <b>'.$data->request_no.'</b>" data-target="#status_modal" data-toggle="modal" title="Status" data-placement="top" ><i class="fa fa-refresh"></i></button>
-                            <button class="btn btn-default btn-sm edit_request_btn" data="'.$data->slug.'" data-target="#edit_request_modal" data-toggle="modal" ><i class="fa fa-edit"></i></button>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                  <li><a href="#" default_text="'.$data->recommendations.'" class="update_status_btn" data="'.$data->slug.'" request_no="'.$data->request_no.'">Update Status</a></li>
-                                  <li><a href="#" data-toggle="modal" data-target="#trainings_modal" class="mark_as_done_btn" data="'.$data->slug.'" request_no="'.$data->request_no.'">Mark as completed</a></li>
-                                </ul>
-                            </div>
-                        </div>';
+                    return view('_mis.ict-requests.dtActions')->with([
+                        'data' => $data,
+                    ]);
                 })
                 ->addColumn('status', function ($data){
                     $status = MisRequestsStatus::query()->where('request_slug','=',$data->slug)->orderBy('created_at','desc')->first();
@@ -161,32 +151,21 @@ class MisRequestsController extends Controller
                     return Carbon::parse($data->created_at)->format("M. d, Y | h:i A");
                 })
                 ->addColumn('fullname',function ($data){
-                    $append = view('dashboard.mis_requests.dtRequisitioner')->with([
+                    return view('_mis.ict-requests.dtRequisitioner')->with([
                         'data' => $data,
-                    ])->render();
-
-                    return $data->requisitioner.$append;
+                    ]);
                 })
                 ->editColumn('nature_of_request',function ($data){
-                    $success = '';
-                    if($data->completed_at != null){
-                        $success = '<span class="text-success pull-right"><i class="fa  fa-check-circle"></i></span>';
-                    }
-                    if($data->request_details != ''){
-                        return '<div>'.$data->nature_of_request.' '.$success.'
-                                <div class="table-subdetail">
-                                    '.$data->request_details.'
-                                </div>
-                            </div>';
-                    }
-                    return $data->nature_of_request.$success;
+                    return view('_mis.ict-requests.dtNatureOfRequest')->with([
+                        'data' => $data,
+                    ]);
                 })
-
                 ->escapeColumns([])
                 ->setRowId('slug')
                 ->toJson();
         }
-        return view('dashboard.mis_requests.index');
+
+        return view('_mis.ict-requests.index');
     }
 
     private function findCreator($slug){
@@ -235,6 +214,7 @@ class MisRequestsController extends Controller
         $r->summary_of_diagnostics = $request->summary_of_diagnostics;
         $r->returned = $request->returned;
         $r->date_returned = $request->date_returned;
+
         if($r->update()){
             if(count($r->getChanges()) > 1){
                 $changes = $r->getChanges();
@@ -246,13 +226,14 @@ class MisRequestsController extends Controller
                     }
                 }
             }
+
             $return = [
                 'slug' => $slug,
                 'summary_of_diagnostics' => $r->summary_of_diagnostics,
                 'returned'=> $r->returned,
                 'date_returned' => $r->date_returned,
                 'recommendations' => $r->recommendations,
-                'status' => $r->status()->first()->status,
+                'status' => $r?->status?->first()?->status ?? null,
             ];
             return $return;
 
@@ -276,10 +257,15 @@ class MisRequestsController extends Controller
     public function edit($slug){
         $r = $this->findBySlug($slug);
         $requisitioner = $this->findCreator($slug);
-        return view('dashboard.mis_requests.edit')->with([
-            'r' => $r,
+        return view('_mis.ict-requests.edit')->with([
+            'ict' => $r,
             'requisitioner' => $requisitioner,
         ]);
+    }
+
+    public function show($slug)
+    {
+
     }
 
 }

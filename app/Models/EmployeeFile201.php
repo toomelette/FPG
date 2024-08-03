@@ -26,7 +26,8 @@ class EmployeeFile201 extends Model
     protected $table = 'hr_employee_file201';
 
     protected $touches = ['employeeData'];
-
+    protected $primaryKey = 'slug';
+    public $incrementing = false;
     public function employeeData(){
         return $this->belongsTo(Employee::class,'employee_slug','slug');
     }

@@ -1,7 +1,7 @@
 <div class="btn-group">
-    <button type="button" class="btn btn-default btn-sm view_document_btn" data="{{$data->slug}}" data-toggle="modal" data-target ="#show_document_modal" title="View more" data-placement="left">
+    <a href="{{route('dashboard.leave_card.show',$data->slug)}}" class="btn btn-default btn-sm view_document_btn" title="View more" data-placement="left">
         <i class="fa fa-file-text"></i>
-    </button>
+    </a>
 
     <a data-toggle="modal" data-target="#edit_leave_card_modal" type="button" data="{{$data->slug}}" class="btn btn-default btn-sm edit_leave_card_btn"  title="Edit" data-placement="top">
         <i class="fa fa-edit"></i>

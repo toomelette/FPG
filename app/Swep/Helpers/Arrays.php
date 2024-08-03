@@ -8,6 +8,7 @@ use App\Models\Accounting\SubsidiaryAccounts;
 use App\Models\Applicant;
 use App\Models\ApplicantPositionApplied;
 use App\Models\Budget\ChartOfAccounts;
+use App\Models\DocumentFolder;
 use App\Models\Employee;
 use App\Models\HRPayPlanitilla;
 use App\Models\HRU\Deductions;
@@ -946,5 +947,29 @@ class Arrays
             $levels[$i] = $i;
         }
         return $levels;
+    }
+
+    public static function folderCodes()
+    {
+       $folders = DocumentFolder::query()
+           ->select('folder_code','description')
+           ->orderBy('folder_code','asc')
+           ->get();
+       return $folders->mapWithKeys(function ($data){
+           return [
+               $data->folder_code => $data->folder_code .' - '.$data->description,
+           ];
+       });
+    }
+
+    public static function retentionPeriods()
+    {
+        return [
+            '12' => '1 Year',
+            '24' => '2 Years',
+            '36' => '3 Years',
+            '48' => '4 Years',
+            '60' => '5 Years',
+        ];
     }
 }

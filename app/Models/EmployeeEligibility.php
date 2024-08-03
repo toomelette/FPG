@@ -35,6 +35,8 @@ class EmployeeEligibility extends Model{
 
     ];
 
+    public $incrementing = false;
+    protected $primaryKey = 'slug';
 
 
 

@@ -10,40 +10,32 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Course extends Model{
 
+    public static function boot()
+    {
+        parent::boot();
+        static::updating(function($a){
+            $a->user_updated = \Auth::user()->user_id;
+            $a->ip_updated = request()->ip();
+            $a->updated_at = \Carbon::now();
+        });
 
-    use Sortable, LogsActivity;
-
-	protected $table = 'hr_courses';
-    protected $dates = ['created_at', 'updated_at'];
-
-    public $sortable = ['acronym', 'name'];
-
-	public $timestamps = false;
-
-    protected static $logName = 'course';
-    protected static $logAttributes = ['*'];
-    protected static $ignoreChangedAttributes = ['updated_at','ip_updated','user_updated'];
-    protected static $logOnlyDirty = true;
-
-    public function getActivitylogOptions():LogOptions {
-        return LogOptions::defaults();
+        static::creating(function ($a){
+            $a->user_created = \Auth::user()->user_id;
+            $a->ip_created = request()->ip();
+            $a->created_at = \Carbon::now();
+        });
     }
 
 
-    protected $attributes = [
+	protected $table = 'hr_courses';
+    protected $dates = ['created_at', 'updated_at'];
+	public $timestamps = true;
+    protected $primaryKey = 'slug';
+    public $incrementing = false;
 
-        'slug' => '',
-        'course_id' => '',
-        'acronym' => '',
-        'name' => '',
-        'created_at' => null, 
-        'updated_at' => null,
-        'ip_created' => '',
-        'ip_updated' => '',
-        'user_created' => '',
-        'user_updated' => '',
 
-    ];
+
+
     
 
 

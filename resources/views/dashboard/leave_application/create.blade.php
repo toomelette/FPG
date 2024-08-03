@@ -213,7 +213,6 @@
             }
 
         })
-
         $("#leave-details").change(function (){
             let leaveType = $('#leave-type').val();
             let t = $(this);

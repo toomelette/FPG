@@ -413,6 +413,7 @@
                 $("#date_range").trigger('change');
             });
             $('#date_range').attr('disabled','disabled');
+
             uploader = $("#doc_file").fileinput({
                 // uploadUrl: "",
                 enableResumableUpload: false,

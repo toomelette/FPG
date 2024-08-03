@@ -39,7 +39,7 @@ class ApplicantController extends Controller{
 
 
 	public function create(){
-
+        return redirect(route('dashboard.applicant.index').'?initiator=create');
         return view('dashboard.applicant.create');
 
     }
@@ -133,52 +133,19 @@ class ApplicantController extends Controller{
                 });
             }
             return \DataTables::of($applicants)
-
                 ->addColumn('action',function($data){
-                    $destroy_route = "'".route("dashboard.applicant.destroy","slug")."'";
-                    $slug = "'".$data->slug."'";
-                    if($data->is_on_short_list == 1){
-                        $sl = '<li><a href="#"  employee="'.$data->lastname.', '.$data->firstname.'" class="remove_from_sl_btn" data="'.$data->slug.'" bm_uid="'.$data->biometric_user_id.'"><i class="fa fa-times"></i> Remove from Shortlist</a></li>';
-                    }else{
-                        $sl = '<li><a href="#"  employee="'.$data->lastname.', '.$data->firstname.'" class="add_to_sl_btn" data="'.$data->slug.'" bm_uid="'.$data->biometric_user_id.'"><i class="fa fa-check"></i> Add to Shortlist</a></li>';
-                    }
-
-                    $button = '<div class="btn-group">
-                                    <button data-target="#edit_applicant_modal" data-toggle="modal"   for="linkToEdit" type="button" data="'.$data->slug.'" class="btn btn-default btn-sm edit_applicant_btn"  title="Edit" data-placement="top">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button type="button" data="'.$data->slug.'" onclick="delete_data('.$slug.','.$destroy_route.')" class="btn btn-sm btn-danger delete_jo_employee_btn" data-toggle="tooltip" title="Delete" data-placement="top">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                   <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-right">
-                                          <li><a href="#" data-toggle="modal" data-target="#service_records_modal" class="service_records_btn" data="'.$data->slug.'"><i class="fa icon-service-record"></i> Details</a></li>
-                                          '.$sl.'
-                                        </ul>
-                                    </div>
-                                </div>';
-                    return $button;
+                    return view('_hru.applicants.dtActions')->with([
+                        'data' => $data,
+                    ]);
                 })
-                ->addColumn('age',function($data){
+                ->editColumn('date_of_birth',function($data){
                     return Carbon::parse($data->date_of_birth)->age;
                 })
                 ->addColumn('position_applied',function($data){
-                    $text = '';
-                    if($data->positionApplied->count() > 0){
-                        $text = $text.'<ul style="padding-left: 15px; margin-bottom: 0px">';
-                        foreach ($data->positionApplied as $position){
-                            $text = $text.'<li>';
-                            if($position->item != null || $position->item_no != ''){
-                                $text = $text.' '.$position->item_no.' - ';
-                            }
-                            $text = $text. $position->position_applied.'</li>';
-                        }
-                        $text = $text.'</ul>';
-                    }
-                    return $text;
+                    return view('_hru.applicants.dtPositionsApplied')->with([
+                        'data' => $data,
+                    ]);
+
                 })
                 ->addColumn('sl',function($data){
                     if($data->is_on_short_list == 1){
@@ -186,32 +153,23 @@ class ApplicantController extends Controller{
                     }
                 })
                 ->editColumn('course',function($data){
-                    $text = $data->course;
-                    $text = str_replace('BACHELOR OF SCIENCE IN','BS',$text);
-                    return $text;
+                    return view('_hru.applicants.dtCourse')->with([
+                        'data' => $data,
+                    ]);
                 })
                 ->editColumn('received_at',function($data){
-                    return Carbon::parse($data->received_at)->format('m/d/y');
+                    return Carbon::parse($data->received_at)->format('m/d/Y');
                 })
                 ->editColumn('fullname',function($data){
-                    return $data->fullname .'
-                    <div class="table-subdetail" style="margin-top: 3px">
-                        <table>
-                            <tr>
-                                <td style="padding-right: 10px">Contact:</td>
-                                <td style="padding-right: 20px">'.$data->contact_no.'</td>
-                                <td style="padding-right: 10px">Sex:</td>
-                                <td>'.$data->gender.'</td>
-                            </tr>
-                        </table>
-                        
-                    </div>';
+                    return  view('_hru.applicants.dtFullname')->with([
+                        'data' => $data,
+                    ]);
                 })
                 ->escapeColumns([])
                 ->setRowId('slug')
                 ->toJson();
         }
-		return $this->applicant->fetch($request);
+		return view('_hru.applicants.index');
 
     }
 
@@ -236,10 +194,9 @@ class ApplicantController extends Controller{
 
 	public function edit($slug){
         $applicant = $this->findBySlug($slug);
-        return view('dashboard.applicant.edit')->with([
+        return view('_hru.applicants.edit')->with([
             'applicant' => $applicant,
         ]);
-		return $this->applicant->edit($slug);
 
     }
 
@@ -247,6 +204,7 @@ class ApplicantController extends Controller{
 
 
 	public function update(ApplicantFormRequest $request, $slug){
+
         $payPlantillas = Arrays::payPlantillas();
         $applicant = $this->findBySlug($slug);
         $applicant->course = strtoupper($request->course);
@@ -283,6 +241,7 @@ class ApplicantController extends Controller{
             }
 
         }
+
         if($applicant->update()){
             $applicant->positionApplied()->delete();
             ApplicantPositionApplied::insert($positions_to_db);
@@ -311,7 +270,7 @@ class ApplicantController extends Controller{
 
 	public function report(){
 
-		return view('dashboard.applicant.report')->with(['columns' => $this->report_columns()]);
+		return view('_hru.applicants.report')->with(['columns' => $this->report_columns()]);
 
     }
 

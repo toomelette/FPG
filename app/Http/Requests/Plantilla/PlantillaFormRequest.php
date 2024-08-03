@@ -23,12 +23,6 @@ class PlantillaFormRequest extends FormRequest{
     public function rules(){
 
         return [
-            'item_no' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('hr_pay_plantilla','item_no')->ignore($this->request->get('id'),'item_no'),
-            ],
             'position' => 'required|string|max:255',
             'job_grade' => 'required|int|max:50',
             'step_inc' => 'required|int|max:8',

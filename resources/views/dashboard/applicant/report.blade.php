@@ -103,7 +103,6 @@
                         </div>
                         <input name="date_range" type="text" class="form-control pull-right filters" id="date_range" autocomplete="off" disabled>
 
-
                       </div>
                     </div>
                   </div>

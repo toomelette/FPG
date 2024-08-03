@@ -22,6 +22,14 @@
                @if($tabindex != null)
                    tabindex="{{$tabindex}}"
                 @endif
+               @if($step != null)
+                   step="{{$step}}"
+                @endif
+               @if($disabled == true)
+                   disabled="disabled"
+                @endif
+
+                {{$attributes}}
         >
 
 @if($inputOnly == false)

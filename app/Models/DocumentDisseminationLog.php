@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class DocumentDisseminationLog extends Model{
 
 
-//    protected $table = 'rec_document_dissemination_logs';
+    protected $table = 'rec_document_dissemination_logs';
     public static function boot()
     {
         parent::boot();
@@ -31,7 +31,7 @@ class DocumentDisseminationLog extends Model{
 
 
     protected $attributes = [
-        
+
         'slug' => '',
         'document_id' => '',
         'employee_no' => '',
@@ -46,15 +46,16 @@ class DocumentDisseminationLog extends Model{
 
     ];
 
-    public function getTable(){
-        return  'rec_document_dissemination_logs';
-        if(Auth::user()->access == 'QC'){
-            return 'qc_rec_document_dissemination_logs';
-        }
-        if( Auth::user()->access == 'VIS'){
-            return 'rec_document_dissemination_logs';
-        }
-    }
+
+//    public function getTable(){
+//        return  'rec_document_dissemination_logs';
+//        if(Auth::user()->access == 'QC'){
+//            return 'qc_rec_document_dissemination_logs';
+//        }
+//        if( Auth::user()->access == 'VIS'){
+//            return 'rec_document_dissemination_logs';
+//        }
+//    }
 
     // Relationships
 
@@ -69,7 +70,7 @@ class DocumentDisseminationLog extends Model{
     public function emailContact(){
         return $this->belongsTo('App\Models\EmailContact', 'email_contact_id', 'email_contact_id');
     }
-    
+
 
 
     

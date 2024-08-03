@@ -28,32 +28,6 @@ class LeaveCard extends Model{
         return LogOptions::defaults();
     }
 
-	protected $attributes = [
-        
-        'slug' => '',
-        'leave_card_id' => '',
-        'employee_no' => '',
-        'doc_type' => '',
-        'leave_type' => '',
-        'charge_to' => '',
-        'month' => '',
-        'year' => 0,
-        'date' => null,
-        'date_from' => null,
-        'date_to' => null,
-        'days' => 0,
-        'hrs' => 0,
-        'mins' => 0,
-        'credits' => 0.00, 
-        'remarks' => '',         
-        'created_at' => null, 
-        'updated_at' => null,
-        'ip_created' => '',
-        'ip_updated' => '',
-        'user_created' => '',
-        'user_updated' => '',
-
-    ];
 
 
 

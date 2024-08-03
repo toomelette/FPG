@@ -41,26 +41,7 @@ class Document extends Model{
 
 
     use SoftDeletes;
-
     protected $dates = ['date', 'created_at', 'updated_at'];
-
-    public $sortable = ['reference_no', 'date', 'person_to', 'person_from', 'subject'];
-
-	public $timestamps = false;
-
-
-    use LogsActivity, Ownership;
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->useLogName($this->table)
-            ->logAll()
-            ->logExcept([
-                'created_at','updated_at','user_updated','user_created'
-            ])
-            ->logOnlyDirty()
-            ;
-    }
 
     // Relationships
     public function documentDisseminationLogAll(){
@@ -69,8 +50,7 @@ class Document extends Model{
 
     public function documentDisseminationLog(){
         return $this->hasMany(DocumentDisseminationLog::class, 'document_id', 'document_id')
-            ->whereNull('send_copy')
-            ->orWhere('send_copy','!=',1);
+            ->where('send_copy','=',null);
     }
 
 

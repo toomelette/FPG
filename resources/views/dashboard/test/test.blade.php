@@ -1,20 +1,12 @@
-@extends('layouts.admin-master')
+@extends('adminkit.master')
 
 @section('content')
 
     <section class="content-header">
-        <h1>TITLE HERE</h1>
+        <h1>TITLE SER</h1>
     </section>
 @endsection
-@section('content2')
 
-    <section class="content">
-        Content
-
-    </section>
-
-
-@endsection
 
 
 @section('modals')

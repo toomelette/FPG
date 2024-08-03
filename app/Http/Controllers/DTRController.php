@@ -126,9 +126,6 @@ class DTRController extends  Controller
                 ->addColumn('last_attendance',function ($data){
                     return '<p style="font-family: Consolas">'.Helper::dateFormat($data->lastRawDtrRecord->timestamp ?? null,'M. d, Y | h:i A').' --- '.$this->dtr_service->biometric_values(true)[$data->lastRawDtrRecord->type ?? 10].'</p>';
                 })
-                ->editColumn('sex',function ($data){
-                    return __html::sex($data->sex);
-                })
                 ->addColumn('action',function ($data){
                     $destroy_route = "'".route("dashboard.menu.destroy","slug")."'";
                     $slug = "'".$data->slug."'";
@@ -136,10 +133,10 @@ class DTRController extends  Controller
                     $route = route('dashboard.employee.index')."?find=".$data->employee_no;
 
                     return '<div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm show_dtr_btn"  data="'.$data->slug.'" data-toggle="modal" data-target="#show_dtr_modal" title="" data-placement="left" data-original-title="View more">
+                                <button type="button" class="btn btn-outline-secondary btn-sm show_dtr_btn"  data="'.$data->slug.'" data-bs-toggle="modal" data-bs-target="#show_dtr_modal" title="" data-placement="left" data-original-title="View more">
                                     <i class="fa fa-list"></i>
                                 </button>
-                                <a type="button" href="'.$route.'" target="_blank" class="btn btn-default btn-sm" title="" data-placement="top" data-original-title="View Employee">
+                                <a type="button" href="'.$route.'" target="_blank" class="btn btn-outline-secondary btn-sm" title="" data-placement="top" data-original-title="View Employee">
                                     <i class="fa fa-user"></i>
                                 </a>
                             </div>';
@@ -150,7 +147,7 @@ class DTRController extends  Controller
 
 
         }
-        return view('dashboard.dtr.index');
+        return view('_hru.dtr.index');
     }
 
     public function show($slug){
@@ -196,14 +193,14 @@ class DTRController extends  Controller
             $cl->type = 500;
             $cl->save();
         }
-        $view = View::make('dashboard.dtr.my_dtr')->with([
+        $view = View::make('_hru.dtr.my_dtr')->with([
             'employee' => $employee,
             'dtr_by_year' => $dtr_by_year,
             'col' => 'col-md-3 col-sm-12 col-lg-2',
             'from' => 'show',
         ]);
         $sections = $view->renderSections();
-        return view('dashboard.dtr.show')->with([
+        return view('_hru.dtr.show')->with([
             'section' => $sections['content2'],
             'employee' => $employee,
 
@@ -233,7 +230,7 @@ class DTRController extends  Controller
 //        dd($dtr_by_year);
         krsort($dtr_by_year);
 
-        return view('dashboard.dtr.my_dtr')->with([
+        return view('_hru.dtr.my_dtr')->with([
             'employee' => $employee,
             'dtr_by_year' => $dtr_by_year,
             'col' => 'col-md-1 col-sm-2 col-lg-1',
@@ -286,7 +283,7 @@ class DTRController extends  Controller
                 }
             }
 
-            return view('dashboard.dtr.my_dtr_preview')->with([
+            return view('_hru.dtr.my_dtr_preview')->with([
                 'month' => $request->month,
                 'dtr_array' =>  $dtr_array,
                 'holidays' => $holidays,
@@ -355,8 +352,8 @@ class DTRController extends  Controller
         ];
 
         //return $request;
-        $pdf = PDF::loadView('dashboard.dtr.downloadable_dtr',$data)->setPaper('letter');
-        return view('dashboard.dtr.downloadable_dtr',$data);
+        $pdf = PDF::loadView('_hru.dtr.downloadable_dtr',$data)->setPaper('letter');
+        return view('_hru.dtr.downloadable_dtr',$data);
         //$pdf->adminPassword('123456');
         return $pdf->download('DTR-'.$employee->lastname.'-'.Carbon::parse($request->month)->format("Y,F").'.pdf');
 

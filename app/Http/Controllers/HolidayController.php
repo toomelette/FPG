@@ -23,37 +23,28 @@ class HolidayController extends Controller
                         $holidays = $holidays->whereYear('date',request('year'));
                     }
                 }
-                $holidays = $holidays->get();
+
                 return DataTables::of($holidays)
                     ->addColumn('year',function ($data){
                         return Carbon::parse($data->date)->format('Y');
                     })
                     ->addColumn('action',function ($data){
-                        $destroy_route = "'".route("dashboard.holidays.destroy","slug")."'";
-                        $slug = "'".$data->slug."'";
-//                        '<button type="button" class="btn btn-default btn-sm list_submenus_btn" menu_id="'.$data->menu_id.'" data="'.$data->slug.'" data-toggle="modal" data-target="#list_submenus" title="" data-placement="left" data-original-title="Submenus">
-//                                        <i class="fa fa-list"></i>
-//                                    </button>';
-                        return '<div class="btn-group">
-                                    <button type="button" data="'.$data->slug.'" class="btn btn-default btn-sm edit_holiday_btn" data-toggle="modal" data-target="#edit_holiday_modal" title="" data-placement="top" data-original-title="Edit">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button type="button" onclick="delete_data('.$slug.','.$destroy_route.')" data="'.$data->slug.'" class="btn btn-sm btn-danger" data-toggle="tooltip" title="" data-placement="top" data-original-title="Delete">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>';
+                        return view('_hru.holidays.dtActions')->with([
+                            'data' => $data,
+                        ]);
                     })
                     ->editColumn('date',function ($data){
-                        return $data->date;
-                        return Carbon::parse($data->date)->format('F d, Y');
+                        return view('_hru.holidays.dtDate')->with([
+                            'data' => $data,
+                        ]);
                     })
                     ->escapeColumns([])
                     ->setRowId('slug')
-                    ->make(true);
+                    ->toJson(true);
             }
         }
 
-        return view('dashboard.holiday.index');
+        return view('_hru.holidays.index');
     }
 
     public function fetchGoogleApi(){
@@ -98,7 +89,7 @@ class HolidayController extends Controller
     public function store(HolidayFormRequest $request){
         $holiday = new Holiday;
         $holiday->slug = Str::random(16);
-        $holiday->name = $request->holiday_name;
+        $holiday->name = $request->name;
         $holiday->date = $request->date;
         $holiday->type = $request->type;
 
@@ -109,20 +100,21 @@ class HolidayController extends Controller
     }
 
     public function edit($slug){
-        $holiday = Holiday::query()->where('slug','=',$slug)->first();
+        $holiday = Holiday::query()
+            ->findOrFail($slug);
         if(!empty($holiday)){
-            return view('dashboard.holiday.edit')->with([
+            return view('_hru.holidays.edit')->with([
                 'holiday' => $holiday,
             ]);
-        }else{
-            abort(503,'Data not found.');
         }
+        abort(503,'Data not found.');
+
     }
 
     public function update(HolidayFormRequest $request,$slug){
         $holiday = Holiday::query()->where('slug','=',$slug)->first();
         if(!empty($holiday)){
-            $holiday->name = $request->holiday_name;
+            $holiday->name = $request->name;
             $holiday->date = $request->date;
             $holiday->type = $request->type;
             if($holiday->update()){

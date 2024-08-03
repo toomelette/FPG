@@ -10,6 +10,7 @@ use App\Swep\Services\LeaveApplicationService;
 use App\Http\Requests\LeaveApplication\LeaveApplicationFormRequest;
 use App\Http\Requests\LeaveApplication\LeaveApplicationFilterRequest;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -42,25 +43,22 @@ class LeaveApplicationController extends Controller{
                     return Carbon::parse($data->date_of_filing)->format('M. d, Y');
                 })
                 ->addColumn('inclusive_dates',function($data){
-                    return view('dashboard.leave_application.dtInclusiveDates')
+                    return view('_hru.leave-applications.dtInclusiveDates')
                         ->with([
                             'data' => $data,
                         ]);
                 })
                 ->editColumn('leave_type',function($data){
-                    return view('dashboard.leave_application.dtLeaveType')
+                    return view('_hru.leave-applications.dtLeaveType')
                         ->with([
                             'data' => $data,
                         ]);
-                })
-                ->addColumn('employee',function($data){
-
                 })
                 ->addColumn('status',function($data){
 
                 })
                 ->addColumn('action',function($data){
-                    return view('dashboard.leave_application.dtActions')
+                    return view('_hru.leave-applications.dtActions')
                         ->with([
                             'data' => $data,
                         ]);
@@ -69,7 +67,7 @@ class LeaveApplicationController extends Controller{
                 ->setRowId('slug')
                 ->toJson();
         }
-        return view('dashboard.leave_application.index');
+        return view('_hru.leave-applications.index');
     
     }
 
@@ -86,23 +84,23 @@ class LeaveApplicationController extends Controller{
                     return Carbon::parse($data->date_of_filing)->format('M. d, Y');
                 })
                 ->addColumn('inclusive_dates',function($data){
-                    return view('dashboard.leave_application.dtInclusiveDates')->with([
+                    return view('_hru.leave-applications.my-dtInclusiveDates')->with([
                         'data' => $data,
                     ]);
                 })
                 ->editColumn('leave_type',function($data){
-                    return view('dashboard.leave_application.dtLeaveType')->with([
+                    return view('_hru.leave-applications.my-dtLeaveType')->with([
                         'data' => $data,
                     ]);
                 })
-                ->addColumn('email',function($data){
+                ->addColumn('employee',function($data){
 
                 })
                 ->addColumn('status',function($data){
 
                 })
                 ->addColumn('action',function($data){
-                    return view('dashboard.leave_application.dtActions')->with([
+                    return view('_hru.leave-applications.my-dtActions')->with([
                         'data' => $data,
                     ]);
                 })
@@ -110,7 +108,7 @@ class LeaveApplicationController extends Controller{
                 ->setRowId('slug')
                 ->toJson();
         }
-        return view('dashboard.leave_application.my_leave_applications');
+        return view('_hru.leave-applications.my-index');
     
     }
 
@@ -118,8 +116,9 @@ class LeaveApplicationController extends Controller{
 
 
     public function create(){
-        return view('dashboard.leave_application.create');
-
+        return view('_hru.leave-applications.my-create')->with([
+            'employee' => Auth::user()->employee,
+        ]);
     }
 
     
@@ -219,12 +218,13 @@ class LeaveApplicationController extends Controller{
 
     
     public function edit($slug){
+
         $la = LeaveApplication::query()
             ->with(['dates'])
             ->where('slug','=',$slug)
             ->first();
         $la ?? abort(503,'Leave application not found.');
-        return view('dashboard.leave_application.edit')->with([
+        return view('_hru.leave-applications.edit')->with([
             'la' => $la,
         ]);
     }
@@ -278,8 +278,9 @@ class LeaveApplicationController extends Controller{
         if($la->save()){
             $la->dates()->delete();
             LeaveApplicationDates::insert($insert);
+            return $la->only('slug');
         }
-        dd($la);
+        abort(503,'Error saving data.');
         
     }
 

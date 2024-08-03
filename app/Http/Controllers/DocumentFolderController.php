@@ -8,6 +8,7 @@ use App\Swep\Services\DocumentFolderService;
 use App\Http\Requests\DocumentFolder\DocumentFolderFormRequest;
 use App\Http\Requests\DocumentFolder\DocumentFolderFilterRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
 
@@ -36,7 +37,7 @@ class DocumentFolderController extends Controller{
                 ->withCount('documents2');
             return DataTables::of($df)
                 ->addColumn('action',function($data){
-                    return view('dashboard.document_folder.dtActions')->with([
+                    return view('_records.document-folders.dtActions')->with([
                         'data' => $data,
                     ]);
                 })
@@ -63,7 +64,7 @@ class DocumentFolderController extends Controller{
                 ->setRowId('slug')
                 ->toJson();
         }
-        return  view('dashboard.document_folder.index');
+        return  view('_records.document-folders.index');
         return $this->doc_folder->fetch($request);
         
     }
@@ -112,7 +113,7 @@ class DocumentFolderController extends Controller{
 
 
     public function create(){
-        
+        return  redirect(route('dashboard.document_folder.index')."?initiator=create");
         return view('dashboard.document_folder.create');
 
     }
@@ -123,7 +124,16 @@ class DocumentFolderController extends Controller{
 
     public function store(DocumentFolderFormRequest $request){
 
-        return $this->doc_folder->store($request);
+        $doc_folder = new DocumentFolder();
+        $doc_folder->slug = Str::random();
+        $doc_folder->folder_code = $request->folder_code;
+        $doc_folder->description = $request->description;
+        $doc_folder->retention_period = $request->retention_period;
+        $doc_folder->is_permanent = $request->is_permanent == 0 ? null : $request->is_permanent;
+        if($doc_folder->save()){
+            return  $doc_folder->only('slug');
+        }
+        abort(503,'Error saving data.');
         
     }
 
@@ -133,9 +143,10 @@ class DocumentFolderController extends Controller{
 
     public function edit($slug){
 
-        $docFolder = DocumentFolder::query()->find($slug) ?? abort(404);
-        return view('dashboard.document_folder.edit')->with([
-            'docFolder' => $docFolder,
+        $folder = DocumentFolder::query()
+            ->findOrFail($slug);
+        return view('_records.document-folders.edit')->with([
+            'folder' => $folder,
         ]);
 
 
@@ -162,7 +173,10 @@ class DocumentFolderController extends Controller{
 
 
     public function destroy($slug){
-        
+        abort(503,'This feature is not yet available');
+        $folder = DocumentFolder::query()
+            ->findOrFail($slug);
+
         return $this->doc_folder->destroy($slug);
 
     }
@@ -185,13 +199,12 @@ class DocumentFolderController extends Controller{
                     $q->where('folder_code','=',$folderCode)
                         ->orWhere('folder_code2','=',$folderCode);
                 });
-
             return $documentController->dataTable($request,$documents);
         }
 
 
-        return view('dashboard.document_folder.browse')->with([
-            'document_folder' => $document_folder,
+        return view('_records.document-folders.browse')->with([
+            'documentFolder' => $document_folder,
         ]);
         return $this->doc_folder->browse($folder_code, $request);
 

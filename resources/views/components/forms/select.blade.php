@@ -1,7 +1,25 @@
 <div class="form-group  col-md-{{$cols}} {{$name}} {{$containerClass}}">
     <label for="lastname">{{$label}}:</label>
-    <select name="{{$name}}" class="form-control {{$class}}">
-        <option value="">Select</option>
+    <select name="{{$name}}" class="form-control {{$class}}"
+            @if($id != null)id="{{$id}}"@endif
+            @if($required != null)
+                required="required"
+            @endif
+            @if($tabindex != null)
+                tabindex="{{$tabindex}}"
+            @endif
+            @if($multiple)
+                multiple="multiple"
+            @endif
+    >
+        @if($select2Preselected)
+            <option value="{{$value}}">{{$select2Preselected}}</option>
+        @else
+            @if($includeEmpty)
+                <option value="">Select</option>
+            @endif
+        @endif
+
         @foreach($options as $key => $option)
             @if(is_array($option))
                 <optgroup label="{{$key}}">

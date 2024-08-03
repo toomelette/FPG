@@ -20,21 +20,10 @@ class EmployeeExperience extends Model{
     use SoftDeletes;
 
     protected $touches = ['employee'];
+    protected $primaryKey = 'slug';
+    public $incrementing = false;
 
 
-    protected $attributes = [
-        
-        'employee_no' => '',
-        'date_from' => null,
-        'date_to' => null,
-        'position' => '',
-        'company' => '',
-        'salary' => 0.00,
-        'salary_grade' => 0,
-        'appointment_status' => '',
-        'is_gov_service' => false,
-
-    ];
 
 
 

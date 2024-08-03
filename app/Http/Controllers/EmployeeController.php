@@ -69,7 +69,7 @@ class EmployeeController extends Controller{
         if($request->ajax() && $request->has('draw')){
             return $this->dataTable($request);
         }
-        return view('dashboard.employee.index');
+        return view('_hru.employee.index');
     
     }
 
@@ -77,7 +77,7 @@ class EmployeeController extends Controller{
         if($request->ajax() && $request->has('draw')){
             return $this->dataTable($request,'COS');
         }
-        return view('dashboard.employee.index');
+        return view('_hru.employee.index');
     }
 
     private function dataTable($request, $type = 'PERMANENT'){
@@ -91,14 +91,18 @@ class EmployeeController extends Controller{
             $employees = $employees->permanent();
         }else{
             $employees = $employees->cos();
-
         }
         if($sql_server_is_on === true){
             $employees = $employees->with('empMaster');
         }
+
+        if($request->draw == 1){
+            $employees = $employees->where('is_active','=','ACTIVE');
+        }
         if($request->has('is_active') && $request->is_active != ''){
             $employees = $employees->where('is_active','=',$request->is_active);
         }
+
         if($request->has('sex') && $request->sex != ''){
             $employees = $employees->where('sex','=',$request->sex);
         }
@@ -145,6 +149,10 @@ class EmployeeController extends Controller{
                                         </ul>
                                     </div>
                                 </div>';
+
+                return view('_hru.employee.dt.buttons')->with([
+                    'data' => $data,
+                ]);
                 return $button;
             })->editColumn('biometric_user_id',function ($data){
                 if($data->biometric_user_id == 0){
@@ -152,24 +160,24 @@ class EmployeeController extends Controller{
                 }
                 return $data->biometric_user_id;
             })->editColumn('position',function ($data) use($jobGrades){
-                return view('dashboard.employee.dt.position')->with([
+                return view('_hru.employee.dt.position')->with([
                     'data' => $data,
                     'jobGrades' => $jobGrades,
                 ]);
             })
             ->editColumn('employee_no',function($data){
-                return view('dashboard.employee.dt.employment_details')->with([
+                return view('_hru.employee.dt.employment_details')->with([
                     'data' => $data,
                 ]);
             })
             ->addColumn('photo',function($data){
-                return view('dashboard.employee.dt.photo')->with([
+                return view('_hru.employee.dt.photo')->with([
                     'data' => $data,
                 ]);
             })
             ->editColumn('fullname',function ($data){
 
-                return view('dashboard.employee.dt.fullname')->with([
+                return view('_hru.employee.dt.fullname')->with([
                     'data' => $data,
                 ]);
             })
@@ -182,7 +190,7 @@ class EmployeeController extends Controller{
 
     public function create(){
 
-        return view('dashboard.employee.create');
+        return view('_hru.employee.create');
 
     }
 
@@ -200,15 +208,39 @@ class EmployeeController extends Controller{
 
     public function show($slug){
 
-        return $this->employee->show($slug);
-        
+        $employee = Employee::query()
+            ->with('employeeAddress',
+                'employeeFamilyDetail',
+                'employeeOtherQuestion',
+                'employeeTraining',
+                'employeeChildren',
+                'employeeEducationalBackground',
+                'employeeEligibility',
+                'employeeExperience',
+                'employeeOrganization',
+                'employeeRecognition',
+                'employeeReference',
+                'employeeSpecialSkill',
+                'employeeVoluntaryWork',
+                'employeeServiceRecord',
+                'employeeMatrix',
+                'permissionSlip',
+            )
+            ->findOrFail($slug);
+        return view('_hru.employee.show')->with([
+            'employee' => $employee,
+            'decolor' => true,
+        ]);
     }
 
 
 
 
     public function edit($slug){
-
+        $employee = Employee::query()->findOrFail($slug);
+        return view('_hru.employee.edit')->with([
+            'employee' => $employee,
+        ]);
     	return $this->employee->edit($slug);
         
     }
@@ -252,62 +284,7 @@ class EmployeeController extends Controller{
 
     // Service Record
     public function serviceRecord($slug){
-        if(request()->has('draw')){
-            $employee = $this->findEmployeeBySlug($slug);
-            $sr = EmployeeServiceRecord::query()->where('employee_slug','=',$employee->slug);
 
-            $rt = \Illuminate\Support\Facades\Request::route()->getName().'_destroy';
-
-            return DataTables::of($sr)
-                ->addColumn('action',function ($data) use ($rt){
-                    $destroy_route = "'".route($rt,"slug")."'";
-                    $slug = "'".$data->slug."'";
-
-                    return '<div class="btn-group btn-group-xs" role="toolbar" aria-label="...">
-                                <button type="button" class="btn btn-default edit_sr_btn" data-toggle="modal" data-target="#edit_sr_modal" data="'.$data->slug.'"><i class="fa fa-edit"></i></button>
-                                <button data="'.$data->slug.'" type="button" onclick="delete_data('.$slug.','.$destroy_route.')" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-                            </div>';
-                })
-                ->editColumn('salary',function ($data){
-                    return number_format($data->salary,2);
-                })
-                ->editColumn('from_date',function ($data){
-                    if($data->from_date != ''){
-                        return Carbon::parse($data->from_date)->format('m/d/Y');
-                    }
-                })
-                ->editColumn('to_date',function ($data){
-                    if($data->upto_date == 1){
-                        return 'TO DATE';
-                    }
-                    if($data->to_date != ''){
-                        return Carbon::parse($data->to_date)->format('m/d/Y');
-                    }
-                })
-                ->setRowId('slug')
-                ->toJson();
-        }
-
-        if(request()->has('add')){
-            $employee = $this->findEmployeeBySlug($slug);
-            return view('dashboard.employee.create_service_record')->with(['employee'=>$employee]);
-        }
-
-        if(request()->has('edit')){
-            $employee = $this->findEmployeeBySlug($slug);
-            $sr = EmployeeServiceRecord::query()->where('slug','=',\request('sr'))->first();
-            if(empty($sr)){
-                abort(503,'Service Record not found');
-            }
-            return view('dashboard.employee.edit_service')->with(
-                [
-                    'employee'=>$employee,
-                    'sr' => $sr,
-                ]
-            );
-        }
-        $employee = $this->findEmployeeBySlug($slug);
-        return view('dashboard.employee.service_record')->with(['employee'=>$employee]);
 
     }
 
@@ -554,7 +531,7 @@ class EmployeeController extends Controller{
 
     public function report(){
         $allColumnsForReport = $this->allColumnsForReport();
-        return view('dashboard.employee.report')->with([
+        return view('_hru.employee.report')->with([
             'allColumnsForReport' => $allColumnsForReport,
         ]);
     }

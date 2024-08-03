@@ -13,13 +13,8 @@ class EligibilityFormRequest extends FormRequest
     }
 
     public function rules(){
-        if($this->getMethod() == 'POST'){
-            $s = 'required|string';
-        }else{
-            $s = 'nullable|string';
-        }
+
         return [
-            'employee_no' => $s,
             'eligibility' => 'required|string|max:255',
             'level' => 'nullable|string|max:20',
             'rating' => 'nullable|numeric',

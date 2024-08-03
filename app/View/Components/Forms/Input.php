@@ -29,6 +29,8 @@ class Input extends Component
         public $required = null,
         public $tabindex = null,
         public $inputOnly = false,
+        public $step = null,
+        public $disabled = false,
     )
     {
         if(is_object($this->value)){

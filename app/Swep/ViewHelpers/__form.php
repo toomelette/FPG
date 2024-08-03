@@ -387,10 +387,10 @@ class __form{
 
     /** For Dynamic Tables **/
 
-    public static function textbox_for_dt($name, $placeholder, $value, $error_first){
+    public static function textbox_for_dt($name, $placeholder, $value, $error_first,$type = 'text'){
 
        return '<div class="form-group">
-                  <input type="text" name="'. $name .'" class="form-control" placeholder="'. $placeholder .'" value="'. __sanitize::html_attribute_encode($value) .'">
+                  <input type="'.$type.'" name="'. $name .'" class="form-control" placeholder="'. $placeholder .'" value="'. __sanitize::html_attribute_encode($value) .'">
                   <small class="text-danger">'. $error_first .'</small>
                 </div>';
 

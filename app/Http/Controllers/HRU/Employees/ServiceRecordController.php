@@ -1,0 +1,165 @@
+<?php
+
+namespace App\Http\Controllers\HRU\Employees;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\EmployeeServiceRecord\EmployeeServiceRecordCreateForm;
+use App\Http\Requests\EmployeeServiceRecord\EmployeeServiceRecordEditForm;
+use App\Models\Employee;
+use App\Models\EmployeeServiceRecord;
+use App\Swep\Helpers\Helper;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
+
+class ServiceRecordController extends Controller
+{
+
+    public function index($employeeSlug, Request $request)
+    {
+        if(request()->has('draw')){
+
+            $employee = Employee::findOrFail($employeeSlug);
+            $sr = EmployeeServiceRecord::query()->where('employee_slug','=',$employee->slug);
+
+            $rt = \Illuminate\Support\Facades\Request::route()->getName().'_destroy';
+
+            return DataTables::of($sr)
+                ->addColumn('action',function ($data) use ($rt){
+                    return view('_hru.employee.service_records.dtActions')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->editColumn('salary',function ($data){
+                    return number_format($data->salary,2);
+                })
+                ->editColumn('from_date',function ($data){
+                    if($data->from_date != ''){
+                        return Carbon::parse($data->from_date)->format('m/d/Y');
+                    }
+                })
+                ->editColumn('to_date',function ($data){
+                    if($data->upto_date == 1){
+                        return 'TO DATE';
+                    }
+                    if($data->to_date != ''){
+                        return Carbon::parse($data->to_date)->format('m/d/Y');
+                    }
+                })
+                ->setRowId('slug')
+                ->toJson();
+        }
+
+        if(request()->has('edit')){
+            $slug = $employeeSlug;
+            $sr = EmployeeServiceRecord::query()->where('slug','=',$slug)->first();
+            if(empty($sr)){
+                abort(503,'Service Record not found');
+            }
+            return view('_hru.employee.service_records.edit')->with(
+                [
+                    'sr' => $sr,
+                ]
+            );
+        }
+
+        if(request()->has('print')){
+           return  $this->print($employeeSlug,$request);
+        }
+
+        $employee = Employee::findOrFail($employeeSlug);
+        return view('_hru.employee.service_records.index')->with(['employee'=>$employee]);
+    }
+
+    public function print($employeeSlug,Request $request)
+    {
+        $employee =  Employee::query()
+            ->with([
+                'employeeServiceRecord' => function ($q) use($request) {
+                    if($request->has('sort_by') && $request->sort_by != ''){
+                        $q->orderBy('sequence_no',$request->sort_by);
+                    }
+                }
+            ])
+            ->findOrFail($employeeSlug);
+        $srArr = [];
+
+        if(!empty($employee->employeeServiceRecord)){
+            foreach ($employee->employeeServiceRecord as $sr){
+                array_push($srArr,$sr);
+            }
+        }
+
+        return view('printables.employee.service_record')->with([
+            'employee' => $employee,
+            'employee_service_records' => $srArr,
+        ]);
+    }
+    public function store($employeeSlug,EmployeeServiceRecordCreateForm $request)
+    {
+        $sr = new EmployeeServiceRecord();
+        $sr->slug = \Str::random();
+        $sr->employee_slug = $employeeSlug;
+        $sr->sequence_no = $request->sequence_no;
+        $sr->from_date = $request->from_date;
+        $sr->to_date = $request->to_date ?? null;
+        $sr->position = $request->position;
+        $sr->appointment_status = $request->appointment_status;
+        $sr->salary = Helper::sanitizeAutonum($request->salary);
+        $sr->mode_of_payment = $request->mode_of_payment;
+        $sr->station = $request->station;
+        $sr->gov_serve = $request->gov_serve;
+        $sr->psc_serve = $request->psc_serve;
+        $sr->lwp = $request->lwp;
+        if($request->upto_date == true){
+            $sr->upto_date = 1;
+        }else{
+            $sr->upto_date = 0;
+        }
+        $sr->spdate = $request->spdate;
+        $sr->status = $request->status;
+        $sr->remarks = $request->remarks;
+
+        if($sr->save()){
+            return $sr->only('slug');
+        }
+        abort(503,'Error saving data.');
+    }
+
+    public function update($srSlug,EmployeeServiceRecordEditForm $request)
+    {
+        $sr = EmployeeServiceRecord::findOrFail($srSlug);
+        $sr->sequence_no = $request->sequence_no;
+        $sr->from_date = $request->from_date;
+        $sr->to_date = $request->to_date ?? null;
+        $sr->position = $request->position;
+        $sr->appointment_status = $request->appointment_status;
+        $sr->salary = Helper::sanitizeAutonum($request->salary);
+        $sr->mode_of_payment = $request->mode_of_payment;
+        $sr->station = $request->station;
+        $sr->gov_serve = $request->gov_serve;
+        $sr->psc_serve = $request->psc_serve;
+        $sr->lwp = $request->lwp;
+        if($request->upto_date == true){
+            $sr->upto_date = 1;
+        }else{
+            $sr->upto_date = 0;
+        }
+        $sr->spdate = $request->spdate;
+        $sr->status = $request->status;
+        $sr->remarks = $request->remarks;
+        if($sr->save()){
+            return $sr->only('slug');
+        }
+        abort(503,'Error saving data.');
+    }
+
+    public function destroy($slug)
+    {
+        $t = EmployeeServiceRecord::query()->findOrFail($slug);
+        if($t->delete()){
+            return 1;
+        }
+        abort(503,'Error deleting item.');
+    }
+}

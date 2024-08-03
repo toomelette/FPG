@@ -56,10 +56,9 @@
 <link type="text/css" rel="stylesheet" href="{{asset('template/plugins/select2-bootstrap-theme/dist/select2-bootstrap.min.css')}}">
 <link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.min.css') }}">
 <link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/ajax-file-uploader/css/jquery.uploader.css') }}">
-<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+<link rel="stylesheet" href="{{ asset('template/plugins/dropzone/dropzone.min.css') }}" type="text/css" />
 <link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/sortable-scrollable-fixed-header/css/styles.css') }}">
 @if(Auth::check())
-
     @if(Carbon::now()->format('m-d') == substr(Auth::user()->employee->date_of_birth,5))
         @if(!isset($_COOKIE['bdayBanner-'.Auth::user()->user_id.'-'.Carbon::now()->format('Ymd')]) || $_COOKIE['bdayBanner-'.Auth::user()->user_id.'-'.Carbon::now()->format('Ymd')] != 1)
             <link type="text/css" rel="stylesheet" href="{{ asset('css/bday.css') }}">

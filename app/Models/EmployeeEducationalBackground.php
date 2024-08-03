@@ -16,7 +16,8 @@ class EmployeeEducationalBackground extends Model{
     protected $dates = [];
 
     public $timestamps = false;
-
+    protected $primaryKey = 'slug';
+    public $incrementing = false;
 
 
 

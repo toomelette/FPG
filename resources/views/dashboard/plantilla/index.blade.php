@@ -94,7 +94,7 @@
             },
             {
                 "targets" : 1,
-                "class" : 'w-40p',
+                "class" : 'w-40p align-top',
             },
             {
                 "targets" : 4,

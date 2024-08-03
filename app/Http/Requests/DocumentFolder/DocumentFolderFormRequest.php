@@ -23,7 +23,7 @@ class DocumentFolderFormRequest extends FormRequest{
 
         $rules = [
             'folder_code' => 'required|max:45|string',
-            'description' => 'nullable|max:255|string',
+            'description' => 'required|max:255|string',
         ];
 
 

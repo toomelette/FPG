@@ -7,8 +7,6 @@
     </section>
 
     <section class="content">
-
-
         <div class="box box-success">
             <div class="box-header with-border">
                 <h3 class="box-title">MIS Service Requests</h3>

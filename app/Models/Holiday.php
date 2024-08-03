@@ -33,7 +33,8 @@ class Holiday extends Model
     protected static $logAttributes = ['*'];
     protected static $ignoreChangedAttributes = ['updated_at','ip_updated','user_updated'];
     protected static $logOnlyDirty = true;
-
+    protected $primaryKey = 'slug';
+    public $incrementing = false;
     public function getActivitylogOptions():LogOptions {
         return LogOptions::defaults();
     }
