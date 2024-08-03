@@ -38,6 +38,12 @@ class ProfileController extends Controller{
 
     }
 
+    public function index()
+    {
+        return view('_profile.index')->with([
+            'employee' => Auth::user()->employee,
+        ]);
+    }
 
 
 

@@ -401,8 +401,6 @@
                 $(this).attr('href',orig_uri+'?page='+employees_tbl.page.info().page);
             });
 
-            $('[data-toggle="tooltip"]').tooltip();
-            $('[data-toggle="modal"]').tooltip();
             if(active != ''){
                 $("#employees_table #"+active).addClass('table-success');
             }
