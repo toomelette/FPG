@@ -156,6 +156,21 @@ class Employee extends Model{
         );
     }
 
+    protected function attrAppointmentStatus(): Attribute
+    {
+        return  new Attribute(
+            get: function (){
+                if($this->locations == 'VISAYAS' || $this->locations == 'LUZON/MINDANAO'){
+                    return 'PERMANENT';
+                }
+                if($this->locations == 'COS-VISAYAS' || $this->locations == 'COS-LUZMIN'){
+                    return 'COS';
+                }
+                return 'UNDEFINED';
+            },
+        );
+    }
+
 
     protected function jgMonthlyBasic():Attribute
     {

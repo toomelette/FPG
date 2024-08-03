@@ -10,11 +10,19 @@
     <meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="shortcut icon" href="img/icons/icon-48x48.png" />
+    <link rel="icon" href="{{asset('images/sra_only2_low.png')}}" type="image/icon type">
+
 
     <link rel="canonical" href="https://demo-basic.adminkit.io/" />
 
     <title>SRA | HRRS</title>
+    <meta property="og:title" content="SRA Web Portal"/>
+    <meta property="og:image" content="{{asset('/images/ogg.png')}}"/>
+    <meta property="og:description" content="HRRS"/>
+    <meta property="og:url" content="http://hris.sra.gov.ph/"/>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="627" />
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="{{asset('adminkit/adminkit-css/bootstrap-icons.css')}}" crossorigin="anonymous">
     <link href="{{asset('adminkit/main/static/css/light.css')}}" rel="stylesheet">

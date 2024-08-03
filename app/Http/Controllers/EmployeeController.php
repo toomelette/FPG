@@ -69,6 +69,15 @@ class EmployeeController extends Controller{
         if($request->ajax() && $request->has('draw')){
             return $this->dataTable($request);
         }
+        if($request->has('find')){
+            $employee = Employee::query()
+                ->where('employee_no','=',$request->find)
+                ->active()
+                ->first();
+            if($employee->attr_appointment_status == 'COS'){
+                return redirect(route('dashboard.employee.index_cos').'?find='.$employee->employee_no);
+            }
+        }
         return view('_hru.employee.index');
     
     }
