@@ -7,8 +7,8 @@
             <div class="d-flex justify-content-center">
                 <div class="flex-shrink-0">
                     @if(!empty(Auth::user()->employee))
-                        @if(file_exists(public_path('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')))
-                            <img src="{{asset('images/EmployeePics/1by1Low/'.Auth::user()->employee->employee_no.'.jpg')}}" class="avatar img-fluid rounded me-1" alt="User Image">
+                        @if(file_exists(public_path('symlink/employee_pics/uploaded_50/'.Auth::user()->employee->photo)))
+                            <img src="{{asset('symlink/employee_pics/uploaded_50/'.Auth::user()->employee->photo)}}" class="avatar img-fluid rounded me-1" alt="User Image">
                         @else
                             <img src="{{asset('images/avatar.jpeg')}}" class="avatar img-fluid rounded me-1" alt="User Image">
                         @endif
