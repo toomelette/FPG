@@ -192,8 +192,6 @@
 
 
           "drawCallback": function(settings){
-            $('[data-toggle="tooltip"]').tooltip();
-            $('[data-toggle="modal"]').tooltip();
             if(active != ''){
               $("#dtr_table #"+active).addClass('success');
             }

@@ -23,6 +23,7 @@
 <link rel="stylesheet" href="{{asset('template/plugins/daterangepicker/daterangepicker.css')}}">
 <link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.min.css') }}">
 <link type="text/css" rel="stylesheet" href="{{asset('template/plugins/IntroJs/introjs.css')}}">
+<link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css')}}">
 
 <link type="text/css" rel="stylesheet" href="{{asset('adminkit/adminkit-css/app2.css')}}">
 

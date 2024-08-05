@@ -157,8 +157,6 @@
                 });
             },
             "drawCallback": function(settings){
-                $('[data-toggle="tooltip"]').tooltip();
-                $('[data-toggle="modal"]').tooltip();
                 if(sr_active != ''){
                     $("#service_records_table #"+sr_active).addClass('table-success');
                 }

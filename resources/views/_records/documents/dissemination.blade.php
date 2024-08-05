@@ -31,6 +31,9 @@
             </li>
         </ul>
         <div class="tab-content">
+            <a href="{{route('dashboard.document.dissemination.print',$document->slug)}}" target="_blank">
+                <button type="button" class="btn btn-outline-secondary btn-sm float-end"><i class="fa fa-print"></i> Print</button>
+            </a>
             <div class="tab-pane active" id="tab-1" role="tabpanel">
                 <form id="disseminate-form">
                     <div class="row mb-2">

@@ -235,8 +235,6 @@
             });
         },
         "drawCallback": function(settings){
-            $('[data-toggle="tooltip"]').tooltip();
-            $('[data-toggle="modal"]').tooltip();
             if(educationActive != ''){
                 $("#"+settings.sTableId+" #"+educationActive).addClass('table-success');
             }

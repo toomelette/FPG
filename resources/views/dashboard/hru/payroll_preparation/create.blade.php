@@ -186,7 +186,6 @@
         })
         $("body").on('ifChecked','#overall_selector',function (event){
             $('.emp_selector').iCheck('check');
-
         })
 
         $("body").on('ifChanged','.emp_selector',function (event){

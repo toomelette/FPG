@@ -2,25 +2,23 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>Leave Applications</x-slot:title>
+        <x-slot:title>Payroll</x-slot:title>
     </x-adminkit.html.page-title>
     <x-adminkit.html.card>
-        <div id="la-table-container" style="">
-            <table class="table table-bordered table-striped table-sm" id="la-table" style="width: 100%">
+        <div class="payroll-table-container">
+            <table class="table table-bordered table-sm" id="payroll-table">
                 <thead>
-                <tr class="">
-                    <th >Date of Application</th>
-                    <th >Employee</th>
-                    <th class="th-20">Type of Leave</th>
-                    <th >Inclusive Dates</th>
-                    <th >Status</th>
-                    <th class="action">Action</th>
-                    <th >Last</th>
-                    <th >Middle</th>
-                    <th >First</th>
+                <tr>
+                    <th>Payroll Date</th>
+                    <th>Payroll Type</th>
+                    <th>Employees.</th>
+                    <th>Details</th>
+                    <th>Amount</th>
+                    <th style="width: 80px">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
+
                 </tbody>
             </table>
         </div>
@@ -35,44 +33,40 @@
 @section('scripts')
     <script type="text/javascript">
         let active = '';
-        leaveApplicationsTbl = $("#la-table").DataTable({
+        payrollTbl = $("#payroll-table").DataTable({
             dom : 'lBfrtip',
             processing: true,
             serverSide: true,
-            ajax : '{{route('dashboard.leave_application.index')}}',
+            ajax : '{{route('dashboard.payroll_preparation.index')}}',
             columns: [
-                { data: "date_of_filing" },
-                { data: "employee.full_name" },
-                { data: "leave_type" },
-                { data: "inclusive_dates" },
-                { data: "status" },
-                { data: "action"},
-                { data: "lastname"},
-                { data: "middlename"},
-                { data: "firstname"},
+                { data : "date" },
+                { data : "type" },
+                { data : "payroll_master_employees_count" },
+                { data : "details" },
+                { data : "total_amount" },
+                { data : "action"}
             ],
             buttons: [
                 {!! __js::dt_buttons() !!}
             ],
             columnDefs:[
                 {
-                    targets : '_all',
-                    class : 'align-top'
-                },
-                {
                     targets : 5,
                     orderable : false,
                     searchable: false,
                 },
                 {
-                    targets : 1,
+                    targets : 4,
                     orderable : false,
                     searchable: false,
+                    class : 'text-end'
                 },
                 {
-                    targets: [6,7,8],
-                    visible: false,
-                }
+                    targets : [1,2],
+                    orderable : false,
+                    searchable: false,
+                    class : 'text-center'
+                },
             ],
             order:[[0,'desc']],
             responsive: false,
@@ -82,11 +76,13 @@
                 $('#'+settings.sTableId+'_filter input').unbind();
                 $('#'+settings.sTableId+'_filter input').bind('keyup', function (e) {
                     if (e.keyCode == 13) {
-                        leaveApplicationsTbl.search(this.value).draw();
+                        payrollTbl.search(this.value).draw();
                     }
                 });
             },
             drawCallback: function(settings){
+                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="modal"]').tooltip();
                 if(active != ''){
                     $("#"+settings.sTableId+" #"+active).addClass('table-success');
                 }

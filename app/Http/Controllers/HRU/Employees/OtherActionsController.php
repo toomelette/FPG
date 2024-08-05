@@ -12,7 +12,7 @@ class OtherActionsController extends Controller
     public function index($employeeSlug)
     {
         $employee = Employee::query()->findOrFail($employeeSlug);
-        return view('hru.employee.other-hr-actions.index')->with([
+        return view('_hru.employee.other-hr-actions.index')->with([
             'employee' => $employee,
         ]);
     }

@@ -99,8 +99,6 @@
             });
         },
         "drawCallback": function(settings){
-            $('[data-toggle="tooltip"]').tooltip();
-            $('[data-toggle="modal"]').tooltip();
             if(file201Active != ''){
                 $("#"+settings.sTableId+" #"+file201Active).addClass('table-success');
             }

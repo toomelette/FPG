@@ -65,7 +65,6 @@ class EmployeeController extends Controller{
 
     // Employee Master
 	public function index(Request $request){
-
         if($request->ajax() && $request->has('draw')){
             return $this->dataTable($request);
         }

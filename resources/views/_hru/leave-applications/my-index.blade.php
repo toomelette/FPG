@@ -79,8 +79,6 @@
                 @endif
             },
             drawCallback: function(settings){
-                $('[data-toggle="tooltip"]').tooltip();
-                $('[data-toggle="modal"]').tooltip();
                 if(active != ''){
                     $("#"+settings.sTableId+" #"+active).addClass('table-success');
                 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HRU;
 
 use App\Http\Requests\Hru\PayrollPreparationFormRequest;
+use App\Http\Requests\Hru\PayrollUpdateFormRequest;
 use App\Imports\GSISImport;
 use App\Models\Budget\ChartOfAccounts;
 use App\Models\Employee;
@@ -38,7 +39,7 @@ class PayrollPreparationController
                 ->withSum('payrollMasterEmployees','pay30');
             return DataTables::of($pays)
                 ->addColumn('action',function($data){
-                    return view('dashboard.hru.payroll_preparation.dtActions')->with([
+                    return view('_payroll.payroll-preparation.dtActions')->with([
                         'data' => $data,
                     ]);
                 })
@@ -54,7 +55,7 @@ class PayrollPreparationController
                 ->setRowId('slug')
                 ->toJson();
         }
-        return view('dashboard.hru.payroll_preparation.index');
+        return view('_payroll.payroll-preparation.index');
     }
 
     public function create(Request $request){
@@ -63,10 +64,25 @@ class PayrollPreparationController
             if($request->type == ''){
                 return  '';
             }
-            return view('dashboard.hru.payroll_preparation.'.$request->type.'.emplyslist');
+
+
+        $employees = \App\Models\Employee::query()
+            ->with([
+                'templateMonthlyBasic',
+                'plantilla',
+            ])
+            ->applyProjectId()
+            ->active()
+            ->permanent()
+            ->orderBy('lastname','asc')
+            ->get();
+
+            return view('_payroll.payroll-preparation.'.$request->type.'.employee-list')->with([
+                'employees' => $employees,
+            ]);
         };
 
-        return view('dashboard.hru.payroll_preparation.create');
+        return view('_payroll.payroll-preparation.create');
     }
 
     public function store(PayrollPreparationFormRequest $request){
@@ -194,7 +210,7 @@ class PayrollPreparationController
         
                 $payrollMaster ?? abort(404,'Payroll not found.');
         
-                return view('dashboard.hru.payroll_preparation.MONTHLY.edit')->with([
+                return view('_payroll.payroll-preparation.MONTHLY.edit')->with([
                     'payrollMaster' => $payrollMaster,
                 ]);
                 break;
@@ -226,7 +242,7 @@ class PayrollPreparationController
 
     public function editSignatories($payrollMaster){
         $this->checkLockStataus($payrollMaster);
-        return view('dashboard.hru.payroll_preparation.'.$payrollMaster->type.'.edit_signatories')->with([
+        return view('_payroll.payroll-preparation.'.$payrollMaster->type.'.edit-signatories')->with([
             'payrollMaster' => $payrollMaster,
         ]);
     }
@@ -519,12 +535,12 @@ class PayrollPreparationController
             ['pay15','pay30']
         );
 
-        return view('dashboard.hru.payroll_preparation.MONTHLY.preview')->with([
+        return view('_payroll.payroll-preparation.MONTHLY.preview')->with([
             'payrollMaster' => $payrollMaster,
         ]);
     }
 
-    public function update(Request $request,$payrollMasterSlug){
+    public function update(PayrollUpdateFormRequest $request,$payrollMasterSlug){
 
         //IF UPDATE SIGNATORIES
         if($request->ajax() && $request->has('signatories') && $request->signatories == true){
@@ -544,6 +560,7 @@ class PayrollPreparationController
         }
         //IF IMPORT EXCEL
         if($request->has('import') && $request->import == true){
+
             $payrollMaster = PayrollMaster::query()
                 ->with([
                     'payrollMasterEmployees.employee',

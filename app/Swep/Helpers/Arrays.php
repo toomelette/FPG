@@ -972,4 +972,11 @@ class Arrays
             '60' => '5 Years',
         ];
     }
+    public static function filterEmployees()
+    {
+        return [
+            '' => 'ALL',
+            'paidInCheck' => 'Paid in check',
+        ];
+    }
 }
