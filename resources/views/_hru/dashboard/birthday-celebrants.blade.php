@@ -17,7 +17,7 @@
                         <small class="badge bg-danger float-end"><i class="fa fa-birthday-cake"></i> TODAY</small>
                     </li>
                 @else
-                    <li class="list-group-item">
+                    <li class="list-group-item p-1">
                         <a href="{{route('dashboard.employee.index')}}?find={{$celebrant->employee_no}}" target="_blank">
                             {{strtoupper($celebrant->lastname)}}, {{strtoupper($celebrant->firstname)}} - turning {{\Illuminate\Support\Carbon::parse($celebrant->birthday)->diffInYears($requested_month)+1}}
                         </a>
