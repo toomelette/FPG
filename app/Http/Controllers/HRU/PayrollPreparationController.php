@@ -529,6 +529,7 @@ class PayrollPreparationController
             $decimalPart = $takeHomePay - floor($takeHomePay);
             $pay15 = round($takeHomePay/2) + $decimalPart;
             $pay30 = $takeHomePay - $pay15;
+
             array_push($upsertValues,[
                 'slug' => $employeeFromList->slug,
                 'pay15' => $pay15,
@@ -648,7 +649,7 @@ class PayrollPreparationController
         foreach ($payrollMaster->payrollMasterEmployees as $employee){
             if(isset($jobGrades[$employee->employee->salary_grade][$employee->employee->step_inc])){
                 $philhealthDeduction = ($jobGrades[$employee->employee->salary_grade][$employee->employee->step_inc]) * 0.025;
-                $philhealthDeduction = round($philhealthDeduction,2);
+                $philhealthDeduction = bcdiv($philhealthDeduction,1,2);
                 if($philhealthDeduction > $max){
                     $philhealthDeduction = $max;
                 }

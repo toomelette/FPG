@@ -162,6 +162,7 @@
             table.addClass('visually-hidden');
             placeholder.removeClass('visually-hidden');
             wait_this_button(btn,'Recompute');
+            $("#search").val('');
             $.ajax({
                 url : uri,
                 type: 'GET',
@@ -176,8 +177,8 @@
                     placeholder.addClass('visually-hidden');
                 },
                 error: function (res) {
-                    toast('warning',res.responseJSON.message,'Error!');
                     unwait_this_button(btn);
+                    toast('warning',res.responseJSON.message,'Error!');
                     table.removeClass('visually-hidden');
                     placeholder.addClass('visually-hidden');
                 }
