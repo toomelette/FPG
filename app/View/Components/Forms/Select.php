@@ -26,6 +26,7 @@ class Select extends Component
         public $select2Preselected = null,
         public $multiple = false,
         public $includeEmpty = true,
+        public $placeholder = null,
     )
     {
         if(is_object($this->value)){
@@ -40,6 +41,7 @@ class Select extends Component
      */
     public function render()
     {
+
         return view('components.forms.select');
     }
 }

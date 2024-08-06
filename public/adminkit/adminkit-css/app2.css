@@ -631,3 +631,13 @@ td.w-25p{
 ::-webkit-scrollbar-thumb:hover {
     background-color: #a8bbbf;
 }
+
+/*payroll template*/
+#employee-list .employee-item:hover{
+    cursor: pointer;
+    background-color: var(--bs-primary-bg-subtle);
+}
+
+#employee-list .employee-item.selected{
+    background-color: var(--bs-primary-border-subtle);
+}

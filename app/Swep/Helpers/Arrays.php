@@ -979,4 +979,15 @@ class Arrays
             'paidInCheck' => 'Paid in check',
         ];
     }
+
+    public static function payrollGroups()
+    {
+        $opts = SuOptions::query()->where('for','=','payroll_group')->get();
+         return $opts->mapWithKeys(function ($data){
+            return [
+                $data->option => $data->value,
+            ];
+        }) ?? [];
+
+    }
 }

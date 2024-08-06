@@ -16,7 +16,7 @@
             <option value="{{$value}}">{{$select2Preselected}}</option>
         @else
             @if($includeEmpty)
-                <option value="">Select</option>
+                <option value="">{{$placeholder ?? 'Select'}}</option>
             @endif
         @endif
 

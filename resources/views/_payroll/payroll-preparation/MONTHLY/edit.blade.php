@@ -25,11 +25,15 @@
     </x-adminkit.html.card>
     <x-adminkit.html.card body-class="pt-0">
         <x-slot:title>
-            <button type="button" class="btn btn-outline-secondary btn-sm edit-signatories-btn" data-bs-toggle="modal" data-bs-target="#edit-signatories-modal"> <i class="fa fa-edit"></i> Edit Signatories </button>
-            <div class="btn-group float-end">
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-secondary btn-sm edit-signatories-btn" data-bs-toggle="modal" data-bs-target="#edit-signatories-modal"> <i class="fa fa-edit"></i> Edit Signatories </button>
                 <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'MONTHLY'])}}" target="_blank" class="btn btn-outline-secondary btn-sm"> <i class="fa fa-print"></i> Print Payroll </a>
                 <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}" target="_blank" class="btn btn-outline-secondary btn-sm"> <i class="fa fa-print"></i> Print Payslips </a>
                 <button type="button" id="lock-btn" class="btn btn-outline-secondary btn-sm" action="{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"> <span class="text-danger"><i class="fa fa-{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"></i> {{$payrollMaster->is_locked == 1 ? 'Unlock':'Lock'}} </span></button>
+
+            </div>
+            <div class="btn-group float-end">
+                <button type="button" data-bs-target="#other-actions-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-gear"></i> Other Actions </button>
                 <button type="button" id="upload-btn" data-bs-target="#upload-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-folder-open"></i> Upload Excel File </button>
                 <button type="button" id="recompute-btn" class="btn btn-primary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recompute </button>
             </div>
@@ -37,7 +41,7 @@
 
         <div class="row">
             <div class="col-md-9">
-                <p class="text-info" style="padding-left: 10px"><i class="fa fa-info-circle"></i> Click on the employee's name to print individual payslip or to view employee details.</p>
+                <p class="text-info" style="padding-left: 10px"><i class="fa fa-info-circle"></i> Click on the employee's name to print individual payslip or to edit payroll template.</p>
             </div>
             <div class="col-md-3" style="margin-bottom: 5px">
                 <div class="mb-1 row">
@@ -60,6 +64,18 @@
             <i class="fa fa-circle-notch fa-spin" style="font-size: 50px"></i>
         </div>
     </x-adminkit.html.card>
+    @php
+        $valuesArray = array_values($payrollMaster->hmtDetails->where('code','=','MUTUALFUND')->map(function ($data){
+                return $data->amount;
+            })->toArray());
+        if(count($valuesArray) < 1){
+            $mode = null;
+        }else{
+            $values = array_count_values($valuesArray);
+            $mode = array_search(max($values), $values);
+        }
+
+     @endphp
 @endsection
 
 
@@ -85,6 +101,33 @@
         </div>
         <x-slot:footer>
             <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Upload</button>
+        </x-slot:footer>
+    </x-adminkit.html.modal-template>
+    <x-adminkit.html.modal-template id="other-actions-modal" size="sm">
+        <x-slot:title>
+            Other Actions
+        </x-slot:title>
+        <x-adminkit.html.alert type="primary mb-2" body-class="alert-message p-1 text-center text-strong" :dismissible="false" :with-icon="false">
+            Update PhilHealth Deductions
+        </x-adminkit.html.alert>
+        <p class="text-info text-center mb-1">2.5% of Monthly Basic, max of 2,500.00</p>
+        <button class="btn btn-outline-primary col-12" type="button" id="update-philhealth-btn"><i class="fa fa-check"></i> Update PhilHealth</button>
+
+       <hr class="mt-4 mb-4">
+
+        <x-adminkit.html.alert type="success mb-2" body-class="alert-message p-1 text-center text-strong" :dismissible="false" :with-icon="false">
+            Update MAP (MUTUALFUND)
+        </x-adminkit.html.alert>
+        <form id="edit-map-form">
+            <div class="row mb-2">
+                <x-forms.input label="Amount" name="amount" class="autonum" cols="12" autocomplete="off" :value="$mode"/>
+            </div>
+            <button class="btn btn-primary float-end btn-sm mb-3" type="submit"><i class="fa fa-check"></i> Update MAP</button>
+        </form>
+
+
+        <x-slot:footer>
+            <button type="button" data-bs-dismiss="modal" class="btn btn-secondary btn-sm">Close </button>
         </x-slot:footer>
     </x-adminkit.html.modal-template>
 @endsection
@@ -144,7 +187,6 @@
             let btn = $(this);
             recompute(btn);
         })
-
         $("#upload-form").submit(function (e) {
             e.preventDefault();
             let form = $(this);
@@ -171,7 +213,6 @@
                 }
             })
         })
-
         $("body").on("click",".edit-signatories-btn",function () {
             let btn = $(this);
             load_modal2(btn);
@@ -191,8 +232,6 @@
                 }
             })
         })
-
-
         $("#lock-btn").click(function (){
             let btn = $(this);
             let url = '{{route('dashboard.payroll_preparation.updateLockStatus',[$payrollMaster->slug,"status"])}}';
@@ -258,7 +297,6 @@
                 }
             })
         })
-
         $("body").on("click",".employee-options-btn",function (){
             let btn = $(this);
             Swal.fire({
@@ -266,7 +304,7 @@
                 showDenyButton: true,
                 showCancelButton: true,
                 confirmButtonText: "<i class='fa fa-print'></i> Print Payslip",
-                denyButtonText: "<i class='fa fa-user'></i> View Employee",
+                denyButtonText: "<i class='fa fa-user'></i> View Template",
                 confirmButtonColor : '#3c8dbc',
                 denyButtonColor : '#3da162',
                 html : btn.attr('content')
@@ -276,9 +314,49 @@
                     let printRoute = '{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}?employeeList='+btn.attr('data');
                     window.open(printRoute, "popupWindow", "width=1200, height=600, scrollbars=yes");
                 } else if (result.isDenied) {
-                    window.open('{{route('dashboard.employee.index')}}?find='+btn.attr('emp-no'), '_blank').focus();
+                    window.open('{{route('dashboard.payroll_template.index')}}?find='+btn.attr('emp-slug'), '_blank').focus();
                 }
             });
         });
+        $("#update-philhealth-btn").click(function (){
+            let btn = $(this);
+            wait_this_button(btn);
+            $.ajax({
+                url : '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}?philhealth',
+                type: 'POST',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    unwait_this_button(btn);
+                    toast('info','PhilHealth deductions successfully updated.','Success!');
+                    recompute($("#recompute_btn"));
+                },
+                error: function (res) {
+                    toast('error','Error updated.','Error!');
+                }
+            })
+        })
+        $("#edit-map-form").submit(function (e) {
+            e.preventDefault()
+            let form = $(this);
+            loading_btn(form);
+            $.ajax({
+                url : '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}?map',
+                data : form.serialize(),
+                type: 'POST',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    succeed(form,false,false);
+                    toast('info','MAP deductions successfully updated.','Success!');
+                    recompute($("#recompute_btn"));
+                },
+                error: function (res) {
+                    errored(form,res);
+                }
+            })
+        })
     </script>
 @endsection

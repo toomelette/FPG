@@ -12,7 +12,7 @@
             <div class="row mb-4">
                 <x-forms.input label="Payroll Date" name="date" cols="3" type="date"/>
                 <x-forms.select label="Payroll Type" name="type" cols="3" class="employee-list-trigger" :options="\App\Swep\Helpers\Arrays::payrollTypes()"/>
-                <x-forms.select label="Filter Employees" name="filterEmployees" cols="3" class="employee-list-trigger" :include-empty="false" :options="\App\Swep\Helpers\Arrays::filterEmployees()"/>
+                <x-forms.select label="Payroll Group" name="filterEmployees" cols="3" class="employee-list-trigger" placeholder="No payroll group assigned" :options="\App\Swep\Helpers\Arrays::payrollGroups()"/>
             </div>
             <div class="row mb-3">
                 <div class="col-3">
@@ -105,14 +105,14 @@
 
         $(".employee-list-trigger").change(function (){
             let type = $("#prepare-payroll-form select[name='type']").val();
-            let filterEmployees = $("#prepare-payroll-form select[name='filter-employees']").val()
+            let filterEmployees = $("#prepare-payroll-form select[name='filterEmployees']").val()
             $("#employees-table").html('');
             $("#loading-placeholder").removeClass('visually-hidden');
             $.ajax({
                 url : '{{route("dashboard.payroll_preparation.create")}}?update_table=true',
                 data : {
                     type: type,
-                    filerEmployees : filterEmployees,
+                    filterEmployees : filterEmployees,
                 },
                 type: 'GET',
                 headers: {

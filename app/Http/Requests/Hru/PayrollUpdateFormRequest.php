@@ -29,5 +29,6 @@ class PayrollUpdateFormRequest extends FormRequest
                 'd_position' => 'required|string|max:255',
             ];
         }
+        return  [];
     }
 }

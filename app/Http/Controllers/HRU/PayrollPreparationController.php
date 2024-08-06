@@ -7,6 +7,7 @@ use App\Http\Requests\Hru\PayrollUpdateFormRequest;
 use App\Imports\GSISImport;
 use App\Models\Budget\ChartOfAccounts;
 use App\Models\Employee;
+use App\Models\HRU\Deductions;
 use App\Models\HRU\Incentives;
 use App\Models\HRU\PayrollMaster;
 use App\Models\HRU\PayrollMasterDetails;
@@ -70,11 +71,16 @@ class PayrollPreparationController
             ->with([
                 'templateMonthlyBasic',
                 'plantilla',
-            ])
-            ->applyProjectId()
+            ]);
+
+        if($request->has('filterEmployees') && $request->filterEmployees != null){
+            $employees = $employees->where('payroll_group','=',$request->filterEmployees);
+        }else{
+            $employees = $employees->where('payroll_group','=',null);
+        }
+        $employees = $employees->applyProjectId()
             ->active()
             ->permanent()
-            ->orderBy('lastname','asc')
             ->get();
 
             return view('_payroll.payroll-preparation.'.$request->type.'.employee-list')->with([
@@ -560,7 +566,6 @@ class PayrollPreparationController
         }
         //IF IMPORT EXCEL
         if($request->has('import') && $request->import == true){
-
             $payrollMaster = PayrollMaster::query()
                 ->with([
                     'payrollMasterEmployees.employee',
@@ -583,6 +588,84 @@ class PayrollPreparationController
             }
         }
 
+        //IF UPDATE PHILHEALTH
+        if($request->has('philhealth') ){
+            $payrollMaster = PayrollMaster::query()
+                ->with([
+                    'payrollMasterEmployees.employee',
+                ])
+                ->find($payrollMasterSlug);
+            if($payrollMaster->is_locked ){
+                abort(503,'This Payroll is locked. Unlock it first to perform action.');
+            }
+            return $this->updatePhilhealth($payrollMaster);
+        }
+
+        //IF MAP
+        if($request->has('map')){
+            $payrollMaster = PayrollMaster::query()
+                ->with([
+                    'payrollMasterEmployees.employee',
+                ])
+                ->find($payrollMasterSlug);
+            if($payrollMaster->is_locked ){
+                abort(503,'This Payroll is locked. Unlock it first to perform action.');
+            }
+            return $this->updateMap($payrollMaster, $request);
+        }
+    }
+
+    public function updateMap(PayrollMaster $payrollMaster, Request $request)
+    {
+        $upsertValues = [];
+        $deductionCode = 'MUTUALFUND';
+        $deduction = Deductions::query()->where('deduction_code','=',$deductionCode)->first();
+        $deduction ?? abort(503,'Deduction not found.');
+
+
+        foreach ($payrollMaster->payrollMasterEmployees as $employee){
+            $amt = Helper::sanitizeAutonum($request->amount);
+            array_push($upsertValues,[
+                'employee_slug' => $employee->employee_slug,
+                'deduction_code' => $deduction->deduction_code,
+                'priority' => $deduction->n_priority,
+                'amount' =>  $amt == 0 ? null : $amt,
+            ]);
+        }
+        TemplateDeductions::query()->upsert($upsertValues,
+            ['employee_slug','deduction_code'],
+            ['priority','amount']
+        );
+    }
+    public function updatePhilhealth(PayrollMaster $payrollMaster)
+    {
+        $upsertValues = [];
+        $deductionCode = 'PHIC';
+        $deduction = Deductions::query()->where('deduction_code','=',$deductionCode)->first();
+        $deduction ?? abort(503,'Deduction not found.');
+        $jobGrades = Arrays::jobGrades();
+        $max = 2500;
+        foreach ($payrollMaster->payrollMasterEmployees as $employee){
+            if(isset($jobGrades[$employee->employee->salary_grade][$employee->employee->step_inc])){
+                $philhealthDeduction = ($jobGrades[$employee->employee->salary_grade][$employee->employee->step_inc]) * 0.025;
+                $philhealthDeduction = round($philhealthDeduction,2);
+                if($philhealthDeduction > $max){
+                    $philhealthDeduction = $max;
+                }
+                array_push($upsertValues,[
+                    'employee_slug' => $employee->employee_slug,
+                    'deduction_code' => $deduction->deduction_code,
+                    'priority' => $deduction->n_priority,
+                    'amount' => $philhealthDeduction,
+                ]);
+            }
+
+        }
+
+        TemplateDeductions::query()->upsert($upsertValues,
+            ['employee_slug','deduction_code'],
+            ['priority','amount']
+        );
     }
 
     public function updateRataDed(Request $request, $payrollMasterSlug)

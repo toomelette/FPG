@@ -4,14 +4,7 @@
 
 @endsection
 @section('content2')
-    @php
-        $emps = \App\Models\Employee::query()
-            ->permanent()
-            ->active()
-            ->applyProjectId()
-            ->orderBy('lastname','asc')
-            ->get();
-    @endphp
+
     <section class="content">
         <div class="box box-solid">
 

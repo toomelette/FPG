@@ -243,15 +243,19 @@
                             <x-forms.input label="Date of Original Appointment" name="firstday_gov" cols="2" type="date" :value="$employee ?? null"/>
                             <x-forms.input label="First Day in SRA" name="firstday_sra" cols="2" type="date" :value="$employee ?? null"/>
                         </div>
-                        <div class="row mb-3">
+                        <div class="row mb-2">
                             <x-forms.input label="Appointment Date" name="appointment_date" cols="2" type="date" :value="$employee ?? null"/>
                             <x-forms.input label="Adjustment Date" name="adjustment_date" cols="2" type="date" :value="$employee ?? null"/>
                             <x-forms.select label="Station" name="station" cols="2" :value="$employee ?? null" :options="['QC' => 'QC', 'VIS' => 'VIS']"/>
+                            <x-forms.select label="Groupings" name="locations" cols="2"  :value="$employee ?? null" :options="\App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeGroupings(),'value','option')"/>
+                            <x-forms.select label="Assignment" name="assignment" cols="2"  :value="$employee ?? null" :options="\App\Swep\Helpers\Arrays::employeeAssignments()"/>
+                            <x-forms.select label="Payroll Group" name="payroll_group" cols="2"  :value="$employee ?? null" :options="\App\Swep\Helpers\Arrays::payrollGroups()"/>
+                        </div>
+                        <div class="row mb-3">
                             <x-forms.select label="Status" name="is_active" cols="2" id="is_active" :value="$employee ?? null" :options="\App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeStatus(),'value','option')"/>
                             <x-forms.input label="Date of Separation" name="date_of_separation" type="date" :container-class="'is_active_toggle '.($employee?->is_active == 'ACTIVE' ? 'visually-hidden' : '')" cols="2" :value="$employee ?? null"/>
                             <x-forms.input label="Reason of Separation" name="reason_of_separation" cols="2" :container-class=" 'is_active_toggle '.($employee?->is_active == 'ACTIVE' ? 'visually-hidden' : '')" :value="$employee ?? null"/>
-                            <x-forms.select label="Groupings" name="locations" cols="2"  :value="$employee ?? null" :options="\App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeGroupings(),'value','option')"/>
-                            <x-forms.select label="Assignment" name="assignment" cols="2"  :value="$employee ?? null" :options="\App\Swep\Helpers\Arrays::employeeAssignments()"/>
+
                         </div>
 
                         <div class="alert alert-success mb-2" role="alert">

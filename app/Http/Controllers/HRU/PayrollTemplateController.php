@@ -68,7 +68,17 @@ class PayrollTemplateController extends Controller
                 ->setRowId('slug')
                 ->toJson();
         }
-        return view('dashboard.hru.payroll_template.index');
+
+        $employees = \App\Models\Employee::query()
+            ->permanent()
+            ->active()
+            ->applyProjectId()
+            ->orderBy('lastname','asc')
+            ->get();
+
+        return view('_payroll.payroll-template.index')->with([
+            'employees' => $employees,
+        ]);
     }
 
     public function edit($slug){
@@ -84,7 +94,7 @@ class PayrollTemplateController extends Controller
             ];
         });
 
-        return view('dashboard.hru.payroll_template.edit')->with([
+        return view('_payroll.payroll-template.edit')->with([
             'employee' => $employee,
             'employeeIncentivesArray' => $incentivesArray,
             'employeeDeductionsArray' => $deductionsArray,
@@ -118,9 +128,11 @@ class PayrollTemplateController extends Controller
         }
         $emp->templateIncentives()->delete();
         $emp->templateDeductions()->delete();
-        TemplateIncentives::insert($arrIncentives);
-        TemplateDeductions::insert($arrDeductions);
 
-        dd($request->incentives);
+        if(TemplateIncentives::insert($arrIncentives) && TemplateDeductions::insert($arrDeductions)){
+            return $emp->only('slug');
+        }
+        abort(503,'Error saving changes.');
+
     }
 }

@@ -46,7 +46,7 @@
         <tbody>
         @forelse($payrollMaster->payrollMasterEmployees as $employee)
             <tr class="{{$loop->iteration % 5 == 0 ? 'fifth' : ''}}">
-                <td class="first employee-options-btn" data="{{$employee->slug}}" emp-no="{{$employee->employee->employee_no}}"
+                <td class="first employee-options-btn" data="{{$employee->slug}}" emp-no="{{$employee->employee->employee_no}}" emp-slug="{{$employee->employee->slug}}"
                     content="{{$employee->employee->plantilla->item_no ?? ''}} | {{$employee->employee->plantilla->position ?? ''}} <br> ({{$employee->employee->salary_grade ?? ''}},{{$employee->employee->step_inc ?? ''}}) <br> {{$employee->employee->employee_no ?? ''}}"
                 > {{$employee->employee->full_name ?? ''}}</td>
                 @forelse($groupedIncentives as $incentive => $null)
@@ -66,11 +66,11 @@
                 @endforelse
 
                 <td class="text-end text-info deduction-subtotal">{{Helper::toNumber($dedTotal = $employee->employeePayrollDetails->where('type','DEDUCTION')->sum('amount'),2)}}</td>
-                <td class="text-end text-strong {{$incTotal - $dedTotal < 5000 ? 'text-danger bg-danger' : ''}}">
+                <td class="text-end text-strong {{$incTotal - $dedTotal < 5000 ? 'text-danger table-danger' : ''}}">
                     {{Helper::toNumber($incTotal - $dedTotal)}}
                 </td>
-                <td class="text-end {{$employee->pay15 < 2500 ? 'text-danger bg-danger' : ''}}">{{Helper::toNumber($employee->pay15,2)}}</td>
-                <td class="text-end {{$employee->pay30 < 2500 ? 'text-danger bg-danger' : ''}}">{{Helper::toNumber($employee->pay30,2)}}</td>
+                <td class="text-end {{$employee->pay15 < 2500 ? 'text-danger table-danger' : ''}}">{{Helper::toNumber($employee->pay15,2)}}</td>
+                <td class="text-end {{$employee->pay30 < 2500 ? 'text-danger table-danger' : ''}}">{{Helper::toNumber($employee->pay30,2)}}</td>
             </tr>
         @empty
         @endforelse

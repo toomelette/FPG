@@ -135,6 +135,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
         $employee->firstday_sra = $this->__dataType->date_parse($request->firstday_sra);
         $employee->appointment_date = $this->__dataType->date_parse($request->appointment_date);
         $employee->adjustment_date = $this->__dataType->date_parse($request->adjustment_date);
+        $employee->payroll_group = $request->payroll_group;
         $employee->is_active = $request->is_active;
         $employee->created_at = $this->carbon->now();
         $employee->updated_at = $this->carbon->now();
@@ -210,6 +211,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
         $employee->firstday_sra = $this->__dataType->date_parse($request->firstday_sra);
         $employee->appointment_date = $this->__dataType->date_parse($request->appointment_date);
         $employee->adjustment_date = $this->__dataType->date_parse($request->adjustment_date);
+        $employee->payroll_group = $request->payroll_group;
         $employee->is_active = $request->is_active;
         $employee->updated_at = $this->carbon->now();
         $employee->ip_updated = request()->ip();
