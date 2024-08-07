@@ -14,6 +14,7 @@ use App\Swep\Interfaces\MenuInterface;
 use App\Swep\Interfaces\SubmenuInterface;
 use App\Swep\Interfaces\EmployeeInterface;
 
+use App\Swep\Repositories\EmployeeRepository;
 use Hash;
 use Illuminate\Foundation\Auth\User;
 
@@ -29,7 +30,7 @@ class UserService extends BaseService{
 
 
 
-    public function __construct(UserInterface $user_repo, UserMenuInterface $user_menu_repo, UserSubmenuInterface $user_submenu_repo, MenuInterface $menu_repo, SubmenuInterface $submenu_repo, EmployeeInterface $employee_repo){
+    public function __construct(UserInterface $user_repo, UserMenuInterface $user_menu_repo, UserSubmenuInterface $user_submenu_repo, MenuInterface $menu_repo, SubmenuInterface $submenu_repo, EmployeeRepository $employee_repo){
 
         $this->user_repo = $user_repo;
         $this->user_menu_repo = $user_menu_repo;
