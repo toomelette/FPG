@@ -6,7 +6,7 @@ namespace App\Swep\Services;
 use App\Swep\Interfaces\EmployeeInterface;
 use App\Swep\Interfaces\UserInterface;
 use App\Swep\BaseClasses\BaseService;
-
+use App\Swep\Repositories\EmployeeRepository;
 
 
 class HomeService extends BaseService{
@@ -18,7 +18,7 @@ class HomeService extends BaseService{
 
 
 
-    public function __construct(EmployeeInterface $employee_repo, UserInterface $user_repo){
+    public function __construct(EmployeeRepository $employee_repo, UserInterface $user_repo){
 
         $this->employee_repo = $employee_repo;
         $this->user_repo = $user_repo;
