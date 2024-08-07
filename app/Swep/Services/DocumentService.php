@@ -5,6 +5,7 @@ namespace App\Swep\Services;
 use App\Http\Controllers\DocumentController;
 use App\Models\Document;
 use App\Models\DocumentDisseminationLog;
+use App\Swep\Repositories\EmployeeRepository;
 use File;
 use Hash;
 use Illuminate\Http\Request;
@@ -44,7 +45,7 @@ class DocumentService extends BaseService{
     public function __construct(DocumentInterface $document_repo,
                                 DocumentDisseminationLogInterface $ddl_repo,
                                 UserInterface $user_repo,
-                                EmployeeInterface $employee_repo,
+                                EmployeeRepository $employee_repo,
                                 EmailContactInterface $email_contact_repo
     ){
 
