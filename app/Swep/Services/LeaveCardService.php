@@ -5,6 +5,7 @@ namespace App\Swep\Services;
 use App\Swep\Interfaces\LeaveCardInterface;
 use App\Swep\Interfaces\EmployeeInterface;
 use App\Swep\BaseClasses\BaseService;
+use App\Swep\Repositories\EmployeeRepository;
 
 
 class LeaveCardService extends BaseService{
@@ -15,7 +16,7 @@ class LeaveCardService extends BaseService{
 
 
 
-    public function __construct(LeaveCardInterface $leave_card_repo, EmployeeInterface $employee_repo){
+    public function __construct(LeaveCardInterface $leave_card_repo, EmployeeRepository $employee_repo){
 
         $this->leave_card_repo = $leave_card_repo;
         $this->employee_repo = $employee_repo;

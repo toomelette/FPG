@@ -7,7 +7,7 @@ use App\Swep\Interfaces\PermissionSlipInterface;
 use App\Swep\Interfaces\DepartmentInterface;
 use App\Swep\Interfaces\EmployeeInterface;
 use App\Swep\BaseClasses\BaseService;
-
+use App\Swep\Repositories\EmployeeRepository;
 
 
 class PermissionSlipService extends BaseService{
@@ -20,7 +20,7 @@ class PermissionSlipService extends BaseService{
 
 
 
-    public function __construct(PermissionSlipInterface $ps_repo, DepartmentInterface $dept_repo, EmployeeInterface $emp_repo){
+    public function __construct(PermissionSlipInterface $ps_repo, DepartmentInterface $dept_repo, EmployeeRepository $emp_repo){
 
         $this->ps_repo = $ps_repo;
         $this->dept_repo = $dept_repo;
