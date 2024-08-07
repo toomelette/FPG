@@ -18,7 +18,7 @@ class UserRepository extends BaseRepository implements UserInterface {
 
 
 
-	public function __construct(User $user, EmployeeInterface $employee_repo){
+	public function __construct(User $user, EmployeeRepository $employee_repo){
 
         $this->user = $user;
         $this->employee_repo = $employee_repo;
