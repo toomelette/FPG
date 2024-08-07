@@ -26,7 +26,7 @@ class TwoZeroOneFilesController extends  Controller
                 ->where('employee_slug','=',$slug);
             return DataTables::of($files)
                 ->addColumn('action',function ($data){
-                    return view('hru.employee.201.dtActions')->with([
+                    return view('_hru.employee.201.dtActions')->with([
                         'data' => $data,
                     ]);
                 })
@@ -44,7 +44,7 @@ class TwoZeroOneFilesController extends  Controller
             return  1;
         }
         $employee = Employee::findOrFail($slug);
-        return view('hru.employee.201.index')->with([
+        return view('_hru.employee.201.index')->with([
             'employee' => $employee,
         ]);
     }
@@ -52,7 +52,7 @@ class TwoZeroOneFilesController extends  Controller
     public function edit($slug)
     {
         $file = EmployeeFile201::query()->findOrFail($slug);
-        return view('hru.employee.201.edit')->with([
+        return view('_hru.employee.201.edit')->with([
             'file' => $file,
         ]);
     }
