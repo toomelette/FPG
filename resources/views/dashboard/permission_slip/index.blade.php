@@ -85,7 +85,7 @@
             <tr {!! __html::table_highlighter( $data->slug, $table_sessions) !!} >
               <td id="mid-vert">{{ $data->ps_id }}</td>
               <td id="mid-vert">{{ empty($data->employee) ? '' : $data->employee->fullname }}</td>
-              <td id="mid-vert">{{ $data->date->format('M d, Y') }}</td>
+              <td id="mid-vert">{{ Helper::dateFormat($data->date) }}</td>
               <td id="mid-vert">{{ date('h:i A', strtotime($data->time_out)) }}</td>
               <td id="mid-vert">{{ date('h:i A', strtotime($data->time_in)) }}</td>
               <td id="mid-vert">{{ $data->with_ps == 1 ? 'YES' : 'NO' }}</td>
