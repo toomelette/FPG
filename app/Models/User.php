@@ -32,7 +32,7 @@ class User extends Authenticatable{
     }
 
 
-    use Notifiable, Sortable, HasRoles;
+    use Notifiable, Sortable;
 
     protected $dates = ['created_at', 'updated_at'];
 
