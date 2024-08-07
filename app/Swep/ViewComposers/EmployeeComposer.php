@@ -3,6 +3,7 @@
 namespace App\Swep\ViewComposers;
 
 
+use App\Swep\Repositories\EmployeeRepository;
 use View;
 use App\Swep\Interfaces\EmployeeInterface;
 
@@ -17,7 +18,7 @@ class EmployeeComposer{
 
 
 
-	public function __construct(EmployeeInterface $employee_repo){
+	public function __construct(EmployeeRepository $employee_repo){
 
 		$this->employee_repo = $employee_repo;
 		
