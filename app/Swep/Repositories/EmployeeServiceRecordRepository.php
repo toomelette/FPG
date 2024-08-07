@@ -21,7 +21,7 @@ class EmployeeServiceRecordRepository extends BaseRepository implements Employee
 
 
 
-	public function __construct(EmployeeServiceRecord $employee_sr, EmployeeInterface $employee_repo){
+	public function __construct(EmployeeServiceRecord $employee_sr, EmployeeRepository $employee_repo){
 
         $this->employee_sr = $employee_sr;
         $this->employee_repo = $employee_repo;

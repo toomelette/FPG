@@ -9,6 +9,7 @@ use App\Models\EmployeeServiceRecord;
 use App\Models\EmployeeTraining;
 use App\Models\HRU\HrOtherActions;
 use App\Models\SuSettings;
+use App\Models\User;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\EmployeeService;
@@ -214,10 +215,9 @@ class EmployeeController extends Controller{
 
 
 
-    public function show($slug){
-
-        $employee = Employee::query()
-            ->with('employeeAddress',
+    public function show(Employee $employee){
+        $employee = $employee
+            ->load('employeeAddress',
                 'employeeFamilyDetail',
                 'employeeOtherQuestion',
                 'employeeTraining',
@@ -233,8 +233,7 @@ class EmployeeController extends Controller{
                 'employeeServiceRecord',
                 'employeeMatrix',
                 'permissionSlip',
-            )
-            ->findOrFail($slug);
+            );
         return view('_hru.employee.show')->with([
             'employee' => $employee,
             'decolor' => true,
@@ -244,8 +243,8 @@ class EmployeeController extends Controller{
 
 
 
-    public function edit($slug){
-        $employee = Employee::query()->findOrFail($slug);
+    public function edit(Employee $employee){
+//        $employee = Employee::query()->findOrFail($slug);
         return view('_hru.employee.edit')->with([
             'employee' => $employee,
         ]);
@@ -256,8 +255,9 @@ class EmployeeController extends Controller{
 
 
 
-    public function update(EmployeeFormRequest $request, $slug){
-        return $this->employee->update($request, $slug);
+    public function update(EmployeeFormRequest $request, Employee $employee){
+
+        return $this->employee->update($request, $employee);
     }
 
     

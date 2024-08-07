@@ -130,6 +130,7 @@ class DocumentFolderController extends Controller{
         $doc_folder->description = $request->description;
         $doc_folder->retention_period = $request->retention_period;
         $doc_folder->is_permanent = $request->is_permanent == 0 ? null : $request->is_permanent;
+        $doc_folder->remarks = $request->remarks;
         if($doc_folder->save()){
             return  $doc_folder->only('slug');
         }
@@ -162,6 +163,7 @@ class DocumentFolderController extends Controller{
         $docFolder->description = $request->description;
         $docFolder->retention_period = $request->retention_period;
         $docFolder->is_permanent = $request->is_permanent == 1 ? 1 : null;
+        $docFolder->remarks = $request->remarks;
         if($docFolder->update()){
             return $docFolder->only('slug');
         }

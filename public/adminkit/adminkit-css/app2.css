@@ -641,3 +641,7 @@ td.w-25p{
 #employee-list .employee-item.selected{
     background-color: var(--bs-primary-border-subtle);
 }
+
+.fifth>td{
+    border-bottom: 1px solid #c7c7c7 !important;
+}

@@ -53,6 +53,9 @@
                 ]"
             />
         </div>
+        <div class="row mb-2">
+            <x-forms.input name="remarks" cols="12" label="Remarks" />
+        </div>
         <x-slot:footer>
             <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i> Save</button>
         </x-slot:footer>

@@ -28,13 +28,12 @@ class CheckUserRouteExist{
 
 
     public function handle($request, Closure $next){
-
         if($this->user_submenu_repo->isExist()){
 
             return $next($request);
 
         }
-        return abort(405);
+        abort(403,'This action is unauthorized');
     
     }
 

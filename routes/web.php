@@ -273,7 +273,9 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
 
     Route::get('/employee/{slug}/{type}/print', \App\Http\Controllers\EmployeeController::class.'@print')->name('employee.print');
-	Route::resource('employee', 'EmployeeController');
+
+    Route::resource('employee', 'EmployeeController');
+
 
 	Route::resource('file201','File201Controller');
 
@@ -538,11 +540,6 @@ Route::get('/getSerial',function (\Illuminate\Http\Request $request){
 
 
 
-
-
-
-
-
 Route::post('testMail',\App\Http\Controllers\DocumentController::class.'@mailSingle');
 
 
@@ -578,63 +575,63 @@ Route::post('/verifyEmail',function (\Illuminate\Http\Request $request){
     abort(503,'Error updating email.');
 });
 
-Route::get('summaryOfOrsWithProjects',function (\Illuminate\Http\Request $request){
-    if(!$request->has('start') || !$request->has('end')){
-        return view('dashboard.budget.ors.pre');
-    }
-    $arr = [];
-    $start = $request->start;
-    $end = $request->end;
-    $burs = \App\Models\SqlServer\BUR::query()
-        ->with('BURDetails')
-        ->whereBetween('BURDate',[
-            $start,$end
-        ]);
-
-    if(!empty($request->funds)){
-        $funds = $request->funds;
-        $burs = $burs->where(function ($q) use ($funds){
-            foreach ($funds as $fund){
-                $q = $q->orWhere('Funds','=',$fund);
-            }
-        });
-    }
-
-    $burs = $burs->orderBy('BURDate','asc')
-        ->get();
-    $cols = \App\Models\SqlServer\BURDet::query()
-        ->whereHas('BURParentData',function ($q) use ($start,$end){
-            return $q->whereBetween('BURDate',[
-                $start,$end
-            ]);
-        })
-        ->groupBy('Dept')->pluck('dept')->toArray();
-    $colss = [];
-    foreach ($cols as $col){
-        $colss[$col] = null;
-    }
-    ksort($colss);
-
-    foreach ($burs as $bur){
-        $arr[$bur->BURNo]['obj'] = $bur;
-        $arr[$bur->BURNo]['accountEntries'] = $colss;
-        if(!empty($bur->BURDetails)){
-            foreach ($bur->BURDetails as $det){
-                $arr[$bur->BURNo]['accountEntries'][$det->Dept] = $arr[$bur->BURNo]['accountEntries'][$det->Dept] + $det->Debit;
-            }
-        }
-
-        if(!empty($bur->BURProjApplied)){
-            foreach ($bur->BURProjApplied as $proj){
-                $arr[$bur->BURNo]['projectsApplied'][\Illuminate\Support\Str::random()] = $proj;
-            }
-        }
-    }
-    return view('printables.bur.bur_with_projects')->with([
-        'burs' => $arr,
-        'cols' => $colss,
-    ]);
-});
+//Route::get('summaryOfOrsWithProjects',function (\Illuminate\Http\Request $request){
+//    if(!$request->has('start') || !$request->has('end')){
+//        return view('dashboard.budget.ors.pre');
+//    }
+//    $arr = [];
+//    $start = $request->start;
+//    $end = $request->end;
+//    $burs = \App\Models\SqlServer\BUR::query()
+//        ->with('BURDetails')
+//        ->whereBetween('BURDate',[
+//            $start,$end
+//        ]);
+//
+//    if(!empty($request->funds)){
+//        $funds = $request->funds;
+//        $burs = $burs->where(function ($q) use ($funds){
+//            foreach ($funds as $fund){
+//                $q = $q->orWhere('Funds','=',$fund);
+//            }
+//        });
+//    }
+//
+//    $burs = $burs->orderBy('BURDate','asc')
+//        ->get();
+//    $cols = \App\Models\SqlServer\BURDet::query()
+//        ->whereHas('BURParentData',function ($q) use ($start,$end){
+//            return $q->whereBetween('BURDate',[
+//                $start,$end
+//            ]);
+//        })
+//        ->groupBy('Dept')->pluck('dept')->toArray();
+//    $colss = [];
+//    foreach ($cols as $col){
+//        $colss[$col] = null;
+//    }
+//    ksort($colss);
+//
+//    foreach ($burs as $bur){
+//        $arr[$bur->BURNo]['obj'] = $bur;
+//        $arr[$bur->BURNo]['accountEntries'] = $colss;
+//        if(!empty($bur->BURDetails)){
+//            foreach ($bur->BURDetails as $det){
+//                $arr[$bur->BURNo]['accountEntries'][$det->Dept] = $arr[$bur->BURNo]['accountEntries'][$det->Dept] + $det->Debit;
+//            }
+//        }
+//
+//        if(!empty($bur->BURProjApplied)){
+//            foreach ($bur->BURProjApplied as $proj){
+//                $arr[$bur->BURNo]['projectsApplied'][\Illuminate\Support\Str::random()] = $proj;
+//            }
+//        }
+//    }
+//    return view('printables.bur.bur_with_projects')->with([
+//        'burs' => $arr,
+//        'cols' => $colss,
+//    ]);
+//});
 
 
 Route::resource('mail',\App\Http\Controllers\Test\MailController::class);
@@ -743,65 +740,16 @@ Route::get('/recover',function (){
 });
 
 
-Route::get('/udpateFromExcel',function (){
-    $temps = \App\Models\Temp\Temp::query()->get();
-    $nonExistent = [];
-    foreach ($temps as $temp /** @var \App\Models\Temp\Temp $temp **/){
-        $emp = \App\Models\Employee::query()->find($temp->slug);
-        $emp->lastname = $temp->lastname;
-        $emp->firstname = $temp->firstname;
-        $emp->middlename = $temp->middlename;
-        $emp->name_ext = $temp->name_ext;
-        $emp->date_of_birth = Helper::dateFormat($temp->birthday,'Y-m-d');
-        $emp->civil_status = $temp->civil_status;
-        $emp->item_no = $temp->item_no;
-        $emp->tin = $temp->tin;
-        $emp->appointment_date = Helper::dateFormat($temp->date_of_original_appt,'Y-m-d');
-        $emp->adjustment_date = Helper::dateFormat($temp->date_of_last_promotion,'Y-m-d');
-        $emp->gsis = $temp->bp_number;
-        $emp->save();
-    }
-    dd($nonExistent);
-    return 1;
-});
 
 Route::get('sendEvent',[\App\Http\Controllers\Test\TestController::class,'test']);
 Route::get('monitor',[\App\Http\Controllers\Test\TestController::class,'monitor']);
 
-Route::get('fixEduc',function (){
-    $educs = \App\Models\EmployeeEducationalBackground::query()
-//        ->withoutGlobalScope(new \App\Models\Scopes\ProjectScope())
-        ->whereNull('slug')
-        ->get();
 
-    if($educs->count() > 0){
-        foreach ($educs as $educ){
-            $educ->slug = \Illuminate\Support\Str::random();
-            $educ->save();
-        }
-    }
-
-    $es = \App\Models\EmployeeEligibility::query()
-//        ->withoutGlobalScope(new \App\Models\Scopes\ProjectScope())
-        ->whereNull('slug')
-        ->get();
-
-    if($es->count() > 0){
-        foreach ($es as $e){
-            $e->slug = \Illuminate\Support\Str::random();
-            $e->save();
-        }
-    }
-    $es = \App\Models\EmployeeExperience::query()
-//        ->withoutGlobalScope(new \App\Models\Scopes\ProjectScope())
-        ->whereNull('slug')
-        ->get();
-
-    if($es->count() > 0){
-        foreach ($es as $e){
-            $e->slug = \Illuminate\Support\Str::random();
-            $e->save();
-
-        }
-    }
+Route::get('/roles',function (){
+//    $permission = \Spatie\Permission\Models\Permission::create([
+//        'name' => 'employees.manage',
+//    ]);
+    $user = Auth::user();
+//    $user->givePermissionTo('employees.update');
+    dd($user->getAllPermissions());
 });

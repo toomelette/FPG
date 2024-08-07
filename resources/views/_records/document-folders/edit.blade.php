@@ -28,7 +28,9 @@
             ]"
         />
     </div>
-
+    <div class="row mb-2">
+        <x-forms.input name="remarks" cols="12" label="Remarks" :value="$folder"/>
+    </div>
 
 
 

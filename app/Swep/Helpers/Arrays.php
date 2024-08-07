@@ -970,6 +970,8 @@ class Arrays
             '36' => '3 Years',
             '48' => '4 Years',
             '60' => '5 Years',
+            '120' => '10 Years',
+            '180' => '15 Years',
         ];
     }
     public static function filterEmployees()

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 
 class User extends Authenticatable{
@@ -31,7 +32,7 @@ class User extends Authenticatable{
     }
 
 
-    use Notifiable, Sortable;
+    use Notifiable, Sortable, HasRoles;
 
     protected $dates = ['created_at', 'updated_at'];
 

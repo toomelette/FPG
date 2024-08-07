@@ -21,7 +21,7 @@ class EmployeeTrainingRepository extends BaseRepository implements EmployeeTrain
 
 
 
-	public function __construct(EmployeeTraining $employee_trng, EmployeeInterface $employee_repo){
+	public function __construct(EmployeeTraining $employee_trng, EmployeeRepository $employee_repo){
 
         $this->employee_trng = $employee_trng;
         $this->employee_repo = $employee_repo;

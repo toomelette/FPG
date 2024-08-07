@@ -1,39 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Swep | 404</title>
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+@extends('adminkit.master')
 
-  @include('layouts.css-plugins')
+@section('content2')
+    <div class="row" style="height: 75vh">
+        <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto d-table h-90">
+            <div class="d-table-cell align-middle">
 
-</head>
+                <div class="text-center">
+                    <h1 class="display-1 fw-bold">404</h1>
+                    <p class="h2">Page not found.</p>
+                    <p class="lead fw-normal mt-3 mb-4">
+                        {{$exception->getMessage() == '' ? 'The page you are looking for might have been removed.' : $exception->getMessage()}}
+                    </p>
+                </div>
 
-<body class="hold-transition">
-  <div class="wrapper" style="background-color: #ecf0f5; padding-top:50px ">
-    <div class="container">
-      <section class="content">
-        <div style="width: 100%; overflow: auto">
-          <div style="width: 30% ; float: left">
-            <img style="width: 70%; float: right" src="{{asset('images/sra.png')}}">
-          </div>
-          <div style="width: 69% ; float: right">
-            <h1 class="headline text-yellow" style="font-size: 72px; margin-top: 0px"> 404</h1>
-            <div class="error-content">
-              <h3>Oops! Page not found.</h3>
-              <p>
-                We could not find the page you were looking for.
-                Meanwhile, you may return to Home Page.
-                <br>
-                {{ $exception->getMessage()}}
-              </p>
-              <a class="btn btn-sm btn-warning" href="{{ URL::previous() }}">Go Back!</a>
             </div>
-          </div>
         </div>
-      </section>
     </div>
-  </div>
-</body>
-</html>
+@endsection
+
+
+@section('modals')
+
+@endsection
+
+@section('scripts')
+    <script type="text/javascript">
+
+
+    </script>
+@endsection

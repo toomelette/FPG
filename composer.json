@@ -40,6 +40,7 @@
         "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-html": "^3.2",
         "spatie/laravel-ignition": "^2.0",
+        "spatie/laravel-permission": "^6.9",
         "spatie/pdf-to-image": "^2.2",
         "staudenmeir/laravel-adjacency-list": "^1.0",
         "thiagoalessio/tesseract_ocr": "^2.13",

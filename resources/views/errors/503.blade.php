@@ -1,165 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Swep | 503</title>
+@extends('adminkit.master')
 
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+@section('content2')
+    <div class="row" style="height: 75vh">
+        <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto d-table h-90">
+            <div class="d-table-cell align-middle">
 
-  <style type="text/css">
+                <div class="text-center">
+                    <h1 class="display-1 fw-bold text-danger">503</h1>
+                    <p class="h2">Internal server error.</p>
+                    <p class="lead fw-normal mt-3 mb-4">
+                        {{$exception->getMessage() == '' ? 'Contact MIS Personnel.' : $exception->getMessage()}}
+                    </p>
+                </div>
 
-    @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400);
-      html {font-size: 18px;}
-      body {
-        font-family: 'Source Sans Pro', sans-serif;
-        line-height: 1.6;
-        font-size: 1em;
-        padding: 0 20px;
-      }
-
-      #wrapper {
-        width: 410px;
-        height: 350px;
-        margin: 0 auto;
-
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-top: -175px;
-        margin-left: -205px;
-      }
-
-
-      .content {
-        width: 100%;
-        margin: 0 auto;
-        text-align: center;
-      }
-
-      h1 {
-        font-weight: 300;
-        font-size: 1.5em;
-        color: #000;
-      }
-
-      p {
-        font-family: 'Source Sans Pro', sans-serif;
-        line-height: 1em;
-        font-weight: 300;
-        color: #333;
-      }
-
-      /*
-      Server by @chrisburton
-      */
-
-      .grid {
-        max-width: 175px;
-        height: 200px;
-        background: #222;
-        margin: 0 auto;
-        padding: 1em 0;
-        border-radius: 3px;
-      }
-
-
-      .grid .server {
-        display: block;
-        max-width: 68%;
-        height: 20px;
-        background: rgba(255,255,255,.15);
-        box-shadow: 0 0 0 1px black inset;
-        margin: 10px 0 20px 30px;
-      }
-
-      .grid .server:before {
-        content: "";
-        position: relative;
-        top: 7px;
-        left: -18px;
-        display: block;
-        width: 6px;
-        height: 6px;
-        background: green;
-        border: 1px solid black;
-        border-radius: 6px;
-        margin-top: 7px;
-      }
-
-      /* Animation */
-
-      @-webkit-keyframes pulse {
-        0% {background: rgba(255,255,255,.15);}
-        100% {background: #ae1508;}
-      }
-
-      .grid .server:nth-child(3):before {
-        background: rgba(255,255,255,.15);
-        -webkit-animation: pulse .5s infinite alternate;
-      }
-
-      @-webkit-keyframes pulse_three {
-        0% {background: rgba(255,255,255,.15);}
-        100% {background: #d2710a;}
-      }
-
-      .grid .server:nth-child(5):before {
-        background: rgba(255,255,255,.15);
-        -webkit-animation: pulse_three .7s infinite alternate;
-      }
-
-      @-webkit-keyframes pulse_two {
-        0% {background: rgba(255,255,255,.15);}
-        100% {background: #9da506;}
-      }
-      .grid .server:nth-child(1):before {
-        background: rgba(255,255,255,.15);
-        -webkit-animation: pulse_two .1s infinite alternate;
-      }
-      .grid .server:nth-child(2):before {
-        background: rgba(255,255,255,.15);
-        -webkit-animation: pulse_two .175s infinite alternate;
-      }
-      .grid .server:nth-child(4):before {
-        background: rgba(255,255,255,.15);
-        -webkit-animation: pulse_two .1s infinite alternate;
-      }
-
-
-      @media only screen
-        and (min-device-width: 320px)
-        and (max-device-width: 480px)
-        and (-webkit-min-device-pixel-ratio: 2) {
-          html {font-size: 12px;}
-      }
-      @media only screen
-        and (min-device-width: 320px)
-        and (max-device-width: 568px)
-        and (-webkit-min-device-pixel-ratio: 2) {
-          html {font-size: 14px;}
-      }
-
-  </style>
-
-</head>
-
-<body>
-
-
-  <div id="wrapper">
-    <div style="width: 100%;">
-      <img width="400" src="{{asset('images/sra.png')}}">
+            </div>
+        </div>
     </div>
+@endsection
 
-    
 
-    <div class="content">
-      <h1 style="font-weight: bold">Currently performing maintenance.</h1>
+@section('modals')
 
-      <p>{{$exception->getMessage()}}</p>
-    </div>
+@endsection
 
-  </div>
-</body>
-</html>
+@section('scripts')
+    <script type="text/javascript">
+
+
+    </script>
+@endsection

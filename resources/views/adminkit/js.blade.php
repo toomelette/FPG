@@ -22,7 +22,7 @@
 <script type="text/javascript" src="{{asset('template/plugins/IntroJs/introjs.js')}}"></script>
 
 
-<script type="text/javascript" src="{{ asset('adminkit/adminkit-js/app2.js') }}?a={{\Illuminate\Support\Str::random()}}"></script>
+<script type="text/javascript" src="{{ asset('adminkit/adminkit-js/app2.js') }}?{{Carbon::now()->format('Y-m-d:H')}}"></script>
 
 <script type="text/javascript" src="{{asset('template/plugins/moment/moment.js')}}"></script>
 <script type="text/javascript" src="{{ asset('template/bower_components/fullcalendar/dist/fullcalendar.min.js') }}"></script>

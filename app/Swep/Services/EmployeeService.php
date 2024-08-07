@@ -7,6 +7,7 @@ use App\Swep\Interfaces\EmployeeInterface;
 use App\Swep\Interfaces\DepartmentUnitInterface;
 
 use App\Swep\BaseClasses\BaseService;
+use App\Swep\Repositories\EmployeeRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -23,7 +24,7 @@ class EmployeeService extends BaseService{
 
 
 
-    public function __construct(EmployeeInterface $employee_repo, DepartmentUnitInterface $dept_unit_repo){
+    public function __construct(EmployeeRepository $employee_repo, DepartmentUnitInterface $dept_unit_repo){
 
         $this->employee_repo = $employee_repo;
         $this->dept_unit_repo = $dept_unit_repo;

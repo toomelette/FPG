@@ -14,6 +14,11 @@ use Yajra\DataTables\DataTables;
 
 class ServiceRecordController extends Controller
 {
+    public function __construct()
+    {
+
+    }
+
 
     public function index($employeeSlug, Request $request)
     {
@@ -51,6 +56,8 @@ class ServiceRecordController extends Controller
         }
 
         if(request()->has('edit')){
+
+
             $slug = $employeeSlug;
             $sr = EmployeeServiceRecord::query()->where('slug','=',$slug)->first();
             if(empty($sr)){
@@ -62,17 +69,17 @@ class ServiceRecordController extends Controller
                 ]
             );
         }
-
         if(request()->has('print')){
            return  $this->print($employeeSlug,$request);
         }
-
         $employee = Employee::findOrFail($employeeSlug);
         return view('_hru.employee.service_records.index')->with(['employee'=>$employee]);
     }
 
     public function print($employeeSlug,Request $request)
     {
+
+
         $employee =  Employee::query()
             ->with([
                 'employeeServiceRecord' => function ($q) use($request) {
@@ -126,38 +133,37 @@ class ServiceRecordController extends Controller
         abort(503,'Error saving data.');
     }
 
-    public function update($srSlug,EmployeeServiceRecordEditForm $request)
+    public function update(EmployeeServiceRecord $serviceRecord,EmployeeServiceRecordEditForm $request)
     {
-        $sr = EmployeeServiceRecord::findOrFail($srSlug);
-        $sr->sequence_no = $request->sequence_no;
-        $sr->from_date = $request->from_date;
-        $sr->to_date = $request->to_date ?? null;
-        $sr->position = $request->position;
-        $sr->appointment_status = $request->appointment_status;
-        $sr->salary = Helper::sanitizeAutonum($request->salary);
-        $sr->mode_of_payment = $request->mode_of_payment;
-        $sr->station = $request->station;
-        $sr->gov_serve = $request->gov_serve;
-        $sr->psc_serve = $request->psc_serve;
-        $sr->lwp = $request->lwp;
+//        $sr = EmployeeServiceRecord::findOrFail($srSlug);
+        $serviceRecord->sequence_no = $request->sequence_no;
+        $serviceRecord->from_date = $request->from_date;
+        $serviceRecord->to_date = $request->to_date ?? null;
+        $serviceRecord->position = $request->position;
+        $serviceRecord->appointment_status = $request->appointment_status;
+        $serviceRecord->salary = Helper::sanitizeAutonum($request->salary);
+        $serviceRecord->mode_of_payment = $request->mode_of_payment;
+        $serviceRecord->station = $request->station;
+        $serviceRecord->gov_serve = $request->gov_serve;
+        $serviceRecord->psc_serve = $request->psc_serve;
+        $serviceRecord->lwp = $request->lwp;
         if($request->upto_date == true){
-            $sr->upto_date = 1;
+            $serviceRecord->upto_date = 1;
         }else{
-            $sr->upto_date = 0;
+            $serviceRecord->upto_date = 0;
         }
-        $sr->spdate = $request->spdate;
-        $sr->status = $request->status;
-        $sr->remarks = $request->remarks;
-        if($sr->save()){
-            return $sr->only('slug');
+        $serviceRecord->spdate = $request->spdate;
+        $serviceRecord->status = $request->status;
+        $serviceRecord->remarks = $request->remarks;
+        if($serviceRecord->save()){
+            return $serviceRecord->only('slug');
         }
         abort(503,'Error saving data.');
     }
 
-    public function destroy($slug)
+    public function destroy(EmployeeServiceRecord $serviceRecord)
     {
-        $t = EmployeeServiceRecord::query()->findOrFail($slug);
-        if($t->delete()){
+        if($serviceRecord->delete()){
             return 1;
         }
         abort(503,'Error deleting item.');

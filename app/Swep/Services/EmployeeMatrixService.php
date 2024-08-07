@@ -5,7 +5,7 @@ namespace App\Swep\Services;
 use App\Swep\Interfaces\EmployeeMatrixInterface;
 use App\Swep\Interfaces\EmployeeInterface;
 use App\Swep\BaseClasses\BaseService;
-
+use App\Swep\Repositories\EmployeeRepository;
 
 
 class EmployeeMatrixService extends BaseService{
@@ -17,7 +17,7 @@ class EmployeeMatrixService extends BaseService{
 
 
 
-    public function __construct(EmployeeMatrixInterface $employee_matrix_repo, EmployeeInterface $employee_repo){
+    public function __construct(EmployeeMatrixInterface $employee_matrix_repo, EmployeeRepository $employee_repo){
 
         $this->employee_matrix_repo = $employee_matrix_repo;
         $this->employee_repo = $employee_repo;

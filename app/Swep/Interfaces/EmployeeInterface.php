@@ -10,7 +10,7 @@ interface EmployeeInterface {
 
 	public function store($request);
 
-	public function update($request, $slug);
+	public function update($request, $employee);
 
 	public function destroy($slug);
 

@@ -23,7 +23,7 @@ use App\Models\EmployeeMedicalHistory;
 use App\Models\Employee;
 
 
-class EmployeeRepository extends BaseRepository implements EmployeeInterface {
+class EmployeeRepository extends BaseRepository {
 	
 
 
@@ -161,9 +161,9 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
 
 
 
-    public function update($request, $slug){
+    public function update($request, Employee $employee){
 
-        $employee = $this->findBySlug($slug);
+//        $employee = $this->findBySlug($slug);
         $employee->project_id = $request->project_id;
         $employee->department_id = $request->department_id;
         $employee->department_unit_id = $request->department_unit_id;
@@ -223,7 +223,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeInterface {
         $employee->resp_center = $request->resp_center;
         $employee->date_of_separation = $request->date_of_separation;
         $employee->reason_of_separation = $request->reason_of_separation;
-        $employee->save();
+        $employee->update();
 
         $this->destroyDependencies($employee);
 
