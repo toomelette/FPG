@@ -279,6 +279,23 @@ class DTRService extends BaseService
     }
 
     public function extractViaApi(){
+        $setting = SuSettings::query()->where('setting','=','extract_lgarec_api')->first();
+        if(empty($setting)){
+            \App\Models\CronLogs::insert([
+                    'log' => 'API Copying turned off',
+                    'type' => 11,
+                    'created_at' => Carbon::now(),
+                ]);
+            return true;
+        }
+        if($setting->int_value != 1){
+            \App\Models\CronLogs::insert([
+                    'log' => 'API Copying turned off',
+                    'type' => 11,
+                    'created_at' => Carbon::now(),
+                ]);
+            return true;
+        }
         $last = \App\Models\DTR::query()
             ->where('location','=','LGAREC API')
             ->orderBy('lgarec_id','desc')
