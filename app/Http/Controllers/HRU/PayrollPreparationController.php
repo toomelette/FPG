@@ -88,7 +88,9 @@ class PayrollPreparationController
             $employees = $employees->where('payroll_group','=',null);
         }
 
-        $employees = $employees->orderBy('lastname','asc')
+        $employees = $employees
+            ->orderBy('lastname')
+            ->orderBy('firstname')
             ->applyProjectId()
             ->active()
             ->permanent()
