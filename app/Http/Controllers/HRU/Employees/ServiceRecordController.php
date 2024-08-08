@@ -133,9 +133,11 @@ class ServiceRecordController extends Controller
         abort(503,'Error saving data.');
     }
 
-    public function update(EmployeeServiceRecord $serviceRecord,EmployeeServiceRecordEditForm $request)
+    public function update($slug,EmployeeServiceRecordEditForm $request)
     {
-//        $sr = EmployeeServiceRecord::findOrFail($srSlug);
+
+        $serviceRecord = EmployeeServiceRecord::findOrFail($slug);
+
         $serviceRecord->sequence_no = $request->sequence_no;
         $serviceRecord->from_date = $request->from_date;
         $serviceRecord->to_date = $request->to_date ?? null;
@@ -161,8 +163,9 @@ class ServiceRecordController extends Controller
         abort(503,'Error saving data.');
     }
 
-    public function destroy(EmployeeServiceRecord $serviceRecord)
+    public function destroy($slug)
     {
+        $serviceRecord = EmployeeServiceRecord::findOrFail($slug);
         if($serviceRecord->delete()){
             return 1;
         }
