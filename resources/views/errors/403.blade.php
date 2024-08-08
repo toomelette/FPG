@@ -1,36 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Swep | 404</title>
+@extends('adminkit.master')
 
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+@section('content2')
+    <div class="row" style="height: 75vh">
+        <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto d-table h-90">
+            <div class="d-table-cell align-middle">
 
-  @include('layouts.css-plugins')
+                <div class="text-center">
+                    <h1 class="display-1 fw-bold text-danger">403</h1>
+                    <p class="h2">Access Denied.</p>
+                    <p class="lead fw-normal mt-3 mb-4">
+                        {{$exception->getMessage() == '' ? 'Contact MIS Personnel.' : $exception->getMessage()}}
+                    </p>
+                </div>
 
-</head>
-
-<body class="hold-transition">
-  <div class="wrapper" style="background-color: #ecf0f5; padding-top:50px ">
-    <div class="container">
-      <section class="content">
-
-        <div class="error-page">
-          <h2 class="headline text-red"> 403</h2>
-          <div class="error-content">
-            <h3><i class="fa fa-warning text-red"></i> Access Denied!</h3>
-            <p>
-              Looks like you are restricted to access this page,
-               please contact the administrator to gain access.
-              Meanwhile, you may return to Home Page.
-            </p>
-            <a class="btn btn-sm btn-danger" href="{{ route('auth.login') }}">Go Back!</a>
-          </div>
+            </div>
         </div>
-
-      </section>
     </div>
-  </div>
-</body>
-</html>
+@endsection
+
+
+@section('modals')
+
+@endsection
+
+@section('scripts')
+    <script type="text/javascript">
+
+
+    </script>
+@endsection

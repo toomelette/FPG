@@ -33,6 +33,7 @@
 
             </div>
             <div class="btn-group float-end">
+                <a type="button" href="{{route('dashboard.payroll_refund.index',$payrollMaster->slug)}}"  class="btn btn-outline-secondary btn-sm"> <i class="fa fa-money-bill-transfer"></i> Refunds </a>
                 <button type="button" data-bs-target="#other-actions-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-gear"></i> Other Actions </button>
                 <button type="button" id="upload-btn" data-bs-target="#upload-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-folder-open"></i> Upload Excel File </button>
                 <button type="button" id="recompute-btn" class="btn btn-primary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recompute </button>
@@ -107,13 +108,15 @@
         <x-slot:title>
             Other Actions
         </x-slot:title>
-        <x-adminkit.html.alert type="primary mb-2" body-class="alert-message p-1 text-center text-strong" :dismissible="false" :with-icon="false">
-            Update PhilHealth Deductions
-        </x-adminkit.html.alert>
-        <p class="text-info text-center mb-1">2.5% of Monthly Basic, max of 2,500.00</p>
-        <button class="btn btn-outline-primary col-12" type="button" id="update-philhealth-btn"><i class="fa fa-check"></i> Update PhilHealth</button>
+        <div class="visually-hidden">
+            <x-adminkit.html.alert type="primary mb-2" body-class="alert-message p-1 text-center text-strong" :dismissible="false" :with-icon="false">
+                Update PhilHealth Deductions
+            </x-adminkit.html.alert>
+            <p class="text-info text-center mb-1">2.5% of Monthly Basic, max of 2,500.00</p>
+            <button class="btn btn-outline-primary col-12" type="button" id="update-philhealth-btn"><i class="fa fa-check"></i> Update PhilHealth</button>
 
-       <hr class="mt-4 mb-4">
+            <hr class="mt-4 mb-4">
+        </div>
 
         <x-adminkit.html.alert type="success mb-2" body-class="alert-message p-1 text-center text-strong" :dismissible="false" :with-icon="false">
             Update MAP (MUTUALFUND)
@@ -130,6 +133,12 @@
             <button type="button" data-bs-dismiss="modal" class="btn btn-secondary btn-sm">Close </button>
         </x-slot:footer>
     </x-adminkit.html.modal-template>
+
+    <x-adminkit.html.offcanvas class="end asdasd" id="offcanvasLeft">
+        <x-slot:title>
+            Employee Options
+        </x-slot:title>
+    </x-adminkit.html.offcanvas>
 @endsection
 
 @section('scripts')
@@ -298,6 +307,7 @@
                 }
             })
         })
+        /*
         $("body").on("click",".employee-options-btn",function (){
             let btn = $(this);
             Swal.fire({
@@ -310,7 +320,7 @@
                 denyButtonColor : '#3da162',
                 html : btn.attr('content')
             }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
+
                 if (result.isConfirmed) {
                     let printRoute = '{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}?employeeList='+btn.attr('data');
                     window.open(printRoute, "popupWindow", "width=1200, height=600, scrollbars=yes");
@@ -319,6 +329,29 @@
                 }
             });
         });
+        */
+
+        $("body").on("click",".employee-options-btn",function (){
+            let btn = $(this);
+            load_offcanvas(btn);
+            $.ajax({
+                url : '{{route("dashboard.payroll_preparation.edit",$payrollMaster->slug)}}?employee',
+                data : {
+                    employee : btn.attr('emp-slug'),
+                    employeePayrollListSlug : btn.attr('data'),
+                },
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_offcanvas(btn,res);
+                },
+                error: function (res) {
+                    populate_offcanvas_error(res);
+                }
+            })
+        })
         $("#update-philhealth-btn").click(function (){
             let btn = $(this);
             wait_this_button(btn);

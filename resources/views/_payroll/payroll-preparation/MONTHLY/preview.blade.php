@@ -48,6 +48,7 @@
             <tr class="{{$loop->iteration % 5 == 0 ? 'fifth' : ''}}">
                 <td class="first employee-options-btn" data="{{$employee->slug}}" emp-no="{{$employee->employee->employee_no}}" emp-slug="{{$employee->employee->slug}}"
                     content="{{$employee->employee->plantilla->item_no ?? ''}} | {{$employee->employee->plantilla->position ?? ''}} <br> ({{$employee->employee->salary_grade ?? ''}},{{$employee->employee->step_inc ?? ''}}) <br> {{$employee->employee->employee_no ?? ''}}"
+                    data-bs-toggle="offcanvas" data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft"
                 > {{$employee->employee->full_name ?? ''}}</td>
                 @forelse($groupedIncentives as $incentive => $null)
                     <td class="text-end">

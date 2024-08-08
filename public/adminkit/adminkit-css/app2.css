@@ -614,7 +614,8 @@ td.w-25p{
 
 /* custom scrollbar */
 ::-webkit-scrollbar {
-    width: 20px;
+    width: 21px;
+    min-height: 12px;
 }
 
 ::-webkit-scrollbar-track {
@@ -622,14 +623,14 @@ td.w-25p{
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #d6dee1;
+    background-color: #bfbdbd;
     border-radius: 20px;
     border: 6px solid transparent;
     background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #a8bbbf;
+    background-color: #7d7a7a;
 }
 
 /*payroll template*/
@@ -644,4 +645,14 @@ td.w-25p{
 
 .fifth>td{
     border-bottom: 1px solid #c7c7c7 !important;
+}
+
+
+.side-list .item:hover{
+    cursor: pointer;
+    background-color: var(--bs-primary-bg-subtle);
+}
+
+.side-list .item.selected{
+    background-color: var(--bs-primary-border-subtle);
 }

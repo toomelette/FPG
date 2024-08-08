@@ -19,6 +19,7 @@ use App\Models\PPU\PPURespCodes;
 use App\Models\RCCodeTree;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
+use App\Swep\Services\HRU\MonthlyPayrollService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
@@ -31,8 +32,16 @@ use Yajra\DataTables\DataTables;
 
 class PayrollPreparationController
 {
+    public function __construct(
+        public MonthlyPayrollService $monthlyPayrollService
+    )
+    {
+
+    }
+
 
     public function index(Request $request){
+
         if ($request->ajax() && $request->has('draw')){
             $pays = PayrollMaster::query()
                 ->withCount('payrollMasterEmployees')
@@ -78,7 +87,9 @@ class PayrollPreparationController
         }else{
             $employees = $employees->where('payroll_group','=',null);
         }
-        $employees = $employees->applyProjectId()
+
+        $employees = $employees->orderBy('lastname','asc')
+            ->applyProjectId()
             ->active()
             ->permanent()
             ->get();
@@ -141,8 +152,16 @@ class PayrollPreparationController
             ['employee_slug','incentive_code'],
             ['priority','amount']
         );
+        switch ($request->type){
+            case 'MONTHLY' :
+                $this->monthlyPayrollService->recompute($payMaster->slug);
 
-        $this->{'recompute'.$request->type}($payMaster->slug);
+            default:
+                $this->{'recompute'.$request->type}($payMaster->slug);
+                break;
+        }
+
+
         return $payMaster->only('slug');
     }
 
@@ -181,12 +200,32 @@ class PayrollPreparationController
   
         // Delete existing HMT details related to the payroll master record
         $payrollMstrRata->hmtDetails()->delete();
-
         PayrollMasterDetails::query()->insert($detailsRata);
         
     }
 
+    private function showEmployee($payMasterSlug,Request $request)
+    {
+
+        $employeePayrollList = PayrollMasterEmployees::query()
+            ->with([
+                'employeePayrollDetails',
+            ])
+            ->where('slug','=',$request->employeePayrollListSlug)
+            ->first();
+        $employee = Employee::query()->findOrFail($request->employee);
+        return view('_payroll.payroll-preparation.MONTHLY.show-employee')->with([
+            'employee' => $employee,
+            'employeePayrollListSlug' => $request->employeePayrollListSlug,
+            'employeePayrollList' => $employeePayrollList,
+            'payMasterSlug' => $payMasterSlug,
+        ]);
+    }
+
     public function edit($slug,Request $request){
+        if($request->has('employee')){
+            return  $this->showEmployee($slug,$request);
+        }
 
         $payrollMaster = PayrollMaster::query()
                 ->with([
@@ -205,7 +244,7 @@ class PayrollPreparationController
         switch($payrollMaster->type){
             case 'MONTHLY':
                 if($request->has('recompute') && $request->recompute == true){
-                    return $this->recomputeMONTHLY($slug);
+                    return $this->monthlyPayrollService->recompute($slug);
                 }
                 $payrollMaster = PayrollMaster::query()
                     ->with([
@@ -548,126 +587,19 @@ class PayrollPreparationController
     }
 
     public function update(PayrollUpdateFormRequest $request,$payrollMasterSlug){
-
-        //IF UPDATE SIGNATORIES
-        if($request->ajax() && $request->has('signatories') && $request->signatories == true){
-            $payrollMaster = PayrollMaster::findOrFail($payrollMasterSlug);
-            $payrollMaster->a_name = $request->a_name;
-            $payrollMaster->a_position = $request->a_position;
-            $payrollMaster->b_name = $request->b_name;
-            $payrollMaster->b_position = $request->b_position;
-            $payrollMaster->c_name = $request->c_name;
-            $payrollMaster->c_position = $request->c_position;
-            $payrollMaster->d_name = $request->d_name;
-            $payrollMaster->d_position = $request->d_position;
-            if($payrollMaster->update()){
-                return $payrollMaster->only('slug');
-            }
-            abort(503,'Error updating signatories');
-        }
-        //IF IMPORT EXCEL
-        if($request->has('import') && $request->import == true){
-            $payrollMaster = PayrollMaster::query()
-                ->with([
-                    'payrollMasterEmployees.employee',
-                ])
-                ->find($payrollMasterSlug);
-            if($payrollMaster->is_locked ){
-                abort(503,'This Payroll is locked. Unlock it first to perform action.');
-            }
-            switch ($request->type){
-                case 'GSIS':
-                    return $this->gsisUpload($payrollMaster,$request);
+        $payrollMaster = PayrollMaster::findOrFail($payrollMasterSlug);
+        $this->checkLockStataus($payrollMaster);
+        switch ($payrollMaster->type){
+            case 'MONTHLY':
+                return  $this->monthlyPayrollService->update($request,$payrollMaster);
+            default:
                 break;
-                case 'SURECCO' :
-                case 'SUDEMUPCO' :
-                case 'SUGAREAP' :
-                case 'ACCTREC' :
-                case 'HDMF' :
-                case 'AR' :
-                    return $this->hdmfUpload($payrollMaster,$request);
-            }
         }
-
-        //IF UPDATE PHILHEALTH
-        if($request->has('philhealth') ){
-            $payrollMaster = PayrollMaster::query()
-                ->with([
-                    'payrollMasterEmployees.employee',
-                ])
-                ->find($payrollMasterSlug);
-            if($payrollMaster->is_locked ){
-                abort(503,'This Payroll is locked. Unlock it first to perform action.');
-            }
-            return $this->updatePhilhealth($payrollMaster);
-        }
-
-        //IF MAP
-        if($request->has('map')){
-            $payrollMaster = PayrollMaster::query()
-                ->with([
-                    'payrollMasterEmployees.employee',
-                ])
-                ->find($payrollMasterSlug);
-            if($payrollMaster->is_locked ){
-                abort(503,'This Payroll is locked. Unlock it first to perform action.');
-            }
-            return $this->updateMap($payrollMaster, $request);
-        }
+        abort(503,'NO CASE IN SWITCH');
     }
 
-    public function updateMap(PayrollMaster $payrollMaster, Request $request)
-    {
-        $upsertValues = [];
-        $deductionCode = 'MUTUALFUND';
-        $deduction = Deductions::query()->where('deduction_code','=',$deductionCode)->first();
-        $deduction ?? abort(503,'Deduction not found.');
 
 
-        foreach ($payrollMaster->payrollMasterEmployees as $employee){
-            $amt = Helper::sanitizeAutonum($request->amount);
-            array_push($upsertValues,[
-                'employee_slug' => $employee->employee_slug,
-                'deduction_code' => $deduction->deduction_code,
-                'priority' => $deduction->n_priority,
-                'amount' =>  $amt == 0 ? null : $amt,
-            ]);
-        }
-        TemplateDeductions::query()->upsert($upsertValues,
-            ['employee_slug','deduction_code'],
-            ['priority','amount']
-        );
-    }
-    public function updatePhilhealth(PayrollMaster $payrollMaster)
-    {
-        $upsertValues = [];
-        $deductionCode = 'PHIC';
-        $deduction = Deductions::query()->where('deduction_code','=',$deductionCode)->first();
-        $deduction ?? abort(503,'Deduction not found.');
-        $jobGrades = Arrays::jobGrades();
-        $max = 2500;
-        foreach ($payrollMaster->payrollMasterEmployees as $employee){
-            if(isset($jobGrades[$employee->employee->salary_grade][$employee->employee->step_inc])){
-                $philhealthDeduction = ($jobGrades[$employee->employee->salary_grade][$employee->employee->step_inc]) * 0.025;
-                $philhealthDeduction = bcdiv($philhealthDeduction,1,2);
-                if($philhealthDeduction > $max){
-                    $philhealthDeduction = $max;
-                }
-                array_push($upsertValues,[
-                    'employee_slug' => $employee->employee_slug,
-                    'deduction_code' => $deduction->deduction_code,
-                    'priority' => $deduction->n_priority,
-                    'amount' => $philhealthDeduction,
-                ]);
-            }
-
-        }
-
-        TemplateDeductions::query()->upsert($upsertValues,
-            ['employee_slug','deduction_code'],
-            ['priority','amount']
-        );
-    }
 
     public function updateRataDed(Request $request, $payrollMasterSlug)
     {
@@ -746,238 +678,18 @@ class PayrollPreparationController
         return $totalRATA;
     }
 
-    private function hdmfUpload($payrollMaster, Request $request){
-        $employeeSlugToPayMasterEmployeeSlug = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
-            return [
-                $data->employee_slug => $data->slug,
-            ];
-        });
-        $excel = Excel::toArray(new GSISImport(),$request->file('file'));
-        $data = $excel[0];
-
-        $headers = $data[0];
-        //remove null values
-        $headers = array_filter($headers,function ($value){ return !is_null($value) && $value != ''; });
-
-        $headersFlipped = collect($headers)->flip();
-
-        array_forget($data,0);
-
-        $rowsExceptHeaders = $data;
-        $deductionsToBeInserted = [];
-        $deductions = Arrays::deductionsExcelHeader($request->type);
-
-        $employeesExcelToSlug = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
-            return [
-                $data->employee->employee_no => $data->employee->slug,
-            ];
-        });
-
-        $upsertValues = [];
-        foreach ($data as $row){
-            foreach ($deductions as $excelHeader => $deduction){
-                if(isset($employeesExcelToSlug[$row[0]]) && isset($row[$headersFlipped[$excelHeader]]) && $row[$headersFlipped[$excelHeader]] != 0){
-                    array_push($upsertValues,[
-                        'employee_slug' => $employeesExcelToSlug[$row[0]],
-                        'deduction_code' => $deduction->deduction_code,
-                        'priority' => $deduction->n_priority,
-                        'amount' => $row[$headersFlipped[$excelHeader]] ?? 0,
-                    ]);
-                }
-
-            }
-        }
-        TemplateDeductions::query()->upsert($upsertValues,
-            ['employee_slug','deduction_code'],
-            ['priority','amount']
-        );
-    }
-
-    private function gsisUpload($payrollMaster, Request $request){
-        $excel = Excel::toArray(new GSISImport(),$request->file('file'));
-        $data = $excel[0];
-        $headers = $data[0];
-        $headersFlipped = collect($headers)->flip();
-        array_forget($data,0);
-        $deductions = Arrays::deductionsExcelHeader('GSIS');
-        $employeesGsisToSlug = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
-            return [
-                $data->employee->gsis => $data->employee->slug,
-            ];
-        });
-        $upsertValues = [];
-        foreach ($data as $row){
-            foreach ($deductions as $excelHeader => $deduction){
-                if(isset($employeesGsisToSlug[$row[0]]) && isset($row[$headersFlipped[$excelHeader]]) && $row[$headersFlipped[$excelHeader]] != 0){
-                    array_push($upsertValues,[
-                        'employee_slug' => $employeesGsisToSlug[$row[0]],
-                        'deduction_code' => $deduction->deduction_code,
-                        'priority' => $deduction->n_priority,
-                        'amount' => $row[$headersFlipped[$excelHeader]] ?? 0,
-                    ]);
-                }
-            }
-        }
-        TemplateDeductions::query()->upsert($upsertValues,
-            ['employee_slug','deduction_code'],
-            ['priority','amount']
-        );
-    }
-
     public function print($slug,$type, Request $request){
 
         switch ($type){
             case 'MONTHLY':
-                return $this->printMonthly2($slug);
-                break;
+                return $this->monthlyPayrollService->printPayroll($slug);
             case 'PAYSLIP_ALL':
-                return $this->payslipAll($slug, $request);
+                return $this->monthlyPayrollService->printPayslips($slug,$request);
                 break;
-
         }
+        abort(503,'CHECK SWITCH CASE STATEMENT');
     }
 
-    private function payslipAll($slug,Request $request){
-        $payrollMaster = PayrollMaster::query();
-        $with = [
-            'payrollMasterEmployees.employee.plantilla',
-            'payrollMasterEmployees.employeePayrollDetails',
-            'hmtDetails',
-        ];
-
-        //if requests for only 1 employee
-        if($request->has('employeeList') && $request->employeeList != ''){
-            $with['payrollMasterEmployees'] = function($q) use ($request){
-                return $q->where('slug','=',$request->employeeList);
-            };
-        }
-
-        $payrollMaster = $payrollMaster
-            ->with($with)
-            ->findOrFail($slug);
-
-        return view('printables.hru.payroll_preparation.monthly_payslip_all')->with([
-            'payrollMaster' => $payrollMaster,
-        ]);
-    }
-
-    private function printMonthly($slug){
-        $tree = PPURespCodes::query()
-            ->with([
-                'employees' => function(HasMany $q){
-                    $q->active()->applyProjectId()->permanent();
-                },
-            ])
-            ->tree()
-            ->get()
-            ->toTree();
-
-        $payrollMaster = PayrollMaster::query()
-            ->with([
-                'payrollMasterEmployees' => [
-                    'employee.plantilla',
-                    'employeePayrollDetails',
-                ],
-                'hmtDetails',
-            ])
-            ->findOrFail($slug);
-        $usedRc = [];
-        $employees = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
-            return [
-                $data->employee->slug => $data,
-            ];
-        });
-        foreach ($employees as $employee){
-            if(!empty($employee->employee->responsibilityCenter)){
-                $usedRc[$employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.$employee->employee->responsibilityCenter->sec] = $employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.$employee->employee->responsibilityCenter->sec;
-                $usedRc[$employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.'0'] = $employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.'0';
-                $usedRc[$employee->employee->responsibilityCenter->rc.'0'.'0'] = $employee->employee->responsibilityCenter->rc.'0'.'0';
-            }
-        }
-        ksort($usedRc);
-        return view('printables.hru.payroll_preparation.monthly_payroll')->with([
-            'payrollMaster' => $payrollMaster,
-            'tree' => $tree,
-            'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
-                return $data->employee->resp_center;
-            }),
-
-            'payrollEmployeesBySlug' => $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
-                return [
-                    $data->employee->slug => $data,
-                ];
-            }),
-            'usedRc' => $usedRc,
-        ]);
-    }
-
-    private function printMonthly2($slug){
-
-        $payrollMaster = PayrollMaster::query()
-            ->with([
-                'payrollMasterEmployees' => [
-                    'employee.plantilla',
-                    'employeePayrollDetails',
-                ],
-                'hmtDetails.chartOfAccount',
-            ])
-            ->findOrFail($slug);
-        $usedRc = [];
-        $employees = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
-            return [
-                $data->employee->slug => $data,
-            ];
-        });
-        foreach ($employees as $employee){
-            if(!empty($employee->employee->responsibilityCenter)){
-                $usedRc[$employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.$employee->employee->responsibilityCenter->sec] = $employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.$employee->employee->responsibilityCenter->sec;
-                $usedRc[$employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.'0'] = $employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.'0';
-                $usedRc[$employee->employee->responsibilityCenter->rc.'0'.'0'] = $employee->employee->responsibilityCenter->rc.'0'.'0';
-            }
-        }
-
-
-        $tree = PayrollTree::query()
-            ->with('responsibilityCenter')
-            ->whereIn('resp_center',array_flatten($usedRc))
-            ->orderBy('sort','asc')
-            ->get()
-            ->groupBy(['group','resp_center']);
-
-        $t = $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
-            return $data->employee->resp_center;
-        })->toArray();
-        ksort($t);
-        $t = array_keys($t);
-        $dbRcs = collect($tree)->flatten()->mapWithKeys(function ($data){
-            return [
-                $data->resp_center => $data,
-            ];
-        })->toArray();
-        ksort($dbRcs);
-        $dbRcs = array_keys($dbRcs);
-        $diff = array_diff($t,$dbRcs);
-        if(count($diff) > 0){
-            abort(503,'There are some RCs not found on the hierarchy of RCs. Contact database administrator. ---------------------------- '.print_r($diff,true));
-        }
-
-
-        ksort($usedRc);
-        return view('printables.hru.payroll_preparation.monthly_payroll')->with([
-            'payrollMaster' => $payrollMaster,
-            'tree' => $tree,
-            'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
-                return $data->employee->resp_center;
-            }),
-
-            'payrollEmployeesBySlug' => $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
-                return [
-                    $data->employee->slug => $data,
-                ];
-            }),
-            'usedRc' => $usedRc,
-        ]);
-    }
 
     public function printRT($slug){
         $tree = PPURespCodes::query()
@@ -1013,16 +725,6 @@ class PayrollPreparationController
                 ];
             })
         ]);
-    }
-
-    private function recursiveSearch($data,$depth = 0){
-        foreach ($data as $item){
-            if($item->children->count() > 0){
-                $this->recursiveSearch($item->children,$depth + 1);
-            }else{
-                echo $item->rc_code .' Depth:'.$depth.'<br>';
-            }
-        }
     }
 
     public function updateLockStatus($payrollSlug,$status){

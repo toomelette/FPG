@@ -284,6 +284,10 @@ function load_modal2(btn){
     $(btn.attr('data-bs-target')+" .modal-content").html(modal_loader_placeholder);
 }
 
+function load_offcanvas(btn){
+    $(btn.attr('data-bs-target')+" .offcanvas-body").html(modal_loader_placeholder);
+}
+
 
 function populate_modal2(btn, response){
     target_modal = btn.attr('data-bs-target');
@@ -300,7 +304,26 @@ function populate_modal2(btn, response){
     });
 }
 
+function populate_offcanvas(btn, response){
+    target_modal = btn.attr('data-bs-target');
+    $(target_modal +" #modal_loader_placeholder").fadeOut(function() {
+        $(target_modal +" .offcanvas-body").html(response);
+    });
+}
+
 function populate_modal2_error(response){
+    if(response.status == 503){
+        toast('error',response.responseJSON.message, 'Error:');
+    }
+    else if(response.status == 405){
+        notify('Error: Request denied. Not enough privilege.', 'danger');
+    }else{
+        alert(response.responseJSON.message);
+    }
+
+}
+
+function populate_offcanvas_error(response){
     if(response.status == 503){
         toast('error',response.responseJSON.message, 'Error:');
     }

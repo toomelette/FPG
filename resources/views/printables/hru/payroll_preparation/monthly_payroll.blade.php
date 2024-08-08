@@ -145,7 +145,8 @@
                         <td colspan="{{$colspan}}" class="indent text-strong" style="background-color: #e6f8ff">{{$rc->first()->responsibilityCenter->desc ?? ''}}</td>
                     </tr>
                     @php
-                        $payrollEmployeesPerRc = $payrollEmployeesGroupedByRespCenter[$rcCode];
+
+                        $payrollEmployeesPerRc = $payrollEmployeesGroupedByRespCenter[$rcCode] ?? [];
                         $sumPerRc = [];
                         $sumPerRcSundry = [];
                     @endphp

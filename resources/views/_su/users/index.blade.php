@@ -2,23 +2,24 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>Payroll</x-slot:title>
+        <x-slot:title>Users</x-slot:title>
     </x-adminkit.html.page-title>
     <x-adminkit.html.card>
-        <div class="payroll-table-container">
-            <table class="table table-bordered table-sm" id="payroll-table">
+        <div class="users-table-container">
+            <table class="table table-bordered table-sm" id="users-table">
                 <thead>
                 <tr>
-                    <th>Payroll Date</th>
-                    <th>Payroll Type</th>
-                    <th>Employees.</th>
-                    <th>Details</th>
-                    <th>Amount</th>
+                    <th style="width: 15%;">Username</th>
+                    <th>Employee</th>
+                    <th>First</th>
+                    <th>Middle</th>
+                    <th style="width: 50px">Active</th>
+                    <th style="width: 50px">Online</th>
                     <th style="width: 80px">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-
+        
                 </tbody>
             </table>
         </div>
@@ -33,42 +34,30 @@
 @section('scripts')
     <script type="text/javascript">
         let active = '';
-        payrollTbl = $("#payroll-table").DataTable({
+        usersTbl = $("#users-table").DataTable({
             dom : 'lBfrtip',
             processing: true,
             serverSide: true,
-            ajax : '{{route('dashboard.payroll_preparation.index')}}',
+            ajax : '{{route('dashboard.user.index')}}',
             columns: [
-                { data : "date" },
-                { data : "type" },
-                { data : "payroll_master_employees_count" },
-                { data : "details" },
-                { data : "total_amount" },
-                { data : "action"}
+                { data : "username" },
+                { data : "fullname", name: "employee.lastname" },
+                { data : "employee.firstname" },
+                { data : "employee.middlename" },
+                { data : "is_activated" },
+                { data : "last_activity" },
+                { data : "action" }
             ],
             buttons: [
                 {!! __js::dt_buttons() !!}
             ],
             columnDefs:[
                 {
-                    targets : 5,
-                    orderable : false,
-                    searchable: false,
-                },
-                {
-                    targets : 4,
-                    orderable : false,
-                    searchable: false,
-                    class : 'text-end'
-                },
-                {
-                    targets : [1,2],
-                    orderable : false,
-                    searchable: false,
-                    class : 'text-center'
-                },
+                    targets: [2,3],
+                    visible: false,
+                }
             ],
-            order:[[0,'desc']],
+            order:[[5,'desc']],
             responsive: false,
             initComplete: function( settings, json ) {
                 // style_datatable("#"+settings.sTableId);
@@ -76,7 +65,7 @@
                 $('#'+settings.sTableId+'_filter input').unbind();
                 $('#'+settings.sTableId+'_filter input').bind('keyup', function (e) {
                     if (e.keyCode == 13) {
-                        payrollTbl.search(this.value).draw();
+                        usersTbl.search(this.value).draw();
                     }
                 });
             },

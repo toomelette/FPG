@@ -276,6 +276,8 @@ function load_modal2(btn){
 }
 
 
+
+
 function populate_modal2(btn, response){
     target_modal = btn.attr('data-target');
     $(target_modal +" #modal_loader").fadeOut(function() {

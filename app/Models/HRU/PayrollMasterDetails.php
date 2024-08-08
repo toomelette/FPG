@@ -24,4 +24,9 @@ class PayrollMasterDetails extends Model
         return $this->hasOne(ChartOfAccounts::class,'account_code','account_code');
     }
 
+    public function deduction()
+    {
+        return $this->belongsTo(Deductions::class,'code','deduction_code');
+    }
+
 }
