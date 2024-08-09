@@ -21,8 +21,8 @@
                         Access
                     </a>
                     @forelse($portals as $portal => $menus)
-                        <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#portal-{{$loop->iteration}}" role="tab" aria-selected="false" tabindex="-1">
-                            {{$portal == '' ? 'SU' : $portal}}
+                        <a class="list-group-item list-group-item-action count-options" data-bs-toggle="list" href="#portal-{{$loop->iteration}}" role="tab" aria-selected="false" tabindex="-1">
+                            {{$portal == '' ? 'SU' : $portal}} <span class="badge bg-success float-end"></span>
                         </a>
                     @empty
                     @endforelse
@@ -87,8 +87,8 @@
                             <ul class="nav nav-tabs" role="tablist">
                                 @forelse($groupedByCategory as $category => $menusUnderCategory)
                                     <li class="nav-item" role="presentation">
-                                        <a class="nav-link {{$loop->first ? 'active' : ''}}" style="border: none;" href="#tab-{{$loop->parent->iteration}}-{{$loop->iteration}}" data-bs-toggle="tab" role="tab" aria-selected="true">
-                                            {{$category}}
+                                        <a class="nav-link tab-item {{$loop->first ? 'active' : ''}}" style="border: none;" href="#tab-{{$loop->parent->iteration}}-{{$loop->iteration}}" data-bs-toggle="tab" role="tab" aria-selected="true">
+                                            {{$category}} <span class="badge bg-primary float-end ms-3"></span>
                                         </a>
                                     </li>
                                 @empty
@@ -168,6 +168,23 @@
 
 @section('scripts')
     <script type="text/javascript">
+        function updatePortalBadge(){
+            $(".count-options").each(function (){
+                let li = $(this);
+                let targetCardId = li.attr('href');
+                let len = $(targetCardId+" option:selected").length;
+                li.find('.badge').html(len);
+            })
+        }
+        function updateTabs(){
+            $(".tab-item").each(function (){
+                let navLink = $(this);
+                let targetPane = navLink.attr('href');
+                let len = $(targetPane+" option:selected").length;
+                navLink.find('.badge').html(len);
+            })
+        }
+
         $('select[multiple]').select2('destroy');
         $("#edit-user-form").submit(function (e) {
             e.preventDefault();
@@ -191,5 +208,13 @@
                 }
             })
         })
+        $("#edit-user-form select[multiple]").change(function (){
+            updatePortalBadge();
+            updateTabs();
+        })
+        updatePortalBadge();
+        updateTabs();
+
+
     </script>
 @endsection
