@@ -207,7 +207,7 @@
                                             </td>
 
                                             <td>
-                                                {!! __form::textbox_for_dt('row_children['. $key .'][date_of_birth]', $data->date_of_birth, '','','date') !!}
+                                                {!! __form::textbox_for_dt('row_children['. $key .'][date_of_birth]', $data->date_of_birth, $data->date_of_birth,'','date') !!}
                                             </td>
 
                                             <td>

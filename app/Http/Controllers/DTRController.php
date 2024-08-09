@@ -102,10 +102,10 @@ class DTRController extends  Controller
                 ->with(['lastRawDtrRecord'])
                 ->where('biometric_user_id','!=','')
                 ->where(function($q) use($access){
-                foreach ($access as $item){
-                    $q->orWhere('station','=',$item);
-                }
-            });
+                    foreach ($access as $item){
+                        $q->orWhere('station','=',$item);
+                    }
+                });
 
             if($request->has('is_active') && $request->is_active != null){
                 $query = $query->where('is_active','=',$request->is_active);
