@@ -16,9 +16,9 @@
                 user="{{ucwords(strtolower($data->firstname))}}"
                 data="{{$data->slug}}"
                 name="{{strtoupper($data->firstname)}} {{strtoupper($data->lastname)}}"
-                status="{{$data->is_activated ? 'inactive' : 'active'}}"
+                status="{{$data->is_activated ? 'active' : 'inactive'}}"
             >
-                {{$data->is_activated ? 'Activate' : 'Deactivate'}}
+                {{$data->is_activated ? 'Deactivate' : 'Activate'}}
             </li>
             <li class="dropdown-item service_records_btn reset_password_btn"
                 data="{{$data->slug}}"

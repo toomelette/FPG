@@ -6,7 +6,7 @@
     </x-adminkit.html.page-title>
 
     <div class="row mb-3">
-        <div class="col-3">
+        <div class="col-md-3">
             <x-adminkit.html.card>
                 <div class="row">
                     <div class="col mt-0">
@@ -26,7 +26,7 @@
                 </div>
             </x-adminkit.html.card>
         </div>
-        <div class="col-3">
+        <div class="col-md-3">
             <x-adminkit.html.card>
                 <div class="row">
                     <div class="col mt-0">
@@ -45,7 +45,7 @@
                 </div>
             </x-adminkit.html.card>
         </div>
-        <div class="col-3">
+        <div class="col-md-3">
             <x-adminkit.html.card>
                 <div class="row">
                     <div class="col mt-0">
@@ -63,7 +63,7 @@
                 </div>
             </x-adminkit.html.card>
         </div>
-        <div class="col-3">
+        <div class="col-md-3">
             <x-adminkit.html.card>
                 <div class="row">
                     <div class="col mt-0">
@@ -83,7 +83,7 @@
         </div>
     </div>
     <div class="row mb-3">
-        <div class="col-5">
+        <div class="col-md-5">
             <x-adminkit.html.card style="min-height: 460px">
                 <x-adminkit.html.alert type="info mb-1" body-class="p-1 text-center text-strong" :dismissible="false" :with-icon="false">
                     <span for="month_name">August 2024</span> Birthday Celebrants
@@ -96,12 +96,12 @@
                 </div>
 
                 <hr class="no-margin">
-                <div style="height: 355px;overflow-x: hidden" id="bday_celebrants_container">
+                <div style="height: 355px;overflow-x: hidden; overflow-y: auto" id="bday_celebrants_container">
                     {!! $bday_celebrants_view !!}
                 </div>
             </x-adminkit.html.card>
         </div>
-        <div class="col-7">
+        <div class="col-md-7">
             <x-adminkit.html.card style="min-height: 460px">
                 <x-adminkit.html.alert type="primary mb-1" body-class="p-1 text-center text-strong" :dismissible="false" :with-icon="false">
                     <span for="month_name_adj">{{Carbon::now()->format('F Y')}}</span> | Step Increment Adjustments

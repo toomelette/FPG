@@ -58,7 +58,37 @@ class UserController extends Controller{
         }
     }
 
-    public function index(UserFilterRequest $request){
+    public function index(Request $request){
+        if($request->has('draw')){
+            $users = User::query()
+                ->with(['employee']);
+            return DataTables::of($users)
+                ->editColumn('fullname',function($data){
+                    return view('_su.users.dtFullname')->with([
+                        'data' => $data,
+                    ]);
+                    return $data->employee->full['LFEMi'] ?? '';
+                })
+                ->addColumn('action',function($data){
+                    return view('_su.users.dtActions')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->editColumn('last_activity',function ($data){
+                    return view('_su.users.dtIsOnline')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->editColumn('is_activated',function($data){
+                    return view('_su.users.dtIsActivated')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->escapeColumns([])
+                ->setRowId('slug')
+                ->toJson();
+        }
+        return view('_su.users.index');
         $this->assignNames();
 
         $menus = Menu::with('submenu')->get();
@@ -292,6 +322,20 @@ class UserController extends Controller{
 
     public function store(UserFormRequest $request){
 
+        $employee = Employee::query()->findOrFail($request->employee);
+        $user = new User;
+        $user->slug = Str::random(16);
+        $user->user_id = rand(1000000,9999999);
+        $user->username = $request->username;
+        $user->employee_slug = $request->employee;
+        $user->employee_no = $employee->employee_no;
+        $user->password = Hash::make(Carbon::parse($employee->birthday)->format('mdy'));
+        if($user->save()){
+            return $user->only('slug');
+        }
+        abort(503,"Error creating user.");
+        dd($request->all());
+
         if($request->create_from_employee == true){
 
             $employee = $this->findEmployeeBySlug($request->slug);
@@ -372,6 +416,28 @@ class UserController extends Controller{
 
 
     public function edit($slug){
+        $user = User::query()
+            ->with([
+                'employee',
+                'userSubmenu'
+            ])
+            ->where('slug','=',$slug)
+            ->firstOrFail();
+
+        $menus = Menu::query()
+            ->with(['submenu'])
+            ->orderBy('name','asc')->get();
+        $user_submenus_arr = [];
+                foreach ($user->userSubmenu as $submenu){
+                    $user_submenus_arr[$submenu->submenu_id] = 1;
+                }
+
+        return view('_su.users.edit')->with([
+            'user' => $user,
+            'menus' => $menus,
+            'user_submenus_arr' => $user_submenus_arr,
+            'portals' => $menus->sortBy('portal')->groupBy('portal')
+        ]);
         $all_menus = Menu::query()
             ->with(['submenu'])
             ->orderBy('name','asc')->get();
@@ -383,12 +449,7 @@ class UserController extends Controller{
             $user_submenus_arr[$submenu->submenu_id] = 1;
         }
 
-        $by_category = [];
-        foreach ($all_menus as $menu){
-            $by_category[$menu->category][$menu->slug] = $menu;
-        }
 
-        ksort($by_category);
         $byPortalAndCategory = $all_menus->sortBy('portal')->groupBy('portal');
         $colors = [
             'ACCOUNTING' => 'bg-green',
@@ -420,8 +481,6 @@ class UserController extends Controller{
 
 
     public function update(UserEditFormRequest $request, $slug){
-
-
         return $this->user_service->update($request, $slug);
 
     }

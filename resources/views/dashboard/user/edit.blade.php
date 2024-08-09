@@ -349,5 +349,30 @@ Edit
                 }
             })
         })
+        $("#").submit(function (e) {
+            e.preventDefault();
+            let form = $(this);
+            let uri = '{{route("","slug")}}';
+            uri = uri.replace('slug',form.attr('data'));
+            loading_btn(form);
+            $.ajax({
+                url : uri,
+                data : form.serialize(),
+                type: 'PATCH',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    succeed(form,true,true);
+                     = res.slug;
+                    .draw(false);
+                    toast('info','','Updated');
+                },
+                error: function (res) {
+                    errored(form,res);
+                }
+            })
+
+        })
     </script>
 @endsection
