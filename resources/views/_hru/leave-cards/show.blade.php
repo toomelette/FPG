@@ -22,7 +22,7 @@
                             </div>
                             <h4 class="text-strong">
 {{--                                {{Helper::toNumber(($leaveCredits->where('leave_card',$code)->first()->credits ?? 0) - ($leaveApplications->where('charge_to',$code)->first()->deduct ?? 0),3,'-')}}--}}
-                                {{Helper::toNumber($leaveBalances[$code]['balance'],3,'-')}}
+                                {{Helper::toNumber($leaveBalances[$code]['balance'],3,'-')}} {{$code == 'CTO' ? 'hrs' : ''}}
                             </h4>
                             <div class="mb-0 visually-hidden">
                                 <span class="badge badge-success-light">+6.15%</span>

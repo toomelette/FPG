@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Imagick;
@@ -394,7 +395,12 @@ class DocumentController extends Controller{
     
 
 
-    public function destroy($slug){
+    public function destroy($slug, Request $request){
+
+        if(!Hash::check($request->password,Auth::user()->password)){
+            abort(503, 'Incorrect password.');
+        }
+
         $document = $this->findBySlug($slug);
         if($this->getStorage()->exists($document->path.$document->filename)){
             $this->getStorage()->move($document->path.$document->filename,$document->path.$document->filename.'.x');

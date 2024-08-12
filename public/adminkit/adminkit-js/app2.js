@@ -432,6 +432,57 @@ function delete_data(slug,url){
         }
     })
 }
+
+function delete_data_secure(slug,url){
+    var btn = $("button[data='"+slug+"']");
+    btn.parents('#'+slug).addClass('table-warning');
+    url = url.replace('slug',slug);
+    Swal.fire({
+        title: 'Permanently delete data?',
+        input: 'password',
+        html: 'Enter your password to proceed:',
+        inputAttributes: {
+            autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: '<i class="fa fa-trash"></i> Delete',
+        showLoaderOnConfirm: true,
+        confirmButtonColor: '#dc3545',
+        preConfirm: (password) => {
+            return $.ajax({
+                url : url,
+                type: 'DELETE',
+                data: { 'password':password},
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                success: function (res){
+                    if(res == 1){
+                        btn.parents('#'+slug).addClass('danger');
+                        btn.parents('#'+slug).addClass('animate__animated animate__zoomOutLeft');
+                        toast('success','Data deleted successfully','Success');
+                        setTimeout(function () {
+                            btn.parents('#'+slug).parent('tbody').parent('table').DataTable().draw(false);
+                        },500);
+                    }else{
+                        btn.parents('#'+slug).removeClass('table-warning');
+                        toast('danger','Error deleting data.','danger');
+                    }
+                }
+            })
+                .catch(error => {
+                    console.log(error);
+                    Swal.showValidationMessage(
+                        'Error : '+ error.responseJSON.message,
+                    );
+                    btn.parents('#'+slug).removeClass('table-warning');
+                })
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    })
+}
+
+
 const formatToCurrency = amount => {
     return "" + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
 };

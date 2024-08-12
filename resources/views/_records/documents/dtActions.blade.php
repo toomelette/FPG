@@ -6,7 +6,7 @@
     <button  data-bs-toggle="modal" data-bs-target="#edit-document-modal" for="linkToEdit" type="button" data="{{$data->slug}}" class="btn btn-outline-secondary btn-sm edit-document-btn" >
         <i class="fa fa-edit"></i>
     </button>
-    <button type="button" data="{{$data->slug}}" onclick="delete_data('{{$data->slug}}','{{route("dashboard.document.destroy","slug")}}')" class="btn btn-sm btn-danger delete_jo_employee_btn" data-toggle="tooltip">
+    <button type="button" data="{{$data->slug}}" onclick="delete_data_secure('{{$data->slug}}','{{route("dashboard.document.destroy","slug")}}')" class="btn btn-sm btn-danger delete_jo_employee_btn" data-toggle="tooltip">
         <i class="fa fa-trash"></i>
     </button>
 

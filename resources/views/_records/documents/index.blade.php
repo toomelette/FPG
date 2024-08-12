@@ -377,5 +377,7 @@
             $(this).get(0).contentWindow.print();
             swal.close();
         })
+
+
     </script>
 @endsection
