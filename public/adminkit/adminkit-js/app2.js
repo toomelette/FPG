@@ -479,7 +479,12 @@ function delete_data_secure(slug,url){
                 })
         },
         allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (!result.isConfirmed) {
+            btn.parents('#'+slug).removeClass('table-warning');
+        }
     })
+
 }
 
 
