@@ -304,21 +304,23 @@ class DTRService extends BaseService
         $lgarec = 'http://122.52.169.219:8001/api/dtr_data?last='.$last;
         $response = file_get_contents($lgarec);
         $newsData = collect(json_decode($response))->chunk(1000);
-
+        $except = [3011,3008];
         foreach ($newsData as $dtrs) {
             $arr = [];
             foreach ($dtrs as $dtr){
-                array_push($arr,[
-                    'lgarec_id' => $dtr->id,
-                    'uid' => $dtr->uid,
-                    'user' => $dtr->user,
-                    'state' => $dtr->state,
-                    'type' => $dtr->type,
-                    'timestamp' => $dtr->timestamp,
-                    'device' => $dtr->device,
-                    'created_at' => \Carbon\Carbon::now(),
-                    'location' => 'LGAREC API',
-                ]);
+                if(!in_array($dtr->user,$except)){
+                    array_push($arr,[
+                        'lgarec_id' => $dtr->id,
+                        'uid' => $dtr->uid,
+                        'user' => $dtr->user,
+                        'state' => $dtr->state,
+                        'type' => $dtr->type,
+                        'timestamp' => $dtr->timestamp,
+                        'device' => $dtr->device,
+                        'created_at' => \Carbon\Carbon::now(),
+                        'location' => 'LGAREC API',
+                    ]);
+                }
             }
             if(\App\Models\DTR::insert($arr)){
                 $count = $newsData->flatten()->count();
