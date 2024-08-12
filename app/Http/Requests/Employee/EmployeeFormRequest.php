@@ -102,7 +102,7 @@ class EmployeeFormRequest extends FormRequest{
                 'required',
                 'string',
                 'max:20',
-                Rule::unique('hr_employees','employee_no')->ignore($this->route('employee')->slug ,'slug'),
+                Rule::unique('hr_employees','employee_no')->ignore($this->route('employee')->slug ?? null ,'slug'),
             ],
             'position'=>'required|string|max:90',
 
@@ -114,7 +114,7 @@ class EmployeeFormRequest extends FormRequest{
                             return $q->where('is_active','=','ACTIVE')
                                 ->where('item_no','=',$value);
                         })
-                        ->where('slug','!=',$this->route('employee')->slug )
+                        ->where('slug','!=',$this->route('employee')->slug ?? null)
                         ->first();
                     if($employee){
                         if($value != null || $value != '') {
