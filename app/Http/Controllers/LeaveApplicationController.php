@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HRU\LeaveApplicationDates;
 use App\Models\LeaveApplication;
+use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
 use App\Swep\Helpers\Values;
 use App\Swep\Services\LeaveApplicationService;
@@ -128,10 +129,16 @@ class LeaveApplicationController extends Controller{
     public function store(LeaveApplicationFormRequest $request){
 
 
+        $charge_to = array_search ($request->leave_type, Arrays::leaveTypeCodes());
+        if(!$charge_to){
+            abort(503,'Charging code not found.');
+        }
+
         $la = new LeaveApplication;
         $la->slug = Str::random();
         $la->department = $request->department;
         $la->employee_slug = $request->employee_slug;
+        $la->charge_to = $charge_to;
         $la->lastname = $request->lastname;
         $la->firstname = $request->firstname;
         $la->middlename = $request->middlename;
@@ -160,16 +167,22 @@ class LeaveApplicationController extends Controller{
         $monthCheck = [];
         foreach ($inclusiveDatesArray as $key => $date){
             $monthCheck[Carbon::parse($date)->format('Y-m')] = null;
-            array_push($insert,[
+            $value = 1;
+            if($la->charge_to == 'CTO'){
+                $value = $value * 8;
+            }
+            $insert[] = [
                 'slug' => Str::random(),
                 'leave_application_slug' => $la->slug,
                 'date' =>  Carbon::parse($date)->format('Y-m-d'),
-            ]);
+                'deduct' => $value,
+            ];
         }
         $inclusiveDatesArray = collect($inclusiveDatesArray)
             ->map(function ($d){
                 return Carbon::parse($d)->format('Y-m-d');
             });
+
         //Check if employee has already filed a leave on dates selected
         $applications = LeaveApplication::query()
             ->where('employee_slug','=',$request->employee_slug)

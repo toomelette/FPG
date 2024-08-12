@@ -751,6 +751,7 @@ class Arrays
             'Special Leave Benefits for Women' => '(RA No. 9710 / CSC MC No. 25, s. 2010)',
             'Special Emergency (Calamity) Leave' => ' (CSC MC No. 2, s. 2012, as amended)',
             'Adoption Leave' => '(R.A. No. 8552) ',
+            'Compensatory Time-off' => 'Compensatory Time-off',
             'Others' => '',
         ];
     }
@@ -770,6 +771,7 @@ class Arrays
             'Special Leave Benefits for Women' => 'Special Leave Benefits for Women',
             'Special Emergency (Calamity) Leave' => 'Special Emergency (Calamity) Leave',
             'Adoption Leave' => 'Adoption Leave',
+            'Compensatory Time-off' => 'Compensatory Time-off',
             'Others' => 'Others',
         ];
     }
@@ -800,10 +802,11 @@ class Arrays
             'Rehabilitation Privilege' => null,
             'Special Leave Benefits for Women' => 1,
             'Special Emergency (Calamity) Leave' => null,
+            'Compensatory Time-off' => null,
             'Adoption Leave' => null,
             'Others' => [
-                'Monetization of Leave Credits' => null,
-                'Terminal Leave' => null,
+                'Monetization of Leave Credits' => 1,
+                'Terminal Leave' => 1,
             ],
         ];
     }
@@ -835,10 +838,12 @@ class Arrays
             'Special Leave Benefits for Women' => 'Special Leave Benefits for Women',
             'Special Emergency (Calamity) Leave' => "Special Emergency (Calamity) Leave",
             'Adoption Leave' => "Adoption Leave",
+            'Compensatory Time-off' => 'Compensatory Time-off',
             'Others' => [
                 'Monetization of Leave Credits' => "Monetization of Leave Credits",
                 'Terminal Leave' => "Terminal Leave",
             ],
+
         ];
     }
     public static function leaveTypeCodes()
@@ -856,7 +861,7 @@ class Arrays
             'SLBW' => 'Special Leave Benefits for Women',
             'CALAMITY' => 'Special Emergency (Calamity) Leave',
             'ADOPTION' => 'Adoption Leave',
-            'CTO' => 'Compensatory Time Off',
+            'CTO' => 'Compensatory Time-off',
         ];
     }
 

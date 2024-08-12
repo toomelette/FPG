@@ -35,7 +35,7 @@
                 <x-forms.select label="Type of leave to be availed" name="leave_type" cols="2" id="leave-type" :options="\App\Swep\Helpers\Arrays::leaveTypes()"/>
                 <x-forms.input label="Specify Leave Type" name="leave_type_specify" id="leave-type-specify" cols="2" container-class="visually-hidden"/>
                 <x-forms.select label="Details of leave" name="leave_details" id="leave-details" cols="2" :disabled="true"/>
-                <x-forms.input label="Specify " name="leave_specify" id="leave-specify" cols="2" :disabled="true"/>
+                <x-forms.input label="Specify " name="leave_specify" id="leave-specify" cols="2" :disabled="false"/>
             </div>
             <div class="row mb-2">
                 <div class="form-group  col-md-4 inclusive_dates">
