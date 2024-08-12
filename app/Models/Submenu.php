@@ -51,6 +51,11 @@ class Submenu extends Model{
     	return $this->belongsTo('App\Models\Menu','menu_id','menu_id');
    	}
 
+   public function usersWithAccess()
+   {
+        return $this->hasMany(UserSubmenu::class,'submenu_id','submenu_id');
+   }
+
 
 
 

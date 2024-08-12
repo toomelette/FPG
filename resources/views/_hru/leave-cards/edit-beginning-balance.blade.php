@@ -1,8 +1,15 @@
-@php($rand = \Illuminate\Support\Str::random(10))
-@extends('layouts.modal-content',['form_id' => 'edit_beg_bal_form_'.$rand,'slug' => $employee->slug])
+@php
+    $rand = Str::random();
+    /** @var \App\Models\Employee $employee **/
+    /** @var \App\Models\HRU\LeaveBeginningBalance $begBal **/
+@endphp
+@extends('adminkit.modal',[
+    'id' => 'edit-leave-card-form-'.$rand,
+    'slug' => $employee->slug,
+])
 
 @section('modal-header')
-{{$employee->full_name}} | <small>Beginning Balance</small>
+    {{$employee->full['LFEMi']}} | <small>Beginning Balance</small>
 @endsection
 
 @section('modal-body')
@@ -14,16 +21,15 @@
 @endsection
 
 @section('modal-footer')
-    <button type="submit" class="btn btn-primary btn-sm" ><i class="fa fa-check"></i> Save</button>
+    <button class="btn btn-sm btn-primary" type="submit"><i class="fas fa-check"></i> Save</button>
 @endsection
 
 @section('scripts')
     <script type="text/javascript">
-        $("#edit_beg_bal_form_{{$rand}}").submit(function (e) {
+        $("#edit-leave-card-form-{{$rand}}").submit(function (e) {
             e.preventDefault();
             let form = $(this);
-            let uri = '{{route("dashboard.leave_card.update","slug")}}';
-            uri = uri.replace('slug',form.attr('data'));
+            let uri = '{{route("dashboard.leave_card.beginning_balance",$employee->slug)}}';
             loading_btn(form);
             $.ajax({
                 url : uri,
@@ -35,15 +41,14 @@
                 success: function (res) {
                     succeed(form,true,true);
                     active = res.slug;
-                    employees_tbl.draw(false);
-                    toast('info','Beginning balance successfully updated.','Updated');
+                    leaveCardsTbl.draw(false);
+                    toast('info','','Updated');
                 },
                 error: function (res) {
                     errored(form,res);
                 }
             })
-
+        
         })
     </script>
 @endsection
-

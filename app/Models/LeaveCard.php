@@ -18,6 +18,8 @@ class LeaveCard extends Model{
     protected $dates = ['date', 'date_from', 'date_to', 'created_at', 'updated_at'];
 
 	public $timestamps = false;
+    protected $primaryKey = 'slug';
+    public $incrementing = false;
 
     protected static $logName = 'leave card';
     protected static $logAttributes = ['*'];

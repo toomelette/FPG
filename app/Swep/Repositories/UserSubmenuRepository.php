@@ -66,14 +66,14 @@ class UserSubmenuRepository extends BaseRepository implements UserSubmenuInterfa
         }else{
             $submenu_id = Submenu::where('route',$route_name)->first();
             if(empty($submenu_id)){
-                abort(403,'Route does not exist. ['.$route_name.']');
+                abort(403,'Route does not exist in the database. ['.$route_name.']');
             }
             $submenu_id = $submenu_id->submenu_id;
             $usm = $this->user_submenu->where('submenu_id', $submenu_id)
                 ->where('user_id', $user_id)
                 ->first();
             if(empty($usm)){
-                abort(510,'You do not have enough privileges to perform this action.');
+                abort(403,'This action is unauthorized.');
             }
             return $usm;
         }

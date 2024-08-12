@@ -104,9 +104,22 @@ class Arrays
     public static function portals(){
         return [
             'ACCOUNTING' => 'ACCOUNTING',
+            'BUDGET' => 'BUDGET',
             'DIGIFILE' => 'DIGIFILE',
             'PPU' => 'PPU',
             'MIS' => 'MIS',
+        ];
+    }
+
+    public static function knownSubmenus(){
+        return [
+            'create' => 'Create',
+            'store' => 'Store',
+            'edit' => 'Edit',
+            'update' => 'Update',
+            'show' => 'Show',
+            'destroy' => 'Destroy',
+            'print' => 'Print',
         ];
     }
     public static function countries(){
@@ -826,6 +839,24 @@ class Arrays
                 'Monetization of Leave Credits' => "Monetization of Leave Credits",
                 'Terminal Leave' => "Terminal Leave",
             ],
+        ];
+    }
+    public static function leaveTypeCodes()
+    {
+        return [
+            'VL' => 'Vacation Leave',
+            'SL' => 'Sick Leave',
+            'MATERNITY' => 'Maternity Leave',
+            'PATERNITY' => 'Paternity Leave',
+            'SPECIAL' => 'Special Privilege Leave',
+            'SOLO' => 'Solo Parent Leave',
+            'STUDY' => 'Study Leave',
+            'VAWC10' => '10-Day VAWC Leave',
+            'REHAB' => 'Rehabilitation Privilege',
+            'SLBW' => 'Special Leave Benefits for Women',
+            'CALAMITY' => 'Special Emergency (Calamity) Leave',
+            'ADOPTION' => 'Adoption Leave',
+            'CTO' => 'Compensatory Time Off',
         ];
     }
 

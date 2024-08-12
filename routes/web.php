@@ -152,7 +152,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     /** MENU **/
     Route::get('/submenu/fetch','SubmenuController@fetch')->name('submenu.fetch');
-	Route::resource('submenu','SubmenuController');
+    Route::get('submenu/{slug}',[\App\Http\Controllers\SubmenuController::class,'index'])->name('submenu.index');
+    Route::get('submenu/{slug}/show',[\App\Http\Controllers\SubmenuController::class,'show'])->name('submenu.show');
+    Route::post('submenu/{slug}',[\App\Http\Controllers\SubmenuController::class,'store'])->name('submenu.store');
+	Route::resource('submenu','SubmenuController')->except(['index','store','show']);
 
 	/** SIGNATORIES **/
 	Route::resource('signatory', 'SignatoryController');
@@ -328,11 +331,15 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 	Route::get('/leave_card/report', 'LeaveCardController@report')->name('leave_card.report');
 
     Route::get('/leave_card/{employeeSlug}/{leaveType}/view_per_leave_type', 'LeaveCardController@viewPerLeaveType')->name('leave_card.view_per_leave_type');
-    Route::post('/leave_card/{employeeSlug}/{leaveType}/view_per_leave_type', 'LeaveCardController@storeLeaveCredit')->name('leave_card.view_per_leave_type');
+//    Route::post('/leave_card/{employeeSlug}/{leaveType}/view_per_leave_type', 'LeaveCardController@storeLeaveCredit')->name('leave_card.view_per_leave_type');
 
     Route::get('/leave_card/report_generate', 'LeaveCardController@reportGenerate')->name('leave_card.report_generate');
     Route::get('/leave_card/{slug}/print', 'LeaveCardController@print')->name('leave_card.print');
-    Route::resource('leave_card', 'LeaveCardController');
+
+    Route::post('/leave_card/{employeeSlug}/{leaveType}/view_per_leave_type', [\App\Http\Controllers\LeaveCardController::class,'store'])->name('leave_card.store');
+    Route::get('/leave_card/{slug}/beginning_balance', [\App\Http\Controllers\LeaveCardController::class,'editBeginningBalance'])->name('leave_card.beginning_balance');
+    Route::match(['patch','put'],'/leave_card/{slug}/beginning_balance', [\App\Http\Controllers\LeaveCardController::class,'updateBeginningBalance'])->name('leave_card.beginning_balance');
+    Route::resource('leave_card', 'LeaveCardController')->except(['store']);
 
 
 	/** Applicant **/

@@ -16,18 +16,53 @@ use Yajra\DataTables\EloquentDataTable;
 
 class SubmenuController extends Controller
 {
-    public function index(Request $request){
-        $menu = Menu::where('slug',$request->menu_slug)->first();
+    public function index($menuSlug,Request $request){
 
-
-        return view('dashboard.submenu.index')->with([
+        $menu = Menu::query()
+            ->where('slug',$menuSlug)
+            ->firstOrFail();
+        if($request->has('draw')){
+            $submenus = Submenu::query()
+                ->where('menu_id','=',$menu->menu_id)
+                ->withCount(['usersWithAccess']);
+            return DataTables::of($submenus)
+                ->addColumn('action',function($data){
+                    return view('_su.submenus.dtActions')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->editColumn('is_nav',function($data){
+                    return $data->is_nav == 1 ? '<i class="fa fa-check"></i>' : '';
+                })
+                ->editColumn('users_with_access_count',function($data){
+                    return $data->public == 1 ? 'All authenticated' : $data->users_with_access_count;
+                })
+                ->escapeColumns([])
+                ->setRowId('slug')
+                ->toJson();
+        }
+        return view('_su.submenus.index')->with([
             'menu' => $menu
         ]);
-
-
     }
 
-    public function store(SubmenuFormRequest $request){
+    public function show($slug)
+    {
+        $submenu = Submenu::query()
+            ->with([
+                'usersWithAccess.user.employee.plantilla'
+            ])
+            ->where('slug','=',$slug)
+            ->firstOrFail();
+        return view('_su.submenus.show')->with([
+            'submenu' => $submenu
+        ]);
+    }
+
+    public function store($menuSlug,SubmenuFormRequest $request){
+        $menu = Menu::query()
+            ->where('slug',$menuSlug)
+            ->firstOrFail();
 
         $submenu = new Submenu;
         $submenu->slug = Str::random(15);
@@ -35,29 +70,32 @@ class SubmenuController extends Controller
         $submenu->name = $request->name;
         $submenu->route = $request->route;
         $submenu->nav_name = $request->nav_name;
-        $submenu->is_nav = $request->is_nav;
-        $submenu->menu_id = $request->menu_id;
-        $submenu->save();
-
-        return $submenu->only('slug');
+        $submenu->is_nav = $request->is_nav ?? null;
+        $submenu->menu_id = $menu->menu_id;
+        if($submenu->save()){
+            return $submenu->only('slug');
+        }
+        abort(503,'Error saving data.');
     }
 
     public function edit($slug){
-        $submenu = Submenu::where('slug',$slug)->first();
+        $submenu = Submenu::where('slug','=',$slug)->firstOrFail();
 
-        return view('dashboard.submenu.edit')->with([
+        return view('_su.submenus.edit')->with([
             'submenu' => $submenu
         ]);
     }
 
     public function update($slug, SubmenuFormRequestEdit $request){
-        $submenu = Submenu::where('slug',$slug)->first();
+        $submenu = Submenu::where('slug',$slug)->firstOrFail();
         $submenu->name = $request->name;
         $submenu->nav_name = $request->nav_name;
         $submenu->route = $request->route;
         $submenu->is_nav = $request->is_nav;
-        $submenu->update();
-        return $submenu->only('slug');
+        if($submenu->update()){
+            return $submenu->only('slug');
+        }
+        abort(503,'Error updating data.');
     }
 
     public function fetch(Request $request){
@@ -91,10 +129,10 @@ class SubmenuController extends Controller
     }
 
     public function destroy($slug){
-        $submenu = Submenu::where('slug',$slug)->first();
+        $submenu = Submenu::where('slug',$slug)->firstOrFail();
         if($submenu->delete()){
             return 1;
         }
-
+        abort(503,'Error deleting data.');
     }
 }

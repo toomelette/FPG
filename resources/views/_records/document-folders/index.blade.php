@@ -48,8 +48,8 @@
         </div>
         <div class="row mb-2">
             <x-forms.checkbox name="is_permanent" cols="12" label="Temporary/Permanent" type="radio" class="temp_perm" each-class="6" :options="[
-                    '0' => 'Temporary',
-                    '1' => 'Permanent',
+                    '0' => 'No',
+                    '1' => 'Yes',
                 ]"
             />
         </div>

@@ -6,7 +6,11 @@ use App\Http\Requests\LeaveCard\LeaveCardBegBalFormRequest;
 use App\Models\Employee;
 use App\Models\HRU\LeaveApplicationDates;
 use App\Models\HRU\LeaveBeginningBalance;
+use App\Models\LeaveApplication;
 use App\Models\LeaveCard;
+use App\Swep\Classes\LeaveTypes;
+use App\Swep\Helpers\Arrays;
+use App\Swep\Helpers\Helper;
 use App\Swep\Services\LeaveCardService;
 use App\Http\Requests\LeaveCard\LeaveCardFormRequest;
 use App\Http\Requests\LeaveCard\LeaveCardFilterRequest;
@@ -41,14 +45,18 @@ class LeaveCardController extends Controller{
                     return $data->full_name;
                 })
                 ->addColumn('action',function ($data){
-                    return view('dashboard.leave_card.dtActions')->with([
+                    return view('_hru.leave-cards.dtActions')->with([
                         'data' => $data,
                     ]);
                 })
                 ->addColumn('vlRemaining',function ($data){
+                    return '';
+                    return $data->leave_balances['VL']['balance'] ?? '';
                     return $data->leaveBegBal->vl ?? '';
                 })
                 ->addColumn('slRemaining',function ($data){
+                    return '';
+                    return $data->leave_balances['SL']['balance'] ?? '';
                     return $data->leaveBegBal->sl ?? '';
                 })
                 ->addColumn('details',function ($data){
@@ -58,8 +66,7 @@ class LeaveCardController extends Controller{
                 ->escapeColumns([])
                 ->toJson();
         }
-        return view('dashboard.leave_card.index');
-        return $this->leave_card->fetch($request);
+        return view('_hru.leave-cards.index');
     }
 
 
@@ -74,19 +81,37 @@ class LeaveCardController extends Controller{
 
 
 
-    public function store(LeaveCardFormRequest $request){
 
-        return $this->leave_card->store($request);
-        
-    }
     
 
 
 
-    public function show($slug){
+    public function show($slug,LeaveTypes $leaveTypes){
+//        $leaveApplications = LeaveApplicationDates::query()
+//            ->selectRaw('charge_to, sum(deduct) as deduct')
+//            ->whereHas('leaveApplication',function ($q) use ($slug){
+//                $q->where('employee_slug','=',$slug);
+//            })
+//            ->leftJoin(
+//                LeaveApplication::getModel()->getTable(),
+//                LeaveApplication::getModel()->getTable().'.slug',
+//                '=',
+//                LeaveApplicationDates::getModel()->getTable().'.leave_application_slug')
+//            ->groupBy('charge_to')
+//            ->get();
+//
+//        $leaveCredits = LeaveCard::query()
+//            ->selectRaw('leave_card, sum(credits) as credits')
+//            ->where('employee_slug','=',$slug)
+//            ->groupBy('leave_card')
+//            ->get();
         $employee = Employee::query()->findOrFail($slug);
-        return  view('dashboard.leave_card.show')->with([
+        $leaveBalances = $employee->leave_balances;
+
+        return  view('_hru.leave-cards.show')->with([
             'employee' => $employee,
+            'leaveTypeCodes' => Arrays::leaveTypeCodes(),
+            'leaveBalances' => $leaveBalances,
         ]);
     }
 
@@ -95,17 +120,32 @@ class LeaveCardController extends Controller{
     public function viewPerLeaveType($employeeSlug,$leaveType, Request $request)
     {
         if($request->ajax() && $request->has('draw')){
-            if($request->for == 'leaveCredits'){
+            if($request->has('leaveCredits')){
                 return $this->leaveCreditsTable($employeeSlug,$leaveType,$request);
             }
-            if($request->for == 'leaveApplications'){
+            if($request->has('leaveApplications')){
                 return  $this->leaveApplicationsTable($employeeSlug,$leaveType,$request);
             }
         }
+
         $employee = Employee::query()->findOrFail($employeeSlug);
-        return  view('dashboard.leave_card.view_per_leave_type')->with([
+
+        $applications = LeaveApplicationDates::query()
+            ->selectRaw("date,null as 'add',deduct as 'less'")
+            ->whereHas('leaveApplication',function ($q) use ($employeeSlug,$leaveType){
+                $q->where('employee_slug','=',$employeeSlug)
+                ->where('charge_to','=',$leaveType);
+            });
+        $credits = LeaveCard::query()
+                ->selectRaw("date,credits as 'add',null as 'less'")
+            ->where('employee_slug','=',$employeeSlug)
+            ->where('leave_card','=',$leaveType);
+        $balances  = $applications->union($credits)->orderBy('date','asc')->get();
+
+        return  view('_hru.leave-cards.view-per-leave-type')->with([
             'employee' => $employee,
             'leaveType' => $leaveType,
+            'balances' => $balances,
         ]);
     }
 
@@ -116,7 +156,9 @@ class LeaveCardController extends Controller{
             ->where('leave_card','=',strtoupper($leaveType));
         return \DataTables::of($leaveCredits)
             ->addColumn('action',function($data){
-
+                return view('_hru.leave-cards.view-per-leave-type-dtActions')->with([
+                    'data' => $data,
+                ]);
             })
             ->escapeColumns([])
             ->setRowId('slug')
@@ -125,12 +167,19 @@ class LeaveCardController extends Controller{
     public function leaveApplicationsTable($employeeSlug,$leaveType,Request $request)
     {
         $leaveApplications = LeaveApplicationDates::query()
-            ->whereHas('leaveApplication',function (Builder $q) use ($employeeSlug){
-                $q->where('employee_slug','=',$employeeSlug);
+            ->with([
+                'leaveApplication'
+            ])
+            ->whereHas('leaveApplication',function (Builder $q) use ($employeeSlug,$leaveType){
+                $q->where('employee_slug','=',$employeeSlug)
+                ->where('charge_to','=',$leaveType);
             });
         return \DataTables::of($leaveApplications)
-            ->addColumn('action',function($data){
-
+            ->addColumn('leaveApplication',function ($data){
+                return $data->leaveApplication->leave_details;
+            })
+            ->editColumn('date',function($data){
+                return '<a href="'.route('dashboard.leave_application.index').'?find='.$data->slug.'" target="_blank" class="text-strong">'.Helper::dateFormat($data->date).'</a>';
             })
             ->escapeColumns([])
             ->setRowId('slug')
@@ -151,17 +200,50 @@ class LeaveCardController extends Controller{
         abort(503,'Error saving data.');
     }
 
+    public function store($employeeSlug,$leaveType,LeaveCardFormRequest $request){
+        $leaveCredit = new LeaveCard;
+        $leaveCredit->slug = \Str::random();
+        $leaveCredit->employee_slug = $employeeSlug;
+        $leaveCredit->date = $request->date.'-01';
+        $leaveCredit->leave_card = strtoupper($leaveType);
+        $leaveCredit->credits = $request->credits;
+        $leaveCredit->remarks = $request->remarks;
+        if($leaveCredit->save()){
+            return $leaveCredit->only('slug');
+        }
+        abort(503,'Error saving data.');
+    }
 
+    public function edit($slug)
+    {
+        $leaveCard = LeaveCard::query()->findOrFail($slug);
+        return view('_hru.leave-cards.edit')->with([
+            'leaveCard' => $leaveCard,
+        ]);
+    }
+
+    public function update($slug,LeaveCardFormRequest $request)
+    {
+        $leaveCard = LeaveCard::query()->findOrFail($slug);
+        $leaveCard->date = $request->date.'-01';
+        $leaveCard->credits = $request->credits;
+        $leaveCard->remarks = $request->remarks;
+        if($leaveCard->update()){
+            return $leaveCard->only('slug');
+        }
+        abort(503,'Error saving data.');
+    }
 
 
     //EDITS THE BEGINNING BALANCES
-    public function edit($employeeSlug){
+    public function editBeginningBalance($employeeSlug){
+
         $employee = Employee::query()->find($employeeSlug);
         $employee ?? abort(404,'Employee not found.');
         $leaveBegBal = LeaveBeginningBalance::query()
             ->where('employee_slug','=',$employeeSlug)
             ->first();
-        return view('dashboard.leave_card.edit')->with([
+        return view('_hru.leave-cards.edit-beginning-balance')->with([
             'employee' => $employee,
             'begBal' => $leaveBegBal,
         ]);
@@ -171,11 +253,11 @@ class LeaveCardController extends Controller{
 
 
     //UPDATES THE BEGINNING BALANCES
-    public function update(LeaveCardBegBalFormRequest $request, $employeeSlug){
+    public function updateBeginningBalance(LeaveCardBegBalFormRequest $request, $employeeSlug){
         $employee = Employee::query()->find($employeeSlug);
         $leaveBegBal = LeaveBeginningBalance::query()->where('employee_slug','=',$employee)->first();
         $employee ?? abort(404,'Employee not found.');
-        $uoc = LeaveBeginningBalance::query()->updateOrCreate(
+        $begBalInsert = LeaveBeginningBalance::query()->updateOrCreate(
             ['employee_slug' => $employeeSlug],
             [
                 'slug' => \Str::random(),
@@ -184,7 +266,7 @@ class LeaveCardController extends Controller{
                 'vl' => $request->vl,
             ]
         );
-        if($uoc){
+        if($begBalInsert){
             return $employee->only('slug');
         }
         abort(503,'Error updating beginning balance.');
@@ -195,9 +277,12 @@ class LeaveCardController extends Controller{
 
 
     public function destroy($slug){
-        
-        return $this->leave_card->destroy($slug);
 
+        $leaveCard = LeaveCard::query()->findOrFail($slug);
+        if($leaveCard->delete()){
+            return 1;
+        }
+        abort(503,'Error deleting data.');
     }
 
     

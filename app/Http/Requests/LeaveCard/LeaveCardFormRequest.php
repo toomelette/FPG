@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\LeaveCard;
 
+use App\Models\HRU\LeaveApplicationDates;
+use App\Models\LeaveCard;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class LeaveCardFormRequest extends FormRequest{
     
@@ -21,22 +24,31 @@ class LeaveCardFormRequest extends FormRequest{
 
 
     public function rules(){
-
-        return [
-            
-            'doc_type' => 'sometimes|required|string|max:20',
-            'employee_no' => 'sometimes|required|string|max:20',
-            'leave_type' => 'sometimes|required|string|max:20',
-            'month' => 'sometimes|required|string|max:20',
-            'year' => 'sometimes|required|integer|max:3000|min:2000',
-            'date' => 'sometimes|required|date_format:"m/d/Y"',
-            'date_from' => 'sometimes|required|date_format:"m/d/Y"',
-            'date_to' => 'sometimes|required|date_format:"m/d/Y"',
-            'days' => 'sometimes|integer|max:360',
-            'hrs' => 'sometimes|integer|max:90',
-            'mins' => 'sometimes|integer|max:60',
-
+        $rules = [
+            'date' => 'required|date_format:Y-m-d',
+            'credits' => ['required','numeric'],
         ];
+        if($this->route('leaveType')){
+            $max = 40;
+            $employeeSlug = $this->route('employeeSlug');
+            $leaveType = $this->route('leaveType');
+            $month = Str::of($this->get('date'))->beforeLast('-');
+            $credits = LeaveCard::query()
+                ->where('leave_card','=',$leaveType)
+                ->where('employee_slug','=',$employeeSlug)
+                ->where('date','like',$month.'%')
+                ->sum('credits');
+            $rules['credits'] = [
+                'required',
+                'numeric',
+                function ($attr,$value,$fail) use($credits,$max) {
+                if(($credits + $this->get('credits')) > $max)
+                    $fail('Stored CTO credits including this will exceed the '.$max.' hours limit per month. Max allowed: '.$max-$credits);
+                }
+            ];
+
+        }
+        return $rules;
     
     }
 

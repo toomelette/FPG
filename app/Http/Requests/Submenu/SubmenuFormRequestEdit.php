@@ -22,7 +22,7 @@ class SubmenuFormRequestEdit extends FormRequest{
             'name' => 'required|string|max:45',
             'route' => 'nullable|string|max:45',
             'nav_name' => 'nullable|string|max:255',
-            'is_nav' => 'required|int|max:3',
+            'is_nav' => 'nullable|int|max:3',
         ];
 
     }

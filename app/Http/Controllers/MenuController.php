@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Menu;
+use App\Models\Submenu;
 use App\Swep\Helpers\__static;
+use App\Swep\Helpers\Arrays;
 use App\Swep\Services\MenuService;
 use App\Http\Requests\Menu\MenuFormRequest;
 use App\Http\Requests\Menu\MenuFilterRequest;
@@ -30,6 +32,25 @@ class MenuController extends Controller{
 
     
     public function index(MenuFilterRequest $request){
+        if($request->has('draw')){
+            $menus = Menu::query()
+                ->with(['submenu']);
+            return DataTables::of($menus)
+                ->addColumn('action',function($data){
+                    return view('_su.menus.dtActions')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->addColumn('submenus',function($data){
+                    return view('_su.menus.dtSubmenus')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->escapeColumns([])
+                ->setRowId('slug')
+                ->toJson();
+        }
+        return view('_su.menus.index');
         $menus = Menu::with('submenu')->get();
         if(request()->ajax()){
             $dt = DataTables::of($menus)
@@ -104,7 +125,7 @@ class MenuController extends Controller{
     
 
     public function create(){
-        
+        return redirect(route('dashboard.menu.index').'?initiator=create');
         return view('dashboard.menu.create');
 
     }
@@ -112,28 +133,49 @@ class MenuController extends Controller{
    
 
     public function store(MenuFormRequest $request){
+        $trimmedRouteName = Str::of($request->route)->rtrim('.');
+
         $menu = new Menu;
         $menu->slug = Str::random(15);
         $menu->menu_id = strtoupper(Str::random(6));
         $menu->name = $request->name;
-        $menu->route = $request->route;
+        $menu->route = $trimmedRouteName;
         $menu->category = $request->category;
         $menu->icon = $request->icon;
-        $menu->is_dropdown = $request->is_dropdown;
-        $menu->is_menu = $request->is_menu;
+        $menu->is_dropdown = $request->is_dropdown ?? null;
+        $menu->is_menu = $request->is_menu ?? null;
         $menu->portal = $request->portal;
-        $menu->save();
-        return $menu->only('slug');
-        return $this->menu->store($request);
 
+        $submenusToInsert = [];
+        $knownSubmenus = Arrays::knownSubmenus();
+        if(count($request->submenus) > 0){
+            foreach($request->submenus as $submenu){
+                $submenusToInsert[] = [
+                    'slug' => Str::random(),
+                    'submenu_id' => strtoupper(Str::random(6)),
+                    'menu_id' => $menu->menu_id,
+                    'name' => $menu->name.' '.($knownSubmenus[$submenu] ?? '') ,
+                    'route' => $trimmedRouteName.'.'.$submenu,
+                ];
+            }
+        }
+        if($menu->save()){
+            if(count($submenusToInsert) > 0){
+                Submenu::query()->insert($submenusToInsert);
+            }
+            return $menu->only('slug');
+        }
+        abort(503,'Error saving data.');
     }
  
 
 
 
     public function edit($slug){
-        $menu = Menu::with('submenu')->where('slug',$slug)->first();
-        return view('dashboard.menu.edit')->with([
+        $menu = Menu::query()
+            ->where('slug','=',$slug)
+            ->firstOrFail();
+        return view('_su.menus.edit')->with([
             'menu' => $menu,
         ]);
         return $this->menu->edit($slug);
@@ -163,9 +205,11 @@ class MenuController extends Controller{
 
     public function destroy($slug){
         $menu = Menu::query()->where('slug',$slug)->first();
-        $menu->submenu()->delete();
-        $menu->delete();
-        return 1;
+        if($menu->delete()){
+            $menu->submenu()->delete();
+            return 1;
+        }
+        abort(503,'Error deleting data.');
     }
 
 

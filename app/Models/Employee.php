@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\HRU\HrOtherActions;
+use App\Models\HRU\LeaveApplicationDates;
 use App\Models\HRU\LeaveBeginningBalance;
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
@@ -237,6 +238,44 @@ class Employee extends Model{
                     return '';
                 }
 
+            },
+        );
+    }
+
+
+    protected function leaveBalances(): Attribute
+    {
+        return  new Attribute(
+            get: function (){
+                $slug = $this->slug;
+                $leaveApplications = LeaveApplicationDates::query()
+                    ->selectRaw('charge_to, sum(deduct) as deduct')
+                    ->whereHas('leaveApplication',function ($q) use ($slug){
+                        $q->where('employee_slug','=',$slug);
+                    })
+                    ->leftJoin(
+                        LeaveApplication::getModel()->getTable(),
+                        LeaveApplication::getModel()->getTable().'.slug',
+                        '=',
+                        LeaveApplicationDates::getModel()->getTable().'.leave_application_slug')
+                    ->groupBy('charge_to')
+                    ->get();
+
+                $leaveCredits = LeaveCard::query()
+                    ->selectRaw('leave_card, sum(credits) as credits')
+                    ->where('employee_slug','=',$slug)
+                    ->groupBy('leave_card')
+                    ->get();
+                $codes = Arrays::leaveTypeCodes();
+                $leaveBalances = [];
+                foreach ($codes as $code => $name){
+                    $leaveBalances[$code] = [
+                        'credits' => $leaveCredits->where('leave_card',$code)->first()->credits ?? 0,
+                        'applications' => $leaveApplications->where('charge_to',$code)->first()->deduct ?? 0,
+                    ];
+                    $leaveBalances[$code]['balance'] =  $leaveBalances[$code]['credits'] - $leaveBalances[$code]['applications'];
+                }
+                return $leaveBalances;
             },
         );
     }
