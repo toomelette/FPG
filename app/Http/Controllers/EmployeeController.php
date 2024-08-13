@@ -889,6 +889,10 @@ class EmployeeController extends Controller{
                 'name' => 'Email address',
                 'checked' => 0,
             ],
+            'cell_no' => [
+                'name' => 'Cell No.',
+                'checked' => 0,
+            ],
             'locations' => [
                 'name' => 'Location',
                 'checked' => 1,
