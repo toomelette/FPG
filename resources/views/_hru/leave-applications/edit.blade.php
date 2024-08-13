@@ -17,24 +17,24 @@
                 Applicant details
             </x-adminkit.html.alert>
             <div class="row mb-2">
-                <x-forms.select label="Department" name="department" cols="2" :options="\App\Swep\Helpers\Arrays::departmentList()" :value="$la ?? null"/>
-                <x-forms.select label="Employee" name="employee_slug" cols="2" id="employee_slug" :value="Auth::user()->employee->slug ?? null"/>
-                <x-forms.input label="Last Name" name="lastname" cols="2" :value="$la ?? null"/>
-                <x-forms.input label="First Name" name="firstname" cols="2" :value="$la ?? null"/>
-                <x-forms.input label="Middle Name" name="middlename" cols="1" :value="$la ?? null"/>
-                <x-forms.input label="Position" name="position" cols="2" :value="$la ?? null"/>
-                <x-forms.input label="Salary" name="salary" cols="1" class="autonum text-right" :value="$la ?? null"/>
+                <x-forms.select label="Department" name="department" cols="lg-2 col-md-6" :options="\App\Swep\Helpers\Arrays::departmentList()" :value="$la ?? null"/>
+                <x-forms.select label="Employee" name="employee_slug" cols="lg-2 col-md-6" id="employee_slug" :value="$la ?? null"/>
+                <x-forms.input label="Last Name" name="lastname" cols="lg-2 col-md-3" :value="$la ?? null"/>
+                <x-forms.input label="First Name" name="firstname" cols="lg-2 col-md-3" :value="$la ?? null"/>
+                <x-forms.input label="Middle Name" name="middlename" cols="lg-1 col-md-2" :value="$la ?? null"/>
+                <x-forms.input label="Position" name="position" cols="lg-2 col-md-4" :value="$la ?? null"/>
+                <x-forms.input label="Salary" name="salary" cols="lg-1 col-md-3" class="autonum text-right" :value="$la ?? null"/>
             </div>
 
             <x-adminkit.html.alert type="info mt-5" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
                 Leave application details
             </x-adminkit.html.alert>
             <div class="row mb-2">
-                <x-forms.input label="Date of filing" name="date_of_filing" cols="2" type="date" :value="$la ?? null"/>
-                <x-forms.select label="Type of leave to be availed" name="leave_type" cols="2" id="leave-type" :options="\App\Swep\Helpers\Arrays::leaveTypes()" :value="$la ?? null"/>
-                <x-forms.input label="Specify Leave Type" name="leave_type_specify" id="leave-type-specify" cols="2" :value="$la ?? null"/>
-                <x-forms.select label="Details of leave" name="leave_details" id="leave-details" cols="2" :disabled="true" :options="\App\Swep\Helpers\Arrays::leaveTypesTree()[$la->leave_type] ?? []" :value="$la ?? null"/>
-                <x-forms.input label="Specify " name="leave_specify" id="leave-specify" cols="2" :disabled="false" :value="$la ?? null"/>
+                <x-forms.input label="Date of filing" name="date_of_filing" cols="lg-3 col-md-4" type="date" :value="$la ?? null"/>
+                <x-forms.select label="Type of leave to be availed" name="leave_type" cols="lg-3 col-md-4" id="leave-type" :options="\App\Swep\Helpers\Arrays::leaveTypes()" :value="$la ?? null"/>
+                <x-forms.input label="Specify Leave Type" name="leave_type_specify" id="leave-type-specify" cols="lg-3 col-md-4" :value="$la ?? null"/>
+                <x-forms.select label="Details of leave" name="leave_details" id="leave-details" cols="lg-3 col-md-4" :disabled="true" :options="\App\Swep\Helpers\Arrays::leaveTypesTree()[$la->leave_type] ?? []" :value="$la ?? null"/>
+                <x-forms.input label="Specify " name="leave_specify" id="leave-specify" cols="lg-3 col-md-4" :disabled="false" :value="$la ?? null"/>
             </div>
 
             <div class="row mb-2">
@@ -49,8 +49,8 @@
                     <input type="text" id="datepicker" name="inclusive_dates" class="form-control" value="{{$dateString}}" autocomplete="off">
                 </div>
 
-                <x-forms.input label="No. of Days applied for" name="no_of_days"  cols="2" id="no-of-days" :value="$la ?? null"/>
-                <x-forms.select label="Commutation" name="commutation" id="leave-specify" cols="2" id="no-of-days" :options="[
+                <x-forms.input label="No. of Days applied for" name="no_of_days"  cols="lg-2 col-md-4" id="no-of-days" :value="$la ?? null"/>
+                <x-forms.select label="Commutation" name="commutation" id="leave-specify" cols="lg-2 col-md-4" id="no-of-days" :options="[
                         'Not requested' => 'Not requested',
                         'Requested' => 'Requested',
                     ]" :value="$la ?? null"/>
@@ -61,10 +61,10 @@
             </x-adminkit.html.alert>
 
             <div class="row mb-2">
-                <x-forms.input label="Recommending Officer" name="recommended_by" cols="2" :value="$la ?? null"/>
-                <x-forms.input label="Position" name="recommended_by_position" cols="2" :value="$la ?? null"/>
-                <x-forms.input label="Approved by" name="approved_by" cols="2" :value="$la ?? null"/>
-                <x-forms.input label="Position" name="approved_by_position" cols="2" :value="$la ?? null"/>
+                <x-forms.input label="Recommending Officer" name="recommended_by" cols="lg-2 col-md-3" :value="$la ?? null"/>
+                <x-forms.input label="Position" name="recommended_by_position" cols="lg-2 col-md-3" :value="$la ?? null"/>
+                <x-forms.input label="Approved by" name="approved_by" cols="lg-2 col-md-3" :value="$la ?? null"/>
+                <x-forms.input label="Position" name="approved_by_position" cols="lg-2 col-md-3" :value="$la ?? null"/>
             </div>
         </x-adminkit.html.card>
     </form>

@@ -193,6 +193,7 @@ class DTRController extends  Controller
             $cl->type = 500;
             $cl->save();
         }
+
         $view = View::make('_hru.dtr.my_dtr')->with([
             'employee' => $employee,
             'dtr_by_year' => $dtr_by_year,
@@ -233,7 +234,7 @@ class DTRController extends  Controller
         return view('_hru.dtr.my_dtr')->with([
             'employee' => $employee,
             'dtr_by_year' => $dtr_by_year,
-            'col' => 'col-md-1 col-sm-2 col-lg-1',
+            'col' => 'col-md-2 col-sm-4 col-lg-2 col-xl-2 col-xxl-1',
         ]);
     }
 

@@ -17,6 +17,7 @@
 
 <script src="{{asset('adminkit/adminkit-plugins/datatables/datatable.js')}}"></script>
 
+
 <script type="text/javascript" src="{{asset('template/plugins/swal2/dist/sweetalert2.all.min.js')}}"></script>
 <script type="text/javascript" src="{{ asset('template/bower_components/ckeditor/ckeditor.js') }}"></script>
 <script type="text/javascript" src="{{asset('template/plugins/IntroJs/introjs.js')}}"></script>

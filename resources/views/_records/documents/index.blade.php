@@ -41,7 +41,7 @@
                 </div>
             </form>
         </x-adminkit.html.accordion>
-        <div id="documents-table-container" >
+        <div id="documents-table-container" class="table-responsive">
             <table class="table table-bordered table-striped table-sm" id="documents-table" style="width: 100%">
                 <thead>
                 <tr class="">
