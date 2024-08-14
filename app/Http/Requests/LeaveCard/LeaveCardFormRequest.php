@@ -28,7 +28,7 @@ class LeaveCardFormRequest extends FormRequest{
             'date' => 'required|date_format:Y-m-d',
             'credits' => ['required','numeric'],
         ];
-        if($this->route('leaveType')){
+        if($this->route('leaveType') == 'CTO'){
             $max = 40;
             $employeeSlug = $this->route('employeeSlug');
             $leaveType = $this->route('leaveType');
