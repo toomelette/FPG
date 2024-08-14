@@ -49,7 +49,7 @@
                                     <div class="col-md-9">
                                         <h3 class="text-strong">{{$employee->full['LFEM']}} <span class="float-end">{{$employee->employee_no}}</span></h3>
                                         <div class="row">
-                                            <div class="col-3">
+                                            <div class="col-md-6 col-xl-4 col-xxl-3">
                                                 <dl class="dl-horizontal" style="">
                                                     <dt>Sex:</dt>
                                                     <dd>{{ $employee->sex }}</dd>
@@ -63,7 +63,7 @@
                                                     <dd>{{ $employee->civil_status ?? '-'}}</dd>
                                                 </dl>
                                             </div>
-                                            <div class="col-3">
+                                            <div class="col-md-6 col-xl-4 col-xxl-3">
                                                 <dl class="dl-horizontal" style="">
                                                     <dt>Tel No:</dt>
                                                     <dd>{{ $employee->tel_no ?? '-'}}</dd>
@@ -77,7 +77,7 @@
                                                     <dd>{{ $employee->employeeAddress->fullPermAddress ?? '-'}}</dd>
                                                 </dl>
                                             </div>
-                                            <div class="col-3">
+                                            <div class="col-md-6 col-xl-4 col-xxl-3">
                                                 <dl class="dl-horizontal" style="">
                                                     <dt>Position:</dt>
                                                     <dd>{{ $employee->plantilla->position ?? $employee->position ?? '-'}}</dd>
@@ -93,7 +93,7 @@
                                                     <dd>{{ $employee->appointment_status ?? '-'}}</dd>
                                                 </dl>
                                             </div>
-                                            <div class="col-3">
+                                            <div class="col-md-6 col-xl-4 col-xxl-3">
                                                 <dl class="dl-horizontal" style="">
                                                     <dt>GSIS BP No:</dt>
                                                     <dd>{{ $employee->gsis ?? '-' }}</dd>
