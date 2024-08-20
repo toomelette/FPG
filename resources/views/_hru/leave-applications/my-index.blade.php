@@ -5,7 +5,7 @@
         <x-slot:title>My Leave Applications</x-slot:title>
     </x-adminkit.html.page-title>
     <x-adminkit.html.card>
-        <div id="la-table-container" style="">
+        <div id="la-table-container" class="table-responsive">
             <table class="table table-bordered table-striped table-sm" id="la-table" style="width: 100%">
                 <thead>
                 <tr class="">

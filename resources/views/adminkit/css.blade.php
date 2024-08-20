@@ -12,6 +12,8 @@
 {{--<link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.10.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.2.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.css" rel="stylesheet">--}}
 <link href="{{asset('adminkit/adminkit-plugins/datatables/datatable.css')}}" rel="stylesheet">
 
+
+
 <link type="text/css" rel="stylesheet" href="{{ asset('adminkit/adminkit-css/animate.css') }}">
 <link type="text/css" rel="stylesheet" href="{{asset('template/plugins/toast/src/jquery.toast.css')}}">
 <link type="text/css" rel="stylesheet" href="{{ asset('adminkit/plugins/bs-fileinput-v5.5.4-1/css/fileinput.min.css') }}">

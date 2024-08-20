@@ -8,8 +8,8 @@
         <x-slot:title>
             <button type="button" class="btn btn-sm btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-user-modal"><i class="fa fa-plus"></i> New User</button>
         </x-slot:title>
-        <div class="users-table-container">
-            <table class="table table-bordered table-sm" id="users-table">
+        <div class="users-table-container table-responsive"  >
+            <table class="table table-bordered table-sm" id="users-table" style="width: 100%;">
                 <thead>
                 <tr>
                     <th style="width: 15%;">Username</th>

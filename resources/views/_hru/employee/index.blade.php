@@ -47,7 +47,7 @@
                 <strong>Warning! Please assign Plantilla Item No. on the following ACTIVE {{str_plural('employee',$noItems)}} (or mark them as inactive): {{$noItems->count()}}</strong>
                 <div class="row">
                     @forelse($noItems as $noItem)
-                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+                        <div class="col-xs-6 col-sm-6  col-md-4  col-xl-4 col-xxl-2">
                             • <a href="{{route('dashboard.employee.edit',$noItem->slug)}}">{{$noItem->full['FMiLE']}}</a>
                         </div>
                     @empty
@@ -65,8 +65,8 @@
                 <strong>Warning! Please indicate appointment status on the following active {{str_plural('employee',$appointmentStatuss)}}: {{$appointmentStatuss->count()}}</strong>
                 <div class="row">
                     @forelse($appointmentStatuss as $appointmentStatus)
-                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
-                            • <a href="{{route('dashboard.employee.edit',$appointmentStatus->slug)}}">{{$appointmentStatus->full['FMiLE']}}}}</a>
+                        <div class="col-xs-6 col-sm-6  col-md-4  col-xl-4 col-xxl-2">
+                            • <a href="{{route('dashboard.employee.edit',$appointmentStatus->slug)}}">{{$appointmentStatus->full['FMiLE']}}</a>
                         </div>
                     @empty
                     @endforelse
@@ -82,8 +82,8 @@
                 <strong>Warning! Please assign Responsibility Center on the following active {{str_plural('employee',$noRcs)}}: {{$noRcs->count()}}</strong>
                 <div class="row">
                     @forelse($noRcs as $noRc)
-                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
-                            • <a href="{{route('dashboard.employee.edit',$noRc->slug)}}">{{$noRc->full['FMiLE']}}}}</a>
+                        <div class="col-xs-6 col-sm-6  col-md-4  col-xl-4 col-xxl-2">
+                            • <a href="{{route('dashboard.employee.edit',$noRc->slug)}}">{{$noRc->full['FMiLE']}}</a>
                         </div>
                     @empty
                     @endforelse
@@ -140,7 +140,7 @@
                     <strong>Warning! Please indicate the JOB GRADE and/or STEP INC of the following {{str_plural('employee',$noSgSi)}}: {{$noSgSi->count()}}</strong>
                     <div class="row">
                         @forelse($noSgSi as $e)
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+                            <div class="col-xs-6 col-sm-6  col-md-4  col-xl-4 col-xxl-2">
                                 • <a href="{{route('dashboard.employee.edit',$e->slug)}}">{{$e->full['FMiLE']}}}}</a>
                             </div>
                         @empty
@@ -179,7 +179,7 @@
                     <strong>Please update the last names and first names of the following  {{$exts->count()}} {{str_plural('employee',$exts)}} by removing any name extensions and indicating them to a dedicated field labeled "Name Ext." </strong>
                     <div class="row">
                         @forelse($exts as $e)
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+                            <div class="col-xs-6 col-sm-6  col-md-4  col-xl-4 col-xxl-2">
                                 • <a href="{{route('dashboard.employee.edit',$e->slug)}}">{{$e->full['FMiLE']}}</a>
                             </div>
                         @empty
@@ -228,7 +228,7 @@
                 </form>
             </x-adminkit.html.accordion>
 
-            <div id="employees_table_container">
+            <div id="employees_table_container" class="table-responsive">
                 <table class="table table-bordered table-striped table-hover table-sm" id="employees_table" style="width: 100%">
                     <thead>
                     <tr class="">

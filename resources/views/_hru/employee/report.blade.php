@@ -25,7 +25,7 @@
                         </div>
                         <div class="row mb-2">
                             <x-forms.select label="Status" name="status" cols="6" required="required" :options="\App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeStatus(),'option','value')"/>
-                            <x-forms.select label="Sex" name="sex" cols="6" required="required" :options="['MALE' => 'MALE','FEMALE' => 'FEMALE',]"/>
+                            <x-forms.select label="Sex" name="sex" cols="6" :options="['MALE' => 'MALE','FEMALE' => 'FEMALE',]"/>
                         </div>
                         <div class="row mb-2">
                             <div class="col-6">

@@ -40,7 +40,7 @@
                     <a href="{{route('dashboard.employee.index')}}?find={{$celebrant->employee_no}}" target="_blank">
                         {{strtoupper($celebrant->lastname)}}, {{strtoupper($celebrant->firstname)}} - turning {{\Illuminate\Support\Carbon::parse($celebrant->birthday)->diffInYears($requested_month)+1}}
                     </a>
-                    <small class="badge bg-info float-end"><i class="fa fa-calendar"></i> {{Carbon::parse($celebrant->birthday)->format('F d')}}</small>
+                    <small class="badge bg-info float-end"><i class="fa fa-calendar"></i> {{Carbon::parse($celebrant->birthday)->format('M d')}}</small>
                 </li>
             @endforeach
         @endforeach
@@ -59,7 +59,7 @@
                     <a href="{{route('dashboard.employee.index')}}?find={{$celebrant->employee_no}}" target="_blank">
                         {{strtoupper($celebrant->lastname)}}, {{strtoupper($celebrant->firstname)}} - {{\Illuminate\Support\Carbon::parse($celebrant->birthday)->diffInYears($requested_month)+1}} years old
                     </a>
-                    <small class="badge bg-secondary float-end"><i class="fa fa-calendar"></i>  {{Carbon::parse($celebrant->birthday)->format('F d')}}</small>
+                    <small class="badge bg-secondary float-end"><i class="fa fa-calendar"></i>  {{Carbon::parse($celebrant->birthday)->format('M d')}}</small>
                 </li>
             @endforeach
         @endforeach

@@ -2,6 +2,7 @@
  
 namespace App\Swep\Services;
 
+use App\Swep\Repositories\EmployeeRepository;
 use Hash;
 use App\Swep\BaseClasses\BaseService;
 use App\Swep\Interfaces\ProfileInterface;
@@ -17,7 +18,7 @@ class ProfileService extends BaseService{
 
 
 
-    public function __construct(ProfileInterface $profile_repo, EmployeeInterface $employee_repo){
+    public function __construct(ProfileInterface $profile_repo, EmployeeRepository $employee_repo){
 
         $this->profile_repo = $profile_repo;
         $this->employee_repo = $employee_repo;
