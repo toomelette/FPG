@@ -597,7 +597,7 @@ class DocumentController extends Controller{
 
 
     public function disseminationPost(DocumentDisseminationRequest $request, $slug){
-
+        dd($request->all());
         if(Auth::user()->project_id == 2){
             $r = collect([
                 'subject' => $request->subject,

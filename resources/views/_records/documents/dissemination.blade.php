@@ -184,6 +184,15 @@
         })
     })
 
+    $("select").on("select2:select", function (evt) {
+        var element = evt.params.data.element;
+        var $element = $(element);
+
+        $element.detach();
+        $(this).append($element);
+        $(this).trigger("change");
+    });
+
     summary_tbl = $("#summary-tbl").DataTable();
     type_contact = '<span class="badge bg-success col-12">Contact</span>';
     type_employee = '<span class="badge bg-primary col-12">Employee</span>';
