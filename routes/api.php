@@ -74,3 +74,6 @@ Route::group(['middleware' => ['auth:api'], 'prefix' => 'employees'],function ()
         Route::post('store','store');
     });
 });
+
+
+

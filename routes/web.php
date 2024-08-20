@@ -741,3 +741,21 @@ Route::get('/roles',function (){
 //    $user->givePermissionTo('employees.update');
     dd($user->getAllPermissions());
 });
+
+
+Route::get('/apiGetData',function (){
+    $headers = [
+        'Accept'        => 'application/json',
+        'Content-type' => 'application/json',
+    ];
+
+    $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaHJycy5zcmEuZ292LnBoL2FwaS9sb2dpbiIsImlhdCI6MTcyNDEzMjEzOSwiZXhwIjoxNzI0MTM1NzM5LCJuYmYiOjE3MjQxMzIxMzksImp0aSI6Ik8xSDh6OFFwYVBicnEwaFYiLCJzdWIiOiIxIiwicHJ2IjoiNDBhOTdmY2EyZDQyNGU3NzhhMDdhMGEyZjEyZGM1MTdhODVjYmRjMSJ9.hfC48jVIziSTp3oK3G6m6CfIxDLpnAQrXwBckCSrESU';
+    $response = \Illuminate\Support\Facades\Http::withToken($token)
+        ->withHeaders($headers)
+        ->get('http://hrrs.sra.gov.ph/api/employees/all');
+    $data = json_decode($response->getBody(), true);
+
+
+    dd($data);
+
+});

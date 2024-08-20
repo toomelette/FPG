@@ -35,6 +35,9 @@ class ApiEmployeeController extends Controller
         if($request->has('permanent')){
             $employees->permanent();
         }
+        if($request->has('cos')){
+            $employees->cos();
+        }
         $employees = $employees->get();
         return $employees->map(function ($data){
             return [
