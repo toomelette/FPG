@@ -3,14 +3,21 @@
 namespace App\Models\HRU;
 
 use App\Models\Employee;
+use App\Models\PPU\PPURespCodes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Staudenmeir\EloquentJsonRelations\Relations\HasOneJson;
 
 class PayrollMasterEmployees extends Model
 {
+
+
     protected $table = 'hr_pay_master_employees';
     public $timestamps = false;
 
+    protected $casts = [
+            'saved_employee_data' => 'json',
+        ];
     public function payrollMaster(){
         return $this->belongsTo(PayrollMaster::class,'payroll_master_slug','slug');
     }
@@ -34,4 +41,6 @@ class PayrollMasterEmployees extends Model
             ],
         );
     }
+
+
 }

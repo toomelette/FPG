@@ -46,10 +46,8 @@
         <tbody>
         @forelse($payrollMaster->payrollMasterEmployees as $employee)
             <tr class="{{$loop->iteration % 5 == 0 ? 'fifth' : ''}}">
-                <td class="first employee-options-btn" data="{{$employee->slug}}" emp-no="{{$employee->employee->employee_no}}" emp-slug="{{$employee->employee->slug}}"
-                    content="{{$employee->employee->plantilla->item_no ?? ''}} | {{$employee->employee->plantilla->position ?? ''}} <br> ({{$employee->employee->salary_grade ?? ''}},{{$employee->employee->step_inc ?? ''}}) <br> {{$employee->employee->employee_no ?? ''}}"
-                    data-bs-toggle="offcanvas" data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft"
-                > {{$employee->employee->full_name ?? ''}}</td>
+                <td class="first employee-options-btn" data="{{$employee->slug}}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft"
+                > {{$employee->saved_employee_data['full_name'] ?? ''}}</td>
                 @forelse($groupedIncentives as $incentive => $null)
                     <td class="text-end">
                         {{Helper::toNumber($employee->employeePayrollDetails->where('code',$incentive)->first()->amount ?? null,2)}}

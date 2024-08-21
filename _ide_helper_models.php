@@ -616,6 +616,7 @@ namespace App\Models\Budget{
  * @property string|null $ip_updated
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $api_status
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Budget\ORSAccountEntries> $accountEntries
  * @property-read int|null $account_entries_count
  * @property-read \App\Models\User|null $creator
@@ -631,6 +632,7 @@ namespace App\Models\Budget{
  * @method static \Illuminate\Database\Eloquent\Builder|ORS query()
  * @method static \Illuminate\Database\Eloquent\Builder|ORS whereAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ORS whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ORS whereApiStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ORS whereBaseOrsNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ORS whereCertifiedBudgetBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ORS whereCertifiedBudgetByPosition($value)
@@ -1580,6 +1582,7 @@ namespace App\Models{
  * @property-read int|null $incentive_template_count
  * @property-read mixed $jg_monthly_basic
  * @property-read \App\Models\DTR|null $lastRawDtrRecord
+ * @property-read mixed $leave_balances
  * @property-read \App\Models\HRU\LeaveBeginningBalance|null $leaveBegBal
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LeaveCard> $leaveCard
  * @property-read int|null $leave_card_count
@@ -2864,11 +2867,13 @@ namespace App\Models\HRU{
  * @property string|null $slug
  * @property string|null $leave_application_slug
  * @property string|null $date
+ * @property string|null $deduct
  * @property-read \App\Models\LeaveApplication|null $leaveApplication
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplicationDates newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplicationDates newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplicationDates query()
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplicationDates whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplicationDates whereDeduct($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplicationDates whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplicationDates whereLeaveApplicationSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplicationDates whereSlug($value)
@@ -3279,6 +3284,7 @@ namespace App\Models\HRU{
  * @property string|null $pay30
  * @property string|null $rata_actualdays
  * @property string|null $rata_deduction
+ * @property array|null $saved_employee_data
  * @property-read \App\Models\Employee|null $employee
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\HRU\PayrollMasterDetails> $employeePayrollDetails
  * @property-read int|null $employee_payroll_details_count
@@ -3294,6 +3300,7 @@ namespace App\Models\HRU{
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterEmployees wherePayMasterSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterEmployees whereRataActualdays($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterEmployees whereRataDeduction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterEmployees whereSavedEmployeeData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PayrollMasterEmployees whereSlug($value)
  */
 	class PayrollMasterEmployees extends \Eloquent {}
@@ -3736,6 +3743,7 @@ namespace App\Models{
  * @property string|null $leave_application_no
  * @property string|null $department
  * @property string|null $employee_slug
+ * @property string|null $charge_to
  * @property string|null $lastname
  * @property string|null $firstname
  * @property string|null $middlename
@@ -3777,6 +3785,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereApprovedByPosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereCertifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereCertifiedByPosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereChargeTo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereCommutation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereDateOfFiling($value)
@@ -3815,7 +3824,7 @@ namespace App\Models{
  * @property string|null $slug
  * @property string|null $employee_slug
  * @property string|null $leave_card
- * @property string|null $month
+ * @property string|null $date
  * @property string|null $credits
  * @property string|null $usable_until
  * @property string|null $remarks
@@ -3843,12 +3852,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard sortable($defaultParameters = null)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereCredits($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereEmployeeSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereIpCreated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereIpUpdated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereLeaveCard($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereMonth($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereRemarks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereUpdatedAt($value)
@@ -6319,6 +6328,8 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\Menu|null $menu
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserSubmenu> $usersWithAccess
+ * @property-read int|null $users_with_access_count
  * @method static \Illuminate\Database\Eloquent\Builder|Submenu newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Submenu newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Submenu query()

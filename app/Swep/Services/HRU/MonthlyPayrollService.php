@@ -11,6 +11,7 @@ use App\Models\HRU\PayrollMasterEmployees;
 use App\Models\HRU\PayrollTree;
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
+use App\Models\PPU\PPURespCodes;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
 use Illuminate\Http\Request;
@@ -52,22 +53,19 @@ class MonthlyPayrollService
             abort(503,'This Payroll is locked. Unlock it first to perform action.');
         }
 
+        $this->updateEmployeesData($payrollMaster);
+
         //1. Update basic pay based on employee master file
-        $jobGrades = Arrays::jobGrades();
         $toBeUpserted = [];
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
             $employee = $employeeFromList->employee;
-            if(isset($jobGrades[$employee->salary_grade][$employee->step_inc])){
-                $monthlyBasicPay = $jobGrades[$employee->salary_grade][$employee->step_inc];
-                array_push($toBeUpserted,[
-                    'employee_slug' => $employee->slug,
-                    'incentive_code' => 'MONTHLY',
-                    'priority' => 1,
-                    'amount' => $monthlyBasicPay,
-                ]);
-            }
+            array_push($toBeUpserted,[
+                'employee_slug' => $employee->slug,
+                'incentive_code' => 'MONTHLY',
+                'priority' => 1,
+                'amount' => $employeeFromList->saved_employee_data['monthly_basic'],
+            ]);
         }
-
         //Push updates to Payroll Template
         TemplateIncentives::query()
             ->upsert(
@@ -76,6 +74,7 @@ class MonthlyPayrollService
                 ['amount']
             );
 
+        //Update Philhealth Deductions
         $this->updatePhilhealth($payrollMaster);
 
 
@@ -163,15 +162,10 @@ class MonthlyPayrollService
             );
 
 
-//        dd($detailsArr);
-//        $toDelete = $payrollMaster->hmtDetails();
-//        $toDelete->delete();
 
         //remove ZERO amounts
         $payrollMaster->hmtDetails()->where('amount','=',null)->delete();
 
-
-//        PayrollMasterDetails::query()->insert($detailsArr);
 
         //3. Compute Tax
         $payrollMaster = PayrollMaster::query()
@@ -201,9 +195,6 @@ class MonthlyPayrollService
                 $totalPreTaxDeduction
             );
 
-//            if($employee->slug == 'tyiLlrc3Nu4hSVz5'){
-//                dd($tax);
-//            }
 
             array_push($taxesArr,[
                 'employee_slug' => $employee->slug,
@@ -297,10 +288,6 @@ class MonthlyPayrollService
             }
         }
 
-
-//        $toDelete = $payrollMaster->hmtDetails();
-//        $toDelete->delete();
-//        PayrollMasterDetails::query()->insert($detailsArr);
         PayrollMasterDetails::query()
             ->upsert(
                 $detailsArr,
@@ -357,22 +344,19 @@ class MonthlyPayrollService
         $deductionCode = 'PHIC';
         $deduction = Deductions::query()->where('deduction_code','=',$deductionCode)->first();
             $deduction ?? abort(503,'Deduction not found.');
-        $jobGrades = Arrays::jobGrades();
         $max = 2500;
         foreach ($payrollMaster->payrollMasterEmployees as $employee){
-            if(isset($jobGrades[$employee->employee->salary_grade][$employee->employee->step_inc])){
-                $philhealthDeduction = ($jobGrades[$employee->employee->salary_grade][$employee->employee->step_inc]) * 0.025;
-                $philhealthDeduction = bcdiv($philhealthDeduction,1,2);
-                if($philhealthDeduction > $max){
-                    $philhealthDeduction = $max;
-                }
-                array_push($upsertValues,[
-                    'employee_slug' => $employee->employee_slug,
-                    'deduction_code' => $deduction->deduction_code,
-                    'priority' => $deduction->n_priority,
-                    'amount' => $philhealthDeduction,
-                ]);
+            $philhealthDeduction = $employee['monthly_basic'] * 0.025;
+            $philhealthDeduction = bcdiv($philhealthDeduction,1,2);
+            if($philhealthDeduction > $max){
+                $philhealthDeduction = $max;
             }
+            array_push($upsertValues,[
+                'employee_slug' => $employee->employee_slug,
+                'deduction_code' => $deduction->deduction_code,
+                'priority' => $deduction->n_priority,
+                'amount' => $philhealthDeduction,
+            ]);
 
         }
 
@@ -476,14 +460,13 @@ class MonthlyPayrollService
                 $data->employee->slug => $data,
             ];
         });
+        $rcsGroupedByRcCode = PPURespCodes::query()->get()->mapWithKeys(function ($data){return [$data->rc_code => $data];});
         foreach ($employees as $employee){
-            if(!empty($employee->employee->responsibilityCenter)){
-                $usedRc[$employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.$employee->employee->responsibilityCenter->sec] = $employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.$employee->employee->responsibilityCenter->sec;
-                $usedRc[$employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.'0'] = $employee->employee->responsibilityCenter->rc.$employee->employee->responsibilityCenter->div.'0';
-                $usedRc[$employee->employee->responsibilityCenter->rc.'0'.'0'] = $employee->employee->responsibilityCenter->rc.'0'.'0';
-            }
+            $respCenter = $employee->saved_employee_data['resp_center'];
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.$rcsGroupedByRcCode[$respCenter]->sec] = $rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.$rcsGroupedByRcCode[$respCenter]->sec;
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.'0'] = $rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.'0';
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.'0'.'0'] = $rcsGroupedByRcCode[$respCenter]->rc.'0'.'0';
         }
-
 
         $tree = PayrollTree::query()
             ->with('responsibilityCenter')
@@ -511,7 +494,7 @@ class MonthlyPayrollService
 
 
         ksort($usedRc);
-        return view('printables.hru.payroll_preparation.monthly_payroll')->with([
+        return view('printables.hru.payroll_preparation.MONTHLY.monthly_payroll')->with([
             'payrollMaster' => $payrollMaster,
             'tree' => $tree,
             'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
@@ -600,13 +583,47 @@ class MonthlyPayrollService
             $payrollMaster = $payrollMaster->load(['payrollMasterEmployees.employee']);
             return $this->updateMap($payrollMaster, $request);
         }
+        if($request->has('updateEmployeesData')){
+            $payrollMaster = $payrollMaster->load(['payrollMasterEmployees.employee.plantilla']);
+            return $this->updateEmployeesData($payrollMaster);
+        }
+    }
+
+    private function updateEmployeesData(PayrollMaster $payrollMaster)
+    {
+        $jobGrades = Arrays::jobGrades();
+        $upsert = [];
+        foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
+            $payrollMasterEmployee->saved_employee_data = [
+                'employee_no' => $payrollMasterEmployee->employee->employee_no,
+                'full_name' => $payrollMasterEmployee->employee->full['LFEMi'] ?? '',
+                'lastname' => $payrollMasterEmployee->employee->lastname,
+                'firstname' => $payrollMasterEmployee->employee->firstname,
+                'middlename' => $payrollMasterEmployee->employee->middlename,
+                'name_ext' => $payrollMasterEmployee->employee->name_ext,
+                'position' => $payrollMasterEmployee->employee->plantilla->position ?? $payrollMasterEmployee->employee->position,
+                'item_no' => $payrollMasterEmployee->employee->item_no,
+                'salary_grade' => $payrollMasterEmployee->employee->salary_grade,
+                'step_inc' => $payrollMasterEmployee->employee->step_inc,
+                'monthly_basic' => $jobGrades[$payrollMasterEmployee->employee->salary_grade][$payrollMasterEmployee->employee->step_inc] ?? null,
+                'resp_center' => $payrollMasterEmployee->employee->resp_center,
+            ];
+            $upsert[] = [
+                'saved_employee_data' => json_encode($payrollMasterEmployee->saved_employee_data),
+                'slug' => $payrollMasterEmployee->slug
+            ];
+
+        }
+
+        PayrollMasterEmployees::query()->upsert($upsert,['slug'],['saved_employee_data']);
+        return true;
     }
 
     public function printPayslips($slug,Request $request){
 
         $payrollMaster = PayrollMaster::query();
         $with = [
-            'payrollMasterEmployees.employee.plantilla',
+            'payrollMasterEmployees',
             'payrollMasterEmployees.employeePayrollDetails',
             'hmtDetails',
         ];
@@ -622,7 +639,39 @@ class MonthlyPayrollService
             ->with($with)
             ->findOrFail($slug);
 
-        return view('printables.hru.payroll_preparation.monthly_payslip_all')->with([
+        return view('printables.hru.payroll_preparation.MONTHLY.payslip_all')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
+    }
+
+    public function abstractMid($payrollMasterSlug)
+    {
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => [
+                    'employeePayrollDetails',
+                ],
+                'hmtDetails.chartOfAccount',
+            ])
+            ->findOrFail($payrollMasterSlug);
+
+        return view('printables.hru.payroll_preparation.MONTHLY.abstract-mid')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
+    }
+
+    public function abstractEnd($payrollMasterSlug)
+    {
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => [
+                    'employeePayrollDetails',
+                ],
+                'hmtDetails.chartOfAccount',
+            ])
+            ->findOrFail($payrollMasterSlug);
+
+        return view('printables.hru.payroll_preparation.MONTHLY.abstract-end')->with([
             'payrollMaster' => $payrollMaster,
         ]);
     }

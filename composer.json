@@ -42,6 +42,7 @@
         "spatie/laravel-ignition": "^2.0",
         "spatie/laravel-permission": "^6.9",
         "spatie/pdf-to-image": "^2.2",
+        "staudenmeir/eloquent-json-relations": "^1.1",
         "staudenmeir/laravel-adjacency-list": "^1.0",
         "thiagoalessio/tesseract_ocr": "^2.13",
         "yajra/laravel-datatables": "^10",

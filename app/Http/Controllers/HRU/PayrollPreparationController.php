@@ -215,9 +215,7 @@ class PayrollPreparationController
             ])
             ->where('slug','=',$request->employeePayrollListSlug)
             ->first();
-        $employee = Employee::query()->findOrFail($request->employee);
         return view('_payroll.payroll-preparation.MONTHLY.show-employee')->with([
-            'employee' => $employee,
             'employeePayrollListSlug' => $request->employeePayrollListSlug,
             'employeePayrollList' => $employeePayrollList,
             'payMasterSlug' => $payMasterSlug,
@@ -687,6 +685,10 @@ class PayrollPreparationController
                 return $this->monthlyPayrollService->printPayroll($slug);
             case 'PAYSLIP_ALL':
                 return $this->monthlyPayrollService->printPayslips($slug,$request);
+            case 'ABSTRACT-MID':
+                return $this->monthlyPayrollService->abstractMid($slug);
+            case 'ABSTRACT-END':
+                return $this->monthlyPayrollService->abstractEnd($slug);
                 break;
         }
         abort(503,'CHECK SWITCH CASE STATEMENT');

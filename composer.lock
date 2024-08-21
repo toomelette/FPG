@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4b7f3f8b6331c4b7f5bce40c6e008033",
+    "content-hash": "58a4024d0cf09c80dbdc324ad8945048",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -8005,6 +8005,68 @@
                 "source": "https://github.com/staudenmeir/eloquent-has-many-deep-contracts/tree/v1.1"
             },
             "time": "2023-01-18T12:43:26+00:00"
+        },
+        {
+            "name": "staudenmeir/eloquent-json-relations",
+            "version": "v1.10.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/staudenmeir/eloquent-json-relations.git",
+                "reference": "3d7a0a42ad5c0497dd9f84ad101ea74f6bdcb39b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/staudenmeir/eloquent-json-relations/zipball/3d7a0a42ad5c0497dd9f84ad101ea74f6bdcb39b",
+                "reference": "3d7a0a42ad5c0497dd9f84ad101ea74f6bdcb39b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^10.38",
+                "php": "^8.1",
+                "staudenmeir/eloquent-has-many-deep-contracts": "^1.1"
+            },
+            "require-dev": {
+                "barryvdh/laravel-ide-helper": "^2.13",
+                "orchestra/testbench": "^8.17",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^10.1",
+                "staudenmeir/eloquent-has-many-deep": "^1.18.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Staudenmeir\\EloquentJsonRelations\\IdeHelperServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Staudenmeir\\EloquentJsonRelations\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonas Staudenmeir",
+                    "email": "mail@jonas-staudenmeir.de"
+                }
+            ],
+            "description": "Laravel Eloquent relationships with JSON keys",
+            "support": {
+                "issues": "https://github.com/staudenmeir/eloquent-json-relations/issues",
+                "source": "https://github.com/staudenmeir/eloquent-json-relations/tree/v1.10.2"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/JonasStaudenmeir",
+                    "type": "custom"
+                }
+            ],
+            "time": "2024-07-21T12:36:01+00:00"
         },
         {
             "name": "staudenmeir/laravel-adjacency-list",

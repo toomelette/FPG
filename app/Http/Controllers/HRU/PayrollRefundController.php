@@ -42,15 +42,16 @@ class PayrollRefundController extends Controller
         if($request->has('draw')){
             $payMasterDetails = PayrollMasterDetails::query()
                 ->with([
-                    'employeePayroll.employee',
+                    'employeePayroll',
                 ])
                 ->whereHas('employeePayroll',function ($q) use ($slug){
                     $q->where('pay_master_slug','=',$slug);
                 })
                 ->where('code','=',$request->deductionCode);
+
             return  DataTables::of($payMasterDetails)
                 ->addColumn('employee',function($data){
-                    return $data->employeePayroll->employee->full['LFEMi'];
+                    return $data->employeePayroll->saved_employee_data['full_name'];
                 })
                 ->addColumn('action',function($data){
                     return view('_payroll.payroll-refund.dtActions')->with([

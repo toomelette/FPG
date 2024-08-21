@@ -1,5 +1,6 @@
 @php
     $rand = \Illuminate\Support\Str::random();
+    /** @var \App\Models\HRU\PayrollMasterEmployees $payrollEmployee **/
 @endphp
 @extends('printables.print_layouts.print_layout_main')
 
@@ -14,11 +15,11 @@
                 @forelse($chunk as $payrollEmployee)
                     <table style="width: 100%; border-bottom: 1px solid black; font-size: 14px">
                         <tr>
-                            <td class="text-bottom" style="width: 20%">EMP. NO.: <b>{{$payrollEmployee->employee->employee_no}}</b></td>
+                            <td class="text-bottom" style="width: 20%">EMP. NO.: <b>{{$payrollEmployee->saved_employee_data['employee_no'] ?? ''}}</b></td>
                             <td class="text-center">
                                 <small>SUGAR REGULATORY ADMINISTRATION</small> <br>
                                 <span class="text-strong">STATEMENT OF EARNINGS & DEDUCTIONS FOR {{strtoupper(Helper::dateFormat($payrollMaster->date,'F Y'))}}</span> <br>
-                                <span class="text-strong"> {{$payrollEmployee->employee->full_name}} </span>
+                                <span class="text-strong"> {{$payrollEmployee->saved_employee_data['full_name'] ?? ''}} </span>
                             </td>
                             <td style="width: 20%">
                                 <img style="width: 50px; float: right; margin-right: 20px" src="{{asset('images/sra_only2_low.png')}}">
@@ -90,7 +91,7 @@
                             </td>
                         </tr>
                     </table>
-                   <p><b> {{$payrollEmployee->employee->plantilla->position ?? ''}} </b></p>
+                   <p><b> {{$payrollEmployee->saved_employee_data['position'] ?? ''}} </b></p>
 
                     <hr style="border: 1px dashed grey" class="no-margin">
                     <p class="no-margin" style="font-size: 8px"><i class="fa fa-scissors"></i> CUT HERE</p>

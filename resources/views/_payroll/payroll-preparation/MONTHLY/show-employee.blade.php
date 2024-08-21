@@ -1,18 +1,18 @@
-<h4 class="text-strong">{{$employee->full['LFEMi']}}</h4>
-<p>{{$employee->plantilla->position ?? ''}}</p>
+<h4 class="text-strong">{{$employeePayrollList->saved_employee_data['full_name'] ?? ''}}</h4>
+<p>{{$employeePayrollList->saved_employee_data['position'] ?? ''}}</p>
 <table class="mb-3">
     <tbody>
     <tr>
         <td style="width: 120px">Monthly Basic:</td>
-        <td class="text-strong">{{Helper::toNumber(\App\Swep\Helpers\Arrays::jobGrades()[$employee->salary_grade][$employee->step_inc] ?? null)}}</td>
+        <td class="text-strong">{{Helper::toNumber($employeePayrollList->saved_employee_data['monthly_basic'] ?? '')}}</td>
     </tr>
     <tr>
         <td>Job Grade:</td>
-        <td class="text-strong">{{$employee->salary_grade}}</td>
+        <td class="text-strong">{{$employeePayrollList->saved_employee_data['salary_grade'] ?? ''}}</td>
     </tr>
     <tr>
         <td>Step Inc:</td>
-        <td class="text-strong">{{$employee->step_inc}}</td>
+        <td class="text-strong">{{$employeePayrollList->saved_employee_data['step_inc'] ?? ''}}</td>
     </tr>
     </tbody>
 </table>
@@ -20,11 +20,11 @@
     <i class="fa fa-print"></i> Print Payslip
 </a>
 
-<a href="{{route('dashboard.payroll_template.index')}}?find={{$employee->slug}}" target="_blank" class="btn btn-outline-secondary btn-sm mb-2" style="width: 100%;" type="button">
+<a href="{{route('dashboard.payroll_template.index')}}?find={{$employeePayrollList->employee_slug}}" target="_blank" class="btn btn-outline-secondary btn-sm mb-2" style="width: 100%;" type="button">
     <i class="fa fa-user"></i> View Payroll Template
 </a>
 
-<a href="{{route('dashboard.employee.index')}}?find={{$employee->employee_no}}" target="_blank" class="btn btn-outline-secondary btn-sm" style="width: 100%;" type="button">
+<a href="{{route('dashboard.employee.index')}}?find={{$employeePayrollList->saved_employee_data['employee_no'] ?? ''}}" target="_blank" class="btn btn-outline-secondary btn-sm" style="width: 100%;" type="button">
     <i class="fa fa-user"></i> View Employee
 </a>
 <hr>

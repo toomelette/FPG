@@ -154,9 +154,9 @@
                         @forelse($payrollEmployeesPerRc as $payrollEmployee /** @var App\Models\HRU\PayrollMasterEmployees $payrollEmployee **/)
                             <tr>
                                 <td>
-                                    <span class="text-strong">{{$payrollEmployee->employee->full['LFEMi']}}</span> <br>
-                                    {{$payrollEmployee->employee->plantilla->position ?? ''}} <br>
-                                    {{$payrollEmployee->employee->employee_no}} <span>({{$payrollEmployee->employee->salary_grade}} , {{$payrollEmployee->employee->step_inc}})</span>
+                                    <span class="text-strong">{{$payrollEmployee->saved_employee_data['full_name'] ?? ''}}</span> <br>
+                                    {{$payrollEmployee->saved_employee_data['position'] ?? ''}} <br>
+                                    {{$payrollEmployee->saved_employee_data['employee_no'] ?? ''}} <span>({{$payrollEmployee->saved_employee_data['salary_grade'] ?? ''}} , {{$payrollEmployee->saved_employee_data['step_inc'] ?? ''}})</span>
                                 </td>
                                 @foreach($chunkedIncentives as $grp)
                                     <td class="text-right text-top">

@@ -27,8 +27,9 @@
         <x-slot:title>
             <div class="btn-group">
                 <button type="button" class="btn btn-outline-secondary btn-sm edit-signatories-btn" data-bs-toggle="modal" data-bs-target="#edit-signatories-modal"> <i class="fa fa-edit"></i> Edit Signatories </button>
-                <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'MONTHLY'])}}" target="_blank" class="btn btn-outline-secondary btn-sm"> <i class="fa fa-print"></i> Print Payroll </a>
-                <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}" target="_blank" class="btn btn-outline-secondary btn-sm"> <i class="fa fa-print"></i> Print Payslips </a>
+                <button class="btn btn-success btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#print-offcanvas" aria-controls="offcanvasRight"><i class="fa fa-print"></i> Print</button>
+                <button type="button" id="update-employees-data-btn" class="btn btn-outline-secondary btn-sm visually-hidden" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recapture Employees Data </button>
+
                 <button type="button" id="lock-btn" class="btn btn-outline-secondary btn-sm" action="{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"> <span class="text-danger"><i class="fa fa-{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"></i> {{$payrollMaster->is_locked == 1 ? 'Unlock':'Lock'}} </span></button>
 
             </div>
@@ -139,6 +140,19 @@
             Employee Options
         </x-slot:title>
     </x-adminkit.html.offcanvas>
+
+    <x-adminkit.html.offcanvas class="end" id="print-offcanvas">
+        <x-slot:title>
+            Print Options
+        </x-slot:title>
+
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'MONTHLY'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payroll Summary</a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payslips </a>
+        <hr>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'ABSTRACT-MID'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payroll Abstract (Mid-month) </a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'ABSTRACT-END'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payroll Abstract (Month-end) </a>
+
+    </x-adminkit.html.offcanvas>
 @endsection
 
 @section('scripts')
@@ -196,6 +210,29 @@
         $("body").on("click","#recompute-btn",function () {
             let btn = $(this);
             recompute(btn);
+        })
+
+        $("body").on("click","#update-employees-data-btn",function () {
+            let btn = $(this);
+            let uri = '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}?updateEmployeesData=true';
+            wait_this_button(btn,'Please wait');
+            $("#search").val('');
+            $.ajax({
+                url : uri,
+                type: 'POST',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    unwait_this_button(btn);
+                    toast('info','Employee data successfully updated.','Success!');
+
+                },
+                error: function (res) {
+                    unwait_this_button(btn);
+                    toast('warning',res.responseJSON.message,'Error!');
+                }
+            })
         })
         $("#upload-form").submit(function (e) {
             e.preventDefault();
