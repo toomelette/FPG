@@ -11,7 +11,7 @@ class PayrollMasterDetails extends Model
     protected $primaryKey = 'slug';
     public $incrementing = false;
     public $timestamps = false;
-    protected $fillable = ['amount'];
+    protected $fillable = ['amount','govt_share'];
 
     public function payrollMaster(){
         return $this->belongsTo(PayrollMaster::class,'pay_master_slug','slug');

@@ -11,6 +11,11 @@ class TemplateDeductions extends Model
     protected $casts = [
         'amount' => 'float',
     ];
+
+    protected $fillable = [
+        'govt_share',
+        'ec_share',
+        ];
     public $timestamps = false;
     public function deduction(){
         return $this->hasOne(Deductions::class,'deduction_code','deduction_code');

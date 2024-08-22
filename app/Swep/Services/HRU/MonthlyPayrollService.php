@@ -76,7 +76,8 @@ class MonthlyPayrollService
 
         //Update Philhealth Deductions
         $this->updatePhilhealth($payrollMaster);
-
+        $this->updateGsisGovtShare($payrollMaster);
+        $this->updateHdmfGovtShare($payrollMaster);
 
         //2. START OF FETCH DATA FROM TEMPLATE TO DETAILS
         $payrollMaster = PayrollMaster::query()
@@ -112,6 +113,8 @@ class MonthlyPayrollService
                         'priority' => $templateIncentive->incentive->n_priority,
                         'sundry_account' => null,
                         'account_code' => $templateIncentive->incentive->account_code,
+                        'govt_share' => null,
+                        'ec_share' => null,
                     ]);
                 }
 
@@ -148,6 +151,8 @@ class MonthlyPayrollService
                             'priority' => $templateDeduction->deduction->n_priority,
                             'sundry_account' => $templateDeduction->deduction->sundry_account,
                             'account_code' => $templateDeduction->deduction->account_code,
+                            'govt_share' => $templateDeduction->govt_share,
+                            'ec_share' => $templateDeduction->ec_share,
                         ]);
                     }
                 }
@@ -158,7 +163,7 @@ class MonthlyPayrollService
             ->upsert(
                 $detailsArr,
                 ['pay_master_employee_listing_slug','type','code'],
-                ['amount','priority','sundry_account','account_code']
+                ['amount','priority','sundry_account','account_code','govt_share','ec_share']
             );
 
 
@@ -246,6 +251,8 @@ class MonthlyPayrollService
                         'priority' => $templateIncentive->incentive->n_priority,
                         'sundry_account' => null,
                         'account_code' => $templateIncentive->incentive->account_code,
+                        'govt_share' => null,
+                        'ec_share' => null,
                     ]);
                 }
 
@@ -282,7 +289,10 @@ class MonthlyPayrollService
                             'priority' => $templateDeduction->deduction->n_priority,
                             'sundry_account' => $templateDeduction->deduction->sundry_account,
                             'account_code' => $templateDeduction->deduction->account_code,
+                            'govt_share' => $templateDeduction->govt_share,
+                            'ec_share' => $templateDeduction->ec_share,
                         ]);
+
                     }
                 }
             }
@@ -292,7 +302,7 @@ class MonthlyPayrollService
             ->upsert(
                 $detailsArr,
                 ['pay_master_employee_listing_slug','type','code'],
-                ['amount','priority','sundry_account','account_code']
+                ['amount','priority','sundry_account','account_code','govt_share','ec_share']
             );
 
         //5. recompute 15th and 30th
@@ -340,13 +350,14 @@ class MonthlyPayrollService
 
     public function updatePhilhealth(PayrollMaster $payrollMaster)
     {
+
         $upsertValues = [];
         $deductionCode = 'PHIC';
         $deduction = Deductions::query()->where('deduction_code','=',$deductionCode)->first();
             $deduction ?? abort(503,'Deduction not found.');
         $max = 2500;
         foreach ($payrollMaster->payrollMasterEmployees as $employee){
-            $philhealthDeduction = $employee['monthly_basic'] * 0.025;
+            $philhealthDeduction = $employee->saved_employee_data['monthly_basic'] * $deduction->factor;
             $philhealthDeduction = bcdiv($philhealthDeduction,1,2);
             if($philhealthDeduction > $max){
                 $philhealthDeduction = $max;
@@ -356,13 +367,62 @@ class MonthlyPayrollService
                 'deduction_code' => $deduction->deduction_code,
                 'priority' => $deduction->n_priority,
                 'amount' => $philhealthDeduction,
+                'govt_share' => $philhealthDeduction,
             ]);
 
         }
-
         TemplateDeductions::query()->upsert($upsertValues,
             ['employee_slug','deduction_code'],
-            ['priority','amount']
+            ['priority','amount','govt_share']
+        );
+    }
+
+    public function updateGsisGovtShare(PayrollMaster $payrollMaster)
+    {
+        $upsertValues = [];
+        $deductionCode = 'GSIS';
+        $deduction = Deductions::query()->where('deduction_code','=',$deductionCode)->first();
+            $deduction ?? abort(503,'Deduction not found.');
+
+        foreach ($payrollMaster->payrollMasterEmployees as $employee){
+            $personnelShare = $employee->saved_employee_data['monthly_basic'] * $deduction->factor;
+            $govtShare  = $employee->saved_employee_data['monthly_basic'] * $deduction->govt_share_factor;
+            array_push($upsertValues,[
+                'employee_slug' => $employee->employee_slug,
+                'deduction_code' => $deduction->deduction_code,
+                'priority' => $deduction->n_priority,
+                'amount' => $personnelShare,
+                'govt_share' => $govtShare,
+                'ec_share' => 100,
+            ]);
+
+        }
+        TemplateDeductions::query()->upsert($upsertValues,
+            ['employee_slug','deduction_code'],
+            ['priority','amount','govt_share','ec_share']
+        );
+    }
+
+    public function updateHdmfGovtShare(PayrollMaster $payrollMaster)
+    {
+        $upsertValues = [];
+        $deductionCode = 'HDMF';
+        $deduction = Deductions::query()->where('deduction_code','=',$deductionCode)->first();
+            $deduction ?? abort(503,'Deduction not found.');
+
+        foreach ($payrollMaster->payrollMasterEmployees as $employee){
+            $govtShare  = 200;
+            array_push($upsertValues,[
+                'employee_slug' => $employee->employee_slug,
+                'deduction_code' => $deduction->deduction_code,
+                'priority' => $deduction->n_priority,
+                'govt_share' => $govtShare,
+            ]);
+
+        }
+        TemplateDeductions::query()->upsert($upsertValues,
+            ['employee_slug','deduction_code'],
+            ['priority','govt_share']
         );
     }
 
@@ -584,13 +644,19 @@ class MonthlyPayrollService
             return $this->updateMap($payrollMaster, $request);
         }
         if($request->has('updateEmployeesData')){
-            $payrollMaster = $payrollMaster->load(['payrollMasterEmployees.employee.plantilla']);
+
             return $this->updateEmployeesData($payrollMaster);
         }
     }
 
     private function updateEmployeesData(PayrollMaster $payrollMaster)
     {
+        $payrollMaster = $payrollMaster->load([
+            'payrollMasterEmployees.employee' =>[
+                'plantilla',
+                'responsibilityCenter.description',
+            ]
+        ]);
         $jobGrades = Arrays::jobGrades();
         $upsert = [];
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
@@ -607,6 +673,7 @@ class MonthlyPayrollService
                 'step_inc' => $payrollMasterEmployee->employee->step_inc,
                 'monthly_basic' => $jobGrades[$payrollMasterEmployee->employee->salary_grade][$payrollMasterEmployee->employee->step_inc] ?? null,
                 'resp_center' => $payrollMasterEmployee->employee->resp_center,
+                'department' => $payrollMasterEmployee->employee->responsibilityCenter->description->name ?? '',
             ];
             $upsert[] = [
                 'saved_employee_data' => json_encode($payrollMasterEmployee->saved_employee_data),
@@ -672,6 +739,26 @@ class MonthlyPayrollService
             ->findOrFail($payrollMasterSlug);
 
         return view('printables.hru.payroll_preparation.MONTHLY.abstract-end')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
+    }
+
+    public function deductionRegister($payrollMasterSlug)
+    {
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => [
+                    'employeePayrollDetails',
+                ],
+                'hmtDetails'=>[
+                    'chartOfAccount',
+                    'deduction',
+                    'employeePayroll',
+                ],
+            ])
+            ->findOrFail($payrollMasterSlug);
+
+        return view('printables.hru.payroll_preparation.MONTHLY.deduction-register')->with([
             'payrollMaster' => $payrollMaster,
         ]);
     }

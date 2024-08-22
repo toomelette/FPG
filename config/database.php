@@ -144,6 +144,21 @@ return [
             'engine' => null,
         ],
 
+        'server5_ppu' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_SERVER5', '10.36.1.14'),
+            'port' => env('DB_PORT_SERVER5', '3306'),
+            'database' => 'swep_ppu',
+            'username' => env('DB_USERNAME_SERVER5', 'root'),
+            'password' => env('DB_PASSWORD_SERVER5', 'P@ssw0rd:mssius@server7@misvis'),
+            'unix_socket' => env('DB_SOCKET_SERVER5', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
+
         'swep_bcd' => [
             'driver' => 'mysql',
             'host' => '119.93.145.202',

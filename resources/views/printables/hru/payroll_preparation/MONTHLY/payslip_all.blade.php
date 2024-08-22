@@ -48,7 +48,15 @@
                             <td class="text-top b-right" style="padding-left: 5px;padding-right: 5px; width: 50%">
                                 <p class="text-center no-margin">MONTHLY DEDUCTIONS</p>
                                 @php
-                                    $employeeDeductions = $payrollEmployee->employeePayrollDetails->where('type','DEDUCTION')
+                                    $employeeDeductions = $payrollEmployee->employeePayrollDetails
+                                        ->where('type','DEDUCTION')
+                                        ->sortBy(function ($data){
+                                            if($data->priority == null){
+                                                return 10000;
+                                            }else{
+                                                return $data->priority;
+                                            }
+                                        })
                                 @endphp
                                 <table style="width: 50%" class="b-right">
                                     @forelse($employeeDeductions as $deduction)

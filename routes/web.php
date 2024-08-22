@@ -759,3 +759,122 @@ Route::get('/apiGetData',function (){
     dd($data);
 
 });
+
+Route::get('/parSerial',function (){
+
+});
+
+Route::get('/parImport',function (){
+    $parOld = \App\Models\PPBTMS\ParOld::query()->get();
+    $insert = [];
+    $emps = \App\Models\Employee::query()->with(['plantilla'])->permanent()->get();
+    foreach ($parOld as $par) {
+        $propNo = Str::of($par->new_property_no)->replaceFirst('-','=')->replaceFirst('-','*')->replaceFirst('-','+')->replaceFirst('-','_');
+
+        $subMajor = \Illuminate\Support\Str::of($propNo)->betweenFirst('=','*')->toString();
+        $genLedger = \Illuminate\Support\Str::of($propNo)->betweenFirst('*','+')->toString();
+        $location = \Illuminate\Support\Str::of($propNo)->afterLast('_')->toString();
+        $serial = \Illuminate\Support\Str::of($propNo)->betweenFirst('+','_')->toString();
+
+        $fundCluster = "COB";
+        if(\Illuminate\Support\Str::contains($par->article,['ACEF'],true)){
+            $fundCluster = 'ACEF';
+        }
+        if(\Illuminate\Support\Str::contains($par->article,['DONATION'],true)){
+            $fundCluster = 'DONATION';
+        }
+        if(\Illuminate\Support\Str::contains($par->article,['DONATION'],true)){
+            $fundCluster = 'SIDA';
+        }
+
+
+        $employee = $emps->firstWhere('employee_no',$par->employee_no);
+
+        $insert[] = [
+            'slug' => \Illuminate\Support\Str::random(),
+            'ref_book' => 'IMPORT',
+            'propertyno' => $par->new_property_no,
+            'sub_major_account_group' => $subMajor,
+            'general_ledger_account' => $genLedger,
+            'fund_cluster' => $fundCluster,
+            'location' => $location,
+            'article' => $par->article,
+            'old_propertyno' => $par->old_property_no,
+            'propertyno' => $par->new_property_no,
+            'uom' => strtoupper($par->unit_of_measure),
+            'acquiredcost' => $par->amount * 1,
+            'qtypercard' => $par->qty_property_card == '' ? null : $par->qty_property_card * 1,
+            'onhandqty' => $par->qty_physical_count == '' ? null : $par->qty_physical_count * 1,
+            'dateacquired' => Helper::dateFormat($par->date_acquired,'Y-m-d'),
+            'remarks' => $par->remarks,
+            'acctemployee_no' => $employee->employee_no ?? null,
+            'acctemployee_fname' => $employee->full['FMiLE'] ?? null,
+            'acctemployee_post' => $employee->plantilla->position ?? $employee->position ?? null,
+            'respcenter' => $employee->resp_center ?? null,
+            'project_id' => 2,
+            'office' => $par->location,
+            'condition' => strtoupper($par->condition),
+            'invtacctcode' => $par->account_code,
+            'user_created' => 'AUTO IMPORT',
+            'serial_no' => $serial,
+        ];
+//        dd(\Illuminate\Support\Str::of($par->new_property_no)->betweenFirst('-','-'));
+//        dd($par);
+    }
+    dd('prev.');
+    $chunk = collect($insert)->chunk(200);
+    foreach ($chunk as $toInsert){
+        \App\Models\PPBTMS\InventoryPPE::query()->insert($toInsert->toArray());
+    }
+
+    dd(1);
+
+//    $parNew->id =  '';
+//    $parNew->slug =  '';
+    $parNew->ref_book =  '';
+//    $parNew->par_code =  '';
+//    $parNew->sub_major_account_group =  '';
+//    $parNew->general_ledger_account =  '';
+//    $parNew->fund_cluster =  '';
+//    $parNew->propuniqueno =  '';
+//    $parNew->article =  '';
+//    $parNew->description =  '';
+    $parNew->serial_no =  '';
+//    $parNew->old_propertyno =  '';
+//    $parNew->propertyno =  '';
+//    $parNew->uom =  '';
+//    $parNew->acquiredcost =  '';
+//    $parNew->qtypercard =  '';
+//    $parNew->onhandqty =  '';
+//    $parNew->shortqty =  '';
+//    $parNew->shortvalue =  '';
+//    $parNew->dateacquired =  '';
+//    $parNew->remarks =  '';
+//    $parNew->acctemployee_no =  '';
+//    $parNew->acctemployee_fname =  '';
+//    $parNew->acctemployee_post =  '';
+//    $parNew->respcenter =  '';
+//    $parNew->supplier =  '';
+//    $parNew->invoiceno =  '';
+//    $parNew->invoicedate =  '';
+//    $parNew->pono =  '';
+//    $parNew->podate =  '';
+//    $parNew->invtacctcode =  '';
+//    $parNew->location =  '';
+//    $parNew->acquiredmode =  '';
+//    $parNew->condition =  '';
+//    $parNew->user_created =  '';
+//    $parNew->user_updated =  '';
+//    $parNew->ip_created =  '';
+//    $parNew->ip_updated =  '';
+//    $parNew->created_at =  '';
+//    $parNew->updated_at =  '';
+//    $parNew->ppe_model =  '';
+//    $parNew->ppe_serial_no =  '';
+//    $parNew->office =  '';
+//    $parNew->project_id =  '';
+//    $parNew->inv_taken =  '';
+//    $parNew->inv_date =  '';
+
+});
+

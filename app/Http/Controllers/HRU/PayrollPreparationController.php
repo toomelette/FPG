@@ -689,6 +689,8 @@ class PayrollPreparationController
                 return $this->monthlyPayrollService->abstractMid($slug);
             case 'ABSTRACT-END':
                 return $this->monthlyPayrollService->abstractEnd($slug);
+            case 'DEDUCTION-REGISTER':
+                return $this->monthlyPayrollService->deductionRegister($slug);
                 break;
         }
         abort(503,'CHECK SWITCH CASE STATEMENT');
