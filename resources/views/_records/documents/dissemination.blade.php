@@ -191,7 +191,10 @@
         $element.detach();
         $(this).append($element);
         $(this).trigger("change");
+        $('.select2-search__field').val('');
     });
+
+
 
     summary_tbl = $("#summary-tbl").DataTable();
     type_contact = '<span class="badge bg-success col-12">Contact</span>';
