@@ -21,7 +21,7 @@ class SanitizeBiometricDevice extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Clears biometric devices';
 
     /**
      * Create a new command instance.
@@ -41,14 +41,14 @@ class SanitizeBiometricDevice extends Command
     protected $DTRService;
     public function handle(DTRService $DTRService)
     {
-        $bds = BiometricDevices::query()->where('status' ,'=',1)->get();
+        $bds = BiometricDevices::query()
+            ->where('status' ,'=',1)
+            ->where('last_state','=',1)
+            ->get();
         if(!empty($bds)){
             foreach ($bds as $bd){
                 $ip = $bd->ip_address;
-                $diff = \Carbon::parse($bd->last_cleared)->diffInDays(Carbon::now());
-                if($diff == 7){
-                    $DTRService->clearAttendance($ip);
-                }
+                $DTRService->clearAttendance($ip);
             }
         }
     }

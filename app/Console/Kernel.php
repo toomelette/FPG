@@ -39,7 +39,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('dtr:reconstruct')->everyTenMinutes();
         $schedule->command('dtr:compute_late_undertime')->everyTenMinutes();
         $schedule->command('dtr:copy_from_lgarec')->everyTenMinutes();
-        $schedule->command('dtr:reset_device_time')->dailyAt('05:00');
+        $schedule->command('dtr:reset_device_time')->dailyAt('06:20');
+        $schedule->command('dtr:sanitizeBiometricDevices')->weeklyOn(0);
 //        $schedule->command('dtr:sanitizeBiometricDevices')->dailyAt('02:00');
 //        $schedule->command('dtr:upload')->everyTenMinutes();
 //        $schedule->command('demo:cron')->everyMinute();
