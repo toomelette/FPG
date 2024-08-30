@@ -500,7 +500,7 @@ Route::get('check_device',function (\App\Swep\Services\DTRService $DTRService){
 
     $zk = new ZKTeco($ip);
     $zk->connect();
-
+    $zk->enableDevice();
 
     return $zk->getAttendance();
 //    return $DTRService->clearAttendance('10.36.1.23');
@@ -881,3 +881,80 @@ Route::get('/leaveTest',function (\App\Swep\Services\HRU\LeaveCreditService $lea
     return $leaveCreditService->monthlyCreditToEmployees();
 });
 
+
+Route::get('testbiometric',function (){
+    $last_uid = 32964;
+    $last_from_device = 0;
+    $zk = json_decode(file_get_contents(asset('json/testBiometric.json')));
+    $attendances = [];
+    //
+
+
+    foreach ($zk as $data){
+        $data = collect($data)->toArray();
+
+        $attendances[$data['uid']] = $data;
+    }
+    $last_from_device = array_key_last($attendances);
+
+    $attendances_array = [];
+    if($last_from_device < $last_uid){
+        $while = $last_uid+1;
+
+        while (isset($attendances[$while])){
+            $while++;
+        }
+        $while = $while - 1;
+        for ($x = $last_uid+1 ; $x <= $while ; $x++){
+
+            if(isset($attendances[$x])){
+                array_push($attendances_array,[
+                    'uid' => $attendances[$x]['uid'],
+                    'user' => $attendances[$x]['id'],
+                    'state' => $attendances[$x]['state'],
+                    'timestamp' => $attendances[$x]['timestamp'],
+                    'type' => $attendances[$x]['type'],
+                    'device' => 'xxx',
+                    'location' => 'test',
+                ]);
+            }
+        }
+
+        for ($x = 0 ; $x < $last_uid - 20000 ; $x++){
+
+            if(isset($attendances[$x])){
+                array_push($attendances_array,[
+                    'uid' => $attendances[$x]['uid'],
+                    'user' => $attendances[$x]['id'],
+                    'state' => $attendances[$x]['state'],
+                    'timestamp' => $attendances[$x]['timestamp'],
+                    'type' => $attendances[$x]['type'],
+                    'device' => 'xx',
+                    'location' => 'xx',
+                ]);
+            }
+        }
+
+
+        dd($attendances_array);
+    }
+
+    for ($x = $last_uid+1 ; $x <= $last_from_device ; $x++){
+
+        if(isset($attendances[$x])){
+            array_push($attendances_array,[
+                'uid' => $attendances[$x]['uid'],
+                'user' => $attendances[$x]['id'],
+                'state' => $attendances[$x]['state'],
+                'timestamp' => $attendances[$x]['timestamp'],
+                'type' => $attendances[$x]['type'],
+                'device' => 'xxx',
+                'location' => 'test',
+            ]);
+        }
+    }
+
+
+    dd($attendances_array);
+    dd($last_uid);
+});
