@@ -36,6 +36,10 @@ class BiometricDevicesController extends Controller
         ];
 
         $devices = BiometricDevices::query()->get();
+        return view('_su.biometric-devices.index')->with([
+            'devices' => $devices,
+            'colors' => $colors,
+        ]);
         return view('dashboard.biometric_devices.index')->with([
             'devices' => $devices,
             'colors' => $colors,
@@ -86,19 +90,20 @@ class BiometricDevicesController extends Controller
 
             if ($request->has('device')){
 //                return $request;
-                $dtrs = DTR::query()->with(['employee'])->where('device','=',$request->device);
+                $dtrs = DTR::query()
+                    ->with(['employee'])
+                    ->where('device','=',$request->device);
 
                 $dt = DataTables::of($dtrs)
                     ->editColumn('fullname',function($data){
-                        if(empty($data->employee)){
-                            return $data->user;
-                        }
-                        return strtoupper($data->employee->lastname).', '.strtoupper($data->employee->firstname);
+                        return $data->employee->full['LFEMi'] ?? $data->user ?? '';
                     })
                     ->editColumn('type',function ($data){
                         return Helper::dtr_type($data->type);
                     })
-                    ->toJson();
+                    ->escapeColumns([])
+                    ->setRowId('slug')
+                    ->toJson();;
 
                 return $dt;
             }
@@ -118,21 +123,11 @@ class BiometricDevicesController extends Controller
         if($device->status != 1){
             abort(503,'Device is not available.');
         }
-        $ip_address = $device->ip_address;
-        $employees_arr = [];
 
-        $perm_e = Employee::query()->select('firstname','middlename','lastname','employee_no','biometric_user_id')->where('biometric_user_id', '!=' ,0);
-        $jo_e = JoEmployees::query()->select('firstname','middlename','lastname','employee_no','biometric_user_id')->where('biometric_user_id' ,'!=' ,0);
-
-        $union = $jo_e->union($perm_e)->get();
-
-        foreach ($union as $employee){
-            $employees_arr[$employee->biometric_user_id] = $employee;
-        }
-        return view('dashboard.biometric_devices.logs')->with([
+        return view('_su.biometric-devices.logs')->with([
             'device' => $device,
-            'employees_arr' => $employees_arr,
         ]);
+
     }
 
     public function clear_attendance(Request $request, DTRService $DTRService){
@@ -184,6 +179,11 @@ class BiometricDevicesController extends Controller
         if(!isset($zk->getUser()[999])){
             abort(503,'Admin User 999 not found');
         }
+        return view('_su.biometric-devices.admin')->with([
+            'admin' => $zk->getUser()[999],
+            'device' => $bd,
+        ]);
+
         return view('dashboard.biometric_devices.admin')->with([
             'admin' => $zk->getUser()[999],
             'device' => $bd,
