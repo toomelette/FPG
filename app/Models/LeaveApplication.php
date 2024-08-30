@@ -77,6 +77,11 @@ class LeaveApplication extends Model{
         return $this->belongsTo(Employee::class,'employee_slug','slug');
     }
 
+    public function scopeReceived(Builder $query)
+    {
+        $query->where('status','=','RECEIVED');
+    }
+
 
 
 }

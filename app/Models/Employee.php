@@ -15,6 +15,7 @@ use App\Swep\Traits\Ownership;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Kyslik\ColumnSortable\Sortable;
 use Spatie\Activitylog\LogOptions;
@@ -248,33 +249,28 @@ class Employee extends Model{
         return  new Attribute(
             get: function (){
                 $slug = $this->slug;
-                $leaveApplications = LeaveApplicationDates::query()
-                    ->selectRaw('charge_to, sum(deduct) as deduct')
-                    ->whereHas('leaveApplication',function ($q) use ($slug){
-                        $q->where('employee_slug','=',$slug);
-                    })
-                    ->leftJoin(
-                        LeaveApplication::getModel()->getTable(),
-                        LeaveApplication::getModel()->getTable().'.slug',
-                        '=',
-                        LeaveApplicationDates::getModel()->getTable().'.leave_application_slug')
+                $leaveApplications = LeaveApplication::query()
+                    ->selectRaw('charge_to, sum(actual_deduction) as deduct')
+                    ->where('employee_slug','=',$slug)
                     ->groupBy('charge_to')
                     ->get();
 
                 $leaveCredits = LeaveCard::query()
-                    ->selectRaw('leave_card, sum(credits) as credits')
+                    ->selectRaw('leave_card, sum(credits) as credits, sum(deduction) as deduction, type')
                     ->where('employee_slug','=',$slug)
-                    ->groupBy('leave_card')
+                    ->groupBy('leave_card','type')
                     ->get();
                 $codes = Arrays::leaveTypeCodes();
                 $leaveBalances = [];
                 foreach ($codes as $code => $name){
                     $leaveBalances[$code] = [
-                        'credits' => $leaveCredits->where('leave_card',$code)->first()->credits ?? 0,
+                        'credits' => $leaveCredits->where('type','CREDIT')->where('leave_card',$code)->first()->credits ?? 0,
                         'applications' => $leaveApplications->where('charge_to',$code)->first()->deduct ?? 0,
+                        'deductions' => $leaveCredits->where('type','DEDUCTION')->where('leave_card',$code)->first()->deduction ?? 0,
                     ];
-                    $leaveBalances[$code]['balance'] =  $leaveBalances[$code]['credits'] - $leaveBalances[$code]['applications'];
+                    $leaveBalances[$code]['balance'] =  $leaveBalances[$code]['credits'] - $leaveBalances[$code]['applications'] - $leaveBalances[$code]['deductions'];
                 }
+
                 return $leaveBalances;
             },
         );

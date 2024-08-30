@@ -14,7 +14,7 @@ class PayrollUpdateFormRequest extends FormRequest
         if($this->has('import')){
             return [
                 'type' => 'required|string',
-                'file' => 'required|mimes:xls',
+                'file' => 'required|mimes:xls,xlsx',
             ];
         }
         if($this->has('signatories')){

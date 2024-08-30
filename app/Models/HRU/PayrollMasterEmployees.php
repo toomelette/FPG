@@ -14,6 +14,8 @@ class PayrollMasterEmployees extends Model
 
     protected $table = 'hr_pay_master_employees';
     public $timestamps = false;
+    protected $primaryKey = 'slug';
+    public $incrementing = false;
 
     protected $casts = [
             'saved_employee_data' => 'json',

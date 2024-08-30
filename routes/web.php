@@ -877,4 +877,7 @@ Route::get('/parImport',function (){
 //    $parNew->inv_date =  '';
 
 });
+Route::get('/leaveTest',function (\App\Swep\Services\HRU\LeaveCreditService $leaveCreditService){
+    return $leaveCreditService->monthlyCreditToEmployees();
+});
 

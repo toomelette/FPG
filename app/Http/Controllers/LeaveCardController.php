@@ -39,10 +39,11 @@ class LeaveCardController extends Controller{
         if($request->ajax() && $request->has('draw')){
             $employees = Employee::query()
                 ->with(['leaveBegBal'])
-                ->permanent();
+                ->permanent()
+                ->active();
             return \DataTables::of($employees)
                 ->editColumn('lastname',function ($data){
-                    return $data->full_name;
+                    return $data->full['LFEMi'];
                 })
                 ->addColumn('action',function ($data){
                     return view('_hru.leave-cards.dtActions')->with([
@@ -50,13 +51,10 @@ class LeaveCardController extends Controller{
                     ]);
                 })
                 ->addColumn('vlRemaining',function ($data){
-                    return '';
-                    return $data->leave_balances['VL']['balance'] ?? '';
-                    return $data->leaveBegBal->vl ?? '';
+                    return Helper::toNumber($data->leave_balances['VL']['balance'] ?? '',3);
                 })
                 ->addColumn('slRemaining',function ($data){
-                    return '';
-                    return $data->leave_balances['SL']['balance'] ?? '';
+                    return Helper::toNumber($data->leave_balances['SL']['balance'] ?? '',3);
                     return $data->leaveBegBal->sl ?? '';
                 })
                 ->addColumn('details',function ($data){
@@ -130,14 +128,14 @@ class LeaveCardController extends Controller{
 
         $employee = Employee::query()->findOrFail($employeeSlug);
 
-        $applications = LeaveApplicationDates::query()
-            ->selectRaw("date,null as 'add',deduct as 'less'")
-            ->whereHas('leaveApplication',function ($q) use ($employeeSlug,$leaveType){
-                $q->where('employee_slug','=',$employeeSlug)
-                ->where('charge_to','=',$leaveType);
-            });
+
+        $applications = LeaveApplication::query()
+            ->selectRaw("date_of_filing as date,null as 'add',actual_deduction as 'less',null as usable_until")
+            ->where('employee_slug','=',$employeeSlug)
+            ->where('charge_to','=',$leaveType)
+            ->received();
         $credits = LeaveCard::query()
-                ->selectRaw("date,credits as 'add',null as 'less'")
+                ->selectRaw("date,credits as 'add',deduction as 'less',usable_until")
             ->where('employee_slug','=',$employeeSlug)
             ->where('leave_card','=',$leaveType);
         $balances  = $applications->union($credits)->orderBy('date','asc')->get();
@@ -153,10 +151,11 @@ class LeaveCardController extends Controller{
     {
         $leaveCredits = LeaveCard::query()
             ->where('employee_slug','=',$employeeSlug)
-            ->where('leave_card','=',strtoupper($leaveType));
+            ->where('leave_card','=',strtoupper($leaveType))
+            ->creditsOnly();
         return \DataTables::of($leaveCredits)
             ->addColumn('action',function($data){
-                return view('_hru.leave-cards.view-per-leave-type-dtActions')->with([
+                return view('_hru.leave-cards.leave-credits-dtActions')->with([
                     'data' => $data,
                 ]);
             })
@@ -174,12 +173,27 @@ class LeaveCardController extends Controller{
                 $q->where('employee_slug','=',$employeeSlug)
                 ->where('charge_to','=',$leaveType);
             });
-        return \DataTables::of($leaveApplications)
-            ->addColumn('leaveApplication',function ($data){
-                return $data->leaveApplication->leave_details;
+        $leaveApplications = LeaveApplication::query()
+            ->selectRaw('slug,date_of_filing as date,actual_deduction as deduction, "leave_application" as src')
+            ->where('employee_slug','=',$employeeSlug)
+            ->where('charge_to','=',$leaveType)
+            ->received();
+
+        $leaveDeductions = LeaveCard::query()
+            ->selectRaw('slug,date,deduction,"leave_deduction" as src')
+            ->where('employee_slug','=',$employeeSlug)
+            ->where('leave_card','=',$leaveType)
+            ->deductionsOnly();
+
+        $union = $leaveApplications->union($leaveDeductions);
+        return \DataTables::of($union)
+            ->addColumn('actions',function ($data){
+                return view('_hru.leave-cards.leave-applications-dtActions')->with([
+                    'data' => $data,
+                ]);
             })
             ->editColumn('date',function($data){
-                return '<a href="'.route('dashboard.leave_application.index').'?find='.$data->slug.'" target="_blank" class="text-strong">'.Helper::dateFormat($data->date).'</a>';
+                return $data->date;
             })
             ->escapeColumns([])
             ->setRowId('slug')
@@ -206,8 +220,11 @@ class LeaveCardController extends Controller{
         $leaveCredit->employee_slug = $employeeSlug;
         $leaveCredit->date = $request->date.'-01';
         $leaveCredit->leave_card = strtoupper($leaveType);
-        $leaveCredit->credits = $request->credits;
+        $leaveCredit->credits =  $request->credits;
+        $leaveCredit->deduction =  $request->deduction;
+        $leaveCredit->usable_until = strtoupper($leaveType) == 'VL' || strtoupper($leaveType) == 'SL' ? null : $request->usable_until;
         $leaveCredit->remarks = $request->remarks;
+        $leaveCredit->type = $request->type;
         if($leaveCredit->save()){
             return $leaveCredit->only('slug');
         }
@@ -227,6 +244,7 @@ class LeaveCardController extends Controller{
         $leaveCard = LeaveCard::query()->findOrFail($slug);
         $leaveCard->date = $request->date.'-01';
         $leaveCard->credits = $request->credits;
+        $leaveCard->deduction = $request->deduction;
         $leaveCard->remarks = $request->remarks;
         if($leaveCard->update()){
             return $leaveCard->only('slug');

@@ -4,6 +4,7 @@
 @extends('adminkit.master')
 
 @section('content2')
+
     <x-adminkit.html.page-title>
         <x-slot:title>{{$employee->full['LFEMi']}}</x-slot:title>
         <x-slot:float-end>{{\App\Swep\Helpers\Arrays::leaveTypeCodes()[$leaveType] ?? ''}}</x-slot:float-end>
@@ -13,7 +14,7 @@
             <x-adminkit.html.card body-class="pt-0" style="min-height: 65vh">
                 <x-slot:title class="pb-0">
                     Leave Credits
-                    <button type="button" class="btn btn-sm btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-leave-credit-modal"><i class="fa fa-plus"></i> Add Credits</button>
+                    <button type="button" class="btn btn-sm btn-primary float-end add-credit-btn" data="CREDIT" data-bs-toggle="modal" data-bs-target="#add-leave-credit-modal"><i class="fa fa-plus"></i> Add Credits</button>
                 </x-slot:title>
                 <div class="leave-credits-table-container">
                     <table class="table table-bordered table-sm" id="leave-credits-table">
@@ -35,14 +36,16 @@
         <div class="col-md-4">
             <x-adminkit.html.card body-class="pt-1" style="min-height: 65vh">
                 <x-slot:title class="pb-0">
-                    Leave Applications
+                    Leave Applications / Leave Deductions
+                    <button type="button" class="btn btn-sm btn-warning float-end add-credit-btn" data="DEDUCTION" data-bs-toggle="modal" data-bs-target="#add-deduction-modal"><i class="fa fa-plus"></i> Deduction</button>
                 </x-slot:title>
                 <div class="leave-applications-table-container">
                     <table class="table table-bordered table-sm" id="leave-applications-table">
                         <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Details</th>
+                            <th>Deduction</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -74,7 +77,10 @@
                             <td>{{Helper::dateFormat($balance->date)}}</td>
                             <td class="text-end">{{$balance->add}}</td>
                             <td class="text-end">{{$balance->less}}</td>
-                            <td class="text-end">{{Helper::toNumber($begBal = $begBal + $balance->add - $balance->less,3)}}</td>
+                            <td class="text-end">
+
+                                {{Helper::toNumber($begBal = $begBal + $balance->add - $balance->less,3)}}
+                            </td>
                         </tr>
                     @empty
                     @endforelse
@@ -93,7 +99,7 @@
 
 @section('modals')
     <x-adminkit.html.modal-template id="add-leave-credit-modal" size="sm" form-id="add-leave-credit-form">
-        <x-slot:title>Add Credits - {{$leaveType}}</x-slot:title>
+        <x-slot:title>Add <span id="title">Credits</span> - {{$leaveType}}</x-slot:title>
         <div class="row mb-2">
             <x-forms.input label="Date" name="date" cols="6" type="date"/>
             <x-forms.input label="Credits" name="credits" cols="6" type="number" step="0.001"/>
@@ -101,6 +107,22 @@
         <div class="row mb-2">
             <x-forms.input label="Remarks" name="remarks" cols="12"/>
         </div>
+
+        <x-slot:footer>
+            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
+        </x-slot:footer>
+    </x-adminkit.html.modal-template>
+
+    <x-adminkit.html.modal-template id="add-deduction-modal" size="sm" form-id="add-deduction-form">
+        <x-slot:title>Add <span id="title">Deduction</span> - {{$leaveType}}</x-slot:title>
+        <div class="row mb-2">
+            <x-forms.input label="Date" name="date" cols="6" type="date"/>
+            <x-forms.input label="Deduction" name="deduction" cols="6" type="number" step="0.001"/>
+        </div>
+        <div class="row mb-2">
+            <x-forms.input label="Remarks" name="remarks" cols="12"/>
+        </div>
+
         <x-slot:footer>
             <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
         </x-slot:footer>
@@ -111,6 +133,7 @@
 @section('scripts')
     <script type="text/javascript">
         let activeLeaveCredits = '';
+        let activeLeaveApplication = '';
         leaveCreditsTbl = $("#leave-credits-table").DataTable({
             dom : 'lBrtip',
             processing: true,
@@ -152,7 +175,7 @@
             loading_btn(form);
             $.ajax({
                 url : '{{route("dashboard.leave_card.store",[$employee->slug, $leaveType])}}',
-                data : form.serialize(),
+                data : form.serialize()+'&type=CREDIT',
                 type: 'POST',
                 headers: {
                     {!! __html::token_header() !!}
@@ -167,6 +190,30 @@
                 }
             })
         })
+
+        $("#add-deduction-form").submit(function (e) {
+            e.preventDefault()
+            let form = $(this);
+            loading_btn(form);
+            $.ajax({
+                url : '{{route("dashboard.leave_card.store",[$employee->slug, $leaveType])}}',
+                data : form.serialize()+'&type=DEDUCTION',
+                type: 'POST',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    activeLeaveApplication = res.slug;
+                    leaveApplicationsTbl.draw(false);
+                    succeed(form,true,true);
+                },
+                error: function (res) {
+                    errored(form,res);
+                }
+            })
+        })
+
+
         $("body").on("click",".edit-leave-credit-btn",function () {
             let btn = $(this);
             load_modal2(btn);
@@ -186,7 +233,6 @@
                 }
             })
         })
-
         leaveApplicationsTbl = $("#leave-applications-table").DataTable({
             dom : 'lBrtip',
             processing: true,
@@ -194,7 +240,8 @@
             ajax : '{{route('dashboard.leave_card.view_per_leave_type',[$employee->slug,$leaveType])}}?leaveApplications',
             columns: [
                 { data : "date" },
-                { data : "leaveApplication" },
+                { data : "deduction" },
+                { data : "actions" },
             ],
             buttons: [
                 {!! __js::dt_buttons() !!}
@@ -215,7 +262,9 @@
                 });
             },
             drawCallback: function(settings){
-
+                if(activeLeaveApplication != ''){
+                    $("#"+settings.sTableId+" #"+activeLeaveApplication).addClass('table-success');
+                }
             }
         })
     </script>

@@ -1028,4 +1028,18 @@ class Arrays
         }) ?? [];
 
     }
+
+    public static function leaveCreditsEarnedWithZeroLeft()
+    {
+        $cut = ['16.5','13.5','10.5','7.5','4.5','1.5'];
+        $earned = [];
+        for ($i = 30;$i >= 0;$i--){
+            $index = $i;
+            $earned[$index] = (in_array($index,$cut) ?bcdiv(1.25/30*$index, 1, 3) : round(1.25/30*$index,3))*1;
+
+            $index = $i+0.5.'';
+            $earned[$index] = (in_array($index,$cut) ?bcdiv(1.25/30*$index, 1, 3) : round(1.25/30*$index,3))*1;
+        }
+        return $earned;
+    }
 }

@@ -83,6 +83,8 @@
 
 @section('modals')
     <x-adminkit.html.modal id="edit-signatories-modal"/>
+    <x-adminkit.html.modal id="edit-deduction-modal" size="sm"/>
+
     <x-adminkit.html.modal-template id="upload-modal" size="sm" form-id="upload-form">
         <x-slot:title>
             Upload deductions
@@ -430,5 +432,35 @@
                 }
             })
         })
+
+        $("body").on("click",".edit-deduction",function(){
+            let btn = $(this);
+            let employeeListSlug = btn.parent('tr').attr('data');
+            let slug = btn.attr('data');
+            let deductionCode = btn.attr('deduction-code');
+            let uri = '{{route("dashboard.payroll_preparation.edit",$payrollMaster->slug)}}?editDeduction';
+            load_modal2(btn);
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                data: {
+                    employeeListSlug : employeeListSlug,
+                    slug : slug,
+                    deductionCode : deductionCode,
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
+
+
+
     </script>
 @endsection

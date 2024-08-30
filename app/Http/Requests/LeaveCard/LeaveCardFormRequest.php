@@ -26,7 +26,6 @@ class LeaveCardFormRequest extends FormRequest{
     public function rules(){
         $rules = [
             'date' => 'required|date_format:Y-m-d',
-            'credits' => ['required','numeric'],
         ];
         if($this->route('leaveType') == 'CTO'){
             $max = 40;
@@ -38,15 +37,22 @@ class LeaveCardFormRequest extends FormRequest{
                 ->where('employee_slug','=',$employeeSlug)
                 ->where('date','like',$month.'%')
                 ->sum('credits');
-            $rules['credits'] = [
-                'required',
-                'numeric',
-                function ($attr,$value,$fail) use($credits,$max) {
-                if(($credits + $this->get('credits')) > $max)
-                    $fail('Stored CTO credits including this will exceed the '.$max.' hours limit per month. Max allowed: '.$max-$credits);
-                }
-            ];
 
+            if($this->type == 'CREDIT'){
+                $rules['credits'] = [
+                    'required',
+                    'numeric',
+                    function ($attr,$value,$fail) use($credits,$max) {
+                        if(($credits + $this->get('credits')) > $max)
+                            $fail('Stored CTO credits including this will exceed the '.$max.' hours limit per month. Max allowed: '.$max-$credits);
+                    }
+                ];
+            }else{
+                $rules['deduction'] = [
+                    'required',
+                    'numeric',
+                ];
+            }
         }
         return $rules;
     

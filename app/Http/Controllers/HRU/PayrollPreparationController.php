@@ -145,6 +145,10 @@ class PayrollPreparationController
                 ]);
             }
         }
+
+        $templateDeductions = TemplateDeductions::query()->whereIn('employee_slug',$employeesBySlug->keys())->delete();
+
+
         if($payMaster->save()){
             PayrollMasterEmployees::query()->insert($employeeArr);
         }
@@ -227,6 +231,10 @@ class PayrollPreparationController
             return  $this->showEmployee($slug,$request);
         }
 
+        if($request->has('editDeduction')){
+            return  $this->monthlyPayrollService->editDeduction($request);
+        }
+
         $payrollMaster = PayrollMaster::query()
                 ->with([
                     'payrollMasterEmployees.employee',
@@ -252,11 +260,34 @@ class PayrollPreparationController
                         'payrollMasterEmployees.employeePayrollDetails',
                     ])
                     ->find($slug);
+                $groupedIncentives= $payrollMaster->hmtDetails
+                    ->where('type','INCENTIVE')
+                    ->sortBy(function($data){
+                        if($data->priority == null){
+                            return 100000;
+                        }else{
+                            return $data->priority;
+                        }
+                    })
+                    ->groupBy('code');
+
+                $groupedDeductions = $payrollMaster->hmtDetails
+                    ->where('type','DEDUCTION')
+                    ->sortBy(function($data){
+                        if($data->priority == null){
+                            return 100000;
+                        }else{
+                            return $data->priority;
+                        }
+                    })
+                    ->groupBy('code');
         
                 $payrollMaster ?? abort(404,'Payroll not found.');
         
                 return view('_payroll.payroll-preparation.MONTHLY.edit')->with([
                     'payrollMaster' => $payrollMaster,
+                    'groupedIncentives' => $groupedIncentives,
+                    'groupedDeductions' => $groupedDeductions,
                 ]);
                 break;
             case 'RATA':

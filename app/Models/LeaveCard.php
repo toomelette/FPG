@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
 use Spatie\Activitylog\LogOptions;
@@ -44,6 +45,14 @@ class LeaveCard extends Model{
 
 
     /** Scopes **/
+    public function scopeCreditsOnly(Builder $query)
+    {
+        $query->where('type','=','CREDIT');
+    }
+    public function scopeDeductionsOnly(Builder $query)
+    {
+        $query->where('type','=','DEDUCTION');
+    }
     public function scopeGetTardy($query, $month, $year){
 
         return $query->select('credits')

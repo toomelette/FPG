@@ -14,7 +14,11 @@
 @section('modal-body')
     <div class="row mb-2">
         <x-forms.input label="Date" name="date" cols="6" type="date" :value="$leaveCard ?? null"/>
-        <x-forms.input label="Credits" name="credits" cols="6" type="number" step="0.001" :value="$leaveCard ?? null"/>
+        @if($leaveCard->type == 'CREDIT')
+            <x-forms.input label="Credits" name="credits" cols="6" type="number" step="0.001" :value="$leaveCard ?? null"/>
+        @else
+            <x-forms.input label="Deduction" name="deduction" cols="6" type="number" step="0.001" :value="$leaveCard ?? null"/>
+        @endif
     </div>
     <div class="row mb-2">
         <x-forms.input label="Remarks" name="remarks" cols="12" :value="$leaveCard ?? null"/>
@@ -43,9 +47,18 @@
                 },
                 success: function (res) {
                     succeed(form,true,true);
-                    activeLeaveCredits = res.slug;
-                    leaveCreditsTbl.draw(false);
-                    toast('info','Leave credit successfully updated.','Updated');
+                    @if($leaveCard->type == 'CREDIT')
+                        activeLeaveCredits = res.slug;
+                        leaveCreditsTbl.draw(false);
+                        toast('info','Leave credit successfully updated.','Updated');
+                    @else
+                        activeLeaveApplication = res.slug;
+                        leaveApplicationsTbl.draw(false);
+                        toast('info','Leave deduction successfully updated.','Updated');
+                    @endif
+
+
+
                 },
                 error: function (res) {
                     errored(form,res);
