@@ -45,28 +45,34 @@
                             </li>
                         </ul>
 
-                        <div class="btn-group btn-group-sm mt-2" role="group" aria-label="Large button group">
-                            <button type="button" class="btn btn-outline-secondary admin-btn" data="{{$device->id}}" data-bs-target="#admin-modal" data-bs-toggle="modal">
-                                <i class="fa fa-key"></i> <br>
-                                Admin
-                            </button>
-                            <button type="button" class="btn btn-outline-danger clear_attendance_btn" data="{{$device->id}}" text="Device: <b>{{$device->name}}</b> <br> IP Address: <b>{{$device->ip_address}}</b><br> <span class='text-danger text-strong'>THIS ACTION CANNOT BE UNDONE!</span> <br> <span class='text-info'>Please enter your password to continue:</span> ">
-                                <i class="fa fa-eraser"></i> <br>
-                                Clear Dev.
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary logs-btn" data="{{$device->id}}" data-bs-target="#logs-modal" data-bs-toggle="modal">
-                                <i class="fa fa-calendar"></i> <br>
-                                Logs
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary restart_btn" data="{{$device->id}}" text="Device: <b>{{$device->name}}</b> <br> IP Address: <b>{{$device->ip_address}}</b>">
-                                <i class="fa fa-refresh"></i> <br>
-                                Restart
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary extract_btn" data="{{$device->id}}" text="Device: <b>{{$device->name}}</b> <br> IP Address: <b>{{$device->ip_address}}</b>">
-                                <i class="fa fa-sign-out"></i> <br>
-                                Extract
-                            </button>
-                        </div>
+                        @if($device->status == 1)
+                            <div class="btn-group btn-group-sm mt-2" role="group" aria-label="Large button group">
+                                <button type="button" class="btn btn-outline-secondary admin-btn" data="{{$device->id}}" data-bs-target="#admin-modal" data-bs-toggle="modal">
+                                    <i class="fa fa-key"></i> <br>
+                                    Admin
+                                </button>
+                                <button type="button" class="btn btn-outline-danger clear_attendance_btn" data="{{$device->id}}" text="Device: <b>{{$device->name}}</b> <br> IP Address: <b>{{$device->ip_address}}</b><br> <span class='text-danger text-strong'>THIS ACTION CANNOT BE UNDONE!</span> <br> <span class='text-info'>Please enter your password to continue:</span> ">
+                                    <i class="fa fa-eraser"></i> <br>
+                                    Clear Dev.
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary logs-btn" data="{{$device->id}}" data-bs-target="#logs-modal" data-bs-toggle="modal">
+                                    <i class="fa fa-clock"></i> <br>
+                                    Attendances
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary cron-logs-btn" data="{{$device->id}}" data-bs-target="#cron-logs-modal" data-bs-toggle="modal">
+                                    <i class="fa fa-clock-rotate-left"></i> <br>
+                                    Cron Logs
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary restart_btn" data="{{$device->id}}" text="Device: <b>{{$device->name}}</b> <br> IP Address: <b>{{$device->ip_address}}</b>">
+                                    <i class="fa fa-refresh"></i> <br>
+                                    Restart
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary extract_btn" data="{{$device->id}}" text="Device: <b>{{$device->name}}</b> <br> IP Address: <b>{{$device->ip_address}}</b>">
+                                    <i class="fa fa-sign-out"></i> <br>
+                                    Extract
+                                </button>
+                            </div>
+                        @endif
 
                     </div>
                 </div>
@@ -80,6 +86,7 @@
 
 @section('modals')
     <x-adminkit.html.modal id="logs-modal" size="lg" />
+    <x-adminkit.html.modal id="cron-logs-modal" size="lg" />
     <x-adminkit.html.modal id="admin-modal" size="sm" />
 @endsection
 
@@ -112,6 +119,26 @@
 
             $.ajax({
                 url : '{{route("dashboard.biometric_devices.attendances")}}',
+                data : {id:btn.attr('data')},
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
+
+        $("body").on("click",".cron-logs-btn",function () {
+            let btn = $(this);
+            load_modal2(btn);
+
+            $.ajax({
+                url : '{{route("dashboard.biometric_devices.index")}}?cronLogs=true',
                 data : {id:btn.attr('data')},
                 type: 'GET',
                 headers: {

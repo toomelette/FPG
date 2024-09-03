@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\BiometricDevices;
+use App\Models\CronLogs;
 use App\Models\DTR;
 use App\Models\Employee;
 use App\Models\JoEmployees;
@@ -24,7 +25,7 @@ use function foo\func;
 class BiometricDevicesController extends Controller
 {
 
-    public function index(){
+    public function index(Request $request){
         $colors = [
             1 => 'bg-green',
             2 => 'bg-aqua',
@@ -34,6 +35,13 @@ class BiometricDevicesController extends Controller
             6 => 'bg-info',
             7 => 'bg-green',
         ];
+
+        if($request->ajax() && $request->has('cronLogs')){
+            return $this->cronLogs($request);
+        }
+        if($request->ajax() && $request->has('cronLogsTable')){
+            return $this->cronLogsTable($request);
+        }
 
         $devices = BiometricDevices::query()->get();
         return view('_su.biometric-devices.index')->with([
@@ -45,7 +53,29 @@ class BiometricDevicesController extends Controller
             'colors' => $colors,
         ]);
     }
+    public function cronLogs(Request $request)
+    {
+        $device = BiometricDevices::query()->findOrFail($request->id);
+        return view('_su.biometric-devices.cron-logs')->with([
+            'device' => $device,
+        ]);
+    }
+    public function cronLogsTable(Request $request)
+    {
+        $device = BiometricDevices::query()->findOrFail($request->deviceId);
+        $cronLogs = CronLogs::query()
+            ->where('log','like','%'.$device->ip_address.'%');
 
+        $dt = DataTables::of($cronLogs)
+            ->editColumn('created_at',function($data){
+                return Helper::dateFormat($data->created_at,'M. d, Y | h:i A');
+            })
+            ->escapeColumns([])
+            ->setRowId('slug')
+            ->toJson();;
+
+        return $dt;
+    }
     public function restart(Request $request){
         $device = BiometricDevices::query()->find($request->id);
 
@@ -100,6 +130,9 @@ class BiometricDevicesController extends Controller
                     })
                     ->editColumn('type',function ($data){
                         return Helper::dtr_type($data->type);
+                    })
+                    ->editColumn('timestamp',function($data){
+                        return Helper::dateFormat($data->timestamp,'M. d, Y | h:i A');
                     })
                     ->escapeColumns([])
                     ->setRowId('slug')
