@@ -504,7 +504,7 @@ class DTRService extends BaseService
                 $zk->clearAttendance();
                 $dev->last_uid = 0;
                 $dev->last_cleared = Carbon::now();
-                $dev->last_cleared_user = Auth::user()->user_id;
+                $dev->last_cleared_user = Auth::user()->user_id ?? null;
                 $dev->update();
 
                 $cl = new CronLogs;
