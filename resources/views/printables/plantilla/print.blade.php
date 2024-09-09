@@ -167,13 +167,12 @@
                     </tr>
                     @foreach($divisions as $key => $division)
                         @if(is_numeric($key))
-                            <tr>
+                            <tr class="{{empty($division->incumbentEmployee) ? 'text-red' : ''}}">
                                 @foreach($columns as $column)
                                     @switch($column)
                                         @case('numbering')
                                             <td class="text-center"></td>
                                         @break
-
                                         @case('actual_salary')
                                             @if(!empty($division->incumbentEmployee))
                                                 <td class="text-right">{{Helper::toNumber($jobGrades[$division->incumbentEmployee->salary_grade][$division->incumbentEmployee->step_inc] ?? null)}} </td>
@@ -253,7 +252,7 @@
                             </tr>
                             @foreach($division as $key2 => $section)
                                 @if(is_numeric($key2))
-                                    <tr>
+                                    <tr class="{{empty($section->incumbentEmployee) ? 'text-red' : ''}}">
                                         @foreach($columns as $column)
                                             @switch($column)
                                                 @case('numbering')
@@ -338,7 +337,7 @@
                                         <td colspan="{{count($columns)}}" style="padding-left: 30px;" class="section">{{$key2}}</td>
                                     </tr>
                                     @foreach($section as $item)
-                                        <tr>
+                                        <tr class="{{empty($item->incumbentEmployee) ? 'text-red' : ''}}">
                                             @foreach($columns as $column)
                                                 @switch($column)
                                                     @case('numbering')
