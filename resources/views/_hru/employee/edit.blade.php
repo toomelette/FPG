@@ -245,7 +245,7 @@
                         </div>
                         <div class="row mb-2">
                             <x-forms.input label="Appointment Date" name="appointment_date" cols="2" type="date" :value="$employee ?? null"/>
-                            <x-forms.input label="Adjustment Date" name="adjustment_date" cols="2" type="date" :value="$employee ?? null"/>
+                            <x-forms.input label="Date of Last Promotion" name="adjustment_date" cols="2" type="date" :value="$employee ?? null"/>
                             <x-forms.select label="Station" name="station" cols="2" :value="$employee ?? null" :options="['QC' => 'QC', 'VIS' => 'VIS']"/>
                             <x-forms.select label="Groupings" name="locations" cols="2"  :value="$employee ?? null" :options="\App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeGroupings(),'value','option')"/>
                             <x-forms.select label="Assignment" name="assignment" cols="2"  :value="$employee ?? null" :options="\App\Swep\Helpers\Arrays::employeeAssignments()"/>
