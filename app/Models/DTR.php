@@ -14,6 +14,9 @@ class DTR extends Model
     public $timestamps = true;
 
     public $fillable = ['uploaded'];
+    protected $casts = [
+        'timestamp' => 'datetime',
+    ];
     public function deviceDetails(){
         return $this->belongsTo('App\Models\BiometricDevices','device','serial_no');
     }

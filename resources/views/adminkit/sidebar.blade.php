@@ -24,6 +24,9 @@
 
 
                     <div class="sidebar-user-subtitle"><small>{{ Auth::user()->employee->platilla->position ?? Auth::user()->employee->position ?? 'N/A' }}</small></div>
+                    @if(!empty(Auth::user()->employee->amInToday))
+                        <span class="badge bg-info"><i class="fa fa-clock"></i> IN: {{Auth::user()->employee->amInToday->timestamp->format('h:i A')}}</span>
+                    @endif
                 </div>
             </div>
         </div>

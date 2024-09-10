@@ -558,4 +558,12 @@ class Employee extends Model{
     public function scopeRemoveBoardMember(Builder $query){
         $query->where('is_board_member','=',null);
     }
+
+    public function amInToday()
+    {
+        return $this->hasOne(DTR::class,'user','biometric_user_id')
+            ->where('timestamp','like',Carbon::now()->format('Y-m-d').'%')
+            ->where('type','=',10)
+            ->orderBy('timestamp','desc');
+    }
 }
