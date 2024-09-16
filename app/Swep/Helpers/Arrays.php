@@ -960,6 +960,7 @@ class Arrays
             'COS' => 'COS',
             'PROJECT-BASED' => 'PROJECT-BASED',
             'CASUAL' => 'CASUAL',
+            'EMERGENCY' => 'EMERGENCY',
         ];
         ksort($oraohra);
         ksort($others);
@@ -1041,5 +1042,24 @@ class Arrays
             $earned[$index] = (in_array($index,$cut) ?bcdiv(1.25/30*$index, 1, 3) : round(1.25/30*$index,3))*1;
         }
         return $earned;
+    }
+
+    public static function documentRequestingParty()
+    {
+        return [
+            'Public Clients' => 'Public Clients',
+            'Other Government Agencies' => 'Other Government Agencies',
+            'SRA Officials & Employees' => 'SRA Officials & Employees',
+        ];
+    }
+
+    public static function documentRequestPurpose()
+    {
+        return [
+            'For legal/court cases as supporting evidences, proof, etc.' => 'For legal/court cases as supporting evidences, proof, etc.',
+            'To be used internally by the officers and employees in the effective discharge of their respective functions, duties and responsibilities' => 'To be used internally by the officers and employees in the effective discharge of their respective functions, duties and responsibilities',
+            'Intended for personal consumption of each officer and/or employee personnel records/documents' => 'Intended for personal consumption of each officer and/or employee personnel records/documents',
+            'Others' => 'Others (kindly specify)',
+        ];
     }
 }
