@@ -148,7 +148,7 @@
                             </td>
                             <td>{{$srArray[$key]->position}}</td>
                             <td>{{$srArray[$key]->appointment_status}}</td>
-                            <td>{{number_format($srArray[$key]->salary,2)}} / A</td>
+                            <td>{{number_format($srArray[$key]->salary,2)}} / {{$srArray[$key]->mode_of_payment ?? null}}</td>
                             <td class="text-center">{{$srArray[$key]->station}}</td>
                             <td class="text-center">{{$srArray[$key]->lwp}}</td>
                             <td class="text-center">{{$srArray[$key]->spdate}}</td>
