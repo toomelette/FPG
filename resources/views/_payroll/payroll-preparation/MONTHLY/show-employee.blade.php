@@ -1,4 +1,5 @@
 <h4 class="text-strong">{{$employeePayrollList->saved_employee_data['full_name'] ?? ''}}</h4>
+<h5 class="text-strong">{{$employeePayrollList->saved_employee_data['employee_no'] ?? ''}}</h5>
 <p>{{$employeePayrollList->saved_employee_data['position'] ?? ''}}</p>
 <table class="mb-3">
     <tbody>

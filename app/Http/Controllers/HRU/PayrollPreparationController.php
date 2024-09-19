@@ -791,4 +791,17 @@ class PayrollPreparationController
         }
     }
 
+    public function destroy($slug)
+    {
+        $payrollMaster = PayrollMaster::query()->findOrFail($slug);
+        if($payrollMaster->hmtDetails()->delete()){
+            if($payrollMaster->payrollMasterEmployees()->delete()){
+                if($payrollMaster->delete()){
+                    return 1;
+                }
+            }
+        }
+        abort(503,'Error deleting payroll.');
+    }
+
 }
