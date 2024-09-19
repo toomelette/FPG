@@ -1062,4 +1062,17 @@ class Arrays
             'Others' => 'Others (kindly specify)',
         ];
     }
+
+    public static function payrollBulkEditDeductions()
+    {
+        $deds = Deductions::query()->where('bulk_edit','=',1)->get();
+        if($deds->count() > 0){
+            return $deds->mapWithKeys(function ($data){
+                return [
+                    $data->deduction_code => $data->deduction_code,
+                ];
+            });
+        }
+        return  [];
+    }
 }

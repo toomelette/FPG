@@ -65,13 +65,15 @@ class UserSubmenuRepository extends BaseRepository implements UserSubmenuInterfa
             return 1;
         }else{
             $submenu_id = Submenu::where('route',$route_name)->first();
-            if(empty($submenu_id)){
-                abort(403,'Route does not exist in the database. ['.$route_name.']');
+            if($submenu_id->public == 1){
+                return true;
             }
             $submenu_id = $submenu_id->submenu_id;
+
             $usm = $this->user_submenu->where('submenu_id', $submenu_id)
                 ->where('user_id', $user_id)
                 ->first();
+
             if(empty($usm)){
                 abort(403,'This action is unauthorized.');
             }
@@ -79,6 +81,28 @@ class UserSubmenuRepository extends BaseRepository implements UserSubmenuInterfa
         }
     }
 
+
+    public function isUserAuthorized($rt) {
+        $route_name = $rt;
+        $user_id = $this->auth->user()->user_id;
+
+
+        $submenu_id = Submenu::where('route',$route_name)->first();
+        if($submenu_id->public == 1){
+            return true;
+        }
+        $submenu_id = $submenu_id->submenu_id;
+
+        $usm = $this->user_submenu->where('submenu_id', $submenu_id)
+            ->where('user_id', $user_id)
+            ->first();
+
+        if(empty($usm)){
+            return false;
+        }
+
+        return true;
+    }
 
 
 

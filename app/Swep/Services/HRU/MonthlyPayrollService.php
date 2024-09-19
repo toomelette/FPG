@@ -667,6 +667,30 @@ class MonthlyPayrollService
         );
     }
 
+    public function bulkUpdate(PayrollMaster $payrollMaster, Request $request)
+    {
+
+        $upsertValues = [];
+        $deductionCode = $request->deduction_code;
+        $deduction = Deductions::query()->where('deduction_code','=',$deductionCode)->first();
+            $deduction ?? abort(503,'Deduction not found.');
+
+
+        foreach ($payrollMaster->payrollMasterEmployees as $employee){
+            $amt = Helper::sanitizeAutonum($request->amount);
+            array_push($upsertValues,[
+                'employee_slug' => $employee->employee_slug,
+                'deduction_code' => $deduction->deduction_code,
+                'priority' => $deduction->n_priority,
+                'amount' =>  $amt == 0 ? null : $amt,
+            ]);
+        }
+        TemplateDeductions::query()->upsert($upsertValues,
+            ['employee_slug','deduction_code'],
+            ['priority','amount']
+        );
+    }
+
     public function update(PayrollUpdateFormRequest $request,PayrollMaster $payrollMaster)
     {
         if($payrollMaster->is_locked ){
@@ -721,6 +745,12 @@ class MonthlyPayrollService
         if($request->has('map')){
             $payrollMaster = $payrollMaster->load(['payrollMasterEmployees.employee']);
             return $this->updateMap($payrollMaster, $request);
+        }
+
+        //IF BULK
+        if($request->has('bulk')){
+            $payrollMaster = $payrollMaster->load(['payrollMasterEmployees.employee']);
+            return $this->bulkUpdate($payrollMaster, $request);
         }
         if($request->has('updateEmployeesData')){
 

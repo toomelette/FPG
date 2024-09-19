@@ -92,6 +92,8 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
             'subject' => $subject,
         ]);
     })->name('show_activity');
+
+    Route::get('/document_request/{slug}/print',[\App\Http\Controllers\RECORDS\DocumentRequestsController::class,'print'])->name('document_request.print');
 });
 
 
@@ -296,6 +298,11 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('/document_folder/{folder_code}/download', 'DocumentFolderController@download')->name('document_folder.download');
 	Route::resource('document_folder', 'DocumentFolderController');
 
+    /** Document Request **/
+
+    Route::get('/document_request/my',[\App\Http\Controllers\RECORDS\DocumentRequestsController::class,'my'])->name('document_request.my');
+
+    Route::resource('document_request', \App\Http\Controllers\RECORDS\DocumentRequestsController::class);
 
 	/** Email Contacts **/
 	Route::resource('email_contact', 'EmailContactController');
@@ -719,13 +726,6 @@ Route::get('/apiGetData',function (){
     }
 });
 
-Route::get('/recover',function (){
-    $json = file_get_contents('qc.json');
-    $data = json_decode($json);
-    return view('dashboard.temp.table')->with([
-        'data' => $data
-    ]);
-});
 
 
 
@@ -733,228 +733,61 @@ Route::get('sendEvent',[\App\Http\Controllers\Test\TestController::class,'test']
 Route::get('monitor',[\App\Http\Controllers\Test\TestController::class,'monitor']);
 
 
-Route::get('/roles',function (){
-//    $permission = \Spatie\Permission\Models\Permission::create([
-//        'name' => 'employees.manage',
-//    ]);
-    $user = Auth::user();
-//    $user->givePermissionTo('employees.update');
-    dd($user->getAllPermissions());
-});
-
-
-Route::get('/apiGetData',function (){
-    $headers = [
-        'Accept'        => 'application/json',
-        'Content-type' => 'application/json',
-    ];
-
-    $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaHJycy5zcmEuZ292LnBoL2FwaS9sb2dpbiIsImlhdCI6MTcyNDEzMjEzOSwiZXhwIjoxNzI0MTM1NzM5LCJuYmYiOjE3MjQxMzIxMzksImp0aSI6Ik8xSDh6OFFwYVBicnEwaFYiLCJzdWIiOiIxIiwicHJ2IjoiNDBhOTdmY2EyZDQyNGU3NzhhMDdhMGEyZjEyZGM1MTdhODVjYmRjMSJ9.hfC48jVIziSTp3oK3G6m6CfIxDLpnAQrXwBckCSrESU';
-    $response = \Illuminate\Support\Facades\Http::withToken($token)
-        ->withHeaders($headers)
-        ->get('http://hrrs.sra.gov.ph/api/employees/all');
-    $data = json_decode($response->getBody(), true);
-
-
-    dd($data);
-
-});
-
-Route::get('/parSerial',function (){
-
-});
-
-Route::get('/parImport',function (){
-    $parOld = \App\Models\PPBTMS\ParOld::query()->get();
-    $insert = [];
-    $emps = \App\Models\Employee::query()->with(['plantilla'])->permanent()->get();
-    foreach ($parOld as $par) {
-        $propNo = Str::of($par->new_property_no)->replaceFirst('-','=')->replaceFirst('-','*')->replaceFirst('-','+')->replaceFirst('-','_');
-
-        $subMajor = \Illuminate\Support\Str::of($propNo)->betweenFirst('=','*')->toString();
-        $genLedger = \Illuminate\Support\Str::of($propNo)->betweenFirst('*','+')->toString();
-        $location = \Illuminate\Support\Str::of($propNo)->afterLast('_')->toString();
-        $serial = \Illuminate\Support\Str::of($propNo)->betweenFirst('+','_')->toString();
-
-        $fundCluster = "COB";
-        if(\Illuminate\Support\Str::contains($par->article,['ACEF'],true)){
-            $fundCluster = 'ACEF';
-        }
-        if(\Illuminate\Support\Str::contains($par->article,['DONATION'],true)){
-            $fundCluster = 'DONATION';
-        }
-        if(\Illuminate\Support\Str::contains($par->article,['DONATION'],true)){
-            $fundCluster = 'SIDA';
-        }
-
-
-        $employee = $emps->firstWhere('employee_no',$par->employee_no);
-
-        $insert[] = [
-            'slug' => \Illuminate\Support\Str::random(),
-            'ref_book' => 'IMPORT',
-            'propertyno' => $par->new_property_no,
-            'sub_major_account_group' => $subMajor,
-            'general_ledger_account' => $genLedger,
-            'fund_cluster' => $fundCluster,
-            'location' => $location,
-            'article' => $par->article,
-            'old_propertyno' => $par->old_property_no,
-            'propertyno' => $par->new_property_no,
-            'uom' => strtoupper($par->unit_of_measure),
-            'acquiredcost' => $par->amount * 1,
-            'qtypercard' => $par->qty_property_card == '' ? null : $par->qty_property_card * 1,
-            'onhandqty' => $par->qty_physical_count == '' ? null : $par->qty_physical_count * 1,
-            'dateacquired' => Helper::dateFormat($par->date_acquired,'Y-m-d'),
-            'remarks' => $par->remarks,
-            'acctemployee_no' => $employee->employee_no ?? null,
-            'acctemployee_fname' => $employee->full['FMiLE'] ?? null,
-            'acctemployee_post' => $employee->plantilla->position ?? $employee->position ?? null,
-            'respcenter' => $employee->resp_center ?? null,
-            'project_id' => 2,
-            'office' => $par->location,
-            'condition' => strtoupper($par->condition),
-            'invtacctcode' => $par->account_code,
-            'user_created' => 'AUTO IMPORT',
-            'serial_no' => $serial,
-        ];
-//        dd(\Illuminate\Support\Str::of($par->new_property_no)->betweenFirst('-','-'));
-//        dd($par);
-    }
-    dd('prev.');
-    $chunk = collect($insert)->chunk(200);
-    foreach ($chunk as $toInsert){
-        \App\Models\PPBTMS\InventoryPPE::query()->insert($toInsert->toArray());
-    }
-
-    dd(1);
-
-//    $parNew->id =  '';
-//    $parNew->slug =  '';
-    $parNew->ref_book =  '';
-//    $parNew->par_code =  '';
-//    $parNew->sub_major_account_group =  '';
-//    $parNew->general_ledger_account =  '';
-//    $parNew->fund_cluster =  '';
-//    $parNew->propuniqueno =  '';
-//    $parNew->article =  '';
-//    $parNew->description =  '';
-    $parNew->serial_no =  '';
-//    $parNew->old_propertyno =  '';
-//    $parNew->propertyno =  '';
-//    $parNew->uom =  '';
-//    $parNew->acquiredcost =  '';
-//    $parNew->qtypercard =  '';
-//    $parNew->onhandqty =  '';
-//    $parNew->shortqty =  '';
-//    $parNew->shortvalue =  '';
-//    $parNew->dateacquired =  '';
-//    $parNew->remarks =  '';
-//    $parNew->acctemployee_no =  '';
-//    $parNew->acctemployee_fname =  '';
-//    $parNew->acctemployee_post =  '';
-//    $parNew->respcenter =  '';
-//    $parNew->supplier =  '';
-//    $parNew->invoiceno =  '';
-//    $parNew->invoicedate =  '';
-//    $parNew->pono =  '';
-//    $parNew->podate =  '';
-//    $parNew->invtacctcode =  '';
-//    $parNew->location =  '';
-//    $parNew->acquiredmode =  '';
-//    $parNew->condition =  '';
-//    $parNew->user_created =  '';
-//    $parNew->user_updated =  '';
-//    $parNew->ip_created =  '';
-//    $parNew->ip_updated =  '';
-//    $parNew->created_at =  '';
-//    $parNew->updated_at =  '';
-//    $parNew->ppe_model =  '';
-//    $parNew->ppe_serial_no =  '';
-//    $parNew->office =  '';
-//    $parNew->project_id =  '';
-//    $parNew->inv_taken =  '';
-//    $parNew->inv_date =  '';
-
-});
 Route::get('/leaveTest',function (\App\Swep\Services\HRU\LeaveCreditService $leaveCreditService){
     return $leaveCreditService->monthlyCreditToEmployees();
 });
 
 
-Route::get('testbiometric',function (){
-    $last_uid = 32964;
-    $last_from_device = 0;
-    $zk = json_decode(file_get_contents(asset('json/testBiometric.json')));
-    $attendances = [];
-    //
+Route::get('/ping',function (){
+    ini_set('max_execution_time', 500);
+    $threeOctet = '10.36.7.';
+    $activeIps = [];
+    $inactiveIps = [];
+    $min = 1;
+    $max = 255;
+    for ($x = $min;$x <= $max; $x++){
+        $host = $threeOctet.$x;
 
-
-    foreach ($zk as $data){
-        $data = collect($data)->toArray();
-
-        $attendances[$data['uid']] = $data;
-    }
-    $last_from_device = array_key_last($attendances);
-
-    $attendances_array = [];
-    if($last_from_device < $last_uid){
-        $while = $last_uid+1;
-
-        while (isset($attendances[$while])){
-            $while++;
+        $ping = new \JJG\Ping($host,32,1);
+        $latency = $ping->ping();
+        if ($latency !== false) {
+            $activeIps[] = $host;
+//            print 'Latency is ' . $latency . ' ms';
         }
-        $while = $while - 1;
-        for ($x = $last_uid+1 ; $x <= $while ; $x++){
-
-            if(isset($attendances[$x])){
-                array_push($attendances_array,[
-                    'uid' => $attendances[$x]['uid'],
-                    'user' => $attendances[$x]['id'],
-                    'state' => $attendances[$x]['state'],
-                    'timestamp' => $attendances[$x]['timestamp'],
-                    'type' => $attendances[$x]['type'],
-                    'device' => 'xxx',
-                    'location' => 'test',
-                ]);
-            }
-        }
-
-        for ($x = 0 ; $x < $last_uid - 20000 ; $x++){
-
-            if(isset($attendances[$x])){
-                array_push($attendances_array,[
-                    'uid' => $attendances[$x]['uid'],
-                    'user' => $attendances[$x]['id'],
-                    'state' => $attendances[$x]['state'],
-                    'timestamp' => $attendances[$x]['timestamp'],
-                    'type' => $attendances[$x]['type'],
-                    'device' => 'xx',
-                    'location' => 'xx',
-                ]);
-            }
-        }
-
-
-        dd($attendances_array);
-    }
-
-    for ($x = $last_uid+1 ; $x <= $last_from_device ; $x++){
-
-        if(isset($attendances[$x])){
-            array_push($attendances_array,[
-                'uid' => $attendances[$x]['uid'],
-                'user' => $attendances[$x]['id'],
-                'state' => $attendances[$x]['state'],
-                'timestamp' => $attendances[$x]['timestamp'],
-                'type' => $attendances[$x]['type'],
-                'device' => 'xxx',
-                'location' => 'test',
-            ]);
+        else {
+            $inactiveIps[] = $host;
+//            print 'Host could not be reached.';
         }
     }
 
+    $insert = [];
+    $batch = Str::random();
+    if(count($activeIps) > 0){
+        foreach ($activeIps as $activeIp){
+            $converted = Str::of($activeIp)->replaceFirst('.','=')->replaceFirst('.','*')->replaceFirst('.','#');
 
-    dd($attendances_array);
-    dd($last_uid);
+            $insert[] = [
+                'ip_address' => $activeIp,
+                'octet1' => $converted->before('='),
+                'octet2' => $converted->between('=','*'),
+                'octet3' => $converted->between('*','#'),
+                'octet4' => $converted->afterLast('#'),
+                'remarks' => $batch,
+            ];
+        }
+    }
+    \App\Models\SU\SuActiveIpAddress::query()->insert($insert);
+    dd($insert);
+
+//    $ping = new \JJG\Ping($host);
+//    $latency = $ping->ping();
+//    if ($latency !== false) {
+//        print 'Latency is ' . $latency . ' ms';
+//    }
+//    else {
+//        print 'Host could not be reached.';
+//    }
 });
+
+
+

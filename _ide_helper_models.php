@@ -278,6 +278,8 @@ namespace App\Models{
  * @property string|null $remarks
  * @property string|null $last_cleared
  * @property string|null $last_cleared_user
+ * @property int|null $last_state
+ * @property string|null $last_state_timestamp
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DTR> $attendances
  * @property-read int|null $attendances_count
  * @method static \Illuminate\Database\Eloquent\Builder|BiometricDevices newModelQuery()
@@ -288,6 +290,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|BiometricDevices whereIpAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BiometricDevices whereLastCleared($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BiometricDevices whereLastClearedUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BiometricDevices whereLastState($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BiometricDevices whereLastStateTimestamp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BiometricDevices whereLastUid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BiometricDevices whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BiometricDevices whereRemarks($value)
@@ -846,7 +850,7 @@ namespace App\Models{
  * @property int $user
  * @property int $state
  * @property int $type
- * @property string $timestamp
+ * @property \Illuminate\Support\Carbon $timestamp
  * @property string $device
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -1534,6 +1538,7 @@ namespace App\Models{
  * @property bool|null $is_board_member
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
+ * @property-read \App\Models\DTR|null $amInToday
  * @property-read mixed $attr_appointment_status
  * @property-read \App\Models\User|null $createdBy
  * @property-read \App\Models\Department|null $department
@@ -2743,7 +2748,7 @@ namespace App\Models\HRU{
  * @property float|null $govt_share_factor
  * @property string|null $account_code
  * @property int|null $sundry_account
- * @property int|null $availables
+ * @property int $availables
  * @property string|null $employee_type
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -2752,6 +2757,7 @@ namespace App\Models\HRU{
  * @property string|null $groupings
  * @property string|null $factor_operand
  * @property int|null $pre_tax_deduction
+ * @property int|null $non_edit
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions available()
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions newQuery()
@@ -2770,6 +2776,7 @@ namespace App\Models\HRU{
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereGroupings($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereNPriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereNonEdit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions wherePreTaxDeduction($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions wherePriority($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deductions whereSundryAccount($value)
@@ -3744,6 +3751,7 @@ namespace App\Models{
  * @property string|null $department
  * @property string|null $employee_slug
  * @property string|null $charge_to
+ * @property string|null $actual_deduction
  * @property string|null $lastname
  * @property string|null $firstname
  * @property string|null $middlename
@@ -3769,6 +3777,9 @@ namespace App\Models{
  * @property string|null $ip_created
  * @property string|null $ip_updated
  * @property int|null $project_id
+ * @property string|null $received_at
+ * @property string|null $user_received
+ * @property string|null $status
  * @property-read \App\Models\PPU\RCDesc|null $_department
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
@@ -3780,7 +3791,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication query()
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication received()
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication sortable($defaultParameters = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereActualDeduction($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereApprovedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereApprovedByPosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereCertifiedBy($value)
@@ -3805,12 +3818,15 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereNoOfDays($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication wherePosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereProjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereReceivedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereRecommendedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereRecommendedByPosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereSalary($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereUserCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereUserReceived($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveApplication whereUserUpdated($value)
  */
 	class LeaveApplication extends \Eloquent {}
@@ -3826,8 +3842,10 @@ namespace App\Models{
  * @property string|null $leave_card
  * @property string|null $date
  * @property string|null $credits
+ * @property string|null $deduction
  * @property string|null $usable_until
  * @property string|null $remarks
+ * @property string|null $type
  * @property string|null $user_created
  * @property string|null $user_updated
  * @property string|null $ip_created
@@ -3837,6 +3855,8 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\Employee|null $employee
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard creditsOnly()
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard deductionsOnly()
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard getCompensatory($month, $year)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard getLeave($month, $year)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard getLeaveForced($month, $year)
@@ -3853,6 +3873,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereCredits($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereDeduction($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereEmployeeSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereIpCreated($value)
@@ -3860,6 +3881,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereLeaveCard($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereRemarks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereUsableUntil($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LeaveCard whereUserCreated($value)
@@ -4166,6 +4188,154 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|NewsAttachments whereUpdatedAt($value)
  */
 	class NewsAttachments extends \Eloquent {}
+}
+
+namespace App\Models\PPBTMS{
+/**
+ * App\Models\PPBTMS\InventoryPPE
+ *
+ * @property int $id
+ * @property string|null $slug
+ * @property string|null $ref_book
+ * @property string|null $par_code
+ * @property string|null $sub_major_account_group
+ * @property string|null $general_ledger_account
+ * @property string|null $fund_cluster
+ * @property string|null $propuniqueno
+ * @property string|null $article
+ * @property string|null $description
+ * @property string|null $serial_no
+ * @property string|null $old_propertyno
+ * @property string|null $propertyno
+ * @property string|null $uom
+ * @property string|null $acquiredcost
+ * @property int|null $qtypercard
+ * @property int|null $onhandqty
+ * @property int|null $shortqty
+ * @property int|null $shortvalue
+ * @property string|null $dateacquired
+ * @property string|null $remarks
+ * @property string|null $acctemployee_no
+ * @property string|null $acctemployee_fname
+ * @property string|null $acctemployee_post
+ * @property string|null $respcenter
+ * @property string|null $supplier
+ * @property string|null $invoiceno
+ * @property string|null $invoicedate
+ * @property string|null $pono
+ * @property string|null $podate
+ * @property string|null $invtacctcode
+ * @property string|null $location
+ * @property string|null $acquiredmode
+ * @property string|null $condition
+ * @property string|null $user_created
+ * @property string|null $user_updated
+ * @property string|null $ip_created
+ * @property string|null $ip_updated
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $ppe_model
+ * @property string|null $ppe_serial_no
+ * @property string|null $office
+ * @property int|null $project_id
+ * @property int|null $inv_taken
+ * @property string|null $inv_date
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereAcctemployeeFname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereAcctemployeeNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereAcctemployeePost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereAcquiredcost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereAcquiredmode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereArticle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereCondition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereDateacquired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereFundCluster($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereGeneralLedgerAccount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereInvDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereInvTaken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereInvoicedate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereInvoiceno($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereInvtacctcode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereIpCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereIpUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereOffice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereOldPropertyno($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereOnhandqty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereParCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE wherePodate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE wherePono($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE wherePpeModel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE wherePpeSerialNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereProjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE wherePropertyno($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE wherePropuniqueno($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereQtypercard($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereRefBook($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereRespcenter($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereSerialNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereShortqty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereShortvalue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereSubMajorAccountGroup($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereSupplier($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereUom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereUserCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryPPE whereUserUpdated($value)
+ */
+	class InventoryPPE extends \Eloquent {}
+}
+
+namespace App\Models\PPBTMS{
+/**
+ * App\Models\PPBTMS\ParOld
+ *
+ * @property int $id
+ * @property string|null $type_of_ppe
+ * @property string|null $account_code
+ * @property string|null $article
+ * @property string|null $accountable_person
+ * @property string|null $name
+ * @property string|null $employee_no
+ * @property string|null $date_acquired
+ * @property string|null $old_property_no
+ * @property string|null $new_property_no
+ * @property string|null $unit_of_measure
+ * @property string|null $amount
+ * @property string|null $qty_property_card
+ * @property string|null $qty_physical_count
+ * @property string|null $location
+ * @property string|null $condition
+ * @property string|null $remarks
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereAccountCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereAccountablePerson($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereArticle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereCondition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereDateAcquired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereEmployeeNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereNewPropertyNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereOldPropertyNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereQtyPhysicalCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereQtyPropertyCard($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereTypeOfPpe($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ParOld whereUnitOfMeasure($value)
+ */
+	class ParOld extends \Eloquent {}
 }
 
 namespace App\Models\PPBTMS{
@@ -5776,6 +5946,70 @@ namespace App\Models{
 	class RCCodeTree extends \Eloquent {}
 }
 
+namespace App\Models\RECORDS{
+/**
+ * App\Models\RECORDS\DocumentRequests
+ *
+ * @property int $id
+ * @property string|null $slug
+ * @property string|null $request_no
+ * @property string|null $requesting_party
+ * @property string|null $requesting_party_specify
+ * @property string|null $requested_records
+ * @property string|null $purpose
+ * @property string|null $purpose_specify
+ * @property string|null $requested_at
+ * @property string|null $requested_by
+ * @property string|null $requested_by_position
+ * @property string|null $endorsed_by
+ * @property string|null $endorsed_by_position
+ * @property string|null $approved_by
+ * @property string|null $approved_by_position
+ * @property string|null $released_by
+ * @property string|null $released_by_position
+ * @property string|null $released_at
+ * @property string|null $user_created
+ * @property string|null $user_updated
+ * @property string|null $ip_created
+ * @property string|null $ip_updated
+ * @property string|null $status
+ * @property int|null $project_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests my()
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests query()
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereApprovedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereApprovedByPosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereEndorsedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereEndorsedByPosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereIpCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereIpUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereProjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests wherePurpose($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests wherePurposeSpecify($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereReleasedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereReleasedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereReleasedByPosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereRequestNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereRequestedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereRequestedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereRequestedByPosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereRequestedRecords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereRequestingParty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereRequestingPartySpecify($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereUserCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DocumentRequests whereUserUpdated($value)
+ */
+	class DocumentRequests extends \Eloquent {}
+}
+
 namespace App\Models{
 /**
  * App\Models\SSL
@@ -5807,6 +6041,31 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|SSL whereStep8($value)
  */
 	class SSL extends \Eloquent {}
+}
+
+namespace App\Models\SU{
+/**
+ * App\Models\SU\SuNotifications
+ *
+ * @property int $id
+ * @property string|null $type
+ * @property string|null $text
+ * @property string|null $subject
+ * @property string|null $model
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|SuNotifications newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SuNotifications newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SuNotifications query()
+ * @method static \Illuminate\Database\Eloquent\Builder|SuNotifications whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SuNotifications whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SuNotifications whereModel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SuNotifications whereSubject($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SuNotifications whereText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SuNotifications whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SuNotifications whereUpdatedAt($value)
+ */
+	class SuNotifications extends \Eloquent {}
 }
 
 namespace App\Models{

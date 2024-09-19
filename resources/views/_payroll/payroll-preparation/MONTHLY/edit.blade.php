@@ -121,14 +121,27 @@
             <hr class="mt-4 mb-4">
         </div>
 
+        <div class="visually-hidden">
+            <x-adminkit.html.alert type="success mb-2" body-class="alert-message p-1 text-center text-strong" :dismissible="false" :with-icon="false">
+                Update MAP (MUTUALFUND)
+            </x-adminkit.html.alert>
+            <form id="edit-map-form">
+                <div class="row mb-2">
+                    <x-forms.input label="Amount" name="amount" class="autonum" cols="12" autocomplete="off" :value="$mode"/>
+                </div>
+                <button class="btn btn-primary float-end btn-sm mb-3" type="submit"><i class="fa fa-check"></i> Update MAP</button>
+            </form>
+        </div>
+
         <x-adminkit.html.alert type="success mb-2" body-class="alert-message p-1 text-center text-strong" :dismissible="false" :with-icon="false">
-            Update MAP (MUTUALFUND)
+            Bulk Update Deductions
         </x-adminkit.html.alert>
-        <form id="edit-map-form">
+        <form id="edit-bulk-form">
             <div class="row mb-2">
-                <x-forms.input label="Amount" name="amount" class="autonum" cols="12" autocomplete="off" :value="$mode"/>
+                <x-forms.select label="Deduction" name="deduction_code" cols="12" autocomplete="off" :options="\App\Swep\Helpers\Arrays::payrollBulkEditDeductions()"/>
+                <x-forms.input label="Amount" name="amount" class="autonum" cols="12" autocomplete="off"/>
             </div>
-            <button class="btn btn-primary float-end btn-sm mb-3" type="submit"><i class="fa fa-check"></i> Update MAP</button>
+            <button class="btn btn-primary float-end btn-sm mb-3" type="submit"><i class="fa fa-check"></i> Update Deductions</button>
         </form>
 
 
@@ -411,12 +424,12 @@
                 }
             })
         })
-        $("#edit-map-form").submit(function (e) {
+        $("#edit-bulk-form").submit(function (e) {
             e.preventDefault()
             let form = $(this);
             loading_btn(form);
             $.ajax({
-                url : '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}?map',
+                url : '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}?bulk',
                 data : form.serialize(),
                 type: 'POST',
                 headers: {

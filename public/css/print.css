@@ -379,3 +379,13 @@ table.tbl{
     height: 5px;
 }
 
+.fillbox{
+    width: 20px;
+    height: 20px;
+    border: 1.4px solid;
+    margin-right: 5px;
+}
+
+.fillbox.active{
+    background-color: black;
+}
