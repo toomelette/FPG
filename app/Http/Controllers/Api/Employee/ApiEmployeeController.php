@@ -49,6 +49,7 @@ class ApiEmployeeController extends Controller
                 'middlename' => $data->middlename,
                 'ext' => $data->ext,
                 'sex' => $data->sex,
+                'date_of_birth' => $data->date_of_birth,
                 'position' => $data->plantilla->position ?? $data->position,
                 'item_no' => $data->item_no,
                 'firstday_gov' => $data->firstday_gov,
