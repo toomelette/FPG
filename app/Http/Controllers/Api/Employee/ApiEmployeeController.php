@@ -55,6 +55,7 @@ class ApiEmployeeController extends Controller
                 'firstday_gov' => $data->firstday_gov,
                 'years_in_gov' => Carbon::parse($data->firstday_gov)->age,
                 'firstday_sra' => $data->firstday_sra,
+                'location' => $data->locations,
             ];
         });
     }

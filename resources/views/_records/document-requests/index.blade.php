@@ -2,10 +2,10 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>My Requests</x-slot:title>
-        <x-slot:subtitle>Release of Documents/Records</x-slot:subtitle>
+        <x-slot:title>Request for Release of Documents</x-slot:title>
         <x-slot:float-end></x-slot:float-end>
     </x-adminkit.html.page-title>
+
     <x-adminkit.html.card>
         <x-slot:title><button type="button" class="btn btn-sm btn-primary float-end" data-bs-target="#add-request-modal" data-bs-toggle="modal"><i class="fa fa-plus"> </i> Make Request</button></x-slot:title>
 
@@ -67,7 +67,7 @@
             dom : 'lBfrtip',
             processing: true,
             serverSide: true,
-            ajax : '{{route('dashboard.document_request.my')}}',
+            ajax : '{{route('dashboard.document_request.index')}}',
             columns: [
                 { data : "request_no" },
                 { data : "requested_at" },
@@ -79,7 +79,7 @@
                 {!! __js::dt_buttons() !!}
             ],
             columnDefs:[
-                
+
             ],
             order:[[0,'desc']],
             responsive: false,
@@ -99,6 +99,7 @@
                 }
             }
         })
+
     </script>
     @include('_records.document-requests.js')
 @endsection

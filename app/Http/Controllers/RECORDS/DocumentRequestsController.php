@@ -22,6 +22,14 @@ class DocumentRequestsController extends Controller
     {
 
     }
+    public function index(Request $request)
+    {
+        if($request->ajax() && $request->has('draw')){
+            $documentRequests = DocumentRequests::query();
+            return  $this->datatable($request,$documentRequests);
+        }
+        return view('_records.document-requests.index');
+    }
 
     public function my(Request $request)
     {
