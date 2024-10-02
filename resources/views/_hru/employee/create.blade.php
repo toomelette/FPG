@@ -25,7 +25,7 @@
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <div class="row mb-2">
-                                <x-forms.input label="Last Name" name="lastname" cols="3" />
+                                <x-forms.input label="Last Name" name="lastname" cols="3"/>
                                 <x-forms.input label="First Name" name="firstname" cols="3" />
                                 <x-forms.input label="Middle Name" name="middlename" cols="2" />
                                 <x-forms.select label="Name Ext" name="name_ext" cols="1"  :options="\App\Swep\Helpers\Arrays::name_extensions()"/>

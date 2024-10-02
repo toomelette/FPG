@@ -791,3 +791,61 @@ Route::get('/ping',function (){
 
 
 
+Route::get('/getHRRS',function (){
+    $client = new \GuzzleHttp\Client(['base_uri' => 'http://localhost:8001/api/employees/getByEmployeeNo/KDD224']);
+
+    //THIS TOKEN MUST BE FROM THE ONE SAVED IN THE DB
+    $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEvYXBpL2xvZ2luIiwiaWF0IjoxNzE4ODY3MDc1LCJleHAiOjE3MTg4NzA2NzUsIm5iZiI6MTcxODg2NzA3NSwianRpIjoiRFFaeHhsTmx4QzVBVEluRCIsInN1YiI6IjEiLCJwcnYiOiI0MGE5N2ZjYTJkNDI0ZTc3OGEwN2EwYTJmMTJkYzUxN2E4NWNiZGMxIn0.JgY21NuwtT5PMYqGYzt-FQoitvLjg8iMOOPuN0oJ5JI';
+
+    $headers = [
+        'Accept'        => 'application/json',
+        'Content-type' => 'application/json',
+    ];
+
+
+    try {
+        //ADD TOKEN TO THE HEADER:
+        $headers['Authorization'] = 'Bearer ' . $token;
+
+        // Make a GET request
+        $response = $client->get('',[
+            'headers' => $headers,
+        ]);
+        // Get the response body as an array
+        $data = json_decode($response->getBody(), true);
+
+        dd($data);
+
+    } catch (\Exception $e) {
+        // Handle any errors that occur during the API request
+        // If unauthorized or token expired then login:
+        if($e->getCode() == 401){
+
+            $login = new \GuzzleHttp\Client(['base_uri' => 'http://localhost:8001/api/login']);
+            $response = $login->post('',[
+                'form_params' => [
+                    'username' => 'gjg021',
+                    'password' => 'admin12345',
+                    'headers' => $headers,
+                ],
+            ]);
+            //If login is OK:
+            if($response->getStatusCode() == 200){
+                //This is the new token generated after login:
+                $newToken = json_decode($response->getBody(),true)['authorization']['token'];
+                //Insert a code here to save the token to the DB for future use:
+
+                //Perform the request again:
+                $headers['Authorization'] = 'Bearer ' . $newToken;
+                $response = $client->get('',[
+                    'headers' => $headers,
+                ]);
+                // Get the response body as an array
+                $data = json_decode($response->getBody(), true);
+                dd($data);
+            }
+        }else{
+            dd('Else');
+        }
+    }
+});
