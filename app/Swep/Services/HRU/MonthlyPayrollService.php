@@ -42,7 +42,7 @@ class MonthlyPayrollService
         ]);
     }
 
-    public function recompute($payrollMasterSlug,$payMasterEmployeeSlug = null){
+    public function recompute($payrollMasterSlug,$payMasterEmployeeSlug = null,$avoid = []){
 
         $payrollMaster = PayrollMaster::query()
             ->with([
@@ -84,7 +84,9 @@ class MonthlyPayrollService
         //Update GSIS Deductions
         $this->updateGsis($payrollMaster);
         //Update Philhealth Deductions
-        $this->updatePhilhealth($payrollMaster);
+        if(!in_array('PHIC',$avoid)){
+            $this->updatePhilhealth($payrollMaster);
+        }
 //        $this->updateGsisGovtShare($payrollMaster);
         $this->updateHdmfGovtShare($payrollMaster);
 
@@ -943,7 +945,7 @@ class MonthlyPayrollService
 
 
         if($updateOrCreate){
-            return $this->recompute($payMasterSlug,$payMasterEmployee->slug);
+            return $this->recompute($payMasterSlug,$payMasterEmployee->slug,['PHIC']);
         }
         abort(503,'Error updating payroll template.');
     }
