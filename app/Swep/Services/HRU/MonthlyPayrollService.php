@@ -81,6 +81,8 @@ class MonthlyPayrollService
                 ['amount']
             );
 
+        //Update GSIS Deductions
+        $this->updateGsis($payrollMaster);
         //Update Philhealth Deductions
         $this->updatePhilhealth($payrollMaster);
 //        $this->updateGsisGovtShare($payrollMaster);
@@ -435,6 +437,33 @@ class MonthlyPayrollService
             ['employee_slug','deduction_code'],
             ['priority','amount','govt_share']
         );
+    }
+
+    public function updateGsis(PayrollMaster $payrollMaster)
+    {
+        $upsertValues = [];
+        $deductionCode = 'GSIS';
+        $deduction = Deductions::query()->where('deduction_code','=',$deductionCode)->first();
+            $deduction ?? abort(503,'Deduction not found.');
+
+        foreach ($payrollMaster->payrollMasterEmployees as $employee){
+            $personnelShare = $employee->saved_employee_data['monthly_basic'] * $deduction->factor;
+            $govtShare  = $employee->saved_employee_data['monthly_basic'] * $deduction->govt_share_factor;
+            array_push($upsertValues,[
+                'employee_slug' => $employee->employee_slug,
+                'deduction_code' => $deduction->deduction_code,
+                'priority' => $deduction->n_priority,
+                'amount' => $personnelShare,
+                'govt_share' => $govtShare,
+                'ec_share' => 100,
+            ]);
+
+        }
+        TemplateDeductions::query()->upsert($upsertValues,
+            ['employee_slug','deduction_code'],
+            ['priority','amount','govt_share','ec_share']
+        );
+
     }
 
     public function updateGsisGovtShare(PayrollMaster $payrollMaster)
