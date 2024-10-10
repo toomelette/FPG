@@ -58,6 +58,7 @@ class MonthlyPayrollService
             abort(503,'This Payroll is locked. Unlock it first to perform action.');
         }
 
+//        $payrollMaster->hmtDetails()->delete();
 
         $this->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
 
@@ -71,7 +72,10 @@ class MonthlyPayrollService
                 'priority' => 1,
                 'amount' => $employeeFromList->saved_employee_data['monthly_basic'],
             ]);
+
         }
+
+
 
         //Push updates to Payroll Template
         TemplateIncentives::query()
@@ -113,10 +117,12 @@ class MonthlyPayrollService
             ->find($payrollMasterSlug);
 
         $detailsArr = [];
+        $allDeductions = Deductions::query()->get()->pluck('deduction_code');
+
         //GET DEDUCTIONS From Payroll Template Deductions to be put to Payroll Details
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
             if(!empty($employeeFromList->employee->templateDeductions)){
-
+                $unusedDeductionCodes = $allDeductions;
                 //push incentives
                 foreach ($employeeFromList->employee->templateIncentives as $templateIncentive){
                     array_push($detailsArr,[
@@ -135,9 +141,10 @@ class MonthlyPayrollService
                 }
 
 
+
                 $salaryThreshold = 5000;
                 $monthlyIncentive = $employeeFromList->employee->templateIncentives->sum('amount');
-                $employeeDedectionsFromTemplate = $employeeFromList->employee->templateDeductions
+                $employeeDeductionsFromTemplate = $employeeFromList->employee->templateDeductions
                     ->sortBy(function($data){
                         if($data->priority == null){
                             return 100000;
@@ -145,10 +152,10 @@ class MonthlyPayrollService
                             return $data->priority;
                         }
                     });
-
                 /* DEDUCTIONS */
                 $stop = 0;
-                foreach ($employeeDedectionsFromTemplate as $templateDeduction){
+
+                foreach ($employeeDeductionsFromTemplate as $templateDeduction){
                     $monthlyIncentive = $monthlyIncentive - $templateDeduction->amount;
                     $deductionAmount  = $templateDeduction->amount;
                     if($stop == 0){
@@ -157,23 +164,44 @@ class MonthlyPayrollService
                             $deductionAmount = $amountToBeDeducted;
                             $stop = 1;
                         }
-                        array_push($detailsArr,[
-                            'employee_slug' => $employeeFromList->employee->slug,
-                            'pay_master_employee_listing_slug' => $employeeFromList->slug,
-                            'slug' => Str::random(),
-                            'type' => 'DEDUCTION',
-                            'code' => $templateDeduction->deduction_code,
-                            'amount' => $deductionAmount,
-                            'priority' => $templateDeduction->deduction->n_priority,
-                            'sundry_account' => $templateDeduction->deduction->sundry_account,
-                            'account_code' => $templateDeduction->deduction->account_code,
-                            'govt_share' => $templateDeduction->govt_share,
-                            'ec_share' => $templateDeduction->ec_share,
-                        ]);
+                    }else{
+                        $deductionAmount = 0;
                     }
+                    $detailsArr[] = [
+                        'employee_slug' => $employeeFromList->employee->slug,
+                        'pay_master_employee_listing_slug' => $employeeFromList->slug,
+                        'slug' => Str::random(),
+                        'type' => 'DEDUCTION',
+                        'code' => $templateDeduction->deduction_code,
+                        'amount' => $deductionAmount,
+                        'priority' => $templateDeduction->deduction->n_priority,
+                        'sundry_account' => $templateDeduction->deduction->sundry_account,
+                        'account_code' => $templateDeduction->deduction->account_code,
+                        'govt_share' => $templateDeduction->govt_share,
+                        'ec_share' => $templateDeduction->ec_share,
+                    ];
                 }
+                $unusedCodesButExistsInDetails = $employeeFromList->employeePayrollDetails->where('type','DEDUCTION')->pluck('code')->diff($employeeFromList->employee->templateDeductions->pluck('deduction_code'));
+                foreach ($unusedCodesButExistsInDetails as $unusedCodesButExistsInDetail) {
+                    $detailsArr[] = [
+                        'employee_slug' => $employeeFromList->employee->slug,
+                        'pay_master_employee_listing_slug' => $employeeFromList->slug,
+                        'slug' => Str::random(),
+                        'type' => 'DEDUCTION',
+                        'code' => $unusedCodesButExistsInDetail,
+                        'amount' => 0,
+                        'priority' => $templateDeduction->deduction->n_priority,
+                        'sundry_account' => $templateDeduction->deduction->sundry_account,
+                        'account_code' => $templateDeduction->deduction->account_code,
+                        'govt_share' => $templateDeduction->govt_share,
+                        'ec_share' => $templateDeduction->ec_share,
+                    ];
+                }
+
             }
+
         }
+
 
         PayrollMasterDetails::query()
             ->upsert(
@@ -185,7 +213,10 @@ class MonthlyPayrollService
 
 
         //remove ZERO amounts
-        $payrollMaster->hmtDetails()->where('amount','=',null)->delete();
+        $payrollMaster->hmtDetails()
+            ->where('amount','=',null)
+            ->orWhere('amount','=',0)
+            ->delete();
 
 
         //3. Compute Tax
@@ -260,6 +291,7 @@ class MonthlyPayrollService
             ])
             ->find($payrollMasterSlug);
         $detailsArr = [];
+
         //GET DEDUCTIONS From Payroll Template Deductions to be put to Payroll Details
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
             if(!empty($employeeFromList->employee->templateDeductions)){
@@ -283,7 +315,10 @@ class MonthlyPayrollService
 
                 $salaryThreshold = 5000;
                 $monthlyIncentive = $employeeFromList->employee->templateIncentives->sum('amount');
-                $employeeDedectionsFromTemplate = $employeeFromList->employee->templateDeductions
+
+
+
+                $employeeDeductionsFromTemplate = $employeeFromList->employee->templateDeductions
                     ->sortBy(function($data){
                         if($data->priority == null){
                             return 100000;
@@ -294,7 +329,7 @@ class MonthlyPayrollService
 
                 /* DEDUCTIONS */
                 $stop = 0;
-                foreach ($employeeDedectionsFromTemplate as $templateDeduction){
+                foreach ($employeeDeductionsFromTemplate as $templateDeduction){
                     $monthlyIncentive = $monthlyIncentive - $templateDeduction->amount;
                     $deductionAmount  = $templateDeduction->amount;
                     if($stop == 0){
@@ -303,23 +338,25 @@ class MonthlyPayrollService
                             $deductionAmount = $amountToBeDeducted;
                             $stop = 1;
                         }
-                        array_push($detailsArr,[
-                            'employee_slug' => $employeeFromList->employee->slug,
-                            'pay_master_employee_listing_slug' => $employeeFromList->slug,
-                            'slug' => Str::random(),
-                            'type' => 'DEDUCTION',
-                            'code' => $templateDeduction->deduction_code,
-                            'amount' => $deductionAmount,
-                            'priority' => $templateDeduction->deduction->n_priority,
-                            'sundry_account' => $templateDeduction->deduction->sundry_account,
-                            'account_code' => $templateDeduction->deduction->account_code,
-                            'govt_share' => $templateDeduction->govt_share,
-                            'ec_share' => $templateDeduction->ec_share,
-                        ]);
-
+                    }else{
+                        $deductionAmount = 0;
                     }
+                    $detailsArr[] = [
+                        'employee_slug' => $employeeFromList->employee->slug,
+                        'pay_master_employee_listing_slug' => $employeeFromList->slug,
+                        'slug' => Str::random(),
+                        'type' => 'DEDUCTION',
+                        'code' => $templateDeduction->deduction_code,
+                        'amount' => $deductionAmount,
+                        'priority' => $templateDeduction->deduction->n_priority,
+                        'sundry_account' => $templateDeduction->deduction->sundry_account,
+                        'account_code' => $templateDeduction->deduction->account_code,
+                        'govt_share' => $templateDeduction->govt_share,
+                        'ec_share' => $templateDeduction->ec_share,
+                    ];
                 }
             }
+
         }
 
         PayrollMasterDetails::query()
@@ -328,6 +365,12 @@ class MonthlyPayrollService
                 ['pay_master_employee_listing_slug','type','code'],
                 ['amount','priority','sundry_account','account_code','govt_share','ec_share']
             );
+
+        //remove ZERO amounts
+        $payrollMaster->hmtDetails()
+            ->where('amount','=',null)
+            ->orWhere('amount','=',0)
+            ->delete();
 
         //5. recompute 15th and 30th
         $payrollMaster = PayrollMaster::query()
@@ -930,9 +973,30 @@ class MonthlyPayrollService
             'employee_slug' => $request->employee_slug,
             'deduction_code' => $request->code,
             'priority' => $deductionMaster->n_priority,
-            'amount' => Helper::sanitizeAutonum($request->amount)
+            'amount' => Helper::sanitizeAutonum($request->amount)*1
         ];
 
+        $td = TemplateDeductions::query()
+            ->where('employee_slug',$request->employee_slug)
+            ->where('deduction_code','=',$request->code)
+            ->first();
+        /*
+                $check = false;
+                if($td){
+                    $td->amount = Helper::sanitizeAutonum($request->amount)*1;
+                    if($td->save()){
+                        $check = true;
+                    }
+
+                }else{
+                    $td = new TemplateDeductions();
+                    $td->amount = Helper::sanitizeAutonum($request->amount)*1;
+                    if($td->save()){
+                        $check = true;
+                    }
+                }
+
+             */
         $updateOrCreate = TemplateDeductions::query()
             ->upsert(
                 $upsert,
