@@ -24,7 +24,7 @@
 @endforelse
 
 <td class="text-end text-info deduction-subtotal">{{Helper::toNumber($dedTotal = $employee->employeePayrollDetails->where('type','DEDUCTION')->sum('amount'),2)}}</td>
-<td class="text-end text-strong {{$incTotal - $dedTotal < 5000 ? 'text-danger table-danger' : ''}}">
+<td class="text-end text-strong {{Helper::absolute($incTotal - $dedTotal) < 5000 ? 'text-danger table-danger' : ''}}">
     {{Helper::toNumber($incTotal - $dedTotal)}}
 </td>
 <td class="text-end {{$employee->pay15 < 2500 ? 'text-danger table-danger' : ''}}">{{Helper::toNumber($employee->pay15,2)}}</td>

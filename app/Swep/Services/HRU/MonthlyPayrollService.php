@@ -398,16 +398,16 @@ class MonthlyPayrollService
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
             $totalIncentives = $employeeFromList->employeePayrollDetails->where('type','INCENTIVE')->sum('amount');
             $totalDeductions = $employeeFromList->employeePayrollDetails->where('type','DEDUCTION')->sum('amount');
-            $takeHomePay = $totalIncentives - $totalDeductions;
+            $takeHomePay = Helper::absolute($totalIncentives - $totalDeductions);
             $decimalPart = $takeHomePay - floor($takeHomePay);
             $pay15 = round($takeHomePay/2) + $decimalPart;
             $pay30 = $takeHomePay - $pay15;
-
             array_push($upsertValues,[
                 'slug' => $employeeFromList->slug,
                 'pay15' => $pay15,
                 'pay30' => $pay30,
             ]);
+
         }
 
         PayrollMasterEmployees::query()->upsert($upsertValues,

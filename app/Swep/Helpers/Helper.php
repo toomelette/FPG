@@ -822,4 +822,8 @@ class Helper
         return $tax;
     }
 
+    public static function absolute($int){
+        $int = $int.'';
+        return $int * 1;
+    }
 }
