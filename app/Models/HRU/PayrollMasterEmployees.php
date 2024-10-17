@@ -27,6 +27,18 @@ class PayrollMasterEmployees extends Model
         return $this->hasMany(PayrollMasterDetails::class,'pay_master_employee_listing_slug','slug');
     }
 
+    public function employeePayrollDetailsIncentives(){
+        return $this
+            ->hasMany(PayrollMasterDetails::class,'pay_master_employee_listing_slug','slug')
+            ->where('type','=','INCENTIVE');
+    }
+
+    public function employeePayrollDetailsDeductions(){
+        return $this
+            ->hasMany(PayrollMasterDetails::class,'pay_master_employee_listing_slug','slug')
+            ->where('type','=','DEDUCTION');
+    }
+
     public function employee(){
         return $this->hasOne(Employee::class,'slug','employee_slug');
     }

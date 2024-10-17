@@ -3,6 +3,7 @@
 namespace App\Models\HRU;
 
 use App\Models\Budget\ChartOfAccounts;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class PayrollMasterDetails extends Model
@@ -29,4 +30,18 @@ class PayrollMasterDetails extends Model
         return $this->belongsTo(Deductions::class,'code','deduction_code');
     }
 
+    public function incentive()
+    {
+        return $this->belongsTo(Incentives::class,'code','incentive_code');
+    }
+
+    public function scopeDeductionsOnly(Builder $builder)
+    {
+        $builder->where('type','=','DEDUCTION');
+    }
+
+    public function scopeIncentivesOnly(Builder $builder)
+    {
+        $builder->where('type','=','INCENTIVE');
+    }
 }

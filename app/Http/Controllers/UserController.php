@@ -329,7 +329,7 @@ class UserController extends Controller{
         $user->username = $request->username;
         $user->employee_slug = $request->employee;
         $user->employee_no = $employee->employee_no;
-        $user->password = Hash::make(Carbon::parse($employee->birthday)->format('mdy'));
+        $user->password = Hash::make(Carbon::parse($employee->date_of_birth)->format('mdy'));
         if($user->save()){
             return $user->only('slug');
         }

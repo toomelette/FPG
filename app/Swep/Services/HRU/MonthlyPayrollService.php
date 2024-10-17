@@ -132,6 +132,7 @@ class MonthlyPayrollService
                         'type' => 'INCENTIVE',
                         'code' => $templateIncentive->incentive_code,
                         'amount' => $templateIncentive->amount,
+                        'non_taxable_amount' => null,
                         'priority' => $templateIncentive->incentive->n_priority,
                         'sundry_account' => null,
                         'account_code' => $templateIncentive->incentive->account_code,
@@ -158,6 +159,10 @@ class MonthlyPayrollService
                 foreach ($employeeDeductionsFromTemplate as $templateDeduction){
                     $monthlyIncentive = $monthlyIncentive - $templateDeduction->amount;
                     $deductionAmount  = $templateDeduction->amount;
+                    $nonTaxableAmount = null;
+                    if($templateDeduction->deduction_code == 'HDMF'){
+                        $nonTaxableAmount = 200;
+                    }
                     if($stop == 0){
                         if($monthlyIncentive < $salaryThreshold){
                             $amountToBeDeducted = $deductionAmount + ($monthlyIncentive - $salaryThreshold);
@@ -174,6 +179,7 @@ class MonthlyPayrollService
                         'type' => 'DEDUCTION',
                         'code' => $templateDeduction->deduction_code,
                         'amount' => $deductionAmount,
+                        'non_taxable_amount' => $nonTaxableAmount ?? $deductionAmount,
                         'priority' => $templateDeduction->deduction->n_priority,
                         'sundry_account' => $templateDeduction->deduction->sundry_account,
                         'account_code' => $templateDeduction->deduction->account_code,
@@ -190,6 +196,7 @@ class MonthlyPayrollService
                         'type' => 'DEDUCTION',
                         'code' => $unusedCodesButExistsInDetail,
                         'amount' => 0,
+                        'non_taxable_amount' => null,
                         'priority' => $templateDeduction->deduction->n_priority,
                         'sundry_account' => $templateDeduction->deduction->sundry_account,
                         'account_code' => $templateDeduction->deduction->account_code,
@@ -197,7 +204,6 @@ class MonthlyPayrollService
                         'ec_share' => $templateDeduction->ec_share,
                     ];
                 }
-
             }
 
         }
@@ -207,7 +213,7 @@ class MonthlyPayrollService
             ->upsert(
                 $detailsArr,
                 ['pay_master_employee_listing_slug','type','code'],
-                ['amount','priority','sundry_account','account_code','govt_share','ec_share']
+                ['amount','non_taxable_amount','priority','sundry_account','account_code','govt_share','ec_share']
             );
 
 
@@ -220,6 +226,28 @@ class MonthlyPayrollService
 
 
         //3. Compute Tax
+
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => function ($e) use ($payMasterEmployeeSlug) {
+                    if($payMasterEmployeeSlug != null){
+                        $e->where('slug','=',$payMasterEmployeeSlug);
+                    }
+                }
+                ,
+                'payrollMasterEmployees.employeePayrollDetailsIncentives' => function ($g) {
+                    $g->whereHas('incentive',function ($gg){
+                        $gg->isMonthly();
+                    });
+                },
+                'payrollMasterEmployees.employeePayrollDetailsDeductions' => function ($f) {
+                    $f->whereHas('deduction',function ($ff){
+                        $ff->preTaxDeduction();
+                    });
+                }
+            ])
+            ->find($payrollMasterSlug);
+       /*
         $payrollMaster = PayrollMaster::query()
             ->with([
                 'payrollMasterEmployees' => function ($e) use ($payMasterEmployeeSlug) {
@@ -242,15 +270,17 @@ class MonthlyPayrollService
                 'payrollMasterEmployees.employee.templateDeductions.deduction',
             ])
             ->find($payrollMasterSlug);
+       */
         $taxesArr = [];
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
             $employee = $employeeFromList->employee;
+            $totalPreTaxDeduction = $employeeFromList->employeePayrollDetailsDeductions->sum('non_taxable_amount');
 
-            $totalPreTaxDeduction = $employee->templateDeductions->sum('amount');
             $tax = Helper::computeTax(
                 $employee->templateIncentives->where('incentive_code','MONTHLY')->first()->amount ?? 0,
                 $totalPreTaxDeduction
             );
+
 
 
             array_push($taxesArr,[
@@ -304,6 +334,7 @@ class MonthlyPayrollService
                         'type' => 'INCENTIVE',
                         'code' => $templateIncentive->incentive_code,
                         'amount' => $templateIncentive->amount,
+                        'non_taxable_amount' => null,
                         'priority' => $templateIncentive->incentive->n_priority,
                         'sundry_account' => null,
                         'account_code' => $templateIncentive->incentive->account_code,
@@ -332,6 +363,10 @@ class MonthlyPayrollService
                 foreach ($employeeDeductionsFromTemplate as $templateDeduction){
                     $monthlyIncentive = $monthlyIncentive - $templateDeduction->amount;
                     $deductionAmount  = $templateDeduction->amount;
+                    $nonTaxableAmount = 1;
+                    if($templateDeduction->deduction_code == 'HDMF'){
+                        $nonTaxableAmount = 200;
+                    }
                     if($stop == 0){
                         if($monthlyIncentive < $salaryThreshold){
                             $amountToBeDeducted = $deductionAmount + ($monthlyIncentive - $salaryThreshold);
@@ -348,6 +383,7 @@ class MonthlyPayrollService
                         'type' => 'DEDUCTION',
                         'code' => $templateDeduction->deduction_code,
                         'amount' => $deductionAmount,
+                        'non_taxable_amount' => $nonTaxableAmount ?? $deductionAmount,
                         'priority' => $templateDeduction->deduction->n_priority,
                         'sundry_account' => $templateDeduction->deduction->sundry_account,
                         'account_code' => $templateDeduction->deduction->account_code,
@@ -363,7 +399,7 @@ class MonthlyPayrollService
             ->upsert(
                 $detailsArr,
                 ['pay_master_employee_listing_slug','type','code'],
-                ['amount','priority','sundry_account','account_code','govt_share','ec_share']
+                ['amount','non_taxable_amount','priority','sundry_account','account_code','govt_share','ec_share']
             );
 
         //remove ZERO amounts
@@ -464,8 +500,12 @@ class MonthlyPayrollService
         $max = 2500;
 
         foreach ($payrollMaster->payrollMasterEmployees as $employee){
+
             $philhealthDeduction = $employee->saved_employee_data['monthly_basic'] * $deduction->factor;
-            $philhealthDeduction = bcdiv($philhealthDeduction,1,2);
+            $phicEShare = Helper::absolute(bcdiv($philhealthDeduction / 2,1,2));
+            $phicGovtShare = $philhealthDeduction - $phicEShare;
+            $philhealthDeduction = Helper::absolute(bcdiv($philhealthDeduction,1,2));
+
             if($philhealthDeduction > $max){
                 $philhealthDeduction = $max;
             }
@@ -473,8 +513,8 @@ class MonthlyPayrollService
                 'employee_slug' => $employee->employee_slug,
                 'deduction_code' => $deduction->deduction_code,
                 'priority' => $deduction->n_priority,
-                'amount' => $philhealthDeduction,
-                'govt_share' => $philhealthDeduction,
+                'amount' => $phicEShare,
+                'govt_share' => $phicGovtShare,
             ]);
 
         }
