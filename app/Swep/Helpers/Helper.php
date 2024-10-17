@@ -778,7 +778,7 @@ class Helper
 
     public static function computeTax($monthlyBasic,$preTaxDeductions){
         $taxableAmount = $monthlyBasic - $preTaxDeductions;
-
+        $monthlyBasic = $taxableAmount;
         $taxRate = 0;
         $threshold = 0;
         $additional = 0;
