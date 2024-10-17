@@ -497,18 +497,17 @@ class MonthlyPayrollService
         $deductionCode = 'PHIC';
         $deduction = Deductions::query()->where('deduction_code','=',$deductionCode)->first();
             $deduction ?? abort(503,'Deduction not found.');
-        $max = 2500;
+        $max = 5000;
 
         foreach ($payrollMaster->payrollMasterEmployees as $employee){
-
             $philhealthDeduction = $employee->saved_employee_data['monthly_basic'] * $deduction->factor;
-            $phicEShare = Helper::absolute(bcdiv($philhealthDeduction / 2,1,2));
-            $phicGovtShare = $philhealthDeduction - $phicEShare;
-            $philhealthDeduction = Helper::absolute(bcdiv($philhealthDeduction,1,2));
-
             if($philhealthDeduction > $max){
                 $philhealthDeduction = $max;
             }
+            $phicEShare = Helper::absolute(bcdiv($philhealthDeduction / 2,1,2));
+            $phicGovtShare = $philhealthDeduction - $phicEShare;
+
+
             array_push($upsertValues,[
                 'employee_slug' => $employee->employee_slug,
                 'deduction_code' => $deduction->deduction_code,
