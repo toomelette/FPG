@@ -57,7 +57,7 @@ class ApplicantController extends Controller{
 
 
 	public function store(ApplicantFormRequest $request){
-        $this->checkDuplicate($request);
+//        $this->checkDuplicate($request);
         $payPlantillas = Arrays::payPlantillas();
         $applicant = new Applicant;
         $applicant->applicant_id = $this->applicantRepository->getApplicantIdInc();
