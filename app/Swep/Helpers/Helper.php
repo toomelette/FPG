@@ -819,7 +819,7 @@ class Helper
         $taxableAmount = $taxableAmount - $threshold;
 
         $tax = $taxableAmount * $taxRate + $additional;
-        return bcdiv($tax,1,2);
+        return self::absolute(round($tax,2));
     }
 
     public static function absolute($int){
