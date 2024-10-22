@@ -344,6 +344,7 @@ function succeed(target_form, reset,modal){
     }
     unmark_required(target_form);
     remove_loading_btn(target_form);
+    //target_form.find("select.select2-hidden-accessible").each(function(){$(this).val('').trigger('change');})
 }
 
 function wait_this_button(btn, text = '') {
