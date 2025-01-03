@@ -12,6 +12,11 @@
 @endsection
 
 @section('modal-body')
+    @if(($folder->documents1_count + $folder->documents2_count) < 1)
+    <div class="row mb-2">
+        <x-forms.input name="folder_code" cols="12" label="Folder Code" :value="$folder"/>
+    </div>
+    @endif
     <div class="row mb-2">
         <x-forms.input name="description" cols="12" label="Description" :value="$folder"/>
     </div>

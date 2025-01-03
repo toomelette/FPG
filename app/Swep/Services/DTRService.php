@@ -44,6 +44,7 @@ class DTRService extends BaseService
             $attendances_array = [];
             $forceClearDevice = false;
 
+            //IF LAST FROM DEVICE IS LESS THAN THE LAST UID IN DATABASE, THE DEVICE MAY HAVE RESET ITS ID BACK TO 1
             if($last_from_device < $last_uid){
                 //loop from last id + 1 to the last id before 0 index
                 $while = $last_uid+1;

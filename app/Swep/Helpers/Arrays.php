@@ -850,6 +850,7 @@ class Arrays
     {
         return [
             'VL' => 'Vacation Leave',
+            'Mandatory/Forced Leave' => "Mandatory/Forced Leave",
             'SL' => 'Sick Leave',
             'MATERNITY' => 'Maternity Leave',
             'PATERNITY' => 'Paternity Leave',

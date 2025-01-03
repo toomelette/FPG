@@ -2,7 +2,9 @@
 
 namespace App\Models\Temp;
 
-class DTRTemp
-{
+use Illuminate\Database\Eloquent\Model;
 
+class DTRTemp extends Model
+{
+    protected $table = 'dtr_temp';
 }

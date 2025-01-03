@@ -145,6 +145,7 @@ class DocumentFolderController extends Controller{
     public function edit($slug){
 
         $folder = DocumentFolder::query()
+            ->withCount(['documents1','documents2'])
             ->findOrFail($slug);
         return view('_records.document-folders.edit')->with([
             'folder' => $folder,
@@ -159,7 +160,12 @@ class DocumentFolderController extends Controller{
 
 
     public function update(DocumentFolderFormRequest $request, $slug){
-        $docFolder = DocumentFolder::query()->find($slug) ?? abort(404);
+        $docFolder = DocumentFolder::query()
+            ->withCount(['documents1','documents2'])
+            ->find($slug) ?? abort(404);
+        if(($docFolder->documents1_count + $docFolder->documents2_count) < 1){
+            $docFolder->folder_code = $request->folder_code;
+        }
         $docFolder->description = $request->description;
         $docFolder->retention_period = $request->retention_period;
         $docFolder->is_permanent = $request->is_permanent == 1 ? 1 : null;
@@ -175,11 +181,20 @@ class DocumentFolderController extends Controller{
 
 
     public function destroy($slug){
-        abort(503,'This feature is not yet available');
-        $folder = DocumentFolder::query()
-            ->findOrFail($slug);
 
-        return $this->doc_folder->destroy($slug);
+
+        $folder = DocumentFolder::query()
+            ->withCount(['documents1','documents2'])
+            ->findOrFail($slug);
+        if(($folder->documents1_count + $folder->documents2_count) > 0){
+            abort(503,'Only empty folders can be deleted.');
+        }
+        if($folder->delete()){
+            return 1;
+        }else{
+            abort(503,'Error deleting folder.');
+        }
+
 
     }
 

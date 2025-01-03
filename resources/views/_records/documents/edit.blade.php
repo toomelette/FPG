@@ -15,6 +15,7 @@
     <div class="row mb-2">
         <div class="col-8">
             <div class="row mb-2">
+
                 <x-forms.input label="Reference no" name="reference_no" cols="8" :value="$document ?? null"/>
                 <x-forms.input label="Document Date" name="date" cols="4" type="date" :value="$document ?? null"/>
             </div>

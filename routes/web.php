@@ -849,3 +849,55 @@ Route::get('/getHRRS',function (){
         }
     }
 });
+
+Route::get('recoverDtrFromSQL',function(){
+    $temps = \App\Models\Temp\DTRTemp::query()->get();
+    $dtrs = [];
+    foreach ($temps as $temp){
+        $dateTime = Carbon::createFromFormat('d/m/Y h:i A', $temp->sTime);
+        $dtrs[$dateTime->format('Y-m-d')][$temp->Name] = [
+            10 => null,
+            20 => null,
+            30 => null,
+            40 => null,
+        ];
+    }
+
+    foreach ($temps as $temp){
+        $dateTime = Carbon::createFromFormat('d/m/Y h:i A', $temp->sTime);
+
+        $numberVal = $dateTime->format('Hi') * 1;
+        if($numberVal < 1000){
+            $dtrs[$dateTime->format('Y-m-d')][$temp->Name][10] = $dateTime->format('Y-m-d H:i:s');
+        }elseif($numberVal > 1350){
+            $dtrs[$dateTime->format('Y-m-d')][$temp->Name][40] = $dateTime->format('Y-m-d H:i:s');
+        }else{
+            if($dtrs[$dateTime->format('Y-m-d')][$temp->Name][20] != null){
+                $dtrs[$dateTime->format('Y-m-d')][$temp->Name][30] = $dateTime->format('Y-m-d H:i:s');
+            }else{
+                $dtrs[$dateTime->format('Y-m-d')][$temp->Name][20] = $dateTime->format('Y-m-d H:i:s');
+            }
+        }
+    }
+    $insert = [];
+    foreach (collect($dtrs)->dot() as $key=>$item) {
+        if($item != null){
+        $keyStr = Str::of($key);
+        $date = $keyStr->before('.');
+        $bmUserId = $keyStr->betweenFirst('.','.');
+        $type = $keyStr->afterLast('.');
+        $timestamp = $item;
+        $insert[] = [
+            'uid' => rand(11111,99999),
+            'user' => $bmUserId,
+            'state' => 1,
+            'type' => $type,
+            'timestamp' => $timestamp,
+            'device' => '0348143100075',
+            'created_at' => Carbon::now(),
+            'location' => 'UUU',
+        ];
+        }
+    }
+    \App\Models\DTR::query()->insert($insert);
+});
