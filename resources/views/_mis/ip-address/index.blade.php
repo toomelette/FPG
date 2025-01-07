@@ -6,7 +6,7 @@
     </x-adminkit.html.page-title>
     <x-adminkit.html.card header-class="pt-3 pb-1">
         <x-slot:title>
-            <button class="btn btn-sm btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-ip-address-modal"><i class="fa fa-plus"></i> Make request</button>
+            <button class="btn btn-sm btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-ip-address-modal"><i class="fa fa-plus"></i> Add IP Address</button>
         </x-slot:title>
         <div id="ip-address-table-container">
             <table class="table table-bordered table-striped table-sm" id="ip-address-table" style="width: 100%">
