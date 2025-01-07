@@ -419,7 +419,8 @@ class UserController extends Controller{
         $user = User::query()
             ->with([
                 'employee',
-                'userSubmenu'
+                'userSubmenu',
+                'rcAccess',
             ])
             ->where('slug','=',$slug)
             ->firstOrFail();
@@ -438,42 +439,7 @@ class UserController extends Controller{
             'user_submenus_arr' => $user_submenus_arr,
             'portals' => $menus->sortBy('portal')->groupBy('portal')
         ]);
-        $all_menus = Menu::query()
-            ->with(['submenu'])
-            ->orderBy('name','asc')->get();
-        $user = User::query()
-            ->with(['userSubmenu'])
-            ->where('slug',$slug)->first();
-        $user_submenus_arr = [];
-        foreach ($user->userSubmenu as $submenu){
-            $user_submenus_arr[$submenu->submenu_id] = 1;
-        }
 
-
-        $byPortalAndCategory = $all_menus->sortBy('portal')->groupBy('portal');
-        $colors = [
-            'ACCOUNTING' => 'bg-green',
-            'PPU' => 'bg-teal',
-            'DIGIFILE' => 'bg-blue',
-            'MIS' => 'bg-orange',
-            'BUDGET' => 'bg-purple',
-            'LEGAL' => 'bg-navy',
-            '' => 'bg-warning',
-        ];
-
-        return view('dashboard.user.edit')->with([
-            'all_menus' => $all_menus,
-            'user' => $user,
-            'user_submenus_arr' => $user_submenus_arr,
-            'by_category' => $by_category,
-            'byPortalAndCategory' => $byPortalAndCategory,
-            'colors' => $colors,
-        ]);
-
-
-
-
-        return $this->user_service->edit($slug);
 
     }
 
@@ -481,6 +447,7 @@ class UserController extends Controller{
 
 
     public function update(UserEditFormRequest $request, $slug){
+
         return $this->user_service->update($request, $slug);
 
     }

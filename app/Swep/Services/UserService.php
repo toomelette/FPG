@@ -3,6 +3,7 @@
 namespace App\Swep\Services;
 
 use App\Models\Menu;
+use App\Models\PPU\RCAccess;
 use App\Models\UserAccess;
 use App\Models\UserMenu;
 use App\Models\UserSubmenu;
@@ -134,6 +135,7 @@ class UserService extends BaseService{
     public function update($request, $slug){
 
         $user = $this->user_repo->findBySlug($slug);
+
         $user->project_id = $request->project_id;
         $user->pms_allowed = $request->pms_allowed ?? null;
         $user->dash = $request->dash_type;
@@ -141,7 +143,7 @@ class UserService extends BaseService{
         $user->userMenu()->delete();
         $user->userSubmenu()->delete();
         $user->access()->delete();
-
+        $user->rcAccess()->delete();
         $user_id = $user->user_id;
 
         if(!empty($request->submenus)){
@@ -170,24 +172,38 @@ class UserService extends BaseService{
         if(!empty($request->accessToEmployees)){
 
             foreach ( $request->accessToEmployees as $item){
-                array_push($access,[
+                $access[] = [
                     'user' => $user_id,
                     'access' => $item,
                     'for' => 'employees',
-                ]);
+                ];
             }
 
         }
         if(!empty($request->accessToDocuments)){
-            array_push($access,[
+            $access[] = [
                 'user' => $user_id,
                 'access' => $request->accessToDocuments,
                 'for' => 'documents',
-            ]);
+            ];
         }
 
         if(count($access) > 0){
             UserAccess::insert($access);
+        }
+
+        $rcAccess = [];
+        if(!empty($request->rcAccess)){
+            foreach ( $request->rcAccess as $access) {
+                $rcAccess[]  = [
+                    'user_id' => $user_id,
+                    'rc' => $access,
+                ];
+            }
+        }
+
+        if(count($rcAccess) > 0){
+            RCAccess::query()->insert($rcAccess);
         }
         return $user->only('slug');
     }

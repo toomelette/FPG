@@ -98,6 +98,20 @@ return [
             'strict' => false,
             'engine' => null,
         ],
+        'mysql_ppu_vis' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_PPU', '127.0.0.1'),
+            'port' => env('DB_PORT_PPU', '3306'),
+            'database' => 'swep_ppu_vis',
+            'username' => env('DB_USERNAME_PPU', env('DB_USERNAME')),
+            'password' => env('DB_PASSWORD_PPU', env('DB_PASSWORD')),
+            'unix_socket' => env('DB_SOCKET_PPU', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
 
         'mysql_temp' => [
             'driver' => 'mysql',

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\PPU\RCAccess;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Kyslik\ColumnSortable\Sortable;
@@ -211,4 +212,8 @@ class User extends Authenticatable{
         return $this->hasMany(Activity::class,'causer_id','id');
     }
 
+    public function rcAccess()
+    {
+        return $this->hasMany(RCAccess::class,'user_id','user_id');
+    }
 }

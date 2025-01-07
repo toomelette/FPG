@@ -9,6 +9,7 @@
         </x-adminkit.html.page-title>
 
 
+
         <div class="row">
         <div class="col-md-3 col-xl-2">
             <div class="card">
@@ -74,6 +75,25 @@
                                </div>
 
 
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <x-adminkit.html.alert type="warning mb-1" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
+                                    Access to RC (PPBTMS)
+                                </x-adminkit.html.alert>
+                                <div class="row">
+                                    @foreach(\App\Swep\Helpers\Arrays::departmentList() as $rcCode => $item)
+                                        <div class="col-md-4">
+                                            <div class="checkbox no-margin" >
+                                                <label>
+                                                    <input type="checkbox" name="rcAccess[]" value="{{$rcCode}}" {{($user->rcAccess->where('rc',$rcCode)->count() > 0) ? 'checked' : ''}}> {{$item}}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </x-adminkit.html.card>
