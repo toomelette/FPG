@@ -31,7 +31,7 @@
 @section('modals')
     <x-adminkit.html.modal id="edit-ip-address-modal"/>
     <x-adminkit.html.modal-template id="add-ip-address-modal" form-id="add-ip-address-form">
-        <x-slot:title>Make Request</x-slot:title>
+        <x-slot:title>Add IP Address</x-slot:title>
         <div class="row mb-2">
             <x-forms.input label="User" name="user" cols="8"/>
             <x-forms.input label="Employee No" name="employee_no" cols="4"/>

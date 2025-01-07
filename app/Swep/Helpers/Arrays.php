@@ -1077,8 +1077,4 @@ class Arrays
         return  [];
     }
 
-    public static function ()
-    {
-
-    }
 }
