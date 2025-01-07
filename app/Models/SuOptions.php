@@ -29,7 +29,7 @@ class SuOptions extends Model
     }
 
     public static function ipAddressLocations(){
-        return SuOptions::query()->where('for','=','ip_address_location')->get();
+        return SuOptions::query()->where('for','=','ip_address_location')->orderBy('option')->get();
     }
 
 

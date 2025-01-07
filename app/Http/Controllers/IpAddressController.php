@@ -17,7 +17,7 @@ class IpAddressController extends Controller
             $ips = IpAddress::query();
             return DataTables::of($ips)
                 ->addColumn('action',function($data){
-                    return view('dashboard.ip_address.dtActions')->with([
+                    return view('_mis.ip-address.dtActions')->with([
                         'data' => $data
                     ]);
                 })
@@ -25,7 +25,7 @@ class IpAddressController extends Controller
                 ->setRowId('slug')
                 ->toJson();
         }
-        return view('dashboard.ip_address.index');
+        return view('_mis.ip-address.index');
     }
 
     public function store(IpAddressFormRequest $request){
@@ -51,7 +51,7 @@ class IpAddressController extends Controller
 
     public function edit($slug){
         $ip = $this->findBySlug($slug);
-        return view('dashboard.ip_address.edit')->with([
+        return view('_mis.ip-address.edit')->with([
             'ip' => $ip,
         ]);
     }
