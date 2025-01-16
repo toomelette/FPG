@@ -34,6 +34,9 @@ Edit Request
         <x-forms.input label="Requested by" name="requested_by" cols="6" :value="$documentRequest ?? null"/>
         <x-forms.input label="Position" name="requested_by_position" cols="6" :value="$documentRequest ?? null"/>
     </div>
+    <div class="row mb-3">
+        <x-forms.input label="Contact Details" name="contact_details" cols="12" :value="$documentRequest ?? null"/>
+    </div>
 @endsection
 
 @section('modal-footer')
