@@ -53,13 +53,14 @@ class DocumentRequestsController extends Controller
                 return view('_records.document-requests.dtActions-requested-records')->with([
                     'data' => $data,
                 ]);
-                if($data->purpose == 'Others'){
-                    return $data->purpose.'; '.$data->purpose_specify;
-                }
-                return  $data->purpose;
             })
             ->editColumn('requested_at',function ($data){
                 return $data->created_at->format('M. d, Y | h:i A');
+            })
+            ->editColumn('requested_by',function ($data){
+                return view('_records.document-requests.dtActions-requested-by')->with([
+                    'data' => $data,
+                ]);
             })
             ->escapeColumns([])
             ->setRowId('slug')
@@ -74,6 +75,7 @@ class DocumentRequestsController extends Controller
         $docRequest->requesting_party = $request->requesting_party;
         $docRequest->requesting_party_specify = $request->requesting_party_specify ?? null;
         $docRequest->requested_records = $request->requested_records;
+        $docRequest->contact_details = $request->contact_details;
         $docRequest->purpose = $request->purpose;
         $docRequest->purpose_specify = $request->purpose_specify ?? null;
         $docRequest->requested_by = $request->requested_by;
@@ -101,6 +103,7 @@ class DocumentRequestsController extends Controller
         $docRequest->requesting_party = $request->requesting_party;
         $docRequest->requesting_party_specify = ($request->requesting_party == 'Other Government Agencies') ? ($request->requesting_party_specify ?? null) : null;
         $docRequest->requested_records = $request->requested_records;
+        $docRequest->contact_details = $request->contact_details;
         $docRequest->purpose = $request->purpose;
         $docRequest->purpose_specify = ($request->purpose == 'Others') ? ($request->purpose_specify ?? null) : null;
         $docRequest->requested_by = $request->requested_by;

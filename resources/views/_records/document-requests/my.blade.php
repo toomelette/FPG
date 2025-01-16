@@ -53,6 +53,10 @@
             <x-forms.input label="Requested by" name="requested_by" cols="6" :value="trim(Auth::user()->employee->full['FMiLE'] ?? null)"/>
             <x-forms.input label="Position" name="requested_by_position" cols="6" :value="Auth::user()->employee->plantilla->position ?? Auth::user()->employee->position ?? null"/>
         </div>
+
+        <div class="row mb-3">
+            <x-forms.input label="Contact Details" name="contact_details" cols="12"/>
+        </div>
         <x-slot:footer>
             <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
         </x-slot:footer>

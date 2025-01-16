@@ -17,6 +17,7 @@ class DocumentRequestFormRequest extends FormRequest
             'purpose' => 'required|string',
             'requested_by' => 'required|string|max:255',
             'requested_by_position' => 'required|string|max:255',
+            'contact_details' => 'required|max:255',
         ];
         if($this->requesting_party == 'Other Government Agencies'){
             $rules['requesting_party_specify'] = 'required|string|max:255';

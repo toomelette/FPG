@@ -4,10 +4,53 @@
 @endphp
 @extends('printables.print_layouts.print_layout_main')
 
-@section('wrapper')
-<div style="font-family: Cambria">
+<style>
+    .wms{
+        background-image: url('{{asset('images/sra_wm.jpg')}}') 50%;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
 
-    <div style="height: 130px"></div>
+    body::after {
+        content: '';
+        position: fixed;
+        z-index: -999999;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: url('{{asset('images/sra_wm.jpg')}}');
+        opacity: 0.35;
+        pointer-events: none;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 700px 700px;
+    }
+</style>
+@section('wrapper')
+<div style="font-family: Cambria;" class="wm">
+    <div class="letter-head">
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 10%;"></td>
+                <td style="width: 120px;">
+                    <img src="{{asset('images/sra_only2.png')}}">
+                </td>
+                <td>
+                    Republic of the Philippines <br>
+                    Department of Agriculture <br>
+                    <span style="font-size: 18px" class="text-strong">SUGAR REGULATORY ADMINISTRATION</span> <br>
+                    Sugar Center Bldg., North Avenue, Diliman, Quezon City, Philippines 1101 <br>
+                    TIN 000-784-336 <br>
+                    Website: http://www.sra.gov.ph <br>
+                    Email Address: srahead@sra.gov.ph <br>
+                    Tel No. (632) 8929-3633, (632) 3455-2135, (632) 3455-3376 <br>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="height: 10px"></div>
 
     <p class="text-center text-strong" style="font-size: 16px; margin-top: 50px">REQUEST FOR RELEASE OF RECORDS/DOCUMENTS</p>
     <table style="width: 100%; font-size: 14px; margin-bottom: 15px">
@@ -65,7 +108,11 @@
             <td style="width: 33.33333%;" class="text-strong">Approved by:</td>
         </tr>
         <tr style="vertical-align: bottom">
-            <td style="height: 30px" class="b-bottom text-strong text-center">{{$documentRequest->requested_by}}</td>
+            <td style="height: 30px" class="b-bottom text-center">
+                <br>
+                <b>{{$documentRequest->requested_by}}</b> <br>
+                <i> {{$documentRequest->contact_details}}</i>
+            </td>
             <td class="b-bottom text-strong text-center">{{$documentRequest->endorsed_by}}</td>
             <td class="b-bottom text-strong text-center">{{$documentRequest->approved_by}}</td>
         </tr>
@@ -105,6 +152,20 @@
             <td class="text-center"></td>
         </tr>
     </table>
+    
+    <div class="letter-foot" style="position: absolute;bottom: 0">
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 10%;">
+                    <img src="{{asset('images/bagong_pilipinas.jpg')}}">
+                </td>
+                <td style="width: 70%;"></td>
+                <td style="width: 20%;">
+                    <img src="{{asset('images/iso.jpg')}}">
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
 
 @endsection
