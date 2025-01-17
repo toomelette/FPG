@@ -151,9 +151,12 @@
 
                 <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
                     @if(!empty(Auth::user()->employee))
-
-                        @if(file_exists(public_path('symlink/employee_pics/uploaded_50/'.Auth::user()->employee->photo)))
-                            <img src="{{asset('symlink/employee_pics/uploaded_50/'.Auth::user()->employee->photo)}}" class="avatar img-fluid rounded me-1" alt="User Image">
+                        @if(Auth::user()->employee->photo != null)
+                            @if(file_exists(public_path('symlink/employee_pics/uploaded_50/'.Auth::user()->employee->photo)))
+                                <img src="{{asset('symlink/employee_pics/uploaded_50/'.Auth::user()->employee->photo)}}" class="avatar img-fluid rounded me-1" alt="User Image">
+                            @else
+                                <img src="{{asset('images/avatar.jpeg')}}" class="avatar img-fluid rounded me-1" alt="User Image">
+                            @endif
                         @else
                             <img src="{{asset('images/avatar.jpeg')}}" class="avatar img-fluid rounded me-1" alt="User Image">
                         @endif
