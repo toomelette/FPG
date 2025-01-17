@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EmployeeServiceRecord\EmployeeServiceRecordCreateForm;
 use App\Http\Requests\EmployeeTraining\EmployeeTrainingCreateForm;
+use App\Http\Requests\Hru\ChangePasswordFormRequest;
 use App\Models\EmployeeChildren;
 use App\Models\EmployeeEducationalBackground;
 use App\Models\EmployeeEligibility;
@@ -54,6 +55,9 @@ class ProfileController extends Controller{
                 'employee.employeeServiceRecord',
                 'employee.employeeTraining',
                 'employee.plantilla',
+                'employee.employeeEducationalBackground',
+                'employee.employeeEligibility',
+                'employee.employeeExperience',
             ])
             ->find(\Auth::user()->id);
 
@@ -61,6 +65,16 @@ class ProfileController extends Controller{
             'user' => $user,
         ]);
         
+    }
+
+    public function updatePassword(ChangePasswordFormRequest $request)
+    {
+        $user = Auth::user();
+        $user->password = \Hash::make($request->new_pass);
+        if($user->update()){
+            return $user->only('slug');
+        }
+        abort(503,'Error updating password.');
     }
 
 

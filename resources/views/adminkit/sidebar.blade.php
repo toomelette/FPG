@@ -37,11 +37,19 @@
         <ul class="sidebar-nav">
 
             @if(Auth::check())
+                @if(!empty(Auth::user()->employee))
+                    <li class="@if('dashboard.profile' == Route::currentRouteName() ) sidebar-item @endif" id="home-nav" >
+                        <a class="sidebar-link" href="{{route('dashboard.profile')}}">
+                            <i class="align-middle fa fa-user" ></i> <span class="">Personal Data</span>
+                        </a>
+                    </li>
+                @endif
                 <li class="@if('dashboard.home' == Route::currentRouteName() ) sidebar-item active @endif" id="home-nav" >
                     <a class="sidebar-link" href="{{route('dashboard.home')}}">
                         <i class="align-middle fa fa-tachometer-alt" ></i> <span class="">Dashboard</span>
                     </a>
                 </li>
+
 
                 @if(count($tree) > 0)
                     @php($tree_copy = $tree)
