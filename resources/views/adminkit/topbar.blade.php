@@ -12,6 +12,20 @@
     </ul>
     <div class="navbar-collapse collapse">
         <ul class="navbar-nav navbar-align">
+            @if(!empty(Auth::user()->employee))
+                @php
+                    $bday = Auth::user()->employee->date_of_birth ?? null;
+                @endphp
+                @if(($bday != null) && (Carbon::parse($bday)->format('m-d') == Carbon::now()->format('m-d')))
+                    <li class="nav-item dropdown">
+                        <div class="nav-icon dropdown-toggle" >
+                            <div class="position-relative">
+                                <small class="text-danger text-strong"><i class="fa fa-cake-candles"></i> Happy Birthday!</small>
+                            </div>
+                        </div>
+                    </li>
+                @endif
+            @endif
             <li class="nav-item dropdown" hidden>
                 <a class="nav-icon dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
                     <div class="position-relative">
@@ -144,6 +158,7 @@
                     </div>
                 </div>
             </li>
+
             <li class="nav-item dropdown">
                 <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
                     <i class="align-middle" data-feather="settings"></i>
