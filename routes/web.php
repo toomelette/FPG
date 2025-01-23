@@ -60,6 +60,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     /** PROFILE **/
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class,'index'])->name('profile');
+    Route::get('/profile_details', [\App\Http\Controllers\ProfileController::class,'index'])->name('profile.details');
     Route::patch('/profile/update_password', [\App\Http\Controllers\ProfileController::class,'updatePassword'])->name('profile.update_password');
 
 
