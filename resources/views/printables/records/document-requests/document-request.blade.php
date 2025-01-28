@@ -34,7 +34,7 @@
             <tr>
                 <td style="width: 10%;"></td>
                 <td style="width: 120px;">
-                    <img src="{{asset('images/sra_only2.png')}}">
+                    <img src="{{asset('images/sra.png')}}" width="110">
                 </td>
                 <td>
                     Republic of the Philippines <br>

@@ -69,6 +69,7 @@ class DocumentRequestsController extends Controller
 
     public function store(DocumentRequestFormRequest $request)
     {
+        
         $docRequest = new DocumentRequests();
         $docRequest->slug = Str::random();
         $docRequest->request_no = $this->documentRequestsService->newRequestNo();
