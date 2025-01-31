@@ -17,6 +17,7 @@
                     <th>Nav Name</th>
                     <th>Route</th>
                     <th style="width: 80px">Is Nav</th>
+                    <th style="width: 80px">Public</th>
                     <th style="width: 80px">Users</th>
                     <th style="width: 80px">Actions</th>
                 </tr>
@@ -67,6 +68,7 @@
                 { data : "nav_name" },
                 { data : "route" },
                 { data : "is_nav" },
+                { data : "public" },
                 { data : "users_with_access_count" },
                 { data : "action" },
             ],
@@ -77,6 +79,11 @@
                 {
                     targets : [3,4],
                     class: 'text-center text-strong',
+                },
+                {
+                    targets : [5],
+                    class: 'text-center text-strong',
+                    searchable: false,
                 }
             ],
             order:[[3,'desc'],[0,'asc']],

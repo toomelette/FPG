@@ -6,6 +6,7 @@ use App\Http\Requests\Submenu\SubmenuFormRequest;
 use App\Http\Requests\Submenu\SubmenuFormRequestEdit;
 use App\Models\Menu;
 use App\Models\Submenu;
+use App\Models\UserSubmenu;
 use App\Swep\Helpers\__dataType;
 use App\Swep\Helpers\__static;
 use App\Swep\ViewHelpers\__html;
@@ -32,6 +33,9 @@ class SubmenuController extends Controller
                     ]);
                 })
                 ->editColumn('is_nav',function($data){
+                    return $data->is_nav == 1 ? '<i class="fa fa-check"></i>' : '';
+                })
+                ->editColumn('public',function($data){
                     return $data->is_nav == 1 ? '<i class="fa fa-check"></i>' : '';
                 })
                 ->editColumn('users_with_access_count',function($data){
@@ -135,4 +139,14 @@ class SubmenuController extends Controller
         }
         abort(503,'Error deleting data.');
     }
+
+    public function revoke($id)
+    {
+        $usm = UserSubmenu::query()->findOrFail($id);
+        if($usm->delete()){
+            return 1;
+        }
+        abort(503,'Error revoking permission.');
+    }
+
 }

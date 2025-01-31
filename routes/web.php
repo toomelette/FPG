@@ -141,6 +141,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('submenu/{slug}',[\App\Http\Controllers\SubmenuController::class,'index'])->name('submenu.index');
     Route::get('submenu/{slug}/show',[\App\Http\Controllers\SubmenuController::class,'show'])->name('submenu.show');
     Route::post('submenu/{slug}',[\App\Http\Controllers\SubmenuController::class,'store'])->name('submenu.store');
+    Route::delete('submenu/{slug}/revoke',[\App\Http\Controllers\SubmenuController::class,'revoke'])->name('submenu.revoke_permission');
 	Route::resource('submenu','SubmenuController')->except(['index','store','show']);
 
 	/** SIGNATORIES **/

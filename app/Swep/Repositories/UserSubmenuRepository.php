@@ -65,6 +65,9 @@ class UserSubmenuRepository extends BaseRepository implements UserSubmenuInterfa
             return 1;
         }else{
             $submenu_id = Submenu::where('route',$route_name)->first();
+            if(empty($submenu_id)){
+                abort(503,'Submenu does not exist.: Route name:['.$route_name.']');
+            }
             if($submenu_id->public == 1){
                 return true;
             }
@@ -75,7 +78,7 @@ class UserSubmenuRepository extends BaseRepository implements UserSubmenuInterfa
                 ->first();
 
             if(empty($usm)){
-                abort(403,'This action is unauthorized.');
+                abort(503,'This action is unauthorized. (Insufficient privilege)');
             }
             return $usm;
         }
