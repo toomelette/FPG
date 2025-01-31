@@ -2,8 +2,7 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>Submenus</x-slot:title>
-        <x-slot:float-end>{{$menu->name}}</x-slot:float-end>
+        <x-slot:title>{{$menu->name}} <small>| Submenus</small></x-slot:title>
     </x-adminkit.html.page-title>
     <x-adminkit.html.card>
         <x-slot:title class="pb-0">

@@ -90,7 +90,7 @@ class DocumentRequestsController extends Controller
 
     public function edit($slug)
     {
-        $this->documentRequestsService->authorize($slug,'edit');
+        $auth = $this->documentRequestsService->authorize($slug,'edit');
         $documentRequest = DocumentRequests::query()->findOrFail($slug);
         return view('_records.document-requests.edit')->with([
             'documentRequest' => $documentRequest,
@@ -99,7 +99,7 @@ class DocumentRequestsController extends Controller
 
     public function update(DocumentRequestFormRequest $request,$slug)
     {
-        $this->documentRequestsService->authorize($slug,'update');
+        $auth = $this->documentRequestsService->authorize($slug,'update');
         $docRequest = DocumentRequests::query()->findOrFail($slug);
         $docRequest->requesting_party = $request->requesting_party;
         $docRequest->requesting_party_specify = ($request->requesting_party == 'Other Government Agencies') ? ($request->requesting_party_specify ?? null) : null;
@@ -118,7 +118,6 @@ class DocumentRequestsController extends Controller
     public function print($slug)
     {
         $this->documentRequestsService->authorize($slug,'print');
-
         $documentRequest = DocumentRequests::query()->findOrFail($slug);
         return view('printables.records.document-requests.document-request')->with([
             'documentRequest' => $documentRequest,
@@ -134,4 +133,26 @@ class DocumentRequestsController extends Controller
         abort(503,'Error deleting data.');
     }
 
+    public function editSignatories($slug)
+    {
+        $documentRequest = DocumentRequests::query()->findOrFail($slug);
+        return view('_records.document-requests.edit-signatories')->with([
+            'documentRequest' => $documentRequest,
+        ]);
+    }
+
+    public function updateSignatories($slug,Request $request)
+    {
+        $documentRequest = DocumentRequests::query()->findOrFail($slug);
+        $documentRequest->endorsed_by = $request->endorsed_by;
+        $documentRequest->endorsed_by_position = $request->endorsed_by_position;
+        $documentRequest->approved_by = $request->approved_by;
+        $documentRequest->approved_by_position = $request->approved_by_position;
+        $documentRequest->released_by = $request->released_by;
+        $documentRequest->released_by_position = $request->released_by_position;
+        if($documentRequest->update()){
+            return $documentRequest->only('slug');
+        }
+        abort(503,'Error updating signatories.');
+    }
 }

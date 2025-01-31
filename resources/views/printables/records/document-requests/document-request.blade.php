@@ -111,10 +111,17 @@
             <td style="height: 30px" class="b-bottom text-center">
                 <br>
                 <b>{{$documentRequest->requested_by}}</b> <br>
+                {{$documentRequest->requested_by_position}} <br>
                 <i> {{$documentRequest->contact_details}}</i>
             </td>
-            <td class="b-bottom text-strong text-center">{{$documentRequest->endorsed_by}}</td>
-            <td class="b-bottom text-strong text-center">{{$documentRequest->approved_by}}</td>
+            <td class="b-bottom text-center">
+                <b>{{$documentRequest->endorsed_by}}</b> <br>
+                <i>{{$documentRequest->endorsed_by_position}}</i>
+            </td>
+            <td class="b-bottom text-center">
+                <b>{{$documentRequest->approved_by}}</b> <br>
+                <i>{{$documentRequest->approved_by_position}}</i>
+            </td>
         </tr>
         <tr>
             <td class="text-center" style="font-size: 11px">Signature over printed name of requesting party/office</td>
@@ -129,7 +136,10 @@
             <td style="width: 66.6666667%;"></td>
         </tr>
         <tr style="vertical-align: bottom">
-            <td style="height: 30px" class="b-bottom"></td>
+            <td style="height: 30px" class="b-bottom text-center">
+                <b>{{$documentRequest->released_by}}</b> <br>
+                <i>{{$documentRequest->released_by_position}}</i>
+            </td>
             <td class=""></td>
         </tr>
         <tr>

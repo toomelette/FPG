@@ -58,6 +58,7 @@
         </x-slot:footer>
     </x-adminkit.html.modal-template>
     <x-adminkit.html.modal id="edit-document-request-modal"/>
+    <x-adminkit.html.modal id="edit-signatories-modal"/>
 @endsection
 
 @section('scripts')
@@ -100,6 +101,25 @@
             }
         })
 
+        $("body").on("click",".edit-signatories-btn",function () {
+            let btn = $(this);
+            load_modal2(btn);
+            let uri = '{{route("dashboard.document_request.signatories","slug")}}';
+            uri = uri.replace('slug',btn.attr('data'));
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
     </script>
     @include('_records.document-requests.js')
 @endsection

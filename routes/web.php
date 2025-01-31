@@ -305,8 +305,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     /** Document Request **/
 
-    Route::get('/document_request/my',[\App\Http\Controllers\RECORDS\DocumentRequestsController::class,'my'])->name('document_request.my');
+    Route::get('/document_request/{slug}/signatories',[\App\Http\Controllers\RECORDS\DocumentRequestsController::class,'editSignatories'])->name('document_request.signatories');
+    Route::patch('/document_request/{slug}/signatories',[\App\Http\Controllers\RECORDS\DocumentRequestsController::class,'updateSignatories'])->name('document_request.signatories');
 
+    Route::get('/document_request/my',[\App\Http\Controllers\RECORDS\DocumentRequestsController::class,'my'])->name('document_request.my');
     Route::resource('document_request', \App\Http\Controllers\RECORDS\DocumentRequestsController::class);
 
 	/** Email Contacts **/
