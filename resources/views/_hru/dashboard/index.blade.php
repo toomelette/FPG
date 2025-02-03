@@ -86,7 +86,7 @@
         <div class="col-md-5">
             <x-adminkit.html.card style="min-height: 460px">
                 <x-adminkit.html.alert type="info mb-1" body-class="p-1 text-center text-strong" :dismissible="false" :with-icon="false">
-                    <span for="month_name">August 2024</span> Birthday Celebrants
+                    <span for="month_name">{{Carbon::now()->format('F Y')}}</span> Birthday Celebrants
                 </x-adminkit.html.alert>
                 <div class="clearfix mb-1">
                     <div class="btn-group float-end">
@@ -121,7 +121,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12">
+        <div class="col-8">
             <x-adminkit.html.card style="min-height: 460px">
                 <x-adminkit.html.alert type="warning mb-1" body-class="p-1 text-center text-strong" :dismissible="false" :with-icon="false">
                     <span for="year_name">{{Carbon::now()->format('Y')}}</span> | Employees' Milestone
@@ -142,7 +142,28 @@
                 </div>
             </x-adminkit.html.card>
         </div>
+        <div class="col-4 panel">
+            <x-adminkit.html.card style="min-height: 460px">
+                <x-adminkit.html.alert type="danger mb-1" body-class="p-1 text-center text-strong" :dismissible="false" :with-icon="false">
+                    <span for="year_name">{{Carbon::now()->format('Y')}}</span> | Mandatory Retirees
+                </x-adminkit.html.alert>
+                <div class="clearfix mb-1">
+                    <div class="btn-group float-end">
+                        <button type="button" data="{{\Illuminate\Support\Carbon::now()->format('Y')-1}}"  class="btn btn-outline-secondary btn-sm nav_month_btn_retirees prev-btn"><i class="fa fa-chevron-left"></i></button>
+                        <button type="button" data="{{\Illuminate\Support\Carbon::now()->format('Y')+1}}"  class="btn btn-outline-secondary btn-sm nav_month_btn_retirees next-btn"><i class="fa fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <div style="max-height: 355px;overflow-x: hidden;" id="" >
+                    <div id="retirees-container">
+                        {!! $retirees !!}
+                    </div>
+
+                </div>
+            </x-adminkit.html.card>
+        </div>
     </div>
+
 @endsection
 
 
@@ -154,6 +175,7 @@
     <script type="text/javascript">
         $(".nav_month_btn").click(function () {
             let get_month = $(this).attr('data');
+
             $.ajax({
                 url : '{{Request::url()}}?bday=true',
                 data : {month : get_month},
@@ -211,6 +233,29 @@
                     $("#next_btn_milestone").attr('data',res.new_next);
                     $("#prev_btn_milestone").attr('data',res.new_prev);
 
+                },
+                error: function (res) {
+                    console.log(res);
+                }
+            })
+        })
+
+        $(".nav_month_btn_retirees").click(function () {
+            let get_date = $(this).attr('data');
+            let panel = $(this).parent('div').parent('div').parent('div').parent('div').parent('div');
+            console.log(panel);
+            $.ajax({
+                url : '{{Request::url()}}?retirees=true',
+                data : {year : get_date},
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    $("#retirees-container").html(res.view);
+                    panel.find('.next-btn').attr('data',res.new_next);
+                    panel.find('.prev-btn').attr('data',res.new_prev);
+                    panel.find('span[for="year_name"]').html(res.year);
                 },
                 error: function (res) {
                     console.log(res);

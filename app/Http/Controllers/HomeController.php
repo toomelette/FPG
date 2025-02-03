@@ -79,6 +79,17 @@ class HomeController extends Controller{
                 ];
             }
 
+            if(request()->ajax() && request()->has('retirees')){
+                $new_next = request('year') + 1;
+                $new_prev =  request('year') -1;
+                return [
+                    'view' =>  $this->retirees($request->year),
+                    'new_next' => $new_next,
+                    'new_prev' => $new_prev,
+                    'year' => request('year'),
+                ];
+            }
+
 
             $all_leave_applications = LeaveApplication::count();
 
@@ -126,7 +137,7 @@ class HomeController extends Controller{
                 'bday_celebrants_view' => $this->birthdayCelebrantsView(Carbon::now()->format('Y-m-d')),
                 'step_increments_view' => $this->stepIncrements(Carbon::now()->format('m'),Carbon::now()->format('Y')),
                 'loyaltys' => $this->milestones(),
-
+                'retirees' => $this->retirees(),
                 'vacantPlantilla' => $vacantPlantilla,
                 'allPlantilla' => $allPlantilla,
                 'filledPlantilla' => $filledPlantilla,
@@ -250,10 +261,12 @@ class HomeController extends Controller{
             ->select('slug','employee_no','lastname','firstname','firstday_gov',DB::raw('YEAR(firstday_gov) as firstday_gov_year'),DB::raw('YEAR(firstday_gov) as firstday_gov_year'),DB::raw($year.' - YEAR(firstday_gov) as years_in_gov'))
             ->where(DB::raw('('.$year.' - YEAR(firstday_gov)) % 5'),'=',0)
             ->where(DB::raw($year.' - YEAR(firstday_gov)'),'>',9)
-            ->where('locations','!=', 'COS-VISAYAS')
-            ->where('locations','!=', 'COS-LM')
-            ->where('locations','!=','RETIREE')
-            ->where('is_active','!=','INACTIVE')
+            ->where(function ($q){
+                $q->where('locations','!=', 'COS-VISAYAS')
+                    ->where('locations','!=', 'COS-LM')
+                    ->where('locations','!=','RETIREE')
+                    ->where('is_active','!=','INACTIVE');
+            })
             ->orderBy('firstday_gov','desc')
             ->orderBy('lastname','asc');
         if(Auth::user()->project_id == 1){
@@ -272,5 +285,28 @@ class HomeController extends Controller{
         )->render();
     }
 
+    private function retirees($yr = null){
+        $year = $yr == null ? Carbon::now()->format('Y') : $yr;
+        $employees = Employee::query()
+            ->where('date_of_birth','like',($year-65).'%')
+            ->where(function ($q){
+                $q->where('locations','!=', 'COS-VISAYAS')
+                    ->where('locations','!=', 'COS-LM')
+                    ->where('is_active','!=','INACTIVE');
+            })
+            ->orderBy('date_of_birth','asc');
 
+
+        if(Auth::user()->project_id == 1){
+            $employees = $employees->where('locations','=','VISAYAS');
+        }else if (Auth::user()->project_id == 2){
+            $employees = $employees->where('locations','=','LUZON/MINDANAO');
+        }
+
+        $employees = $employees->get();
+        return view('_hru.dashboard.retirees')->with([
+                'employees' => $employees,
+            ]
+        )->render();
+    }
 }

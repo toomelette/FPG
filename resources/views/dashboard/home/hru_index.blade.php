@@ -159,7 +159,7 @@
 
 @section('scripts')
 <script type="text/javascript">
-    
+
     $(".nav_month_btn").click(function () {
         let get_month = $(this).attr('data');
         $.ajax({

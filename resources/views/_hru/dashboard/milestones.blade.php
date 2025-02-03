@@ -13,7 +13,7 @@
             @foreach($loyaltys as $employee)
                 <tr>
                     <th>{{$loop->iteration}}</th>
-                    <td class="text-strong">{{$employee->lastname}}, {{$employee->firstname}}</td>
+                    <td class="text-strong">{{$employee->full['LFEM']}}</td>
                     <td>{{\Illuminate\Support\Carbon::parse($employee->firstday_gov)->format('F d, Y')}}</td>
                     <td>{{$employee->years_in_gov}} years</td>
                     <td>
@@ -22,4 +22,5 @@
             @endforeach
         </table>
     </div>
+
 @endif
