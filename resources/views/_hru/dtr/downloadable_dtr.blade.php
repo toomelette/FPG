@@ -281,7 +281,7 @@
             </table>
         </div>
         <div>
-            <p style="font-size: 10px;float: left">2022/PPSPD/MIS | {{Auth::user()->username}} | {{request()->ip()}}</p>
+            <p style="font-size: 10px;float: left; display: none">2022/PPSPD/MIS | {{Auth::user()->username}} | {{request()->ip()}}</p>
         </div>
     </div>
     <div style="width: 46% ; float: right; margin-right: 20px; ">
@@ -484,7 +484,7 @@
 
         </div>
         <div>
-            <p style="font-size: 10px;float: left">2022/PPSPD/MIS | {{Auth::user()->username}} | {{request()->ip()}}</p>
+            <p style="font-size: 10px;float: left; display: none">2022/PPSPD/MIS | {{Auth::user()->username}} | {{request()->ip()}}</p>
         </div>
     </div>
 </div>
