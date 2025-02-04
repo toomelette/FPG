@@ -595,6 +595,9 @@ class DocumentService extends BaseService{
             $content = $request->body;
         }
 
+        $content = $content.'<br><br>
+                <hr style="margin: 1px">
+                <p style="margin: 0; color: darkgreen"><b>IMPORTANT:</b> This message is <b>CONFIDENTIAL</b>. If received in error, please notify us and delete it. Copying, forwarding, or sharing its contents is <b>PROHIBITED</b>.</p>';
 
         $status = "PENDING";
 
