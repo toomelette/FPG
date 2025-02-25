@@ -4,7 +4,7 @@
             ->first();
 
     if(empty(\App\Swep\Helpers\Helper::checkRouteAccess('dashboard.dtr.store'))){
-        if($employee->biometric_user_id !== \Illuminate\Support\Facades\Auth::user()->employee->biometric_user_id){
+        if(Helper::dtrEditAllowed() == false){
             $editable_class = '';
             $editable_remarks_class = '';
             $editable_lt_ut = '';
