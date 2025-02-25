@@ -1077,4 +1077,13 @@ class Arrays
         return  [];
     }
 
+    public static function modesOfTransportation()
+    {
+        return [
+            'SRA Vehicle' => 'SRA Vehicle',
+            'Taxi' => 'Taxi',
+            'PUJ/s' => 'PUJ/s',
+            'Own Vehicle' => 'Own Vehicle',
+        ];
+    }
 }

@@ -213,12 +213,12 @@ class Employee extends Model{
 
                 $FLE = $this->firstname.' '.$this->lastname.' '.$this->name_ext;
                 return [
-                    'LFEM' => $LFEM,
-                    'FMLE' => $FMLE,
-                    'FMiLE' => $FMiLE,
-                    'LFEMi' => $LFEMi,
-                    'LFE' => $LFE,
-                    'FLE' => $FLE,
+                    'LFEM' => rtrim($LFEM),
+                    'FMLE' => rtrim($FMLE),
+                    'FMiLE' => rtrim($FMiLE),
+                    'LFEMi' => rtrim($LFEMi),
+                    'LFE' => rtrim($LFE),
+                    'FLE' => rtrim($FLE),
                 ];
             },
         );
@@ -461,7 +461,6 @@ class Employee extends Model{
                      ->whereIsActive('ACTIVE')
                      ->get()
                      ->count();
-
     }
 
 

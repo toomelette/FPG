@@ -74,7 +74,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     /** PERMISSION SLIPS **/
     Route::get('/permission_slips/my_permission_slips','PermissionSlipController@myPermissionSlips')->name('permission_slip.my_permission_slips');
-
+    Route::get('/permission_slip/{slug}/batch_print', [\App\Http\Controllers\PermissionSlipController::class,'batchPrint'])->name('permission_slip.batch_print');
+    Route::get('/permission_slip/my', [\App\Http\Controllers\PermissionSlipController::class,'my'])->name('permission_slip.my');
+    Route::get('/permission_slip/{slug}/print', [\App\Http\Controllers\PermissionSlipController::class,'print'])->name('permission_slip.print');
+    Route::resource('permission_slip', 'PermissionSlipController');
 
     Route::get('/showLogs/{tableName}/{subjectId}',function ($tableName,$subjectId){
 
@@ -316,9 +319,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
 
 	/** Permission Slip **/
+
 	Route::get('/permission_slip/report', 'PermissionSlipController@report')->name('permission_slip.report');
 	Route::get('/permission_slip/report_generate', 'PermissionSlipController@reportGenerate')->name('permission_slip.report_generate');
-	Route::resource('permission_slip', 'PermissionSlipController');
+
 
 
 	/** Leave Card **/

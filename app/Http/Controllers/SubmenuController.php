@@ -36,7 +36,7 @@ class SubmenuController extends Controller
                     return $data->is_nav == 1 ? '<i class="fa fa-check"></i>' : '';
                 })
                 ->editColumn('public',function($data){
-                    return $data->is_nav == 1 ? '<i class="fa fa-check"></i>' : '';
+                    return $data->public == 1 ? '<i class="fa fa-check"></i>' : '';
                 })
                 ->editColumn('users_with_access_count',function($data){
                     return $data->public == 1 ? 'All authenticated' : $data->users_with_access_count;

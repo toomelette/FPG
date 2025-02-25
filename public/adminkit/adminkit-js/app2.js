@@ -621,7 +621,9 @@ function initializeAutonumByClass(className){
 }
 
 
+
 $("body").on("click",".print-btn-dialog",function (){
     let href = $(this).attr('href');
     window.open(href, "popupWindow", "width=1200, height=600, scrollbars=yes");
-})
+});
+

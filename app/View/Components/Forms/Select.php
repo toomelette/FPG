@@ -27,6 +27,7 @@ class Select extends Component
         public $multiple = false,
         public $includeEmpty = true,
         public $placeholder = null,
+        public $selectOnly = false,
     )
     {
         if(is_object($this->value)){

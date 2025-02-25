@@ -1,5 +1,7 @@
+@if($selectOnly == false)
 <div class="form-group  col-md-{{$cols}} {{$name}} {{$containerClass}}">
     <label for="lastname">{{$label}}:</label>
+@endif
     <select name="{{$name}}" class="form-control {{$class}}"
             @if($id != null)id="{{$id}}"@endif
             @if($required != null)
@@ -32,4 +34,6 @@
             @endif
         @endforeach
     </select>
-</div>
+@if($selectOnly == false)
+    </div>
+@endif

@@ -21,11 +21,9 @@ class PermissionSlipFormRequest extends FormRequest{
 
         return [
 
-            'employee_no' => 'required|max:20|string',
-            'date' => 'required|date_format:"m/d/Y"',
-            'time_out' => 'required|date_format:"h:i A"',
-            'time_in' => 'required|date_format:"h:i A"',
-            'with_ps' => 'required|max:11|string',
+//            'employee_no' => 'required|max:20|string',
+            'date' => 'required|date_format:"Y-m-d"',
+
             
         ];
     
