@@ -25,7 +25,7 @@
 
         $permanentEmployees = $permanentEmployees->map(function ($data){
                 return [
-                    'id' => $data->slug,
+                    'id' => $data->full['FMiLE'],
                     'text' => $data->full['FMiLE'],
                     'position' => $data->plantilla->position ?? '',
                 ];
@@ -86,7 +86,9 @@
         <tbody id="employee-row-template">
         <tr id="employee-row-rand">
             <td>
-                <x-forms.select id="employee-select-rand" label="" name="employees[rand]" cols="12" :select-only="true"/>
+                <div class="employees_rand">
+                    <x-forms.select id="employee-select-rand" label="" name="employees[rand]" cols="12" :select-only="true"/>
+                </div>
             </td>
             <td style="width: 40px;"><button class="btn btn-sm btn-danger remove_row_btn" type="button"><i class="fa fa-times"></i></button></td>
         </tr>

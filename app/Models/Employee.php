@@ -206,7 +206,12 @@ class Employee extends Model{
 
                 // FIRST MI LAST EXT
                 if($this->middlename != '' || $this->middlname != null){
-                    $FMiLE = $this->firstname.' '.Str::limit($this->middlename,1,'.').' '.$this->lastname.' '.$this->name_ext;
+                    if(Str::of($this->middlename)->length() < 2){
+                        $mi = $this->middlename.'.';
+                    }else{
+                        $mi = Str::limit($this->middlename,1,'.');
+                    }
+                    $FMiLE = $this->firstname.' '.$mi.' '.$this->lastname.' '.$this->name_ext;
                 }else{
                     $FMiLE = $FMLE;
                 }

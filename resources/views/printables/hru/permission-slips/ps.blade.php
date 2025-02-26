@@ -20,12 +20,16 @@
                                     <img src="{{asset('images/sra.png')}}" style="width: 100px; float: right">
                                 </td>
                                 <td class="text-center" style="width: 40%;" rowspan="2">
-                                    <b>SUGAR REGULATORY ADMINISTRATION</b> <br>
+                                    <span style="font-size: 14px">
+                                        <b>SUGAR REGULATORY ADMINISTRATION</b> <br>
+                                    </span>
+                                    <span style="font-size: 11px">
                                     North Avenue, Diliman, Quezon City <br>
                                     Telephone Number: 8-9297187 <br><br>
+                                    </span>
 
                                     <b>REVISED PERMISSION SLIP FORM</b> <br>
-                                    (Effective 02/14/2025)
+                                    <span style="font-size: 11px">(Effective 02/14/2025)</span>
                                 </td>
                                 <td class="text-right text-top">
                                     <small><span>{{$ps->ps_no}}</span></small>
@@ -43,7 +47,7 @@
                         <table style="width: 100%;">
                             <tr class=" b-bottom b-left b-right">
                                 <td style="width: 20%">Date validity:</td>
-                                <td style="width: 20%;">{{$ps->date}}</td>
+                                <td style="width: 20%;">{{Carbon::make($ps->date)->format('m/d/Y')}}</td>
                                 <td>
                                     <span style="font-size: 15px">{{$ps->personal_official == 'PERSONAL' ? '☑' : '☐'}}</span> Personal
                                 </td>
@@ -126,7 +130,7 @@
                                     <b>{{$ps->supervisor_name}}</b> <br>
                                     <i><small>{{$ps->supervisor_position}}</small></i>
                                     <br>
-                                    <small><p style="margin: 0px"> Date: <u><b>{{$ps->supervisor_date}}</b></u></p></small>
+                                    <small><p style="margin: 0px"> Date: <u><b>{{Helper::dateFormat($ps->supervisor_date,'m/d/Y')}}</b></u></p></small>
                                 </td>
                                 <td class="text-center b-left">
                                     _________________________________________ <br>
