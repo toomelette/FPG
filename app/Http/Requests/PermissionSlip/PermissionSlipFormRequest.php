@@ -19,11 +19,7 @@ class PermissionSlipFormRequest extends FormRequest{
 
     public function rules(){
 
-        if(empty($this->employees) || count($this->employees) < 1){
-            abort(503,'There must be at least one employee.');
-        }
-        return [
-            'employees.*' => 'required',
+        $rules = [
             'date' => 'required|date_format:"Y-m-d"',
             'personal_official' => 'required',
             'direct_nondirect' => 'required',
@@ -33,6 +29,15 @@ class PermissionSlipFormRequest extends FormRequest{
             'supervisor_name' => 'required|string|max:255',
             'supervisor_position' => 'required|string|max:255',
         ];
+        //if store
+        if( $this->method() == 'POST'){
+            if(empty($this->employees) || count($this->employees) < 1){
+                abort(503,'There must be at least one employee.');
+            }
+            $rules['employees.*'] = 'required';
+        }
+
+        return $rules;
     
     }
 
