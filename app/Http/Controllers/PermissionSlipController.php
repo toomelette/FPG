@@ -107,20 +107,21 @@ class PermissionSlipController extends Controller{
         $batchId = Str::random();
         $psArray = [];
         $employeesUsed = Employee::query()->whereIn('slug',collect($request->employees)->values()->toArray())->get();
-        $psFrequencies = PS::query()
-            ->selectRaw('employee_slug, count(employee_slug) as frequency')
-            ->whereIn('employee_slug',collect($request->employees)->values()->toArray())
-            ->where('date','like',Carbon::parse($request->date)->format('Y-m-').'%')
-            ->where('personal_official','=','PERSONAL')
-            ->groupBy('employee_slug')
-            ->get();
+        if($request->personal_official == 'PERSONAL'){
+            $psFrequencies = PS::query()
+                ->selectRaw('employee_slug, count(employee_slug) as frequency')
+                ->whereIn('employee_slug',collect($request->employees)->values()->toArray())
+                ->where('date','like',Carbon::parse($request->date)->format('Y-m-').'%')
+                ->where('personal_official','=','PERSONAL')
+                ->groupBy('employee_slug')
+                ->get();
+        }
         $index = 0;
         $psNos = $this->PSService->newPsNo(count($request->employees));
         foreach ($request->employees as $employee){
-            $psArray[] = [
+            $toPush = [
                 'slug' => Str::random(),
                 'ps_no' => $psNos[$index],
-                'ps_frequency' => ($psFrequencies->where('employee_slug',$employee)->first()->frequency ?? 0) + 1,
                 'employee_slug' => $employee,
                 'employee_name' => $employeesUsed->where('slug',$employee)->first()->full['FMiLE'],
                 "date" => $request->date,
@@ -136,6 +137,12 @@ class PermissionSlipController extends Controller{
                 "created_at" => Carbon::now(),
                 'batch_id' => $batchId,
             ];
+            if($request->personal_official == 'PERSONAL'){
+                $toPush['ps_frequency'] = ($psFrequencies->where('employee_slug',$employee)->first()->frequency ?? 0) + 1;
+            }else{
+                $toPush['ps_frequency'] = null;
+            }
+            $psArray[] = $toPush;
             $index++;
         }
 
