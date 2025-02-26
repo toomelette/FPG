@@ -122,7 +122,7 @@ class PermissionSlipController extends Controller{
                 'ps_no' => $psNos[$index],
                 'ps_frequency' => ($psFrequencies->where('employee_slug',$employee)->first()->frequency ?? 0) + 1,
                 'employee_slug' => $employee,
-                'employee_name' => $employeesUsed->where('slug',$employee)->first()->full['LFEMi'],
+                'employee_name' => $employeesUsed->where('slug',$employee)->first()->full['FMiLE'],
                 "date" => $request->date,
                 "personal_official" => $request->personal_official,
                 "direct_nondirect" => $request->direct_nondirect,
