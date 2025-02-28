@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Hru\PSUpdateTimeFormRequest;
 use App\Models\Employee;
 use App\Models\HRU\PS;
+use App\Swep\Helpers\Helper;
 use App\Swep\Services\HRU\PSService;
 use App\Swep\Services\PermissionSlipService;
 use App\Http\Requests\PermissionSlip\PermissionSlipFormRequest;
@@ -12,6 +14,7 @@ use App\Http\Requests\PermissionSlip\PermissionSlipReportRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -70,7 +73,7 @@ class PermissionSlipController extends Controller{
             $ps = PS::query()->my();
             return DataTables::of($ps)
                 ->addColumn('action',function ($data){
-                    return view('_hru.permission-slips.dtActions')->with([
+                    return view('_hru.permission-slips.my-dtActions')->with([
                         'data' => $data,
                     ]);
                 })
@@ -156,7 +159,19 @@ class PermissionSlipController extends Controller{
 
     public function isAuthorized($ps)
     {
-        if($ps->user_created == Auth::user()->user_id || $ps->employee_slug == Auth::user()->employee->slug){
+        $routeAccess = Helper::checkRouteAccess(Route::currentRouteName());
+        $hasRouteAccess = true;
+        if(empty($routeAccess)){
+            $hasRouteAccess = false;
+        }
+
+        if($ps->status == 'LOCKED'){
+            if (!$hasRouteAccess){
+                abort(503,'This data is already locked from modification.');
+            }
+        }
+
+        if($ps->user_created == Auth::user()->user_id || $ps->employee_slug == Auth::user()->employee->slug || $hasRouteAccess){
             return true;
         }
         abort(403,'You do not have enough privilege to perform this action.');
@@ -228,7 +243,47 @@ class PermissionSlipController extends Controller{
         abort(503,'Error deleting PS');
     }
 
-    
+    public function editTime($slug)
+    {
+        $ps = PS::query()->findOrFail($slug);
+        return view('_hru.permission-slips.edit-time')->with([
+            'ps' => $ps,
+        ]);
+    }
+
+    public function updateTime(PSUpdateTimeFormRequest $request,$slug)
+    {
+        $ps = PS::query()->findOrFail($slug);
+        $departure = null;
+        $return = null;
+        $timeSpent = 0;
+        $timeExcluded = 0;
+        if(!empty($request->departure) && !empty($request->return)){
+            if($request->departure < $request->return){
+                $departure = Carbon::parse($request->departure);
+                $return = Carbon::parse($request->return);
+                while ($departure < $return){
+                    if($departure >= Carbon::parse('12:00') && $departure <= Carbon::parse('12:59')){
+                        $departure = $departure->addMinute();
+                        $timeExcluded = $timeExcluded + 1;
+                    }else{
+                        $departure = $departure->addMinute();
+                        $timeSpent = $timeSpent+1;
+                    }
+                }
+            }
+        }
+        $ps->departure = Helper::dateFormat($request->departure,'Y-m-d H:i:s');
+        $ps->return = Helper::dateFormat($request->return,'Y-m-d H:i:s');
+        $ps->time_spent = $timeSpent;
+        $ps->user_updated_departure = $ps->departure != null ? Auth::user()->user_id : null;
+        $ps->user_updated_return = $ps->return != null ? Auth::user()->user_id : null;
+        $ps->status = $ps->departure != null || $ps->return != null ? 'LOCKED' : null;
+        if($ps->update()){
+            return $ps->only('slug');
+        }
+        abort(503,'Error updating PS.');
+    }
 
 
     public function report(){

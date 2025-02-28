@@ -322,6 +322,8 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
 	Route::get('/permission_slip/report', 'PermissionSlipController@report')->name('permission_slip.report');
 	Route::get('/permission_slip/report_generate', 'PermissionSlipController@reportGenerate')->name('permission_slip.report_generate');
+    Route::get('/permission_slip/{slug}/update_time',[\App\Http\Controllers\PermissionSlipController::class,'editTime'])->name('permission_slip.update_time');
+    Route::patch('/permission_slip/{slug}/update_time',[\App\Http\Controllers\PermissionSlipController::class,'updateTime'])->name('permission_slip.update_time');
 
 
 

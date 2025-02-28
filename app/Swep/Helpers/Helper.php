@@ -838,4 +838,11 @@ class Helper
         $int = $int.'';
         return $int * 1;
     }
+
+    public static function minsToHuman($timeInMins)
+    {
+        $timeSpentMinsRemainder = $timeInMins % 60;
+        $timeSpentHoursAbsolute = ($timeInMins - $timeSpentMinsRemainder) / 60;
+        return Str::padLeft($timeSpentHoursAbsolute,'2','0').':'.Str::padLeft($timeSpentMinsRemainder,'2','0');
+    }
 }
