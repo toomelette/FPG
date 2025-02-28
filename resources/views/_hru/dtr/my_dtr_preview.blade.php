@@ -10,14 +10,13 @@
             $editable_lt_ut = '';
         }else{
             $editable_class = 'editable-dtr';
-            $editable_remarks_class = 'editable-remarks';
             $editable_lt_ut = 'editable-lt-ut';
         }
     }else{
         $editable_class = 'editable-dtr';
-        $editable_remarks_class = 'editable-remarks';
         $editable_lt_ut = 'editable-lt-ut';
     }
+    $editable_remarks_class = 'editable-remarks';
 
 @endphp
 @extends('adminkit.modal')
