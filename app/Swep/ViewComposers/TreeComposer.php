@@ -16,6 +16,7 @@ class TreeComposer
 
         $tree = [];
 
+        $projectId = Auth::user()->project_id;
 
         $user_submenus = UserSubmenu::query()
             ->with([
@@ -27,9 +28,14 @@ class TreeComposer
             ->where('portal','=','DIGIFILE')
             ->orderBy('category','asc')
             ->orderBy('su_menus.order','asc')
-            ->orderBy('su_submenus.sort','asc')
-            ->get();
+            ->orderBy('su_submenus.sort','asc');
+        if($projectId == 1){
+            $user_submenus = $user_submenus->where('su_menus.vis','=',1);
+        }else{
+            $user_submenus = $user_submenus->where('su_menus.lm','=',1);
+        }
 
+        $user_submenus = $user_submenus->get();
 
 
         foreach ($user_submenus as $user_submenu){
@@ -41,8 +47,13 @@ class TreeComposer
             ->with([
                 'menu',
             ])
-            ->whereHas('menu', function ($query) {
-                return $query->where('portal', '=','DIGIFILE');
+            ->whereHas('menu', function ($query) use ($projectId) {
+                $query->where('portal', '=','DIGIFILE');
+                if($projectId == 1){
+                    $query->where('su_menus.vis','=',1);
+                }else{
+                    $query->where('su_menus.lm','=',1);
+                }
             })
             ->get();
         if(!empty($publicSubmenus)){
