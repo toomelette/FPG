@@ -13,7 +13,7 @@
                 <th>Date</th>
                 <th>Name</th>
                 <th>Purpose/Destination</th>
-                <th>Pers./Off.</th>
+                <th style="width: 20%;">Pers./Off.</th>
                 <th style="width: 80px">Action</th>
                 <th>Created At</th>
             </tr>
@@ -40,7 +40,7 @@
                 { data: "date" },
                 { data: "employee_name" },
                 { data: "purpose" },
-                { data: "personal_official" },
+                { data: "ps_details" },
                 { data: "action"},
                 { data: "created_at"}
             ],

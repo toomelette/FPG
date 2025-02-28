@@ -52,8 +52,8 @@ class PermissionSlipController extends Controller{
                 ->editColumn('date',function ($data){
                     return Carbon::make($data->date)->format('M. d, Y');
                 })
-                ->editColumn('personal_official',function ($data){
-                    return view('_hru.permission-slips.dtPersonalOfficial')->with([
+                ->addColumn('ps_details',function ($data){
+                    return view('_hru.permission-slips.dtPsDetails')->with([
                         'data' => $data,
                     ]);
                 })
