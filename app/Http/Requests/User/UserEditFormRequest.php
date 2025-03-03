@@ -20,7 +20,7 @@ class UserEditFormRequest extends FormRequest
 
 
         $rules = [
-
+//            'project_id' => 'required',
             'employee_sync'=>'nullable|string|max:45',
             'firstname'=>'nullable|string|max:90',
             'middlename'=>'nullable|string|max:90',

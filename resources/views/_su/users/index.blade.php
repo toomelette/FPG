@@ -39,7 +39,11 @@
             <x-forms.select label="Employee" name="employee" cols="12" id="select2-employees"/>
         </div>
         <div class="row mb-2">
-            <x-forms.input label="Useraname" name="username" cols="12"/>
+            <x-forms.input label="Username" name="project_id" cols="12"/>
+        </div>
+
+        <div class="row mb-2">
+            <x-forms.select label="Project ID" name="username" cols="12" :options="[1 => '1 - VIS' , 2 => '2 - LM']"/>
         </div>
         <x-slot:footer>
             <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>

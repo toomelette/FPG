@@ -19,9 +19,11 @@ class UserFormRequest extends FormRequest{
 
     
     public function rules(){
+
         return [
             'employee' => 'required',
             'username'=>'required|string|max:45|unique:users,username,'.$this->route('user').',slug',
+            'project_id' => 'required',
         ];
 
         if($this->create_from_employee == true){
