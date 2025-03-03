@@ -29,10 +29,10 @@ class TreeComposer
             ->orderBy('category','asc')
             ->orderBy('su_menus.order','asc')
             ->orderBy('su_submenus.sort','asc');
-        if($projectId == 1){
-            $user_submenus = $user_submenus->where('su_menus.vis','=',1);
-        }else{
+        if($projectId == 2){
             $user_submenus = $user_submenus->where('su_menus.lm','=',1);
+        }else{
+            $user_submenus = $user_submenus->where('su_menus.vis','=',1);
         }
 
         $user_submenus = $user_submenus->get();
