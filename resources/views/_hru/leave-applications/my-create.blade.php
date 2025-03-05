@@ -1,5 +1,37 @@
 @php
     /** @var \App\Models\Employee $employee  **/
+
+    $emps = \App\Models\Employee::query()
+            ->with(['plantilla'])
+            ->active()
+            ->permanent()
+            ->orderBy('lastname')
+            ->get();
+    $emps = $emps->sortByDesc(function ($data){
+        if(empty($data->plantilla->job_grade)){
+            return -1;
+        }
+        return $data->plantilla->job_grade.$data->plantilla->step_inc;
+    });
+
+        $approving = $emps->filter(function ($data){
+            return (($data->plantilla->job_grade ?? 0) >= 12) || (($data->plantilla->job_grade ?? 0) ==  12 && ($data->plantilla->step_inc ?? 0) >= 5);
+        });
+        $approving = $approving->map(function ($data){
+                return [
+                    'id' => $data->full['FMiLE'],
+                    'text' => $data->full['FMiLE'],
+                    'position' => $data->plantilla->position ?? null,
+                ];
+            })->values();
+
+        $recommending = $emps->map(function ($data){
+                return [
+                    'id' => $data->full['FMiLE'],
+                    'text' => $data->full['FMiLE'],
+                    'position' => $data->plantilla->position ?? null,
+                ];
+            })->values();
 @endphp
 @extends('adminkit.master')
 
@@ -55,11 +87,12 @@
                 Recommendation and Approval
             </x-adminkit.html.alert>
 
+
             <div class="row mb-2">
-                <x-forms.input label="Recommending Officer" name="recommended_by" cols="lg-2 col-md-3"/>
-                <x-forms.input label="Position" name="recommended_by_position" cols="lg-2 col-md-3"/>
-                <x-forms.input label="Approved by" name="approved_by" cols="lg-2 col-md-3"/>
-                <x-forms.input label="Position" name="approved_by_position" cols="lg-2 col-md-3"/>
+                <x-forms.select label="Recommending Officer" id="recommending-name" name="recommended_by" cols="lg-2 col-md-3"/>
+                <x-forms.input label="Position" name="recommended_by_position" id="recommending-position" cols="lg-2 col-md-3"/>
+                <x-forms.select label="Approved by" name="approved_by" id="approving-name" cols="lg-2 col-md-3"/>
+                <x-forms.input label="Position" name="approved_by_position" id="approving-position" cols="lg-2 col-md-3"/>
             </div>
         </x-adminkit.html.card>
     </form>
@@ -78,6 +111,8 @@
         }).on('changeDate', function(e) {
             $("#no-of-days").val(e.dates.length);
         });
+
+        let employees = {!! \App\Swep\Helpers\Json::activeEmployeesSelect2() !!};
 
         var leaveTypes = {!! json_encode(\App\Swep\Helpers\Arrays::leaveTypesJson())  !!};
         $('#leave-type').change(function (){
@@ -130,7 +165,7 @@
 
         let an = new AutoNumeric('.autonum2', autonum_settings);
 
-        var employees = {!! \App\Swep\Helpers\Json::activeEmployeesSelect2()  !!};
+
 
         $("#employee_slug").select2({ data: employees });
         $("#employee_slug").val('{{Auth::user()->employee->slug}}').trigger('change');
@@ -184,6 +219,28 @@
                     errored(form,res);
                 }
             })
+        })
+
+        var recommending = {!! $recommending->toJson() !!};
+        var approving = {!! $approving->toJson() !!};
+        $(document).ready(function (){
+            $("#recommending-name").select2({
+                data : recommending,
+            })
+
+            $('#recommending-name').on('select2:select', function (e) {
+                let data = e.params.data;
+                $("#recommending-position").val(data.position);
+            });
+
+            $("#approving-name").select2({
+                data : approving,
+            })
+
+            $('#approving-name').on('select2:select', function (e) {
+                let data = e.params.data;
+                $("#approving-position").val(data.position);
+            });
         })
     </script>
 @endsection

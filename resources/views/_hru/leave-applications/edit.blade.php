@@ -1,5 +1,37 @@
 @php
 /** @var \App\Models\LeaveApplication $la  **/
+
+$emps = \App\Models\Employee::query()
+            ->with(['plantilla'])
+            ->active()
+            ->permanent()
+            ->orderBy('lastname')
+            ->get();
+    $emps = $emps->sortByDesc(function ($data){
+        if(empty($data->plantilla->job_grade)){
+            return -1;
+        }
+        return $data->plantilla->job_grade.$data->plantilla->step_inc;
+    });
+
+        $approving = $emps->filter(function ($data){
+            return (($data->plantilla->job_grade ?? 0) >= 12) || (($data->plantilla->job_grade ?? 0) ==  12 && ($data->plantilla->step_inc ?? 0) >= 5);
+        });
+        $approving = $approving->map(function ($data){
+                return [
+                    'id' => $data->full['FMiLE'],
+                    'text' => $data->full['FMiLE'],
+                    'position' => $data->plantilla->position ?? null,
+                ];
+            })->values();
+
+        $recommending = $emps->map(function ($data){
+                return [
+                    'id' => $data->full['FMiLE'],
+                    'text' => $data->full['FMiLE'],
+                    'position' => $data->plantilla->position ?? null,
+                ];
+            })->values();
  @endphp
 @extends('adminkit.master')
 
@@ -32,7 +64,6 @@
             <div class="row mb-2">
                 <x-forms.input label="Date of filing" name="date_of_filing" cols="lg-3 col-md-4" type="date" :value="$la ?? null"/>
                 <x-forms.select label="Type of leave to be availed" name="leave_type" cols="lg-3 col-md-4" id="leave-type" :options="\App\Swep\Helpers\Arrays::leaveTypes()" :value="$la ?? null"/>
-                <x-forms.input label="Specify Leave Type" name="leave_type_specify" id="leave-type-specify" cols="lg-3 col-md-4" :value="$la ?? null"/>
                 <x-forms.select label="Details of leave" name="leave_details" id="leave-details" cols="lg-3 col-md-4" :disabled="true" :options="\App\Swep\Helpers\Arrays::leaveTypesTree()[$la->leave_type] ?? []" :value="$la ?? null"/>
                 <x-forms.input label="Specify " name="leave_specify" id="leave-specify" cols="lg-3 col-md-4" :disabled="false" :value="$la ?? null"/>
             </div>
@@ -60,11 +91,12 @@
                 Recommendation and Approval
             </x-adminkit.html.alert>
 
+
             <div class="row mb-2">
-                <x-forms.input label="Recommending Officer" name="recommended_by" cols="lg-2 col-md-3" :value="$la ?? null"/>
-                <x-forms.input label="Position" name="recommended_by_position" cols="lg-2 col-md-3" :value="$la ?? null"/>
-                <x-forms.input label="Approved by" name="approved_by" cols="lg-2 col-md-3" :value="$la ?? null"/>
-                <x-forms.input label="Position" name="approved_by_position" cols="lg-2 col-md-3" :value="$la ?? null"/>
+                <x-forms.select label="Recommending Officer" name="recommended_by"  id="recommending-name" cols="lg-2 col-md-3" :value="$la ?? null"/>
+                <x-forms.input label="Position" name="recommended_by_position" id="recommending-position" cols="lg-2 col-md-3" :value="$la ?? null"/>
+                <x-forms.select label="Approved by" name="approved_by" id="approving-name" cols="lg-2 col-md-3" :value="$la ?? null"/>
+                <x-forms.input label="Position" name="approved_by_position" id="approving-position" cols="lg-2 col-md-3" :value="$la ?? null"/>
             </div>
         </x-adminkit.html.card>
     </form>
@@ -173,5 +205,30 @@
             $("#edit-leave-application-form input[name='position']").val(employee.position);
             $("#edit-leave-application-form input[name='salary']").val(employee.monthly_basic);
         });
+
+        var recommending = {!! $recommending->toJson() !!};
+        var approving = {!! $approving->toJson() !!};
+        $(document).ready(function (){
+            $("#recommending-name").select2({
+                data : recommending,
+            })
+
+            $('#recommending-name').on('select2:select', function (e) {
+                let data = e.params.data;
+                $("#recommending-position").val(data.position);
+            });
+
+            $("#approving-name").select2({
+                data : approving,
+            })
+
+            $('#approving-name').on('select2:select', function (e) {
+                let data = e.params.data;
+                $("#approving-position").val(data.position);
+            });
+
+            $("#recommending-name").val('{{$la->recommended_by}}').trigger('change');
+            $("#approving-name").val('{{$la->approved_by}}').trigger('change');
+        })
     </script>
 @endsection
