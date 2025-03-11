@@ -28,13 +28,13 @@ class Employee extends Model{
     {
         parent::boot();
         static::updating(function($a){
-            $a->user_updated = \Auth::user()->user_id;
+            $a->user_updated = \Auth::user()->user_id ?? null;
             $a->ip_updated = request()->ip();
             $a->updated_at = \Carbon::now();
         });
 
         static::creating(function ($a){
-            $a->user_created = \Auth::user()->user_id;
+            $a->user_created = \Auth::user()->user_id ?? null;
             $a->ip_created = request()->ip();
             $a->created_at = \Carbon::now();
         });
@@ -554,6 +554,21 @@ class Employee extends Model{
                 ->where('locations','!=','LUZON/MINDANAO');
         });
     }
+
+    public function scopeLuzMin(Builder $query){
+            $query->where(function ($q){
+                return $q->where('locations','=','LUZON/MINDANAO')
+                    ->orWhere('locations','=','COS-LUZMIN');
+            });
+    }
+    public function scopeVis(Builder $query){
+        $query->where(function ($q){
+            return $q->where('locations','=','VISAYAS')
+                ->orWhere('locations','=','COS-VISAYAS');
+        });
+    }
+
+
 
     public function plantilla(){
         return $this->hasOne(HRPayPlanitilla::class,'item_no','item_no');
