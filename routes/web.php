@@ -20,8 +20,6 @@ Route::group(['as' => 'auth.'], function () {
     Route::post('/reset_password','Auth\AccountRecoveryController@reset_password')->name('reset_password');
     Route::post('/verify_email','Auth\AccountRecoveryController@verify_email')->name('verify_email');
     Route::get('/reset_password_via_email','Auth\AccountRecoveryController@reset_password_via_email')->name('reset_password_via_email');
-
-
 });
 
 Route::get('document/received/{slug}',\App\Http\Controllers\DocumentController::class.'@received')->name('dashboard.document.received');
