@@ -913,3 +913,35 @@ Route::get('recoverDtrFromSQL',function(){
     \App\Models\DTR::query()->insert($insert);
 });
 
+
+Route::get('createLgarecUsers',function (){
+    $emps = \App\Models\Employee::query()
+        ->whereDoesntHave('user')
+        ->active()
+        ->vis()
+        ->limit(20)
+        ->get();
+    $usersArray = [];
+    $batchId = Str::random(5);
+    foreach ($emps as $emp){
+
+        $usersArray[] = [
+            'slug' => Str::random(),
+            'employee_slug' => $emp->slug,
+            'user_id' => strtoupper(Str::random(10)),
+            'email' => null,
+            'username' => $emp->employee_no,
+            'password' => Hash::make(Carbon::parse($emp->date_of_birth)->format('mdy')),
+            'lastname' => $emp->lastname,
+            'firstname' => $emp->firstname,
+            'middlename' => $emp->middlename,
+            'is_activated' => 1,
+            'color' => 'skin-green sidebar-mini',
+            'user_created' => 'SYSTEM-'.$batchId,
+            'employee_no' => $emp->employee_no,
+            'project_id' => 1,
+        ];
+    }
+    \App\Models\User::query()->insert($usersArray);
+    dd($usersArray);
+});
