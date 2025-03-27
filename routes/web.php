@@ -99,6 +99,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     })->name('show_activity');
 
     Route::get('/document_request/{slug}/print',[\App\Http\Controllers\RECORDS\DocumentRequestsController::class,'print'])->name('document_request.print');
+    Route::get('/leave_application/{slug}/print', 'LeaveApplicationController@print')->name('leave_application.print');
     Route::resource('leave_application', 'LeaveApplicationController')->only(['edit','update','store','create','destroy']);
 });
 
@@ -168,7 +169,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
 	/** LEAVE APPLICATION **/
 	Route::get('/leave_application/user_index', 'LeaveApplicationController@userIndex')->name('leave_application.user_index');
-	Route::get('/leave_application/{slug}/print', 'LeaveApplicationController@print')->name('leave_application.print');
+
 	Route::get('/leave_application/{slug}/save_as', 'LeaveApplicationController@saveAs')->name('leave_application.save_as');
 	Route::resource('leave_application', 'LeaveApplicationController')->except(['edit','update','store','create','destroy']);
 
