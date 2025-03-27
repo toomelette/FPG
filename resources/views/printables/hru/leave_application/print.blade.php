@@ -174,8 +174,9 @@
                     7B. RECOMMENDATION
                     <p class="no-margin indent">☐ For approval</p>
                     <p class="no-margin indent">☐ For disapproval due to: </p>
-
-                    <p class="text-center no-margin">___________________________________________________</p>
+                    <br><br>
+                    <p class="text-center no-margin"><b>{{$la->recommended_by}}</b></p>
+                    <p class="text-center"><u><small>{{$la->recommended_by_position}}</small></u></p>
                     <p class="text-center">(Authorized Officer)</p>
                 </td>
             </tr>
