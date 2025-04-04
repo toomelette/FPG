@@ -21,6 +21,7 @@
                                         'locations' => 'By location',
                                         'salary_grade' => 'By salary grade',
                                         'civil_status' => 'By civil status',
+                                        'job_classification' => 'By Job Classification',
                                     ]"/>
                         </div>
                         <div class="row mb-2">

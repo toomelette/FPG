@@ -7,6 +7,7 @@ use App\Models\DepartmentTree;
 use App\Models\Employee;
 use App\Models\HRPayPlanitilla;
 use App\Models\HrPayPlantillaEmployees;
+use App\Models\HRU\HrPlantillaClassification;
 use App\Node;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Services\PlantillaService;
@@ -155,7 +156,19 @@ class PlantillaController extends Controller{
         $pp->qs_eligibility = $request->qs_eligibility;
         $pp->qs_competency = $request->qs_competency;
         $pp->place_of_assignment = $request->place_of_assignment;
+        $classToInsert = [];
+        if($request->has('job_classification') && count($request->job_classification) > 0){
+            foreach ($request->job_classification as $jobClass) {
+                $classToInsert[] = [
+                    'item_no' => $pp->item_no,
+                    'classification' => $jobClass,
+                ];
+
+            }
+        }
         if($pp->update()){
+            $pp->classifications()->delete();
+            HrPlantillaClassification::query()->insert($classToInsert);
             return $pp->only('id');
         }
         abort(503,'Error saving data.');

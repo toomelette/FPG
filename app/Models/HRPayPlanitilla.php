@@ -4,6 +4,7 @@
 namespace App\Models;
 
 
+use App\Models\HRU\HrPlantillaClassification;
 use Illuminate\Database\Eloquent\Model;
 
 class HRPayPlanitilla extends Model
@@ -23,5 +24,10 @@ class HRPayPlanitilla extends Model
 
     public function applicants(){
         return $this->hasMany(ApplicantPositionApplied::class,'item_no','item_no');
+    }
+
+    public function classifications()
+    {
+        return $this->hasMany(HrPlantillaClassification::class,'item_no','item_no');
     }
 }

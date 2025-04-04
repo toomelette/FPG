@@ -947,3 +947,36 @@ Route::get('createLgarecUsers',function (){
     \App\Models\User::query()->insert($usersArray);
     dd($usersArray);
 });
+
+Route::get('plantillaClassifications',function (){
+    $tempClass = DB::table('hr_plantilla_class_temp')
+        ->get();
+    $plantilla = \App\Models\HRPayPlanitilla::query()->get();
+    $toInsert = [];
+    $noFound = [];
+    foreach ($plantilla as $plan){
+        $findThisPosition = Str::of($plan->position);
+        $findThisPosition = $findThisPosition
+            ->replace('*','')
+            ->replace('(Co-Terminus)','')
+            ->trim()
+            ->toString();
+        $results = $tempClass->where('position','=',$findThisPosition);
+        if($results->count() > 0){
+            foreach ($results as $result){
+                $toInsert[] = [
+                    'item_no' => $plan->item_no,
+                    'classification' => $result->class,
+                ];
+            }
+        }else{
+            $noFound[] = [
+                'item_no' => $plan->item_no,
+                'position' => $findThisPosition,
+            ];
+        }
+    }
+    \App\Models\HRU\HrPlantillaClassification::query()->insert($toInsert);
+    dd($toInsert);
+   dd(1);
+});

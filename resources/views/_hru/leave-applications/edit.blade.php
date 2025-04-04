@@ -62,11 +62,14 @@ $emps = \App\Models\Employee::query()
                 Leave application details
             </x-adminkit.html.alert>
             <div class="row mb-2">
+
                 <x-forms.input label="Date of filing" name="date_of_filing" cols="lg-3 col-md-4" type="date" :value="$la ?? null"/>
                 <x-forms.select label="Type of leave to be availed" name="leave_type" cols="lg-3 col-md-4" id="leave-type" :options="\App\Swep\Helpers\Arrays::leaveTypes()" :value="$la ?? null"/>
-                <x-forms.select label="Details of leave" name="leave_details" id="leave-details" cols="lg-3 col-md-4" :disabled="true" :options="\App\Swep\Helpers\Arrays::leaveTypesTree()[$la->leave_type] ?? []" :value="$la ?? null"/>
+                <x-forms.select label="Details of leave" name="leave_details" id="leave-details" cols="lg-3 col-md-4" :disabled="true" :options="\App\Swep\Helpers\Arrays::leaveTypesTree() ?? []" :value="$la ?? null"/>
+
                 <x-forms.input label="Specify " name="leave_specify" id="leave-specify" cols="lg-3 col-md-4" :disabled="false" :value="$la ?? null"/>
             </div>
+
 
             <div class="row mb-2">
                 @php

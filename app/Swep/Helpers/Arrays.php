@@ -1086,4 +1086,15 @@ class Arrays
             'Own Vehicle' => 'Own Vehicle',
         ];
     }
+    public static function jobClassifications()
+    {
+        return [
+            'Chief Executive' => 'Chief Executive',
+            'Senior Mgt.' => 'Senior Mgt.',
+            'Middle Mgt.' => 'Middle Mgt.',
+            'Professional / Supervisory' => 'Professional / Supervisory',
+            'General/Clerical' => 'General/Clerical',
+            'Technical' => 'Technical',
+        ];
+    }
 }

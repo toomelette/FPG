@@ -43,6 +43,17 @@
     <div class="row mb-2">
         <x-forms.input label="Place of Assignment" name="place_of_assignment" cols="12"  :value="$plantilla ?? null"/>
     </div>
+    <div class="row mb-2">
+        <x-forms.checkbox label="Job Classification"
+                          type="checkbox"
+                          name="job_classification"
+                          cols="12"
+                          each-class="6"
+                          :options="\App\Swep\Helpers\Arrays::jobClassifications()"
+                          :value="$plantilla->classifications->pluck('classification')->toArray() ?? null"
+        />
+    </div>
+
 
 @endsection
 

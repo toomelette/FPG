@@ -576,8 +576,16 @@ class EmployeeController extends Controller{
         abort(503,'Data not found');
     }
 
+    private function jobClassification(Request $request)
+    {
+        dd($request->all());
+    }
+
     public function reportGenerate(EmployeeReportRequest $request){
 
+        if($request->type == 'job_classification'){
+            //return $this->jobClassification($request);
+        }
         $employees = Employee::query()
             ->with([
 //                'employeeTraining',
@@ -586,6 +594,7 @@ class EmployeeController extends Controller{
 //                'employeeEligibility',
 //                'employeeChildren',
                 'responsibilityCenter.description',
+                'plantilla.classifications'
             ])
         ;
         $filters = [];
@@ -656,15 +665,34 @@ class EmployeeController extends Controller{
             if($type == 'employeeAddress'){
                 if(!empty($employee->employeeAddress)){
                     $t = $employee->employeeAddress->res_address_city;
+                    $employee_arr[$t][$employee->employee_no] = $employee;
                 }
             }
             if($type == 'department_unit_id'){
                 if(!empty($employee->departmentUnit)){
                     $t = $employee->departmentUnit->description;
+                    $employee_arr[$t][$employee->employee_no] = $employee;
                 }
             }
-            $employee_arr[$t][$employee->employee_no] = $employee;
+
+            if($type == 'job_classification'){
+
+                if(!empty($employee->plantilla->classifications)){
+                    if($employee->plantilla->classifications->count() > 0){
+                        foreach ($employee->plantilla->classifications as $classification){
+                            $t = $classification->classification;
+                            $employee_arr[$t][$employee->employee_no] = $employee;
+                        }
+                    }else{
+                        $employee_arr['N/A'][$employee->employee_no] = $employee;
+                    }
+                }else{
+                    $employee_arr['N/A'][$employee->employee_no] = $employee;
+                }
+
+            }
         }
+
 
         if(count($employee_arr) < 1){
             abort(505,'Try different filter criteria.');
