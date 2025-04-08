@@ -168,6 +168,28 @@
                                                      @endif
                                                  </td>
                                                  @break
+                                             @case('address_perm')
+                                                 @php($perm = $employee->employeeAddress)
+                                                 <td>
+                                                     @if(!empty($employee->employeeAddress))
+                                                         {{$perm->perm_address_street}}
+                                                         {{$perm->perm_address_village != null ? ', '.$perm->perm_address_village : ''}}
+                                                         {{$perm->perm_address_barangay != null ? ', '.$perm->perm_address_barangay : ''}}
+                                                         {{$perm->perm_address_city != null ? ', '.$perm->perm_address_city : ''}}
+                                                     @endif
+                                                 </td>
+                                                 @break
+                                             @case('address_res')
+                                                 @php($res = $employee->employeeAddress)
+                                                 <td>
+                                                     @if(!empty($employee->employeeAddress))
+                                                         {{$perm->res_address_street}}
+                                                         {{$perm->res_address_village != null ? ', '.$perm->res_address_village : ''}}
+                                                         {{$perm->res_address_barangay != null ? ', '.$perm->res_address_barangay : ''}}
+                                                         {{$perm->res_address_city != null ? ', '.$perm->res_address_city : ''}}
+                                                     @endif
+                                                 </td>
+                                                 @break
                                              @case('educational_background')
                                              <td>
                                                  @if(!empty($employee->employeeEducationalBackground))

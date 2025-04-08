@@ -661,6 +661,10 @@ class EmployeeController extends Controller{
         if($type == 'department_unit_id') {
             $employees->load('responsibilityCenter');
         }
+        $cols = collect($request->columns);
+        if($cols->search('address_perm') || $cols->search('address_res')){
+            $employees->load('employeeAddress');
+        }
         foreach ($employees as $employee){
 
             $t = $employee->$type;
@@ -823,7 +827,7 @@ class EmployeeController extends Controller{
     }
 
     public function allColumnsForReport(){
-        return [
+        $arr = [
             'fullname' => [
                 'name' => 'Fullname',
                 'checked' => 1,
@@ -984,9 +988,24 @@ class EmployeeController extends Controller{
             'job_classification' => [
                 'name' => 'Job Classification',
                 'checked' => 0,
+            ],
+            'address_perm' => [
+                'name' => 'Permanent Address',
+                'checked' => 0,
+            ],
+            'address_res' => [
+                'name' => 'Residential Address',
+                'checked' => 0,
             ]
 
         ];
+        $arr = collect($arr)->sortByDesc(function ($data,$key){
+            if($key == 'fullname'){
+                return 1;
+            }
+        })->toArray();
+
+        return $arr;
     }
 
     public function generateQr($slug,Request $request){
