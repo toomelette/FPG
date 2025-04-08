@@ -583,9 +583,7 @@ class EmployeeController extends Controller{
 
     public function reportGenerate(EmployeeReportRequest $request){
 
-        if($request->type == 'job_classification'){
-            //return $this->jobClassification($request);
-        }
+
         $employees = Employee::query()
             ->with([
 //                'employeeTraining',
@@ -660,7 +658,11 @@ class EmployeeController extends Controller{
 
 
         $selected_columns = $request->columns;
+        if($type == 'department_unit_id') {
+            $employees->load('responsibilityCenter');
+        }
         foreach ($employees as $employee){
+
             $t = $employee->$type;
             if($type == 'employeeAddress'){
                 if(!empty($employee->employeeAddress)){
@@ -669,14 +671,13 @@ class EmployeeController extends Controller{
                 }
             }
             if($type == 'department_unit_id'){
-                if(!empty($employee->departmentUnit)){
-                    $t = $employee->departmentUnit->description;
+                if(!empty($employee->responsibilityCenter)){
+                    $t = $employee->responsibilityCenter->desc;
                     $employee_arr[$t][$employee->employee_no] = $employee;
                 }
             }
 
             if($type == 'job_classification'){
-
                 if(!empty($employee->plantilla->classifications)){
                     if($employee->plantilla->classifications->count() > 0){
                         foreach ($employee->plantilla->classifications as $classification){
@@ -689,10 +690,9 @@ class EmployeeController extends Controller{
                 }else{
                     $employee_arr['N/A'][$employee->employee_no] = $employee;
                 }
-
             }
+            $employee_arr[$t][$employee->employee_no] = $employee;
         }
-
 
         if(count($employee_arr) < 1){
             abort(505,'Try different filter criteria.');
