@@ -157,6 +157,17 @@
                                                  @endif
                                              </td>
                                              @break
+                                             @case('job_classification')
+                                                 <td>
+                                                     @if(!empty($employee->plantilla->classifications))
+                                                         <ul style="padding-left: 20px !important;">
+                                                             @foreach($employee->plantilla->classifications as $class)
+                                                                 <li>{{$class->classification}}</li>
+                                                             @endforeach
+                                                         </ul>
+                                                     @endif
+                                                 </td>
+                                                 @break
                                              @case('educational_background')
                                              <td>
                                                  @if(!empty($employee->employeeEducationalBackground))

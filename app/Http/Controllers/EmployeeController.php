@@ -980,6 +980,10 @@ class EmployeeController extends Controller{
             'assignment' => [
                 'name' => 'Assignment',
                 'checked' => 0,
+            ],
+            'job_classification' => [
+                'name' => 'Job Classification',
+                'checked' => 0,
             ]
 
         ];
