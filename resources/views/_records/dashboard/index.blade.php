@@ -81,7 +81,6 @@
                     </div>
                 </div>
                 <h1 class="mt-1 mb-3">{{number_format($avg_sent_by_week)}}</h1>
-
             </x-adminkit.html.card>
         </div>
     </div>
