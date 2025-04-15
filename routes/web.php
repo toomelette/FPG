@@ -454,6 +454,9 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('payroll_refund/{payroll_slug}/show', [\App\Http\Controllers\HRU\PayrollRefundController::class,'show'])->name('payroll_refund.show');
     Route::get('payroll_refund/{payroll_slug}', [\App\Http\Controllers\HRU\PayrollRefundController::class,'index'])->name('payroll_refund.index');
     Route::resource('payroll_refund',\App\Http\Controllers\HRU\PayrollRefundController::class)->except(['index']);
+
+    Route::get('rbac_evaluation/{slug}/print',[\App\Http\Controllers\RBAC\TWGEvaluation::class,'print'])->name('rbac_evaluation.print');
+    Route::resource('rbac_evaluation',\App\Http\Controllers\RBAC\TWGEvaluation::class);
 });
 
 /** ADMIN LEVEL ROUTES REQUIRING PROJECT ID **/

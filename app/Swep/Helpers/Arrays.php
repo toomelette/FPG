@@ -21,6 +21,7 @@ use App\Models\SSL;
 use App\Models\SuOptions;
 use Auth;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Spatie\Html\Elements\P;
 
 class Arrays
@@ -1096,5 +1097,20 @@ class Arrays
             'General/Clerical' => 'General/Clerical',
             'Technical' => 'Technical',
         ];
+    }
+
+
+    public static function modesOfProcurement(){
+        $arr = [];
+        $ops = DB::connection('mysql_ppu_vis')->table('options')
+            ->where('for','=','modesOfProcurement')->get();
+        if(!empty($ops)){
+            foreach ($ops as $op){
+                $arr[$op->display] = $op->display;
+            }
+        }
+        ksort($arr);
+        return $arr;
+
     }
 }
