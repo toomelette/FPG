@@ -125,11 +125,11 @@
     <table style="width: 100%; font-size: 12px" class="tbl-padded">
         <tr>
             <td style="width: 100px;">Note:</td>
-            <td class="b-bottom"></td>
+            <td class="b-bottom">{{$eval->note}}</td>
         </tr>
         <tr>
             <td>Justification:</td>
-            <td class="b-bottom"></td>
+            <td class="b-bottom">{{$eval->justification}}</td>
         </tr>
     </table>
     <br>
