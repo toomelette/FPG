@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\RBAC;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RBAC\TWGEvaluationFormRequest;
 use App\Models\PPUV\Suppliers;
 use App\Models\PPUV\Transactions;
 use App\Models\RBAC\Evaluation;
@@ -83,7 +84,7 @@ class TWGEvaluation extends Controller
             ]);
     }
 
-    public function update(Request $request,$slug)
+    public function update(TWGEvaluationFormRequest $request,$slug)
     {
         $eval = Evaluation::query()->findOrFail($slug);
         $eval->concat_items = $request->concat_items;

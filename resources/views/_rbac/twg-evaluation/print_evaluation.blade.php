@@ -1,5 +1,6 @@
 @php
     $rand = \Illuminate\Support\Str::random();
+    $chunkBy = 3;
 @endphp
 @extends('printables.print_layouts.print_layout_main')
 
@@ -32,8 +33,8 @@
     </table>
     <table class="tbl-padded" style="width: 100%; font-size: 12px">
         <tr>
-            <td style="width: 150px">Approved budget:</td>
-            <td style="width: 25%" class="text-strong">
+            <td style="width: 100px">Approved budget:</td>
+            <td style="width: 35%" class="text-strong">
                 <u>{{Helper::toNumber($eval->abc)}}</u>
             </td>
             <td style="width: 150px;">
@@ -69,14 +70,32 @@
         <table class="tbl-bordered tbl-padded" style="font-size: 12px; width: 100%">
             <thead>
             <tr>
+                <th class="text-center no-border-all" style="width: 50px; padding: 0"></th>
+                <th class="text-center no-border-all" style="padding: 0"></th>
+                @for($i = 0; $i < $chunkBy ; $i++)
+                    <th class="no-border-all" style="width: {{(87/$chunkBy)*(2/3)}}%; padding: 0;"></th>
+                    <th class="no-border-all" style="width: {{(87/$chunkBy)*(1/3)}}%; padding: 0;"></th>
+                @endfor
+
+            </tr>
+            <tr>
                 <th class="text-center" style="width: 50px">Item No.</th>
                 <th class="text-center">Qty</th>
-                @forelse($chunkedSupplier as $supplier)
-                    <th colspan="2" class="text-center " style="width: {{90/$chunkedSupplier->count()}}%; vertical-align: top" >
-                        <span  {{$supplier->slug == $eval->winning_supplier_slug ? 'id=winner' : ''}}>{{$supplier->name}}</span>
-                    </th>
-                @empty
-                @endforelse
+                @for($i = 0; $i < $chunkBy ; $i++)
+                    @php
+                        $supplier = $chunkedSupplier->values()->get($i)
+                    @endphp
+                    @if(!empty($supplier))
+                        <th colspan="2" class="text-center " style="vertical-align: top" >
+                            <span  {{$supplier->slug == $eval->winning_supplier_slug ? 'id=winner' : ''}}>{{$supplier->name}}</span>
+                        </th>
+                    @else
+                        <th colspan="2" class="text-center " style="width: {{90/$chunkedSupplier->count()}}%; vertical-align: top" >
+                            <span></span>
+                        </th>
+                    @endif
+                @endfor
+
             </tr>
             </thead>
             <tbody>
@@ -88,14 +107,22 @@
                 <tr>
                     <td class="text-center">{{$loop->iteration}}</td>
                     <td class="text-center">{{$item->qty}}</td>
-                    @forelse($chunkedSupplier as $supplier)
+                    @for($i = 0; $i < $chunkBy ; $i++)
                         @php
-                            $amount = $items->where('supplier_slug',$supplier->slug)->first()->amount
+                            $supplier = $chunkedSupplier->values()->get($i);
+
                         @endphp
-                        <td class="text-center" style="font-size: 10px">{{$items->where('supplier_slug',$supplier->slug)->first()->offer}}</td>
-                        <td class="text-right">{{Helper::toNumber($amount)}}</td>
-                    @empty
-                    @endforelse
+                        @if(!empty($supplier))
+                            @php
+                                $amount = $items->where('supplier_slug',$supplier->slug)->first()->amount
+                            @endphp
+                            <td class="text-center" style="font-size: 10px">{{$items->where('supplier_slug',$supplier->slug)->first()->offer}}</td>
+                            <td class="text-right">{{Helper::toNumber($amount)}}</td>
+                        @else
+                            <td class="text-center" style="font-size: 10px"></td>
+                            <td class="text-right"></td>
+                        @endif
+                    @endfor
                 </tr>
             @empty
             @endforelse
@@ -104,14 +131,19 @@
             <tr>
                 <td>TOTAL</td>
                 <td></td>
-                @php
-                    $supplierRanks = null;
-                @endphp
-                @forelse($chunkedSupplier as $supplier)
-                    <th></th>
-                    <th class="text-right" style="{{$supplier->slug == $eval->winning_supplier_slug ? 'background-color: yellow' : ''}}">{{Helper::toNumber($eval->offers->where('supplier_slug',$supplier->slug)->sum('amount'))}}</th>
-                @empty
-                @endforelse
+                @for($i = 0; $i < $chunkBy ; $i++)
+                    @php
+                        $supplier = $chunkedSupplier->values()->get($i);
+
+                    @endphp
+                    @if(!empty($supplier))
+                        <th></th>
+                        <th class="text-right" style="{{$supplier->slug == $eval->winning_supplier_slug ? 'background-color: yellow' : ''}}">{{Helper::toNumber($eval->offers->where('supplier_slug',$supplier->slug)->sum('amount'))}}</th>
+                    @else
+                        <th></th>
+                        <th></td>
+                    @endif
+                @endfor
 
             </tr>
             </tfoot>

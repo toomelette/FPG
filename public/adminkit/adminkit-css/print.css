@@ -152,13 +152,12 @@ table.print-table th,table.print-table td{
 .no-border-left{
     border-left: 0px
 }
+
 .no-border-right{
     border-right: 0px
 }
 
-.no-border-all{
-    border-right: 0px !important;
-}
+
 #dv_table{
     /*border-right: 2px solid black;*/
     /*border-left: 2px solid black;*/
