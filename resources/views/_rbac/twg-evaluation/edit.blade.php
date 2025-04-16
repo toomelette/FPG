@@ -113,10 +113,10 @@
                 </div>
                 <div class="col-md-6">
                     <div class="row">
-                        <x-forms.input label="Note" name="note" cols="12"/>
+                        <x-forms.input label="Note" name="note" cols="12" :value="$eval ?? null"/>
                     </div>
                     <div class="row mt-2">
-                        <x-forms.input label="Justification" name="justification" cols="12"/>
+                        <x-forms.input label="Justification" name="justification" cols="12" :value="$eval ?? null"/>
                     </div>
                     <div class="row mt-2">
                         <x-forms.input label="Recommending Approval" name="recommending_approval" cols="12" :value="Auth::user()->employee->full['FMiLE']"/>
