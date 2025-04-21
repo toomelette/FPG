@@ -15,7 +15,7 @@ class TWGEvaluationFormRequest extends FormRequest
             'concat_items' => 'required',
             'abc' => 'required',
             'mode_of_procurement' => 'required',
-            'justification' => 'required',
+            'justification' => 'required_without:note',
         ];
     }
 }

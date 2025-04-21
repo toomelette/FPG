@@ -16,6 +16,9 @@
             border-radius: 50%; /* Create a perfect circle */
             border: 2px solid blue;
             z-index: 10; /* Ensure it stays on top of the target element */
+            @if($eval->winning_supplier_slug == null)
+            display : none;
+            @endif
         }
     </style>
 
