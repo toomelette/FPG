@@ -14,6 +14,7 @@ use App\Models\HRPayPlanitilla;
 use App\Models\HRU\Deductions;
 use App\Models\HRU\Incentives;
 use App\Models\MDDC;
+use App\Models\Options;
 use App\Models\PPU\Pap;
 use App\Models\PPU\PPURespCodes;
 use App\Models\PPU\RCDesc;
@@ -1112,5 +1113,17 @@ class Arrays
         ksort($arr);
         return $arr;
 
+    }
+
+    public static function unitsOfMeasurement(){
+        $arr = [];
+        $ops = \App\Models\PPUV\Options::query()->where('for','=','unitsOfMeasurement')->get();
+        if(!empty($ops)){
+            foreach ($ops as $op){
+                $arr[$op->value] = $op->display;
+            }
+        }
+        ksort($arr);
+        return $arr;
     }
 }

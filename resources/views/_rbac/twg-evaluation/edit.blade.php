@@ -82,7 +82,7 @@
                     @endphp
                     @forelse($groupedBySupplier as $supplier)
                         <th></th>
-                        <th class="text-end">{{Helper::toNumber($eval->offers->where('supplier_slug',$supplier->slug)->sum('amount'))}}</th>
+                        <th class="text-end">{{Helper::toNumber($eval->offers->where('supplier_slug',$supplier->slug)->sum('total_amount_per_item'))}}</th>
                     @empty
                     @endforelse
 
@@ -103,7 +103,7 @@
                             <tr>
                                 <td>{{$supplierRank->name}}</td>
                                 <td for="{{$supplierRank->name}}" class="text-end text-strong {{$eval->offers->where('supplier_slug',$supplierRank->slug)->where('amount',null)->count() > 0 ? 'text-danger' : ''}}">
-                                    {{Helper::toNumber($eval->offers->where('supplier_slug',$supplierRank->slug)->sum('amount'))}}
+                                    {{Helper::toNumber($eval->offers->where('supplier_slug',$supplierRank->slug)->sum('total_amount_per_item'))}}
                                 </td>
                             </tr>
                         @empty

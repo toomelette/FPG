@@ -141,7 +141,7 @@
                     @endphp
                     @if(!empty($supplier))
                         <th class="no-border-all"></th>
-                        <th class="text-right no-border-all" style="{{$supplier->slug == $eval->winning_supplier_slug ? 'background-color: yellow' : ''}};border-bottom: 3px double black !important; border-spacing: 5px">{{Helper::toNumber($eval->offers->where('supplier_slug',$supplier->slug)->sum('amount'))}}</th>
+                        <th class="text-right no-border-all" style="{{$supplier->slug == $eval->winning_supplier_slug ? 'background-color: yellow' : ''}};border-bottom: 3px double black !important; border-spacing: 5px">{{Helper::toNumber($eval->offers->where('supplier_slug',$supplier->slug)->sum('total_amount_per_item'))}}</th>
                     @else
                         <th class="no-border-all "></th>
                         <th class="no-border-all"></th>

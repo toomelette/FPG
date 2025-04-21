@@ -8,6 +8,7 @@ use App\Models\PPUV\Suppliers;
 use App\Models\PPUV\Transactions;
 use App\Models\RBAC\Evaluation;
 use App\Models\RBAC\EvaluationOffers;
+use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -79,9 +80,30 @@ class TWGEvaluation extends Controller
         $eval = Evaluation::query()
             ->with(['offers.relSupplier'])
             ->findOrFail($slug);
+        $this->computeSums($eval);
         return view('_rbac.twg-evaluation.edit')->with([
                 'eval' => $eval,
             ]);
+    }
+
+    public function computeSums($eval)
+    {
+        if(!empty($eval->offers)){
+            foreach ($eval->offers as $offer){
+
+
+                $uoms = Arrays::unitsOfMeasurement();
+                foreach ($uoms as $key => $value){
+                    //  bags => 'BAGS',
+                    $check = Str::of($offer->offer)->contains('per '.$key) || Str::of($offer->offer)->contains('per '.Str::of($key)->plural()) || Str::of($offer->offer)->contains('per '.Str::of($key)->singular());
+                    if($check){
+                        $offer->total_amount_per_item = $offer->amount * $offer->qty;
+                        $offer->save();
+                    }
+                }
+
+            }
+        }
     }
 
     public function update(TWGEvaluationFormRequest $request,$slug)
