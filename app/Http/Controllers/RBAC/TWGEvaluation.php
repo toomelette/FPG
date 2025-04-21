@@ -95,7 +95,11 @@ class TWGEvaluation extends Controller
                 $uoms = Arrays::unitsOfMeasurement();
                 foreach ($uoms as $key => $value){
                     //  bags => 'BAGS',
-                    $check = Str::of($offer->offer)->contains('per '.$key) || Str::of($offer->offer)->contains('per '.Str::of($key)->plural()) || Str::of($offer->offer)->contains('per '.Str::of($key)->singular());
+                    $check = Str::of($offer->offer)->contains('per '.$key) ||
+                        Str::of($offer->offer)->contains('per '.Str::of($key)->plural()) ||
+                        Str::of($offer->offer)->contains('per '.Str::of($key)->singular()) ||
+                        $offer->offer == null ||
+                        $offer->offer == '';
                     if($check){
                         $offer->total_amount_per_item = $offer->amount * $offer->qty;
                         $offer->save();
