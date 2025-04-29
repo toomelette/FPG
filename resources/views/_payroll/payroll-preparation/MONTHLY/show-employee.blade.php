@@ -53,7 +53,7 @@
 
 <p class="text-danger mb-0 mt-4">Summary of Deduction</p>
 @php
-    $deductions = $employeePayrollList->employeePayrollDetails->where('type','DEDUCTION');
+    $deductions = $employeePayrollList->employeePayrollDetails->where('type','DEDUCTION')->sortBy('priority');
 @endphp
 <table style="width: 100%;">
     <tbody>
