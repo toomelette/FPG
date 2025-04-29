@@ -31,12 +31,12 @@ class Values
             return [
                 'a_name' => 'NARCISO R. CABALQUINTO JR',
                 'a_position' => 'OIC, General Admin. Division',
-                'b_name' => 'PORTIA I. ASENTISTA',
-                'b_position' => 'OIC, Accounting Division',
+                'b_name' => 'RESTY D. REAÑO',
+                'b_position' => 'Chief Accountant',
                 'c_name' => 'ATTY. BRANDO D. NOROÑA',
                 'c_position' => 'Deputy Administrator II',
-                'd_name' => 'MARIE STELLA W. PATATAG',
-                'd_position' => 'Cashier III',
+                'd_name' => 'MA. GHISELE P. NOLASCO',
+                'd_position' => 'Budget Officer I',
             ];
         }
     }

@@ -644,6 +644,7 @@ class MonthlyPayrollService
 
     public function gsisUpload(PayrollMaster $payrollMaster,Request $request)
     {
+
         $excel = Excel::toArray(new GSISImport(),$request->file('file'));
         $data = $excel[0];
         $headers = $data[0];
@@ -656,6 +657,7 @@ class MonthlyPayrollService
             ];
         });
         $upsertValues = [];
+
         foreach ($data as $row){
             foreach ($deductions as $excelHeader => $deduction){
 
