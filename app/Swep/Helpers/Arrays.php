@@ -953,7 +953,7 @@ class Arrays
             'FIXED TERM' => 'FIXED TERM',
             'SUBSTITUTE' => 'SUBSTITUTE',
             'PROVISIONAL' => 'PROVISIONAL',
-            'REAPPOINTMENT' => 'REAPPOINTMENT'
+            'REAPPOINTMENT' => 'REAPPOINTMENT',
         ];
         $others = [
             'PROBATIONARY' => 'PROBATIONARY',
@@ -964,6 +964,7 @@ class Arrays
             'PROJECT-BASED' => 'PROJECT-BASED',
             'CASUAL' => 'CASUAL',
             'EMERGENCY' => 'EMERGENCY',
+            'PRESIDENTIAL APPOINTEE' => 'PRESIDENTIAL APPOINTEE',
         ];
         ksort($oraohra);
         ksort($others);

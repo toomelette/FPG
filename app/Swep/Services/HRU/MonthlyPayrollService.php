@@ -121,6 +121,7 @@ class MonthlyPayrollService
 
         //GET DEDUCTIONS From Payroll Template Deductions to be put to Payroll Details
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
+
             if(!empty($employeeFromList->employee->templateDeductions)){
                 $unusedDeductionCodes = $allDeductions;
                 //push incentives
@@ -156,7 +157,9 @@ class MonthlyPayrollService
                 /* DEDUCTIONS */
                 $stop = 0;
 
+
                 foreach ($employeeDeductionsFromTemplate as $templateDeduction){
+
                     $monthlyIncentive = $monthlyIncentive - $templateDeduction->amount;
                     $deductionAmount  = $templateDeduction->amount;
                     $nonTaxableAmount = null;
@@ -172,13 +175,16 @@ class MonthlyPayrollService
                     }else{
                         $deductionAmount = 0;
                     }
+                    if($templateDeduction->deduction_code == 'WTAX'){
+
+                    }
                     $detailsArr[] = [
                         'employee_slug' => $employeeFromList->employee->slug,
                         'pay_master_employee_listing_slug' => $employeeFromList->slug,
                         'slug' => Str::random(),
                         'type' => 'DEDUCTION',
                         'code' => $templateDeduction->deduction_code,
-                        'amount' => $deductionAmount,
+                        'amount' => $templateDeduction->amount,
                         'non_taxable_amount' => $nonTaxableAmount ?? $deductionAmount,
                         'priority' => $templateDeduction->deduction->n_priority,
                         'sundry_account' => $templateDeduction->deduction->sundry_account,
@@ -186,7 +192,9 @@ class MonthlyPayrollService
                         'govt_share' => $templateDeduction->govt_share,
                         'ec_share' => $templateDeduction->ec_share,
                     ];
+
                 }
+
                 $unusedCodesButExistsInDetails = $employeeFromList->employeePayrollDetails->where('type','DEDUCTION')->pluck('code')->diff($employeeFromList->employee->templateDeductions->pluck('deduction_code'));
                 foreach ($unusedCodesButExistsInDetails as $unusedCodesButExistsInDetail) {
                     $detailsArr[] = [
@@ -204,6 +212,9 @@ class MonthlyPayrollService
                         'ec_share' => $templateDeduction->ec_share,
                     ];
                 }
+
+
+
             }
 
         }
@@ -215,8 +226,6 @@ class MonthlyPayrollService
                 ['pay_master_employee_listing_slug','type','code'],
                 ['amount','non_taxable_amount','priority','sundry_account','account_code','govt_share','ec_share']
             );
-
-
 
         //remove ZERO amounts
         $payrollMaster->hmtDetails()
@@ -247,6 +256,7 @@ class MonthlyPayrollService
                 }
             ])
             ->find($payrollMasterSlug);
+
        /*
         $payrollMaster = PayrollMaster::query()
             ->with([
@@ -271,10 +281,15 @@ class MonthlyPayrollService
             ])
             ->find($payrollMasterSlug);
        */
+
         $taxesArr = [];
+        $taxPriority = Deductions::query()->where('deduction_code','=','WTAX')->first()->n_priority ?? null;
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
+
+
             $employee = $employeeFromList->employee;
             $totalPreTaxDeduction = $employeeFromList->employeePayrollDetailsDeductions->sum('non_taxable_amount');
+
 
             $tax = Helper::computeTax(
                 $employee->templateIncentives->where('incentive_code','MONTHLY')->first()->amount ?? 0,
@@ -287,15 +302,18 @@ class MonthlyPayrollService
                 'employee_slug' => $employee->slug,
                 'deduction_code' => 'WTAX',
                 'amount' => $tax,
+                'priority' => $taxPriority,
             ]);
 
+
         }
+
         //Push updates to Payroll Template
         TemplateDeductions::query()
             ->upsert(
                 $taxesArr,
                 ['employee_slug','deduction_code'],
-                ['amount']
+                ['amount','priority']
             );
 
 
@@ -324,6 +342,7 @@ class MonthlyPayrollService
 
         //GET DEDUCTIONS From Payroll Template Deductions to be put to Payroll Details
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
+
             if(!empty($employeeFromList->employee->templateDeductions)){
                 //push incentives
                 foreach ($employeeFromList->employee->templateIncentives as $templateIncentive){
@@ -363,7 +382,7 @@ class MonthlyPayrollService
                 foreach ($employeeDeductionsFromTemplate as $templateDeduction){
                     $monthlyIncentive = $monthlyIncentive - $templateDeduction->amount;
                     $deductionAmount  = $templateDeduction->amount;
-                    $nonTaxableAmount = 1;
+                    $nonTaxableAmount = null; //1 before
                     if($templateDeduction->deduction_code == 'HDMF'){
                         $nonTaxableAmount = 200;
                     }
@@ -376,6 +395,7 @@ class MonthlyPayrollService
                     }else{
                         $deductionAmount = 0;
                     }
+
                     $detailsArr[] = [
                         'employee_slug' => $employeeFromList->employee->slug,
                         'pay_master_employee_listing_slug' => $employeeFromList->slug,
@@ -391,9 +411,11 @@ class MonthlyPayrollService
                         'ec_share' => $templateDeduction->ec_share,
                     ];
                 }
+
             }
 
         }
+
 
         PayrollMasterDetails::query()
             ->upsert(
