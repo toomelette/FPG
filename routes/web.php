@@ -532,7 +532,7 @@ Route::get('check_device',function (\App\Swep\Services\DTRService $DTRService){
 Route::get('dashboard/set', 'Pub\SetController@index')->name('dashboard.set');
 
 
-Route::get('/phpinfo',function (){
+Route::get('/phpinfo2',function (){
     echo phpinfo();
 });
 
