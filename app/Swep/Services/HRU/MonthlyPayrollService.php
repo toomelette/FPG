@@ -1010,6 +1010,16 @@ class MonthlyPayrollService
             ])
             ->findOrFail($payrollMasterSlug);
 
+        return \Spatie\LaravelPdf\Facades\Pdf::view('printables.hru.payroll_preparation.MONTHLY.deduction-register',[
+            'payrollMaster' => $payrollMaster,
+        ])
+            ->format('a4')
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Deduction Register.pdf')
+            ->save('aa.pdf');
+
         return view('printables.hru.payroll_preparation.MONTHLY.deduction-register')->with([
             'payrollMaster' => $payrollMaster,
         ]);
