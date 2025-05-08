@@ -1020,8 +1020,8 @@ class MonthlyPayrollService
             ->footerView('printables.hru.payroll_preparation.footer-view')
             ->name('Deduction Register.pdf')
             ->withBrowsershot(function (Browsershot $browsershot){
-                $browsershot->setNodeBinary('/Users/myhomedir/.nvm/versions/node/v14.18.2/bin/node')
-                    ->setNpmBinary('/Users/myhomedir/.nvm/versions/node/v14.18.2/bin/npm');
+                $browsershot->setNodeBinary('/home/misvis/.nvm/versions/node/v22.15.0/bin/node')
+                    ->setNpmBinary('/home/misvis/.nvm/versions/node/v22.15.0/bin/npm');
             })
             ->save('aa.pdf');
 
