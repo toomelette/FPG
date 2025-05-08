@@ -17,6 +17,7 @@ use App\Swep\Helpers\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\Browsershot\Browsershot;
 
 class MonthlyPayrollService
 {
@@ -1018,6 +1019,10 @@ class MonthlyPayrollService
             ->headers(['title' => 'aaaaa'])
             ->footerView('printables.hru.payroll_preparation.footer-view')
             ->name('Deduction Register.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                $browsershot->setNodeBinary('/Users/myhomedir/.nvm/versions/node/v14.18.2/bin/node')
+                    ->setNpmBinary('/Users/myhomedir/.nvm/versions/node/v14.18.2/bin/npm');
+            })
             ->save('aa.pdf');
 
         return view('printables.hru.payroll_preparation.MONTHLY.deduction-register')->with([
