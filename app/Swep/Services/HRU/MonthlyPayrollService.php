@@ -1022,8 +1022,7 @@ class MonthlyPayrollService
             ->withBrowsershot(function (Browsershot $browsershot){
                 $browsershot->setNodeBinary('/home/misvis/.nvm/versions/node/v22.15.0/bin/node')
                     ->setNpmBinary('/home/misvis/.nvm/versions/node/v22.15.0/bin/npm');
-            })
-            ->save('aa.pdf');
+            });
 
         return view('printables.hru.payroll_preparation.MONTHLY.deduction-register')->with([
             'payrollMaster' => $payrollMaster,
