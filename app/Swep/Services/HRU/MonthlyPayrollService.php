@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Browsershot\Browsershot;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class MonthlyPayrollService
 {
@@ -1011,7 +1012,7 @@ class MonthlyPayrollService
             ])
             ->findOrFail($payrollMasterSlug);
 
-        return \Spatie\LaravelPdf\Facades\Pdf::view('printables.hru.payroll_preparation.MONTHLY.deduction-register',[
+        return Pdf::view('printables.hru.payroll_preparation.MONTHLY.deduction-register',[
             'payrollMaster' => $payrollMaster,
         ])
             ->format('a4')
@@ -1020,8 +1021,10 @@ class MonthlyPayrollService
             ->footerView('printables.hru.payroll_preparation.footer-view')
             ->name('Deduction Register.pdf')
             ->withBrowsershot(function (Browsershot $browsershot){
-                $browsershot->setNodeBinary('/home/misvis/.nvm/versions/node/v22.15.0/bin/node')
-                    ->setNpmBinary('/home/misvis/.nvm/versions/node/v22.15.0/bin/npm');
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
             });
 
         return view('printables.hru.payroll_preparation.MONTHLY.deduction-register')->with([

@@ -9,9 +9,10 @@
         table>thead>tr>th {
             border: 1px solid black;
         }
+
     </style>
 
-    <div style="font-family: Cambria">
+    <div style="font-family: Cambria, Caladea">
         <div class="clearfix">
             <img src="{{base_path('/public/images/sra.png')}}" style="width: 60px; float: left; margin-right: 15px;">
             <p class="no-margin text-left" style="font-size: 14px"> <b>SUGAR REGULATORY ADMINISTRATION</b></p>
