@@ -93,7 +93,7 @@ class MonthlyPayrollService
         if(!in_array('PHIC',$avoid)){
             $this->updatePhilhealth($payrollMaster);
         }
-//        $this->updateGsisGovtShare($payrollMaster);
+        //Update HDMF
         $this->updateHdmfGovtShare($payrollMaster);
 
         //2. START OF FETCH DATA FROM TEMPLATE TO DETAILS
@@ -557,6 +557,7 @@ class MonthlyPayrollService
         foreach ($payrollMaster->payrollMasterEmployees as $employee){
             $personnelShare = $employee->saved_employee_data['monthly_basic'] * $deduction->factor;
             $govtShare  = $employee->saved_employee_data['monthly_basic'] * $deduction->govt_share_factor;
+
             array_push($upsertValues,[
                 'employee_slug' => $employee->employee_slug,
                 'deduction_code' => $deduction->deduction_code,
