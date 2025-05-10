@@ -1,14 +1,28 @@
 <html>
 <head>
-    <link rel="stylesheet"  href="{{base_path('/public/template/plugins/print/bootstrap.print.css')}}">
+    @if(!empty($pdfPrint) && $pdfPrint == true)
+        <link rel="stylesheet"  href="{{base_path('/public/template/plugins/print/bootstrap.print.css')}}">
 
-    <link rel="stylesheet" href="{{base_path('/public/template/bower_components/font-awesome/css/font-awesome.min.css')}}">
+        <link rel="stylesheet" href="{{base_path('/public/template/bower_components/font-awesome/css/font-awesome.min.css')}}">
 
-    <script type="text/javascript" src="{{base_path('/public/template/bower_components/jquery/dist/jquery.min.js')}}"></script>
-    <link type="text/css" rel="stylesheet" href="{{base_path('/public/css/print.css')}}?rand={{\Illuminate\Support\Str::random()}}">
+        <script type="text/javascript" src="{{base_path('/public/template/bower_components/jquery/dist/jquery.min.js')}}"></script>
+        <link type="text/css" rel="stylesheet" href="{{base_path('/public/css/print.css')}}?rand={{\Illuminate\Support\Str::random()}}">
 
-    <link type="text/css" rel="stylesheet" href="{{base_path('/public/template/bower_components/font-awesome/css/font-awesome.min.css')}}">
-    <link type="text/css" rel="stylesheet" href="{{base_path('/public/template/bower_components/font-awesome/css/font-awesome.min.css')}}">
+        <link type="text/css" rel="stylesheet" href="{{base_path('/public/template/bower_components/font-awesome/css/font-awesome.min.css')}}">
+        <link type="text/css" rel="stylesheet" href="{{base_path('/public/template/bower_components/font-awesome/css/font-awesome.min.css')}}">
+
+    @else
+        <link rel="stylesheet"  href="{{asset('template/plugins/print/bootstrap.print.css')}}">
+
+        <link rel="stylesheet" href="{{asset('template/bower_components/font-awesome/css/font-awesome.min.css')}}">
+
+        <script type="text/javascript" src="{{asset('template/bower_components/jquery/dist/jquery.min.js')}}"></script>
+        <link type="text/css" rel="stylesheet" href="{{asset('css/print.css')}}?rand={{\Illuminate\Support\Str::random()}}">
+
+        <link type="text/css" rel="stylesheet" href="{{asset('template/bower_components/font-awesome/css/font-awesome.min.css')}}">
+        <link type="text/css" rel="stylesheet" href="{{asset('template/bower_components/font-awesome/css/font-awesome.min.css')}}">
+    @endif
+
 
     <style type="text/css">
         .no-margin{

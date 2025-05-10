@@ -1015,6 +1015,7 @@ class MonthlyPayrollService
 
         return Pdf::view('printables.hru.payroll_preparation.MONTHLY.deduction-register',[
             'payrollMaster' => $payrollMaster,
+            'pdfPrint' => true,
         ])
             ->format('a4')
             ->margins(8,8, 15, 8)
