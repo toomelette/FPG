@@ -32,6 +32,8 @@ use App\Http\Requests\EmployeeMatrix\EmployeeMatrixFormRequest;
 use App\Http\Requests\EmployeeMatrix\EmployeeMatrixPrintRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
@@ -263,8 +265,10 @@ class EmployeeController extends Controller{
     
 
 
-    public function destroy($slug){
-
+    public function destroy($slug,Request $request){
+        if(!Hash::check($request->password,Auth::user()->password)){
+            abort(503, 'Incorrect password.');
+        }
     	$employee = $this->employee->destroy($slug);
         if($employee){
             return 1;
