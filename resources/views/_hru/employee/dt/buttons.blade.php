@@ -6,7 +6,7 @@
     <a  href="{{route('dashboard.employee.edit', $data->slug)}}" for="linkToEdit" type="button" data="{{$data->slug}}" class="btn btn-outline-secondary btn-sm edit_jo_employee_btn"  title="Edit" data-placement="top">
         <i class="fa fa-edit"></i>
     </a>
-    <button type="button" data="{{$data->slug}}" onclick="delete_data('.$slug.','.$destroy_route.')" class="btn btn-sm btn-danger delete_jo_employee_btn" data-bs-toggle="tooltip" title="Delete" data-placement="top">
+    <button type="button" data="{{$data->slug}}" onclick="delete_data('{{$data->slug}}','{{route('dashboard.employee.destroy','slug')}}')" class="btn btn-sm btn-danger delete_jo_employee_btn" data-bs-toggle="tooltip" title="Delete" data-placement="top">
         <i class="fa fa-trash"></i>
     </button>
 
