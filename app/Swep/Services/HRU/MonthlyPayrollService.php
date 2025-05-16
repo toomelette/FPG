@@ -765,9 +765,40 @@ class MonthlyPayrollService
         if(count($diff) > 0){
             abort(503,'There are some RCs not found on the hierarchy of RCs. Contact database administrator. ---------------------------- '.print_r($diff,true));
         }
-
-
         ksort($usedRc);
+
+        return Pdf::view('printables.hru.payroll_preparation.MONTHLY.monthly_payroll',[
+            'pdfPrint' => true,
+            'payrollMaster' => $payrollMaster,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+
+            'payrollEmployeesBySlug' => $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+
+        ])
+
+            ->paperSize('215.9','330.2')
+            ->landscape()
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Payroll Summary.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+
+
+
         return view('printables.hru.payroll_preparation.MONTHLY.monthly_payroll')->with([
             'payrollMaster' => $payrollMaster,
             'tree' => $tree,

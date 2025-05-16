@@ -547,12 +547,17 @@
                         ];
                     });
 
-                    $recapDeductions = $payrollMaster->hmtDetails->where('type','DEDUCTION')->groupBy('account_code');
+                    $recapDeductions = $payrollMaster->hmtDetails->where('type','DEDUCTION')->mapWithKeys(function ($data){
+                        return [
+                            $data->account_code ?? $data->code.' ---- NO ACCOUNT CODE ASSIGED' => $data,
+                        ];
+                    });
                     $recap['debit'] = null;
                     $recap['credit'] = null;
                 @endphp
 
                 @foreach($groupedIncentives as $incentive)
+
                     @foreach($tree as $group => $rcs)
                     <tr>
                         <td>{{$group}}</td>
@@ -569,7 +574,7 @@
                 @foreach($recapDeductions as $deductionCode => $deductions)
                     <tr>
                         <td></td>
-                        <td>{{$acctCode = $accountCodeToCode[$deductionCode]->account_code ?? ''}}</td>
+                        <td>{{$acctCode = $accountCodeToCode[$deductionCode]->account_code ?? $deductionCode}}</td>
                         <td>{{$acctCode = $accountCodeToCode[$deductionCode]->chartOfAccount->account_title ?? ''}}</td>
                         <td></td>
                         <td class="text-right">
