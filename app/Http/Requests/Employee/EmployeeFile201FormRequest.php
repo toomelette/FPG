@@ -18,6 +18,7 @@ class EmployeeFile201FormRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
             'date' => 'nullable|date_format:"Y-m-d"',
+            'type' => 'required',
         ];
     }
 }

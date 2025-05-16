@@ -1034,6 +1034,17 @@ class Arrays
 
     }
 
+    public static function file201Types()
+    {
+        $opts = SuOptions::query()->where('for','=','201_types')->orderBy('option')->get();
+        return $opts->mapWithKeys(function ($data){
+            return [
+                $data->option => $data->value,
+            ];
+        }) ?? [];
+
+    }
+
     public static function leaveCreditsEarnedWithZeroLeft()
     {
         $cut = ['16.5','13.5','10.5','7.5','4.5','1.5'];

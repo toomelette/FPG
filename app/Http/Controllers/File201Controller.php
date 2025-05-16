@@ -68,7 +68,6 @@ class File201Controller extends Controller
     }
 
     public function store(EmployeeFile201FormRequest $request, EmployeeController $employeeController){
-
         $filesArr = [];
         $employee = $employeeController->findEmployeeBySlug($request->employee);
         $file201 = new EmployeeFile201;
@@ -76,7 +75,7 @@ class File201Controller extends Controller
         $file201->title = ucfirst($request->title);
         $file201->description = ucfirst($request->description);
         $file201->date = $request->date;
-
+        $file201->type = $request->type;
         if(!empty($request->doc_file)){
             foreach ($request->file('doc_file') as $file){
                 if(Helper::convertFromBytes($file->getSize(),'MB') > 5){

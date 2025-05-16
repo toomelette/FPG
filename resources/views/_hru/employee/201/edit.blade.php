@@ -13,9 +13,11 @@
 
 @section('modal-body')
     <div class="row mb-2">
+        <x-forms.select label="Type" name="type" cols="6" :options="\App\Swep\Helpers\Arrays::file201Types()" :value="$file ?? null"/>
+        <x-forms.input label="Date" name="date" cols="6" type="date" :value="$file ?? null"/>
         <x-forms.input label="Title" name="title" cols="12" :value="$file ?? null"/>
         <x-forms.input label="Description" name="description" cols="12" :value="$file ?? null"/>
-        <x-forms.input label="Date" name="date" cols="6" type="date" :value="$file ?? null"/>
+
     </div>
     <div class="row">
         {!! \App\Swep\ViewHelpers\__form2::file('doc_file[]',[
@@ -35,22 +37,19 @@
         $("#edit-file-form-{{$rand}}").submit(function (e) {
             e.preventDefault();
             let form = $(this);
-            let formData = new FormData(this);
             loading_btn(form);
             $.ajax({
                 url : '{{route("dashboard.employee.201", $file->slug)}}',
-                data : formData,
-                type: 'PUT',
-                processData: false,
-                contentType: false,
+                type : 'PUT',
+                data : form.serialize(),
                 headers: {
                     {!! __html::token_header() !!}
                 },
                 success: function (res) {
                     succeed(form, true, true);
-                    notify('201 File successfully updated.');
-                    file201_active = res.slug;
-                    file_201_tbl.draw(false);
+                    toast('success','201 File successfully updated.','Success!');
+                    file201Active = res.slug;
+                    file201Tbl.draw(false);
                 },
                 error: function (res) {
                     errored(form,res);
@@ -71,10 +70,10 @@
             },
             maxFileCount: 1,
             minFileCount: 0,
-            showCancel: true,
+            showCancel: false,
             theme: 'fa',
-            browseOnZoneClick: true,
-            showBrowse: true,
+            browseOnZoneClick: false,
+            showBrowse: false,
             showCaption: false,
             showRemove: false,
             showUpload: false,

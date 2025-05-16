@@ -66,6 +66,7 @@ class TwoZeroOneFilesController extends  Controller
         $file201->title = ucfirst($request->title);
         $file201->description = ucfirst($request->description);
         $file201->date = $request->date;
+        $file201->type = $request->type;
 
         if(!empty($request->doc_file)){
             foreach ($request->file('doc_file') as $file){
@@ -102,7 +103,7 @@ class TwoZeroOneFilesController extends  Controller
         if($file201->delete()){
             return 1;
         }
-        abort(503,'Error deleting 201 file although the physical file was deleted.');
+        abort(503,'Error deleting 201 file, however, the physical file was deleted.');
     }
 
     private function deleteFile($employee_no,$filename){
@@ -112,5 +113,18 @@ class TwoZeroOneFilesController extends  Controller
             return true;
         }
         return false;
+    }
+
+    public function update(Request $request,$slug)
+    {
+        $file201 = EmployeeFile201::findOrFail($slug);
+        $file201->title = ucfirst($request->title);
+        $file201->description = ucfirst($request->description);
+        $file201->date = $request->date;
+        $file201->type = $request->type;
+        if($file201->save()){
+            return $file201->only('slug');
+        }
+        abort(503,'Error updating 201 file.');
     }
 }

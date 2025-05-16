@@ -23,8 +23,9 @@
             <table class="table table-bordered table-striped table-hover file_201 table-sm" id="201-file-table" style="width: 100% !important">
                 <thead>
                 <tr class="">
-                    <th>Date</th>
+                    <th>Type</th>
                     <th >Title</th>
+                    <th>Date</th>
                     <th>Description</th>
                     <th>Attachment</th>
                     <th>Action</th>
@@ -43,9 +44,10 @@
         <x-slot:title>Add File</x-slot:title>
         
         <div class="row mb-2">
+            <x-forms.select label="Type" name="type" cols="6" :options="\App\Swep\Helpers\Arrays::file201Types()"/>
+            <x-forms.input label="Date" name="date" cols="6" type="date"/>
             <x-forms.input label="Title" name="title" cols="12"/>
             <x-forms.input label="Description" name="description" cols="12"/>
-            <x-forms.input label="Date" name="date" cols="6" type="date"/>
         </div>
         <div class="row">
             {!! \App\Swep\ViewHelpers\__form2::file('doc_file[]',[
@@ -71,8 +73,9 @@
         "serverSide": true,
         "ajax" : '{{route('dashboard.employee.201',$employee->slug)}}',
         "columns": [
-            { "data": "date" },
+            { "data": "type" },
             { "data": "title" },
+            { "data": "date" },
             { "data": "description" },
             { "data": "filename" },
             { "data": "action" },
@@ -82,9 +85,9 @@
         ],
         "columnDefs":[
             {
-                "targets" : 4,
+                "targets" : 5,
                 "orderable" : false,
-                "class" : 'action-10p'
+                "class" : 'action-2'
             },
         ],
         "responsive": true,
