@@ -115,7 +115,7 @@ class TwoZeroOneFilesController extends  Controller
         return false;
     }
 
-    public function update(Request $request,$slug)
+    public function update(EmployeeFile201FormRequest $request,$slug)
     {
         $file201 = EmployeeFile201::findOrFail($slug);
         $file201->title = ucfirst($request->title);
