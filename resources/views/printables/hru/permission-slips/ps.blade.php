@@ -134,7 +134,7 @@
                                 </td>
                                 <td class="text-center b-left">
                                     _________________________________________ <br>
-                                    <i><small>HR Office</small></i>
+                                    <i><small>Head of the Department/Office</small></i>
                                     <br>
                                     <small><p style="margin: 0px"> Date: <u>______________________</u></p></small>
 
