@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\HRU\HrOtherActions;
 use App\Models\HRU\LeaveApplicationDates;
 use App\Models\HRU\LeaveBeginningBalance;
+use App\Models\HRU\PayrollEmployeeSettings;
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
 use App\Models\PPU\PPURespCodes;
@@ -574,8 +575,19 @@ class Employee extends Model{
         return $this->hasOne(HRPayPlanitilla::class,'item_no','item_no');
     }
 
+    public function payrollSettings()
+    {
+        return $this->hasOne(PayrollEmployeeSettings::class,'employee_slug','slug');
+    }
+
     public function scopeRemoveBoardMember(Builder $query){
         $query->where('is_board_member','=',null);
+    }
+    public function scopeReceivesHazardPrc(Builder $builder)
+    {
+        $builder->whereHas('payrollSettings',function ($payrollSettings){
+            $payrollSettings->where('receives_hazard_prc','=',1);
+        });
     }
 
     public function amInToday()

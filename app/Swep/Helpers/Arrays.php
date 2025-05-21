@@ -871,6 +871,7 @@ class Arrays
     public static function payrollTypes(){
         return [
             'MONTHLY' => 'MONTHLY',
+            'HAZARDPRC' => 'HAZARDPRC',
             'RATA' => 'RATA',
         ];
     }
@@ -1020,6 +1021,15 @@ class Arrays
         return [
             '' => 'ALL',
             'paidInCheck' => 'Paid in check',
+        ];
+    }
+
+    public static function hazardPrcTaxRates()
+    {
+        return [
+            '0.25' => '25%',
+            '0.20' => '20%',
+            '0.15' => '15%',
         ];
     }
 

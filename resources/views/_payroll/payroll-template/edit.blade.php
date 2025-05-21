@@ -10,24 +10,40 @@
 
     <div class="row">
         <div class="col-md-10">
-            <p class="no-margin">{{$employee->employee_no}}</p>
-            <p class="no-margin">{{$employee->plantilla->position ?? $employee->position}}</p>
-            <p class="text-info"><i>{{$employee->responsibilityCenter->desc ?? ''}}</i></p>
-            <hr class="no-margin">
-            <table>
-                <tr>
-                    <td><small>Job Grade:</small></td>
-                    <td><h4 class="no-margin">{{$employee->salary_grade}}</h4></td>
-                </tr>
-                <tr>
-                    <td><small>Step Inc.:</small></td>
-                    <td><h4 class="no-margin">{{$employee->step_inc}}</h4></td>
-                </tr>
-                <tr>
-                    <td style="padding-right: 10px"><small>Monthly Basic:</small></td>
-                    <td><h4 class="no-margin">{{number_format($employee->jg_monthly_basic,2)}}</h4></td>
-                </tr>
-            </table>
+            <div class="row">
+                <div class="col-md-9">
+                    <p class="no-margin">{{$employee->employee_no}}</p>
+                    <p class="no-margin">{{$employee->plantilla->position ?? $employee->position}}</p>
+                    <p class="text-info"><i>{{$employee->responsibilityCenter->desc ?? ''}}</i></p>
+
+                </div>
+                <div class="col-md-3">
+                    <table>
+                        <tr>
+                            <td><small>Job Grade:</small></td>
+                            <td><h4 class="no-margin">{{$employee->salary_grade}}</h4></td>
+                        </tr>
+                        <tr>
+                            <td><small>Step Inc.:</small></td>
+                            <td><h4 class="no-margin">{{$employee->step_inc}}</h4></td>
+                        </tr>
+                        <tr>
+                            <td style="padding-right: 10px"><small>Monthly Basic:</small></td>
+                            <td><h4 class="no-margin">{{number_format($employee->jg_monthly_basic,2)}}</h4></td>
+                        </tr>
+                    </table>
+                </div>
+                <hr class="no-margin">
+            </div>
+            <div class="row">
+                <x-forms.checkbox label="Hazard Pay (PRC)" type="checkbox" name="receives_hazard_prc" cols="4" :options="['receives_hazard_prc' => 'Receives Hazard Pay (PRC)']" :value="[$employee?->payrollSettings?->receives_hazard_prc == 1 ? 'receives_hazard_prc' : null]"/>
+                <x-forms.checkbox label="Representation Allowance (RA)" type="checkbox" name="receives_ra" cols="4" :options="['receives_ra' => 'Receives RA']" :value="[$employee?->payrollSettings?->receives_ra == 1 ? 'receives_ra' : null]"/>
+                <x-forms.checkbox label="Transportation Allowance (TA)" type="checkbox" name="receives_ta" cols="4" :options="['receives_ta' => 'Receives TA']" :value="[$employee?->payrollSettings?->receives_ta == 1 ? 'receives_ta' : null]"/>
+            </div>
+            <div class="row">
+                <x-forms.select label="Hazard Pay (PRC) Tax Rate" name="hazard_prc_tax_rate" cols="4" :options="\App\Swep\Helpers\Arrays::hazardPrcTaxRates()" :value="$employee?->payrollSettings->hazard_prc_tax_rate ?? null"/>
+            </div>
+
         </div>
         <div class="col-md-2">
             <a href="#" class="thumbnail">

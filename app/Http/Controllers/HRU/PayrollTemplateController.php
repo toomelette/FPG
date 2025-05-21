@@ -4,6 +4,7 @@ namespace App\Http\Controllers\HRU;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\HRU\PayrollEmployeeSettings;
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
 use App\Swep\Helpers\Arrays;
@@ -83,6 +84,7 @@ class PayrollTemplateController extends Controller
 
     public function edit($slug){
         $employee = $this->payrollTemplateService->findEmployeeBySlug($slug);
+        $employee->load('payrollSettings');
         $incentivesArray = $employee->templateIncentives->mapWithKeys(function ($data){
            return [
                $data->incentive_code => $data->amount,
@@ -104,7 +106,19 @@ class PayrollTemplateController extends Controller
     public function update(Request $request,$empSlug){
 
         $emp = $this->payrollTemplateService->findEmployeeBySlug($empSlug);
+        $emp->load('payrollSettings');
 
+        if(!empty($emp->payrollSettings)){
+            $emp->payrollSettings->receives_hazard_prc = $request->has('receives_hazard_prc') ? 1 : null;
+            $emp->payrollSettings->hazard_prc_tax_rate = $request->has('receives_hazard_prc') ? $request->hazard_prc_tax_rate : null;
+            $emp->payrollSettings->save();
+        }else{
+            PayrollEmployeeSettings::query()->insert([
+                'employee_slug' => $empSlug,
+                'receives_hazard_prc' => $request->has('receives_hazard_prc') ? 1 : null,
+                'hazard_prc_tax_rate' => $request->has('receives_hazard_prc') ? $request->hazard_prc_tax_rate : null,
+            ]);
+        }
         $arrIncentives = [];
         if(count($request->incentives) > 0){
             foreach ($request->incentives as $code => $incentive){
