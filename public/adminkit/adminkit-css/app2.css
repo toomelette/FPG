@@ -186,7 +186,7 @@
 
 .editable-dtr{
     cursor: pointer;
-    transition: 0.3s;
+    transition: 0.1s;
     background-color: #fffef6;
 }
 

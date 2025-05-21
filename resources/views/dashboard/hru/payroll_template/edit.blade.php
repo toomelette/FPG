@@ -14,8 +14,6 @@
                 <div class="col-md-10">
                     <h4 class="no-margin text-strong">
                         {{$employee->lastname}}, {{$employee->firstname}}
-
-
                     </h4>
                     <p class="no-margin">{{$employee->position}}</p>
                     <p class="text-info"><i>{{$employee->responsibilityCenter->desc ?? ''}}</i></p>
@@ -136,7 +134,7 @@
                 console.log(res);
             },
             error: function (res) {
-         
+
             }
         })
     })

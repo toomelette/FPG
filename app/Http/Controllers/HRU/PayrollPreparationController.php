@@ -19,6 +19,7 @@ use App\Models\PPU\PPURespCodes;
 use App\Models\RCCodeTree;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
+use App\Swep\Services\HRU\HazardPrcService;
 use App\Swep\Services\HRU\MonthlyPayrollService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -33,7 +34,8 @@ use Yajra\DataTables\DataTables;
 class PayrollPreparationController
 {
     public function __construct(
-        public MonthlyPayrollService $monthlyPayrollService
+        public MonthlyPayrollService $monthlyPayrollService,
+        public HazardPrcService $hazardPrcService,
     )
     {
 
@@ -76,25 +78,33 @@ class PayrollPreparationController
             }
 
 
-        $employees = \App\Models\Employee::query()
-            ->with([
-                'templateMonthlyBasic',
-                'plantilla',
-            ]);
+            $employees = \App\Models\Employee::query()
+                ->with([
+                    'templateMonthlyBasic',
+                    'plantilla',
+                ]);
 
-        if($request->has('filterEmployees') && $request->filterEmployees != null){
-            $employees = $employees->where('payroll_group','=',$request->filterEmployees);
-        }else{
-            $employees = $employees->where('payroll_group','=',null);
-        }
+            if($request->type == 'MONTHLY'){
+                if($request->has('filterEmployees') && $request->filterEmployees != null){
+                    $employees = $employees->where('payroll_group','=',$request->filterEmployees);
+                }else{
+                    $employees = $employees->where('payroll_group','=',null);
+                }
+            }
 
-        $employees = $employees
-            ->orderBy('lastname')
-            ->orderBy('firstname')
-            ->applyProjectId()
-            ->active()
-            ->permanent()
-            ->get();
+            $employees = $employees
+                ->orderBy('lastname')
+                ->orderBy('firstname')
+                ->applyProjectId()
+                ->active()
+                ->permanent();
+
+            //IF Hazard PRC is the type of Payroll
+            if($request->type == 'HAZARDPRC'){
+                $employees->receivesHazardPrc();
+            }
+            $employees = $employees->get();
+
 
             return view('_payroll.payroll-preparation.'.$request->type.'.employee-list')->with([
                 'employees' => $employees,
@@ -105,6 +115,7 @@ class PayrollPreparationController
     }
 
     public function store(PayrollPreparationFormRequest $request){
+
         $payMaster = new PayrollMaster();
         $payMaster->slug = Str::random();
         $payMaster->date = $request->date;
@@ -161,7 +172,10 @@ class PayrollPreparationController
         switch ($request->type){
             case 'MONTHLY' :
                 $this->monthlyPayrollService->recompute($payMaster->slug);
+            break;
+            case  'HAZARDPRC':
 
+                break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);
                 break;
@@ -312,13 +326,21 @@ class PayrollPreparationController
                     'payrollMaster' => $payrollMaster,
                 ]);
             break;
+            case 'HAZARDPRC':
+                if($request->has('recompute') && $request->recompute == true){
+                    return $this->hazardPrcService->recompute($slug);
+                }
+                return view('_payroll.payroll-preparation.HAZARDPRC.edit')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
+                break;
         }
         
     }
 
     public function editSignatories($payrollMaster){
         $this->checkLockStataus($payrollMaster);
-        return view('_payroll.payroll-preparation.'.$payrollMaster->type.'.edit-signatories')->with([
+        return view('_payroll.payroll-preparation.global.edit-signatories')->with([
             'payrollMaster' => $payrollMaster,
         ]);
     }
@@ -620,9 +642,29 @@ class PayrollPreparationController
     public function update(PayrollUpdateFormRequest $request,$payrollMasterSlug){
         $payrollMaster = PayrollMaster::findOrFail($payrollMasterSlug);
         $this->checkLockStataus($payrollMaster);
+
+        //IF UPDATE SIGNATORIES
+        if($request->ajax() && $request->has('signatories') && $request->signatories == true){
+            $payrollMaster->a_name = $request->a_name;
+            $payrollMaster->a_position = $request->a_position;
+            $payrollMaster->b_name = $request->b_name;
+            $payrollMaster->b_position = $request->b_position;
+            $payrollMaster->c_name = $request->c_name;
+            $payrollMaster->c_position = $request->c_position;
+            $payrollMaster->d_name = $request->d_name;
+            $payrollMaster->d_position = $request->d_position;
+            if($payrollMaster->update()){
+                return $payrollMaster->only('slug');
+            }
+            abort(503,'Error updating signatories');
+        }
+
+
         switch ($payrollMaster->type){
             case 'MONTHLY':
                 return  $this->monthlyPayrollService->update($request,$payrollMaster);
+            case 'HAZARDPRC' :
+                return $this->hazardPrcService->update($request,$payrollMaster);
             default:
                 break;
         }
