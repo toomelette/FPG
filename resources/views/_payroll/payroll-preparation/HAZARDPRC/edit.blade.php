@@ -46,7 +46,7 @@
 
         <div class="row">
             <div class="col-md-9">
-                <p class="text-info" style="padding-left: 10px"><i class="fa fa-info-circle"></i> Click on the employee's name to print individual payslip or to edit payroll template.</p>
+                <p class="text-info" style="padding-left: 10px"><i class="fa fa-info-circle"></i> You may double click EXCLUDED DAYS column to update parameter.</p>
             </div>
             <div class="col-md-3" style="margin-bottom: 5px">
                 <div class="mb-1 row">
