@@ -174,7 +174,7 @@ class PayrollPreparationController
                 $this->monthlyPayrollService->recompute($payMaster->slug);
             break;
             case  'HAZARDPRC':
-
+                $this->hazardPrcService->recompute($payMaster->slug);
                 break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);

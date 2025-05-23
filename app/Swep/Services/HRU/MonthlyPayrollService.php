@@ -670,18 +670,28 @@ class MonthlyPayrollService
     public function gsisUpload(PayrollMaster $payrollMaster,Request $request)
     {
 
+
         $excel = Excel::toArray(new GSISImport(),$request->file('file'));
+
         $data = $excel[0];
         $headers = $data[0];
-        $headersFlipped = collect($headers)->flip();
+
+
+        $headersFlipped = collect($headers)
+            ->filter(function ($value, $key){
+                return $value != null;
+            })
+            ->flip();
         array_forget($data,0);
         $deductions = Arrays::deductionsExcelHeader('GSIS');
+
         $employeesGsisToSlug = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
             return [
                 $data->employee->gsis => $data->employee->slug,
             ];
         });
         $upsertValues = [];
+
 
         foreach ($data as $row){
             foreach ($deductions as $excelHeader => $deduction){
