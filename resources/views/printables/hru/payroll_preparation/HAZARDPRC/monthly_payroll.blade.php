@@ -196,7 +196,7 @@
                                     <td class="b-side b-tb text-center" style="font-size: 20px; width: 50px; height: 50px">C</td>
                                     <td style="padding-left: 10px" class="text-strong">
                                         @php
-                                            $total = 0;
+                                            $grandTotal = 0;
                                         @endphp
                                         APPROVED FOR PAYMENT:
                                         <u>
@@ -234,7 +234,7 @@
                                     <td class="b-side b-tb text-center" style="font-size: 20px; width: 50px; height: 50px">B</td>
                                     <td style="padding-left: 10px" class="text-strong">
                                         CERTIFIED: Supporting documents complete; and cash
-                                        available in the amount of ₱ {{Helper::toNumber($total)}}
+                                        available in the amount of ₱ {{Helper::toNumber($grandTotal)}}
                                     </td>
                                 </tr>
                                 <tr>
