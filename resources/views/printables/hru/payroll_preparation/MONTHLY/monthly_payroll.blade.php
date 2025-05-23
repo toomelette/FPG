@@ -81,15 +81,15 @@
                     <td colspan="{{$colspan}}">
                         <table style="width: 100%;">
                             <tr>
-                                <td style="width: 15%;">
-                                    <p class="no-margin text-strong">GENERAL PAYROLL - ACTUAL</p>
+                                <td style="width: 20%;">
+                                    <p class="no-margin text-strong">GENERAL PAYROLL - {{$payrollMaster->other_details['payroll_sub_type'] ?? ''}}</p>
                                 </td>
                                 <td class="text-center">
                                     <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
                                     <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
                                     <p class="no-margin">{{$payrollMaster->project_id == 1 ? 'Bacolod City' : 'Quezon City'}}</p>
                                 </td>
-                                <td style="width: 15%;">
+                                <td style="width: 20%;">
                                     STATION:  <span class="text-strong">{{Auth::user()->project_id == 1 ? 'VISAYAS' : 'LUZON/MINDANAO'}}</span> <br>
                                     DEPT:  <span class="text-strong">{{$group}}</span> <br>
                                     TOTAL EMPLOYEES: <span class="text-strong"> {{ $payrollMaster->payrollMasterEmployees->count() }}</span>
@@ -405,15 +405,15 @@
                     <td colspan="{{$colspan}}">
                         <table style="width: 100%;">
                             <tr>
-                                <td style="width: 15%;">
-                                    <p class="no-margin text-strong">GENERAL PAYROLL - ACTUAL</p>
+                                <td style="width: 20%;">
+                                    <p class="no-margin text-strong">GENERAL PAYROLL - {{$payrollMaster->other_details['payroll_sub_type'] ?? ''}}</p>
                                 </td>
                                 <td class="text-center">
                                     <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
                                     <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
                                     <p class="no-margin">{{$payrollMaster->project_id == 1 ? 'Bacolod City' : 'Quezon City'}}</p>
                                 </td>
-                                <td style="width: 15%;">
+                                <td style="width: 20%;">
                                     STATION:  <span class="text-strong">{{Auth::user()->project_id == 1 ? 'VISAYAS' : 'LUZON/MINDANAO'}}</span> <br>
                                     DEPT:  <span class="text-strong">{{$group}}</span> <br>
                                     TOTAL EMPLOYEES: <span class="text-strong"> {{ $payrollMaster->payrollMasterEmployees->count() }}</span>
@@ -507,15 +507,15 @@
 
                 <table style="width: 100%;">
                     <tr>
-                        <td style="width: 15%;">
-                            <p class="no-margin text-strong">GENERAL PAYROLL - ACTUAL</p>
+                        <td style="width: 20%;">
+                            <p class="no-margin text-strong">GENERAL PAYROLL - {{$payrollMaster->other_details['payroll_sub_type'] ?? ''}}</p>
                         </td>
                         <td class="text-center">
                             <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
                             <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
                             <p class="no-margin">{{$payrollMaster->project_id == 1 ? 'Bacolod City' : 'Quezon City'}}</p>
                         </td>
-                        <td style="width: 15%;">
+                        <td style="width: 20%;">
                             STATION:  <span class="text-strong">{{Auth::user()->project_id == 1 ? 'VISAYAS' : 'LUZON/MINDANAO'}}</span> <br>
                             DEPT:  <span class="text-strong"></span> <br>
                             TOTAL EMPLOYEES: <span class="text-strong"> {{ $payrollMaster->payrollMasterEmployees->count() }}</span>
@@ -611,15 +611,15 @@
             <div style="break-before: page">
                 <table style="width: 100%;">
                     <tr>
-                        <td style="width: 15%;">
-                            <p class="no-margin text-strong">GENERAL PAYROLL - ACTUAL</p>
+                        <td style="width: 20%;">
+                            <p class="no-margin text-strong">GENERAL PAYROLL - {{$payrollMaster->other_details['payroll_sub_type'] ?? ''}}</p>
                         </td>
                         <td class="text-center">
                             <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
                             <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
                             <p class="no-margin">{{$payrollMaster->project_id == 1 ? 'Bacolod City' : 'Quezon City'}}</p>
                         </td>
-                        <td style="width: 15%;">
+                        <td style="width: 20%;">
                             STATION:  <span class="text-strong">{{Auth::user()->project_id == 1 ? 'VISAYAS' : 'LUZON/MINDANAO'}}</span> <br>
                             DEPT:  <span class="text-strong"></span> <br>
                             TOTAL EMPLOYEES: <span class="text-strong"> {{ $payrollMaster->payrollMasterEmployees->count() }}</span>

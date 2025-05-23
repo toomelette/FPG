@@ -34,6 +34,9 @@ class PayrollMaster extends Model
     protected $table = 'hr_pay_master';
     protected $primaryKey = 'slug';
     public $incrementing = false;
+    protected $casts = [
+        'other_details' => 'array',
+    ];
 
     public function payrollMasterEmployees(){
         return $this->hasMany(PayrollMasterEmployees::class,'pay_master_slug','slug');

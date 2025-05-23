@@ -128,6 +128,9 @@ class PayrollPreparationController
         $payMaster->c_position = $request->c_position;
         $payMaster->d_name = $request->d_name;
         $payMaster->d_position = $request->d_position;
+        $payMaster->other_details = [
+            'payroll_sub_type' => $request->filterEmployees,
+        ];
         $employeeArr = [];
         $upsertTemplateMonthlyBasic = [];
         $jobGrades = Arrays::jobGrades();
