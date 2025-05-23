@@ -73,6 +73,19 @@
 
 @section('modals')
     <x-adminkit.html.modal id="edit-signatories-modal"/>
+
+    <x-adminkit.html.offcanvas class="end asdasd" id="offcanvasLeft">
+        <x-slot:title>
+            Employee Options
+        </x-slot:title>
+    </x-adminkit.html.offcanvas>
+
+    <x-adminkit.html.offcanvas class="end" id="print-offcanvas">
+        <x-slot:title>
+            Print Options
+        </x-slot:title>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'HAZARDPRC'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payroll Summary</a>
+    </x-adminkit.html.offcanvas>
 @endsection
 
 @section('scripts')
@@ -158,6 +171,51 @@
                 },
                 error: function (res) {
                     populate_modal2_error(res);
+                }
+            })
+        })
+
+
+        $("#search").keyup(function (e){
+            search();
+        })
+        function search() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("search");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("payroll-employees-table");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        $("body").on("click",".employee-options-btn",function (){
+            let btn = $(this);
+            load_offcanvas(btn);
+            $.ajax({
+                url : '{{route("dashboard.payroll_preparation.edit",$payrollMaster->slug)}}?employee',
+                data : {
+                    employee : btn.attr('emp-slug'),
+                    employeePayrollListSlug : btn.attr('data'),
+                },
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_offcanvas(btn,res);
+                },
+                error: function (res) {
+                    populate_offcanvas_error(res);
                 }
             })
         })

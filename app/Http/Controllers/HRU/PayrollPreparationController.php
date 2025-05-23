@@ -224,26 +224,10 @@ class PayrollPreparationController
         
     }
 
-    private function showEmployee($payMasterSlug,Request $request)
-    {
 
-        $employeePayrollList = PayrollMasterEmployees::query()
-            ->with([
-                'employeePayrollDetails',
-            ])
-            ->where('slug','=',$request->employeePayrollListSlug)
-            ->first();
-        return view('_payroll.payroll-preparation.MONTHLY.show-employee')->with([
-            'employeePayrollListSlug' => $request->employeePayrollListSlug,
-            'employeePayrollList' => $employeePayrollList,
-            'payMasterSlug' => $payMasterSlug,
-        ]);
-    }
 
     public function edit($slug,Request $request){
-        if($request->has('employee')){
-            return  $this->showEmployee($slug,$request);
-        }
+
 
         if($request->has('editDeduction')){
             return  $this->monthlyPayrollService->editDeduction($request);
@@ -265,6 +249,11 @@ class PayrollPreparationController
 
         switch($payrollMaster->type){
             case 'MONTHLY':
+                //show employee offcanvas
+                if($request->has('employee')){
+                    return  $this->monthlyPayrollService->showEmployee($slug,$request);
+                }
+
                 if($request->has('recompute') && $request->recompute == true){
                     return $this->monthlyPayrollService->recompute($slug);
                 }
@@ -327,6 +316,10 @@ class PayrollPreparationController
                 ]);
             break;
             case 'HAZARDPRC':
+                //show employee offcanvas
+                if($request->has('employee')){
+                    return  $this->hazardPrcService->showEmployee($slug,$request);
+                }
                 if($request->has('recompute') && $request->recompute == true){
                     return $this->hazardPrcService->recompute($slug);
                 }
@@ -765,6 +758,8 @@ class PayrollPreparationController
             case 'DEDUCTION-REGISTER':
                 return $this->monthlyPayrollService->deductionRegister($slug);
                 break;
+            case 'HAZARDPRC':
+                return  $this->hazardPrcService->printPayroll($slug);
         }
         abort(503,'CHECK SWITCH CASE STATEMENT');
     }

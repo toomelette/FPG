@@ -1,4 +1,5 @@
-<td>{{$employee->saved_employee_data['full_name'] ?? ''}}</td>
+<td class="first employee-options-btn" data="{{$employee->slug}}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft"
+> {{$employee->saved_employee_data['full_name'] ?? ''}}</td>
 <td class="text-end">{{Helper::toNumber($employee->saved_employee_data['monthly_basic'] ?? null)}}</td>
 <td class="text-end">{{Helper::toNumber($employee->hazardprc_gross)}}</td>
 <td class="text-center">{{$employee->hazardprc_all_days}}</td>
