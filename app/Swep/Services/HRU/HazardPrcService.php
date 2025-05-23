@@ -128,6 +128,7 @@ class HazardPrcService
         });
 
         return Pdf::view('printables.hru.payroll_preparation.HAZARDPRC.monthly_payroll',[
+            'pdfPrint' => true,
             'payrollMaster' => $payrollMasterCopy,
             'usedRcsDB' => $usedRcsDB,
             'groupedByDept' => $groupedByDept,
