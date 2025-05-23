@@ -67,7 +67,7 @@ class HazardPrcService
                 'employee' => $payrollMaster->payrollMasterEmployees->where('slug',$payMasterEmployeeSlug)->first(),
             ]);
         }
-
+        $payrollMaster->load('payrollMasterEmployees');
         return view('_payroll.payroll-preparation.HAZARDPRC.preview')->with([
             'payrollMaster' => $payrollMaster,
         ]);
