@@ -18,7 +18,7 @@ class PayrollMasterEmployees extends Model
     public $incrementing = false;
 
     protected $casts = [
-            'saved_employee_data' => 'json',
+            'saved_employee_data' => 'array',
         ];
     public function payrollMaster(){
         return $this->belongsTo(PayrollMaster::class,'payroll_master_slug','slug');

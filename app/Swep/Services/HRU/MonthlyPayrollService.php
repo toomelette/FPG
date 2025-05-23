@@ -667,6 +667,22 @@ class MonthlyPayrollService
         );
     }
 
+    public function showEmployee($payMasterSlug,Request $request)
+    {
+
+        $employeePayrollList = PayrollMasterEmployees::query()
+            ->with([
+                'employeePayrollDetails',
+            ])
+            ->where('slug','=',$request->employeePayrollListSlug)
+            ->first();
+        return view('_payroll.payroll-preparation.MONTHLY.show-employee')->with([
+            'employeePayrollListSlug' => $request->employeePayrollListSlug,
+            'employeePayrollList' => $employeePayrollList,
+            'payMasterSlug' => $payMasterSlug,
+        ]);
+    }
+
     public function gsisUpload(PayrollMaster $payrollMaster,Request $request)
     {
 

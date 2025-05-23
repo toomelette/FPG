@@ -4,7 +4,12 @@ namespace App\Swep\Services\HRU;
 
 use App\Models\HRU\PayrollMaster;
 use App\Models\HRU\PayrollMasterEmployees;
+use App\Models\PPU\PPURespCodes;
+use App\Models\PPU\RCDesc;
+use App\Models\RC;
 use Illuminate\Http\Request;
+use Spatie\Browsershot\Browsershot;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class HazardPrcService
 {
@@ -84,4 +89,67 @@ class HazardPrcService
         }
 
     }
+
+    public function showEmployee($payMasterSlug,Request $request)
+    {
+
+        $employeePayrollList = PayrollMasterEmployees::query()
+            ->with([
+                'employeePayrollDetails',
+            ])
+            ->where('slug','=',$request->employeePayrollListSlug)
+            ->first();
+        return view('_payroll.payroll-preparation.HAZARDPRC.show-employee')->with([
+            'employeePayrollListSlug' => $request->employeePayrollListSlug,
+            'employeePayrollList' => $employeePayrollList,
+            'payMasterSlug' => $payMasterSlug,
+        ]);
+    }
+
+
+    public function printPayroll($slug)
+    {
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees'
+            ])
+            ->findOrFail($slug);
+        $payrollMasterCopy = $payrollMaster;
+        $usedRcs = $payrollMaster->payrollMasterEmployees->pluck('saved_employee_data.resp_center')->unique();
+
+
+        $usedRcsDB = PPURespCodes::query()
+            ->whereIn('rc_code',$usedRcs->values())
+            ->with(['description'])
+            ->get();
+
+        $groupedByDept = $payrollMaster->payrollMasterEmployees->groupBy(function ($data) use ($usedRcsDB){
+            return $usedRcsDB->where('rc_code','=',$data->saved_employee_data['resp_center'])->first()->rc;
+        });
+
+        return Pdf::view('printables.hru.payroll_preparation.HAZARDPRC.monthly_payroll',[
+            'payrollMaster' => $payrollMasterCopy,
+            'usedRcsDB' => $usedRcsDB,
+            'groupedByDept' => $groupedByDept,
+        ])
+            ->paperSize('215.9','330.2')
+            ->landscape()
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Payroll Summary.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+
+        return view('printables.hru.payroll_preparation.HAZARDPRC.monthly_payroll')->with([
+            'payrollMaster' => $payrollMasterCopy,
+            'usedRcsDB' => $usedRcsDB,
+            'groupedByDept' => $groupedByDept,
+        ]);
+    }
+
 }
