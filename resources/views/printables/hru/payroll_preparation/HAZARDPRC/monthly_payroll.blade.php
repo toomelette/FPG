@@ -195,9 +195,6 @@
                                 <tr>
                                     <td class="b-side b-tb text-center" style="font-size: 20px; width: 50px; height: 50px">C</td>
                                     <td style="padding-left: 10px" class="text-strong">
-                                        @php
-                                            $grandTotal = 0;
-                                        @endphp
                                         APPROVED FOR PAYMENT:
                                         <u>
                                         {{strtoupper(\Illuminate\Support\Number::spell(floor($grandTotal)))}} PESOS
