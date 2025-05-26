@@ -231,7 +231,7 @@
                                     <td class="b-side b-tb text-center" style="font-size: 20px; width: 50px; height: 50px">B</td>
                                     <td style="padding-left: 10px" class="text-strong">
                                         CERTIFIED: Supporting documents complete; and cash
-                                        available in the amount of ₱ {{Helper::toNumber($grandTotal)}}
+                                        available in the amount of ₱{{Helper::toNumber($grandTotal)}}
                                     </td>
                                 </tr>
                                 <tr>
