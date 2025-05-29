@@ -49,7 +49,7 @@
                 <div class="mb-1 row">
                     <label class="col-form-label col-sm-3 text-sm-end">Search:</label>
                     <div class="col-sm-9">
-                        <input type="email" class="form-control" id="search" placeholder="Search employee" autocomplete="off">
+                        <input type="text" class="form-control" id="search" placeholder="Search employee" autocomplete="off">
                     </div>
                 </div>
 
@@ -78,6 +78,10 @@
         }
 
      @endphp
+
+    <div id="payroll-group-container" style="display: none">
+            <x-forms.select label="Payroll Group" name="filterEmployees" cols="12" :options="\App\Swep\Helpers\Arrays::payrollGroups()" id="replaceMe"/>
+    </div>
 @endsection
 
 
@@ -161,12 +165,12 @@
             Print Options
         </x-slot:title>
 
-        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'MONTHLY'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payroll Summary</a>
-        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payslips </a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'MONTHLY'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Payroll Summary</a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'PAYSLIP_ALL'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Payslips </a>
         <hr>
-        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'ABSTRACT-MID'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payroll Abstract (Mid-month) </a>
-        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'ABSTRACT-END'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payroll Abstract (Month-end) </a>
-        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'DEDUCTION-REGISTER'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Deduction Register </a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'ABSTRACT-MID'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Payroll Abstract (Mid-month) </a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'ABSTRACT-END'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Payroll Abstract (Month-end) </a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'DEDUCTION-REGISTER'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Deduction Register </a>
 
     </x-adminkit.html.offcanvas>
 @endsection
@@ -473,7 +477,23 @@
             })
         })
 
-
+        $("body").on('click','.require-dialog',function (e){
+            e.preventDefault();
+            let link = $(this).attr('href');
+            let target = $(this).attr('target');
+            Swal.fire({
+                title: "Select payroll group",
+                html: $("#payroll-group-container").html().replaceAll('replaceMe','tempId'),
+                showCancelButton: true,
+                confirmButtonText: "<i class='fa fa-print'></i> Print",
+                showLoaderOnConfirm: true,
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.open(link+'?payroll_group='+$("#tempId").val(), target);
+                }
+            });
+        });
 
     </script>
 @endsection

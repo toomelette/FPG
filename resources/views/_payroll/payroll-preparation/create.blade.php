@@ -12,7 +12,7 @@
             <div class="row mb-4">
                 <x-forms.input label="Payroll Date" name="date" cols="3" type="date"/>
                 <x-forms.select label="Payroll Type" name="type" cols="3" class="employee-list-trigger" :options="\App\Swep\Helpers\Arrays::payrollTypes()"/>
-                <x-forms.select label="Payroll Group" name="filterEmployees" cols="3" class="employee-list-trigger" placeholder="No payroll group assigned" :options="\App\Swep\Helpers\Arrays::payrollGroups()"/>
+{{--                <x-forms.select label="Payroll Group" name="filterEmployees" cols="3" class="employee-list-trigger" placeholder="No payroll group assigned" :options="\App\Swep\Helpers\Arrays::payrollGroups()"/>--}}
             </div>
             <div class="row mb-3">
                 <div class="col-3">

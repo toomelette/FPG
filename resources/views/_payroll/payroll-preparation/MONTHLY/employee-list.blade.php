@@ -27,6 +27,7 @@
             <th>Employee</th>
             <th>Employee No.</th>
             <th>Position</th>
+            <th style="width: 150px">Payroll Type</th>
             <th>JG</th>
             <th>Step</th>
             <th>Monthly Basic</th>
@@ -44,6 +45,9 @@
                 <td>{{$employee->full_name}}</td>
                 <td>{{$employee->employee_no}}</td>
                 <td>{{$employee->plantilla->position ?? ''}}</td>
+                <td>
+                    <x-forms.select label="" cols="12" name="payrollGroups[{{$employee->slug}}][]" :select-only="true" :options="\App\Swep\Helpers\Arrays::payrollGroups()" :value="$employee->payroll_group == '' || $employee->payroll_group == null ? 'REGULAR' : $employee->payroll_group"/>
+                </td>
                 <td>{{$employee->salary_grade}}</td>
                 <td>{{$employee->step_inc}}</td>
                 <td class="text-end">{{Helper::toNumber($employee->templateMonthlyBasic->amount ?? null,2)}}</td>

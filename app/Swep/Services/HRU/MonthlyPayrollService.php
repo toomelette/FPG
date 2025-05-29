@@ -743,14 +743,25 @@ class MonthlyPayrollService
 
     }
 
-    public function printPayroll($payrollMasterSlug)
+    public function printPayroll($payrollMasterSlug )
     {
+        $request = Request::capture();
         $payrollMaster = PayrollMaster::query()
             ->with([
-                'payrollMasterEmployees' => [
-                    'employee.plantilla',
-                    'employeePayrollDetails',
-                ],
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payroll_group') && $request->payroll_group != ''){
+                        $payrollMasterEmployees->where('employee_payroll_type',$request->payroll_group);
+                    }
+                },
+                'payrollMasterEmployees.employee.plantilla',
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    if($request->has('payroll_group') && $request->payroll_group != ''){
+                        $hmtDetails->intermediateGroup($request->payroll_group);
+                    }
+
+                },
                 'hmtDetails.chartOfAccount',
             ])
             ->findOrFail($payrollMasterSlug);
@@ -793,6 +804,8 @@ class MonthlyPayrollService
         }
         ksort($usedRc);
 
+
+
         return Pdf::view('printables.hru.payroll_preparation.MONTHLY.monthly_payroll',[
             'pdfPrint' => true,
             'payrollMaster' => $payrollMaster,
@@ -822,16 +835,12 @@ class MonthlyPayrollService
                         ->setNpmBinary(env('NODE_BINARY'));
                 }
             });
-
-
-
         return view('printables.hru.payroll_preparation.MONTHLY.monthly_payroll')->with([
             'payrollMaster' => $payrollMaster,
             'tree' => $tree,
             'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
                 return $data->employee->resp_center;
             }),
-
             'payrollEmployeesBySlug' => $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
                 return [
                     $data->employee->slug => $data,
@@ -839,6 +848,9 @@ class MonthlyPayrollService
             }),
             'usedRc' => $usedRc,
         ]);
+
+
+
     }
 
     public function updateMap(PayrollMaster $payrollMaster, Request $request)
@@ -986,11 +998,22 @@ class MonthlyPayrollService
 
     public function printPayslips($slug,Request $request){
 
+        $request = Request::capture();
         $payrollMaster = PayrollMaster::query();
         $with = [
-            'payrollMasterEmployees',
+            'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payroll_group') && $request->payroll_group != ''){
+                        $payrollMasterEmployees->where('employee_payroll_type',$request->payroll_group);
+                    }
+                },
             'payrollMasterEmployees.employeePayrollDetails',
-            'hmtDetails',
+            'hmtDetails' => function ($hmtDetails) use($request){
+                    if($request->has('payroll_group') && $request->payroll_group != ''){
+                        $hmtDetails->intermediateGroup($request->payroll_group);
+                    }
+
+                },
         ];
 
         //if requests for only 1 employee
@@ -1011,11 +1034,22 @@ class MonthlyPayrollService
 
     public function abstractMid($payrollMasterSlug)
     {
+        $request = Request::capture();
         $payrollMaster = PayrollMaster::query()
             ->with([
-                'payrollMasterEmployees' => [
-                    'employeePayrollDetails',
-                ],
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payroll_group') && $request->payroll_group != ''){
+                        $payrollMasterEmployees->where('employee_payroll_type',$request->payroll_group);
+                    }
+                },
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    if($request->has('payroll_group') && $request->payroll_group != ''){
+                        $hmtDetails->intermediateGroup($request->payroll_group);
+                    }
+
+                },
                 'hmtDetails.chartOfAccount',
             ])
             ->findOrFail($payrollMasterSlug);
@@ -1027,11 +1061,22 @@ class MonthlyPayrollService
 
     public function abstractEnd($payrollMasterSlug)
     {
+        $request = Request::capture();
         $payrollMaster = PayrollMaster::query()
             ->with([
-                'payrollMasterEmployees' => [
-                    'employeePayrollDetails',
-                ],
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payroll_group') && $request->payroll_group != ''){
+                        $payrollMasterEmployees->where('employee_payroll_type',$request->payroll_group);
+                    }
+                },
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    if($request->has('payroll_group') && $request->payroll_group != ''){
+                        $hmtDetails->intermediateGroup($request->payroll_group);
+                    }
+
+                },
                 'hmtDetails.chartOfAccount',
             ])
             ->findOrFail($payrollMasterSlug);
@@ -1043,18 +1088,27 @@ class MonthlyPayrollService
 
     public function deductionRegister($payrollMasterSlug)
     {
+        $request = Request::capture();
         $payrollMaster = PayrollMaster::query()
             ->with([
-                'payrollMasterEmployees' => [
-                    'employeePayrollDetails',
-                ],
-                'hmtDetails'=>[
-                    'chartOfAccount',
-                    'deduction',
-                    'employeePayroll',
-                ],
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payroll_group') && $request->payroll_group != ''){
+                        $payrollMasterEmployees->where('employee_payroll_type',$request->payroll_group);
+                    }
+                },
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    if($request->has('payroll_group') && $request->payroll_group != ''){
+                        $hmtDetails->intermediateGroup($request->payroll_group);
+                    }
+                },
+                'hmtDetails.chartOfAccount',
+                'hmtDetails.deduction',
+                'hmtDetails.employeePayroll'
             ])
             ->findOrFail($payrollMasterSlug);
+
 
         return Pdf::view('printables.hru.payroll_preparation.MONTHLY.deduction-register',[
             'payrollMaster' => $payrollMaster,
@@ -1071,10 +1125,10 @@ class MonthlyPayrollService
                         ->setNpmBinary(env('NODE_BINARY'));
                 }
             });
-
         return view('printables.hru.payroll_preparation.MONTHLY.deduction-register')->with([
             'payrollMaster' => $payrollMaster,
         ]);
+
     }
 
     public function editDeduction(Request $request)

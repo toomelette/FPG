@@ -85,11 +85,13 @@ class PayrollPreparationController
                 ]);
 
             if($request->type == 'MONTHLY'){
+                /*
                 if($request->has('filterEmployees') && $request->filterEmployees != null){
                     $employees = $employees->where('payroll_group','=',$request->filterEmployees);
                 }else{
                     $employees = $employees->where('payroll_group','=',null);
                 }
+                */
             }
 
             $employees = $employees
@@ -116,6 +118,7 @@ class PayrollPreparationController
 
     public function store(PayrollPreparationFormRequest $request){
 
+
         $payMaster = new PayrollMaster();
         $payMaster->slug = Str::random();
         $payMaster->date = $request->date;
@@ -140,23 +143,25 @@ class PayrollPreparationController
         $payMaster->account_code = $lbpAccountCode->account_code;
         if(count($request->employees) > 0){
             foreach ($request->employees as $employee){
-                array_push($employeeArr,[
+                $employeeArr[] = [
                     'slug' => Str::random(),
                     'pay_master_slug' => $payMaster->slug,
                     'employee_slug' => $employee,
-                ]);
-                array_push($upsertTemplateMonthlyBasic,[
+                    'employee_payroll_type' => $request->payrollGroups[$employee][0],
+                ];
+                $upsertTemplateMonthlyBasic[] = [
                     'employee_slug' => $employee,
                     'incentive_code' => 'MONTHLY',
                     'priority' => 1,
                     'amount' => $jobGrades[$employeesBySlug[$employee]->salary_grade ?? 0][$employeesBySlug[$employee]->step_inc ?? 0] ?? null,
-                ]);
-                array_push($upsertTemplateMonthlyBasic,[
+                ];
+
+                $upsertTemplateMonthlyBasic[] = [
                     'employee_slug' => $employee,
                     'incentive_code' => 'PERA',
                     'priority' => 10,
                     'amount' => 2000,
-                ]);
+                ];
             }
         }
 
