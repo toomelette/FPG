@@ -87,7 +87,7 @@
                                 <td class="text-center">
                                     <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
                                     <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
-                                    <p class="no-margin">{{$payrollMaster->project_id == 1 ? 'Bacolod City' : 'Quezon City'}}</p>
+                                    <p class="no-margin">{{\App\Swep\Helpers\Get::headerAddress()}}</p>
                                 </td>
                                 <td style="width: 20%;">
                                     STATION:  <span class="text-strong">{{Auth::user()->project_id == 1 ? 'VISAYAS' : 'LUZON/MINDANAO'}}</span> <br>

@@ -15,7 +15,7 @@
         <div class="clearfix">
             <img src="{{asset('images/sra.png')}}" style="width: 60px; float: left; margin-right: 15px;">
             <p class="no-margin text-left" style="font-size: 14px"> <b>SUGAR REGULATORY ADMINISTRATION</b></p>
-            <p class="no-margin text-left" style="font-size: 12px;"> Araneta Street, Singcang, Bacolod City</p>
+            <p class="no-margin text-left" style="font-size: 12px;"> {{\App\Swep\Helpers\Get::headerAddress()}}</p>
         </div>
 
         <div style="text-align: left">
