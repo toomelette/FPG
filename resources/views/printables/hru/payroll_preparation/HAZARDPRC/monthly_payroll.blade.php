@@ -73,7 +73,7 @@
                                 <td class="indent text-right">{{Helper::toNumber($payrollEmployee->hazardprc_eligible_days ?? null,3)}}</td>
                                     {{-- Eligible Days / All Days * GROSS --}}
                                 <td class="indent text-right">{{Helper::toNumber($payrollEmployee->hazardprc_eligible_days/$payrollEmployee->hazardprc_all_days * $payrollEmployee->hazardprc_gross ?? null)}}</td>
-                                <td class="indent text-right">{{Helper::toNumber($payrollEmployee->hazardprc_tax ?? null}}</td>
+                                <td class="indent text-right">{{Helper::toNumber($payrollEmployee->hazardprc_tax ?? null)}}</td>
                                 <td class="indent text-right">{{Helper::toNumber($payrollEmployee->hazardprc_net_amount ?? null)}}</td>
                                 <td>_________________________</td>
                             </tr>
