@@ -153,4 +153,32 @@ class HazardPrcService
         ]);
     }
 
+    public function printAbstract($slug)
+    {
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees'
+            ])
+            ->findOrFail($slug);
+        return Pdf::view('printables.hru.payroll_preparation.HAZARDPRC.abstract',[
+            'pdfPrint' => true,
+            'payrollMaster' => $payrollMaster,
+
+        ])
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Payroll Abstract.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+
+        return view('printables.hru.payroll_preparation.HAZARDPRC.abstract')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
+    }
+
 }

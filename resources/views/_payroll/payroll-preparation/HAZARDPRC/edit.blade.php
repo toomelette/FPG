@@ -85,6 +85,8 @@
             Print Options
         </x-slot:title>
         <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'HAZARDPRC'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payroll Summary</a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'HAZARDPRC-ABSTRACT'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payroll Abstract</a>
+
     </x-adminkit.html.offcanvas>
 @endsection
 
