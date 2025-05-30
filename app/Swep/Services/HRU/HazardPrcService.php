@@ -20,6 +20,22 @@ class HazardPrcService
         $this->daysInMonth = 22;
     }
 
+
+
+    private function getFactor($eligibleDays)
+    {
+        $factor = 0;
+        if($eligibleDays >= 15 ){
+            $factor = 0.3;
+        }
+        if($eligibleDays >= 8 && $eligibleDays < 15){
+            $factor = 0.23;
+        }
+        if($eligibleDays >= 1 && $eligibleDays < 8){
+            $factor = 0.15;
+        }
+        return  $factor;
+    }
     public function recompute($payrollMasterSlug,$payMasterEmployeeSlug = null)
     {
         $payrollMaster = PayrollMaster::query()
@@ -32,11 +48,13 @@ class HazardPrcService
                 'payrollMasterEmployees.employee.payrollSettings'
             ])
             ->findOrFail($payrollMasterSlug);
+
         $this->monthlyPayrollService->updateEmployeesData($payrollMaster,null);
 
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
-            $hazardPayGross = $payrollMasterEmployee->saved_employee_data["monthly_basic"] * 0.3;
             $eligibleDays = $this->daysInMonth - $payrollMasterEmployee->hazardprc_ineligible_days;
+            $hazardPayFactor = $this->getFactor($eligibleDays);
+            $hazardPayGross = $payrollMasterEmployee->saved_employee_data["monthly_basic"] * $hazardPayFactor;
             $hazardPayLessIneligible = $eligibleDays / $this->daysInMonth * $hazardPayGross;
             $hazardPayTax =   $hazardPayLessIneligible * $payrollMasterEmployee->hazardprc_tax_rate;
             $hazardPayNet = $hazardPayLessIneligible - $hazardPayTax;
@@ -45,6 +63,7 @@ class HazardPrcService
                 'slug' => $payrollMasterEmployee->slug,
                 'hazardprc_gross' => $hazardPayGross,
                 'hazardprc_all_days' => $this->daysInMonth,
+                'hazardprc_factor' => $hazardPayFactor,
                 'hazardprc_tax_rate' => $payrollMasterEmployee?->employee?->payrollSettings?->hazard_prc_tax_rate,
                 'hazardprc_net_amount' => $hazardPayNet,
                 'hazardprc_eligible_days' => $eligibleDays,
@@ -59,6 +78,7 @@ class HazardPrcService
                 'saved_employee_data',
                 'hazardprc_gross',
                 'hazardprc_all_days',
+                'hazardprc_factor',
                 'hazardprc_tax_rate',
                 'hazardprc_net_amount',
                 'hazardprc_eligible_days',
