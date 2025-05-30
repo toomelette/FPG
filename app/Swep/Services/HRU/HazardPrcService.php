@@ -24,17 +24,7 @@ class HazardPrcService
 
     private function getFactor($eligibleDays)
     {
-        $factor = 0;
-        if($eligibleDays >= 15 ){
-            $factor = 0.3;
-        }
-        if($eligibleDays >= 8 && $eligibleDays < 15){
-            $factor = 0.23;
-        }
-        if($eligibleDays >= 1 && $eligibleDays < 8){
-            $factor = 0.15;
-        }
-        return  $factor;
+        return 0.3;
     }
     public function recompute($payrollMasterSlug,$payMasterEmployeeSlug = null)
     {
