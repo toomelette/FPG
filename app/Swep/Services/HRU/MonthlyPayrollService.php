@@ -967,6 +967,7 @@ class MonthlyPayrollService
             ]
         ]);
 
+
         $jobGrades = Arrays::jobGrades();
         $upsert = [];
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){

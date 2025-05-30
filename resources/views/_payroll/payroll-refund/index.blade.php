@@ -2,8 +2,15 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>Refunds</x-slot:title>
-        <x-slot:float-end><small>Total Employees:</small> <strong>{{$payrollMaster->payroll_master_employees_count}}</strong></x-slot:float-end>
+        <x-slot:title>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('dashboard.payroll_preparation.edit',$payrollMaster->slug)}}">Payroll Preparation</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Refunds</li>
+                </ol>
+            </nav>
+
+        </x-slot:title>
     </x-adminkit.html.page-title>
 
     <div class="row">

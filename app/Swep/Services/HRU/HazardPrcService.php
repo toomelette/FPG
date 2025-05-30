@@ -38,6 +38,7 @@ class HazardPrcService
     }
     public function recompute($payrollMasterSlug,$payMasterEmployeeSlug = null)
     {
+
         $payrollMaster = PayrollMaster::query()
             ->with([
                 'payrollMasterEmployees' => function ($e) use ($payMasterEmployeeSlug) {
@@ -49,7 +50,7 @@ class HazardPrcService
             ])
             ->findOrFail($payrollMasterSlug);
 
-        $this->monthlyPayrollService->updateEmployeesData($payrollMaster,null);
+        $this->monthlyPayrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
 
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
             $eligibleDays = $this->daysInMonth - $payrollMasterEmployee->hazardprc_ineligible_days;
