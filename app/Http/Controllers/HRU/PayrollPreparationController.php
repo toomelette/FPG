@@ -21,6 +21,7 @@ use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\HRU\HazardPrcService;
 use App\Swep\Services\HRU\MonthlyPayrollService;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
@@ -118,10 +119,9 @@ class PayrollPreparationController
 
     public function store(PayrollPreparationFormRequest $request){
 
-
         $payMaster = new PayrollMaster();
         $payMaster->slug = Str::random();
-        $payMaster->date = $request->date;
+        $payMaster->date = Carbon::parse($request->date)->firstOfMonth()->format('Y-m-d');
         $payMaster->type = $request->type;
         $payMaster->a_name = $request->a_name;
         $payMaster->a_position = $request->a_position;
