@@ -83,6 +83,7 @@
                             <tr>
                                 <td style="width: 20%;">
                                     <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
+                                    <p>PAY PERIOD: {{Carbon::parse($payrollMaster->date)->format('F Y')}}</p>
                                 </td>
                                 <td class="text-center">
                                     <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
@@ -407,6 +408,7 @@
                             <tr>
                                 <td style="width: 20%;">
                                     <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
+                                    <p>PAY PERIOD: {{Carbon::parse($payrollMaster->date)->format('F Y')}}</p>
                                 </td>
                                 <td class="text-center">
                                     <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
@@ -509,6 +511,7 @@
                     <tr>
                         <td style="width: 20%;">
                             <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
+                            <p>PAY PERIOD: {{Carbon::parse($payrollMaster->date)->format('F Y')}}</p>
                         </td>
                         <td class="text-center">
                             <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
@@ -613,6 +616,7 @@
                     <tr>
                         <td style="width: 20%;">
                             <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
+                            <p>PAY PERIOD: {{Carbon::parse($payrollMaster->date)->format('F Y')}}</p>
                         </td>
                         <td class="text-center">
                             <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
