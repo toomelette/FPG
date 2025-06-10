@@ -77,7 +77,7 @@
                 </table>
             </div>
             <div class="tab-pane" id="tab-2" role="tabpanel">
-                <a href="{{route('dashboard.document.dissemination.print',$document->slug)}}" target="_blank">
+                <a href="{{route('dashboard.document.dissemination.print',$document->slug)}}{{\Illuminate\Support\Facades\Request::has('send_copy') ? '?send_copy=1' : ''}}" target="_blank">
                     <button type="button" class="btn btn-outline-secondary btn-sm float-end"><i class="fa fa-print"></i> Print</button>
                 </a>
                 <h4 class="tab-title">{{$count}} {{Str::plural('log',$count)}} found.</h4>

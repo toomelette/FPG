@@ -538,8 +538,19 @@ class DocumentService extends BaseService{
 
 
     public function print($slug){
-
-        $document = $this->document_repo->findBySlug($slug);
+        $request = Request::capture();
+        $document = Document::query()
+            ->where('slug','=', $slug)
+            ->with([
+                'documentDisseminationLogAll' => function ($logs) use($request) {
+                    if($request->has('send_copy') && $request->send_copy == 1){
+                        $logs->sendCopyLogs();
+                    }else{
+                        $logs->logs();
+                    }
+                },
+            ])
+            ->first() ?? abort(503,'Document not found');
         return view('printables.document.sent_mails')->with('document', $document);
     }
 

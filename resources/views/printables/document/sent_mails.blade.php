@@ -110,7 +110,7 @@
 				@php
 					$emails = [];
 
-					foreach ($document->documentDisseminationLog as $log) {
+					foreach ($document->documentDisseminationLogAll as $log) {
 						if($log->status != "FAILED"){
 							if(!isset($emails[$log->subject.'-'.$log->content])){
 								$emails[$log->subject.'-'.$log->content]['subject'] = $log->subject;

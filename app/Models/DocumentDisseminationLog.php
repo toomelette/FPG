@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -73,5 +74,14 @@ class DocumentDisseminationLog extends Model{
 
 
 
+    public function scopeLogs(Builder $builder)
+    {
+        $builder->where('send_copy','=',null);
+    }
+
+    public function scopeSendCopyLogs(Builder $builder)
+    {
+        $builder->where('send_copy','=',1);
+    }
     
 }
