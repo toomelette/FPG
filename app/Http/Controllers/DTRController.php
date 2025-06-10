@@ -284,6 +284,7 @@ class DTRController extends  Controller
                 }
             }
 
+
             return view('_hru.dtr.my_dtr_preview')->with([
                 'month' => $request->month,
                 'dtr_array' =>  $dtr_array,

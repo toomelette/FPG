@@ -26,4 +26,12 @@ class DTREdits extends Model
     protected $fillable = ['slug','employee_no','biometric_user_id','time'];
 
     use SoftDeletes;
+
+    public function creator(){
+        return $this->hasOne(User::class,"user_id","user_created");
+    }
+
+    public function updater(){
+        return $this->hasOne(User::class,"user_id","user_updated");
+    }
 }

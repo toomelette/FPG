@@ -30,7 +30,12 @@
       .fc-basic-view .fc-body .fc-row{min-height:8em !important;}
   </style>
     @php
-        $days_in_this_month = \Carbon\Carbon::parse($month)->daysInMonth
+        $days_in_this_month = \Carbon\Carbon::parse($month)->daysInMonth;
+        if(\App\Swep\Helpers\Helper::checkRouteAccess('dashboard.dtr.edit_history')){
+            $allowHistory = true;
+        }else{
+            $allowHistory = false;
+        }
     @endphp
 {{--    {{print_r($dtr_array)}}--}}
     <form method="POST" id="download_form" action="{{route('dashboard.dtr.download')}}">
@@ -46,6 +51,9 @@
       <ul class="nav nav-tabs" role="tablist">
           <li class="nav-item" role="presentation"><a class="nav-link active" href="#tab-1" data-bs-toggle="tab" role="tab" aria-selected="true">Daily Time Record</a></li>
           <li class="nav-item" role="presentation"><a class="nav-link" href="#tab-2" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Attendance Logs</a></li>
+            @if($allowHistory)
+          <li class="nav-item" role="presentation"><a class="nav-link" href="#tab-3" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Edit History</a></li>
+          @endif
       </ul>
       <div class="tab-content">
           <div class="tab-pane active show" id="tab-1" role="tabpanel">
@@ -250,6 +258,77 @@
 
               </div>
           </div>
+
+          @if($allowHistory)
+          <div class="tab-pane" id="tab-3" role="tabpanel">
+              <!-- EDIT HISTORY -->
+                @php
+                    $dtrEdits = \App\Models\DTREdits::query()
+                        ->with(['creator.employee'])
+                        ->where('biometric_user_id','=',$bm_u_id)
+                        ->where('date','like',Carbon::parse($month)->format('Y-m-').'%')
+                        ->orderBy('date')
+                        ->get();
+                    $remarks = \App\Models\DailyTimeRecord::query()
+                        ->with(['remarksUpdater.employee'])
+                        ->where('biometric_user_id','=',$bm_u_id)
+                        ->where('date','like',Carbon::parse($month)->format('Y-m-').'%')
+                        ->where('remarks','!=',null)
+                        ->orderBy('date')
+                        ->get();
+                @endphp
+              Time Edits
+              <table class="table table-bordered table-sm table-striped">
+                  <thead>
+                  <tr>
+                      <th>Date</th>
+                      <th>Edit</th>
+                      <th>Type</th>
+                      <th>Date Edited</th>
+                      <th>User Edited</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                        @forelse($dtrEdits as $dtrEdit)
+                            <tr>
+                                <td>{{Carbon::parse($dtrEdit->date)->format('M. d')}}</td>
+                                <td class="text-center">{{$dtrEdit->time}}</td>
+                                <td class="text-center">{{$dtrEdit->type}}</td>
+                                <td>{{Carbon::parse($dtrEdit->created_at)->format('M. d, Y | h:i A')}}</td>
+                                <td>{{$dtrEdit?->creator?->employee?->full['FMiLE'] ?? ''}}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5">No data found.</td>
+                            </tr>
+                        @endforelse
+                  </tbody>
+              </table>
+
+              Remark Edits
+              <table class="table table-bordered table-sm table-striped">
+                  <thead>
+                  <tr>
+                      <th>Date</th>
+                      <th>Remarks</th>
+                      <th>Date Edited</th>
+                      <th>User Edited</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @forelse($remarks as $remark)
+                        <tr>
+                            <td>{{Carbon::parse($remark->date)->format('M. d')}}</td>
+                            <td>{{$remark->remarks}}</td>
+                            <td>{{Carbon::parse($remark->remarks_updated_at)->format('M. d, Y | h:i A')}}</td>
+                            <td>{{$remark?->remarksUpdater?->employee?->full['FMiLE']}}</td>
+                        </tr>
+                    @empty
+                    @endforelse
+                  </tbody>
+              </table>
+          </div>
+          @endif
       </div>
   </div>
 

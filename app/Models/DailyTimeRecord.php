@@ -23,4 +23,8 @@ class DailyTimeRecord extends Model
         return $this->hasMany(DTREdits::class,'dtr_slug','slug');
     }
 
+    public function remarksUpdater(){
+        return $this->hasOne(User::class,"user_id","remarks_user_updated");
+    }
+
 }

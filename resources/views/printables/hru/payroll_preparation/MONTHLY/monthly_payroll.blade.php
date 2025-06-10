@@ -82,7 +82,7 @@
                         <table style="width: 100%;">
                             <tr>
                                 <td style="width: 20%;">
-                                    <p class="no-margin text-strong">GENERAL PAYROLL - {{$payrollMaster->other_details['payroll_sub_type'] ?? ''}}</p>
+                                    <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
                                 </td>
                                 <td class="text-center">
                                     <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
@@ -406,7 +406,7 @@
                         <table style="width: 100%;">
                             <tr>
                                 <td style="width: 20%;">
-                                    <p class="no-margin text-strong">GENERAL PAYROLL - {{$payrollMaster->other_details['payroll_sub_type'] ?? ''}}</p>
+                                    <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
                                 </td>
                                 <td class="text-center">
                                     <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
@@ -508,7 +508,7 @@
                 <table style="width: 100%;">
                     <tr>
                         <td style="width: 20%;">
-                            <p class="no-margin text-strong">GENERAL PAYROLL - {{$payrollMaster->other_details['payroll_sub_type'] ?? ''}}</p>
+                            <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
                         </td>
                         <td class="text-center">
                             <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
@@ -612,7 +612,7 @@
                 <table style="width: 100%;">
                     <tr>
                         <td style="width: 20%;">
-                            <p class="no-margin text-strong">GENERAL PAYROLL - {{$payrollMaster->other_details['payroll_sub_type'] ?? ''}}</p>
+                            <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
                         </td>
                         <td class="text-center">
                             <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
