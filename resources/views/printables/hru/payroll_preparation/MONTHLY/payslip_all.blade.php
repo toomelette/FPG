@@ -49,11 +49,11 @@
                                         </tr>
                                         <tr>
                                             <td>RA</td>
-                                            <td class="text-right">{{Helper::toNumber($ra = $employeesWithRata[$payrollEmployee->employee_slug]->rata_ra_rate)}}</td>
+                                            <td class="text-right">{{Helper::toNumber($ra = $employeesWithRata[$payrollEmployee->employee_slug]->rata_net_amount/2)}}</td>
                                         </tr>
                                         <tr>
                                             <td>TA</td>
-                                            <td class="text-right">{{Helper::toNumber($ta = $employeesWithRata[$payrollEmployee->employee_slug]->rata_ta_rate)}}</td>
+                                            <td class="text-right">{{Helper::toNumber($ta = $employeesWithRata[$payrollEmployee->employee_slug]->rata_net_amount/2)}}</td>
                                         </tr>
                                     @else
                                         @php

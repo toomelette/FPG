@@ -656,3 +656,6 @@ td.w-25p{
 .side-list .item.selected{
     background-color: var(--bs-primary-border-subtle);
 }
+.swal2-container select{
+    font-size: 1.1rem;
+}
