@@ -20,8 +20,6 @@ class HazardPrcService
         $this->daysInMonth = 22;
     }
 
-
-
     private function getFactor($eligibleDays)
     {
         return 0.3;
@@ -98,7 +96,6 @@ class HazardPrcService
                 return $this->recompute($payrollMaster->slug,$request->employeeListSlug);
             }
         }
-
     }
 
     public function showEmployee($payMasterSlug,Request $request)

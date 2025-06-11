@@ -21,6 +21,7 @@ use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\HRU\HazardPrcService;
 use App\Swep\Services\HRU\MonthlyPayrollService;
+use App\Swep\Services\HRU\RaTaService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -37,6 +38,7 @@ class PayrollPreparationController
     public function __construct(
         public MonthlyPayrollService $monthlyPayrollService,
         public HazardPrcService $hazardPrcService,
+        public RaTaService $rataService,
     )
     {
 
@@ -106,6 +108,9 @@ class PayrollPreparationController
             if($request->type == 'HAZARDPRC'){
                 $employees->receivesHazardPrc();
             }
+            if($request->type == 'RATA'){
+                $employees->receivesEitherRaOrTa();
+            }
             $employees = $employees->get();
 
 
@@ -147,7 +152,7 @@ class PayrollPreparationController
                     'slug' => Str::random(),
                     'pay_master_slug' => $payMaster->slug,
                     'employee_slug' => $employee,
-                    'employee_payroll_type' => $request->payrollGroups[$employee][0],
+                    'employee_payroll_type' => $request->payrollGroups[$employee][0] ?? null,
                 ];
                 $upsertTemplateMonthlyBasic[] = [
                     'employee_slug' => $employee,
@@ -183,6 +188,9 @@ class PayrollPreparationController
             break;
             case  'HAZARDPRC':
                 $this->hazardPrcService->recompute($payMaster->slug);
+                break;
+            case  'RATA':
+                $this->rataService->recompute($payMaster->slug);
                 break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);
@@ -302,24 +310,13 @@ class PayrollPreparationController
                 ]);
                 break;
             case 'RATA':
-                if($request->has('recompute') && $request->recompute == true){
-                    $this->recomputeRATA($slug);
-        
-                    
-                    return view('dashboard.hru.payroll_preparation.RATA.preview')->with([
-                        'payrollMaster' => $payrollMaster,
-                    ]);
+                if($request->has('employee')){
+                    return  $this->rataService->showEmployee($slug,$request);
                 }
-                $payrollMaster = PayrollMaster::query()
-                    ->with([
-                        'payrollMasterEmployees.employee',
-                        'payrollMasterEmployees.employeePayrollDetails',
-                    ])
-                    ->find($slug);
-        
-                $payrollMaster ?? abort(404,'Payroll not found.');
-        
-                return view('dashboard.hru.payroll_preparation.RATA.edit_rata')->with([
+                if($request->has('recompute') && $request->recompute == true){
+                    return $this->rataService->recompute($slug);
+                }
+                return view('_payroll.payroll-preparation.RATA.edit')->with([
                     'payrollMaster' => $payrollMaster,
                 ]);
             break;
@@ -666,6 +663,8 @@ class PayrollPreparationController
                 return  $this->monthlyPayrollService->update($request,$payrollMaster);
             case 'HAZARDPRC' :
                 return $this->hazardPrcService->update($request,$payrollMaster);
+            case 'RATA' :
+                return $this->rataService->update($request,$payrollMaster);
             default:
                 break;
         }
@@ -841,6 +840,7 @@ class PayrollPreparationController
     public function destroy($slug)
     {
         $payrollMaster = PayrollMaster::query()->findOrFail($slug);
+
         switch ($payrollMaster->type){
             case 'MONTHLY':
                 if($payrollMaster->hmtDetails()->delete()){
@@ -856,6 +856,15 @@ class PayrollPreparationController
                     if($payrollMaster->delete()){
                         return 1;
                     }
+                }
+                break;
+            case 'RATA':
+
+                if($payrollMaster->payrollMasterEmployees()->delete()){
+                    if($payrollMaster->delete()){
+                        return 1;
+                    }
+                    return 1;
                 }
                 break;
         }

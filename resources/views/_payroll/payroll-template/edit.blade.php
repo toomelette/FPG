@@ -42,6 +42,8 @@
             </div>
             <div class="row">
                 <x-forms.select label="Hazard Pay (PRC) Tax Rate" name="hazard_prc_tax_rate" cols="4" :options="\App\Swep\Helpers\Arrays::hazardPrcTaxRates()" :value="$employee?->payrollSettings->hazard_prc_tax_rate ?? null"/>
+                <x-forms.input label="RA Amount" name="ra_rate" class="autonum_{{$rand}}" cols="4"  :value="$employee?->payrollSettings->ra_rate ?? null"/>
+                <x-forms.input label="TA Amount" name="ta_rate" class="autonum_{{$rand}}" cols="4"  :value="$employee?->payrollSettings->ta_rate ?? null"/>
             </div>
 
         </div>
@@ -151,5 +153,4 @@
             }
         })
     })
-
 </script>

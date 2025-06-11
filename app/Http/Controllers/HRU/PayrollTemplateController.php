@@ -110,12 +110,20 @@ class PayrollTemplateController extends Controller
 
         if(!empty($emp->payrollSettings)){
             $emp->payrollSettings->receives_hazard_prc = $request->has('receives_hazard_prc') ? 1 : null;
+            $emp->payrollSettings->receives_ra = $request->has('receives_ra') ? 1 : null;
+            $emp->payrollSettings->ra_rate = $request->has('receives_ra') ? Helper::sanitizeAutonum($request->ra_rate) : null;
+            $emp->payrollSettings->receives_ta = $request->has('receives_ta') ? 1 : null;
+            $emp->payrollSettings->ta_rate = $request->has('receives_ta') ? Helper::sanitizeAutonum($request->ta_rate) : null;
             $emp->payrollSettings->hazard_prc_tax_rate = $request->has('receives_hazard_prc') ? $request->hazard_prc_tax_rate : null;
             $emp->payrollSettings->save();
         }else{
             PayrollEmployeeSettings::query()->insert([
                 'employee_slug' => $empSlug,
                 'receives_hazard_prc' => $request->has('receives_hazard_prc') ? 1 : null,
+                'receives_ra' => $request->has('receives_ra') ? 1 : null,
+                'ra_rate' =>$request->has('receives_ra') ? Helper::sanitizeAutonum($request->ra_rate) : null,
+                'receives_ta' => $request->has('receives_ta') ? 1 : null,
+                'ta_rate' =>$request->has('receives_ta') ? Helper::sanitizeAutonum($request->ta_rate) : null,
                 'hazard_prc_tax_rate' => $request->has('receives_hazard_prc') ? $request->hazard_prc_tax_rate : null,
             ]);
         }

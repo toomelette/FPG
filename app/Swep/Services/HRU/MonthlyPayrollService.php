@@ -1001,6 +1001,8 @@ class MonthlyPayrollService
 
         $request = Request::capture();
         $payrollMaster = PayrollMaster::query();
+
+
         $with = [
             'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
                     //Payroll Groups
@@ -1028,8 +1030,24 @@ class MonthlyPayrollService
             ->with($with)
             ->findOrFail($slug);
 
+
+        $rataPayrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees',
+            ])
+            ->where('type','=','RATA')
+            ->where('date','=', $payrollMaster->date)
+            ->first();
+
+        $employeesWithRata = $rataPayrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+            return[
+                $data->employee_slug => $data,
+            ];
+        });
+
         return view('printables.hru.payroll_preparation.MONTHLY.payslip_all')->with([
             'payrollMaster' => $payrollMaster,
+            'employeesWithRata' => $employeesWithRata,
         ]);
     }
 

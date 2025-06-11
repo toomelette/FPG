@@ -590,6 +590,16 @@ class Employee extends Model{
         });
     }
 
+    public function scopeReceivesEitherRaOrTa(Builder $builder)
+    {
+        $builder->whereHas('payrollSettings',function ($payrollSettings){
+            $payrollSettings->where(function ($where){
+                $where->where('receives_ra','=',1)
+                    ->orWhere('receives_ta','=',1);
+            });
+        });
+    }
+
     public function amInToday()
     {
         return $this->hasOne(DTR::class,'user','biometric_user_id')

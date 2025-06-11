@@ -42,6 +42,25 @@
                                     @empty
                                     @endforelse
 
+                                    @if(isset($employeesWithRata[$payrollEmployee->employee_slug]))
+                                        <tr>
+                                            <td style="height: 10px"></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>RA</td>
+                                            <td class="text-right">{{Helper::toNumber($ra = $employeesWithRata[$payrollEmployee->employee_slug]->rata_ra_rate)}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>TA</td>
+                                            <td class="text-right">{{Helper::toNumber($ta = $employeesWithRata[$payrollEmployee->employee_slug]->rata_ta_rate)}}</td>
+                                        </tr>
+                                    @else
+                                        @php
+                                            $ra = 0;
+                                            $ta = 0;
+                                        @endphp
+                                    @endif
                                 </table>
 
                             </td>
@@ -74,7 +93,7 @@
 
                                     <tr>
                                         <td>TOTAL EARNINGS</td>
-                                        <td class="text-right">{{Helper::toNumber($employeeTotalIncentives = $employeeIncentives->sum('amount'))}}</td>
+                                        <td class="text-right">{{Helper::toNumber($employeeTotalIncentives = $employeeIncentives->sum('amount') + $ra + $ta )}}</td>
                                     </tr>
                                     <tr>
                                         <td>TOTAL DEDUCTIONS</td>
@@ -87,14 +106,26 @@
                                     </tr>
 
                                     <tr>
-                                        <td style="height: 90px">15TH</td>
+                                        <td style="height: 60px">15TH</td>
                                         <td class="text-right">{{Helper::toNumber($payrollEmployee->pay15)}}</td>
                                     </tr>
 
                                     <tr>
-                                        <td style="height: 90px">30TH</td>
+                                        <td style="height: 60px">30TH</td>
                                         <td class="text-right">{{Helper::toNumber($payrollEmployee->pay30)}}</td>
                                     </tr>
+                                    @if(isset($employeesWithRata[$payrollEmployee->employee_slug]))
+                                        <tr>
+                                            <td style="height: 60px">RATA</td>
+                                            <td class="text-right">{{Helper::toNumber($ra + $ta)}}</td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                            <td style="height: 60px"></td>
+                                            <td class="text-right"></td>
+                                        </tr>
+                                    @endif
+
                                 </table>
                             </td>
                         </tr>
