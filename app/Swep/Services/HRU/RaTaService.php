@@ -46,11 +46,14 @@ class RaTaService
             ])
             ->findOrFail($payrollMasterSlug);
 
+
         $this->monthlyPayrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
+
 
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
             $totalRata = $payrollMasterEmployee?->employee?->payrollSettings?->ra_rate + $payrollMasterEmployee?->employee?->payrollSettings?->ta_rate;
-            $factor = $this->getFactor($payrollMasterEmployee->rata_actual_days_worked);
+            $actualDaysWorked = $payrollMasterEmployee->rata_actual_days_worked ?? 22;
+            $factor = $this->getFactor($actualDaysWorked);
             $modifiedRata = $totalRata * $factor;
             $deductions = $totalRata - $modifiedRata;
             $upsert[] = [
@@ -58,9 +61,9 @@ class RaTaService
                 'slug' => $payrollMasterEmployee->slug,
                 'rata_ra_rate' => $payrollMasterEmployee?->employee?->payrollSettings?->ra_rate,
                 'rata_ta_rate' => $payrollMasterEmployee?->employee?->payrollSettings?->ta_rate,
-                'rata_actual_days_worked' => $payrollMasterEmployee->rata_actual_days_worked ?? 22,
+                'rata_actual_days_worked' => $actualDaysWorked,
                 'rata_deductions' => $deductions,
-                'rata_net_amount' => $modifiedRata,
+                'rata_net_amount' => $totalRata - $deductions,
             ];
         }
 
