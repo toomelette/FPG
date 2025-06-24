@@ -135,6 +135,7 @@ class HazardPrcService
             return $usedRcsDB->where('rc_code','=',$data->saved_employee_data['resp_center'])->first()->rc;
         });
 
+        $groupedByDept = $groupedByDept->sortKeys();
         return Pdf::view('printables.hru.payroll_preparation.HAZARDPRC.monthly_payroll',[
             'pdfPrint' => true,
             'payrollMaster' => $payrollMasterCopy,
