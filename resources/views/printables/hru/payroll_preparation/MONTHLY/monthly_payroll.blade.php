@@ -552,7 +552,7 @@
 
                     $recapDeductions = $payrollMaster->hmtDetails->where('type','DEDUCTION')->mapWithKeys(function ($data){
                         return [
-                            $data->account_code ?? $data->code.' ---- NO ACCOUNT CODE ASSIGED' => $data,
+                            $data->account_code ?? $data->code.' ---- NO ACCOUNT CODE ASSIGNED' => $data,
                         ];
                     });
                     $recap['debit'] = null;

@@ -982,4 +982,30 @@ Route::get('plantillaClassifications',function (){
     \App\Models\HRU\HrPlantillaClassification::query()->insert($toInsert);
     dd($toInsert);
    dd(1);
+
+
+});
+
+Route::get('/checkBlankDtr',function (){
+    $dateR = '2025-01%';
+    $daily = \App\Models\DailyTimeRecord::query()->where('date','like',$dateR)->get();
+    $dtr = \App\Models\DTR::query()->selectRaw("user, DATE_FORMAT(timestamp, '%Y-%m-%d') as  date")->where('timestamp','like',$dateR)->get();
+
+    foreach ($daily as $dai){
+
+        $count = 0;
+        if($dai->am_in != null){
+            $count++;
+        }
+        if($dai->am_out != null){
+            $count++;
+        }
+        if($dai->pm_in != null){
+            $count++;
+        }
+        if($dai->pm_out != null){
+            $count++;
+        }
+        dd($count);
+    }
 });

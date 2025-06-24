@@ -45,11 +45,15 @@ class PayrollMasterDetails extends Model
         $builder->where('type','=','INCENTIVE');
     }
 
-    public function scopeIntermediateGroup(Builder $builder,$intermediateGroup)
+    public function scopeIntermediateGroup(Builder $builder,$intermediateGroups)
     {
-        $builder->whereHas('employeePayroll',function ($employeePayroll) use ($intermediateGroup){
-            if($intermediateGroup != null){
-                $employeePayroll->where('employee_payroll_type', $intermediateGroup);
+        $builder->whereHas('employeePayroll',function ($employeePayroll) use ($intermediateGroups){
+            if(count($intermediateGroups) > 0){
+                $employeePayroll->where(function ($w) use ($intermediateGroups){
+                    foreach ($intermediateGroups as $intermediateGroup){
+                        $w->orWhere('employee_payroll_type', $intermediateGroup);
+                    }
+                });
             }
         });
     }

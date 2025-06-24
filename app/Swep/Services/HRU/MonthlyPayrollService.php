@@ -761,8 +761,9 @@ class MonthlyPayrollService
                 'payrollMasterEmployees.employee.plantilla',
                 'payrollMasterEmployees.employeePayrollDetails',
                 'hmtDetails' => function ($hmtDetails) use($request){
-                    if($request->has('payroll_group') && $request->payroll_group != ''){
-                        $hmtDetails->intermediateGroup($request->payroll_group);
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $hmtDetails->intermediateGroup($request->payrollGroupsSelected);
                     }
 
                 },
