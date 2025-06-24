@@ -108,9 +108,19 @@ class RaTaService
 
     public function printPayroll($slug)
     {
+        $request = Request::capture();
         $payrollMaster = PayrollMaster::query()
             ->with([
-                'payrollMasterEmployees'
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
+                    }
+                },
             ])
             ->findOrFail($slug);
         $payrollMasterCopy = $payrollMaster;
@@ -125,6 +135,11 @@ class RaTaService
         $groupedByDept = $payrollMaster->payrollMasterEmployees->groupBy(function ($data) use ($usedRcsDB){
             return $usedRcsDB->where('rc_code','=',$data->saved_employee_data['resp_center'])->first()->rc;
         });
+        return view('printables.hru.payroll_preparation.RATA.monthly_payroll')->with([
+            'payrollMaster' => $payrollMasterCopy,
+            'usedRcsDB' => $usedRcsDB,
+            'groupedByDept' => $groupedByDept,
+        ]);
         return Pdf::view('printables.hru.payroll_preparation.RATA.monthly_payroll',[
             'pdfPrint' => true,
             'payrollMaster' => $payrollMasterCopy,
@@ -144,11 +159,7 @@ class RaTaService
                 }
             });
 
-        return view('printables.hru.payroll_preparation.RATA.monthly_payroll')->with([
-            'payrollMaster' => $payrollMasterCopy,
-            'usedRcsDB' => $usedRcsDB,
-            'groupedByDept' => $groupedByDept,
-        ]);
+
     }
 
 }
