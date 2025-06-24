@@ -19,7 +19,7 @@
         </div>
 
         <div style="text-align: left">
-            <h3 class="no-margin text-strong" style="font-size: 18px">PAYROLL ABSTRACT - {{$payrollMaster->project_id == 1 ? 'VISAYAS' : 'LUZ/MIN'}} - {{$pzrayrollMaster->type}}</h3>
+            <h3 class="no-margin text-strong" style="font-size: 18px">PAYROLL ABSTRACT - {{$payrollMaster->project_id == 1 ? 'VISAYAS' : 'LUZ/MIN'}} - {{$payrollMaster->type}}</h3>
             <p class="no-margin ">Payroll Date: <b>{{Helper::dateFormat($payrollMaster->date)}}</b> </p>
             <p class="no-margin ">Payroll Type: <b>{{$payrollMaster->type}}</b> </p>
         </div>

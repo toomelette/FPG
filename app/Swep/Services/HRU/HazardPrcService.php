@@ -168,6 +168,7 @@ class HazardPrcService
                 'payrollMasterEmployees'
             ])
             ->findOrFail($slug);
+
         return Pdf::view('printables.hru.payroll_preparation.HAZARDPRC.abstract',[
             'pdfPrint' => true,
             'payrollMaster' => $payrollMaster,
@@ -183,10 +184,10 @@ class HazardPrcService
                         ->setNpmBinary(env('NODE_BINARY'));
                 }
             });
-
         return view('printables.hru.payroll_preparation.HAZARDPRC.abstract')->with([
             'payrollMaster' => $payrollMaster,
         ]);
+
     }
 
 }
