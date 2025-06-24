@@ -66,6 +66,9 @@ class PayrollPreparationController
                 ->addColumn('details',function($data){
                     
                 })
+                ->editColumn('date',function ($data){
+                    return Carbon::parse($data->date)->format('F Y');
+                })
                 ->escapeColumns([])
                 ->setRowId('slug')
                 ->toJson();
