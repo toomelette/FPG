@@ -6,7 +6,7 @@ use App\Models\HRU\PayrollMaster;
 use App\Models\HRU\PayrollMasterEmployees;
 use App\Models\PPU\PPURespCodes;
 use Illuminate\Http\Request;
-use Spatie\LaravelPdf\Facades\Pdf;g
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class RaTaService
 {
