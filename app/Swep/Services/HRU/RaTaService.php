@@ -129,14 +129,17 @@ class RaTaService
 
         $usedRcsDB = PPURespCodes::query()
             ->whereIn('rc_code',$usedRcs->values())
-            ->with(['description'])
+            ->with(['description','payrollTree'])
             ->get();
 
-        $groupedByDept = $payrollMaster->payrollMasterEmployees->groupBy(function ($data) use ($usedRcsDB){
-            return $usedRcsDB->where('rc_code','=',$data->saved_employee_data['resp_center'])->first()->rc;
-        });
-;
-        $groupedByDept = $groupedByDept->sortKeys();
+        $groupedByDept = $payrollMaster->payrollMasterEmployees
+            ->sortBy(function ($data) use ($usedRcsDB){
+                return $usedRcsDB->where('rc_code','=',$data->saved_employee_data['resp_center'])->first()->payrollTree->sort;
+            })
+            ->groupBy(function ($data) use ($usedRcsDB){
+                return $usedRcsDB->where('rc_code','=',$data->saved_employee_data['resp_center'])->first()->rc;
+            });
+
 
         return Pdf::view('printables.hru.payroll_preparation.RATA.monthly_payroll',[
             'pdfPrint' => true,
@@ -157,12 +160,12 @@ class RaTaService
                 }
             });
 
+
         return view('printables.hru.payroll_preparation.RATA.monthly_payroll')->with([
             'payrollMaster' => $payrollMasterCopy,
             'usedRcsDB' => $usedRcsDB,
             'groupedByDept' => $groupedByDept,
         ]);
-
     }
 
 }

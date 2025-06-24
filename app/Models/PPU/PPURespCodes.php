@@ -5,6 +5,7 @@ namespace App\Models\PPU;
 
 
 use App\Models\Employee;
+use App\Models\HRU\PayrollTree;
 use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
@@ -27,6 +28,11 @@ class  PPURespCodes extends Model
 
     public function employees(){
         return $this->hasMany(Employee::class,'resp_center','rc_code');
+    }
+
+    public function payrollTree()
+    {
+        return $this->hasOne(PayrollTree::class,'resp_center','rc_code');
     }
 
 
