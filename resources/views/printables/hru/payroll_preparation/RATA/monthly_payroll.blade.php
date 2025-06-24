@@ -150,7 +150,7 @@
                                         <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
                                         <p class="no-margin">{{$payrollMaster->project_id == 1 ? 'Bacolod City' : 'Quezon City'}}</p> <br>
 
-                                        <p class="no-margin text-strong">HAZARD ALLOWANCE FOR CHEMIST</p>
+                                        <p class="no-margin text-strong">REPRESENTATION AND TRANSPORTATION ALLOWANCE</p>
                                         <p class="no-margin text-strong">{{Carbon::parse($payrollMaster->date)->format('F Y')}}</p> <br>
                                     </td>
                                 </tr>
