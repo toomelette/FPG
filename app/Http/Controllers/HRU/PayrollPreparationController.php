@@ -769,6 +769,8 @@ class PayrollPreparationController
                 return  $this->hazardPrcService->printPayroll($slug);
             case 'HAZARDPRC-ABSTRACT':
                 return  $this->hazardPrcService->printAbstract($slug);
+            case 'RATA':
+                return $this->rataService->printPayroll($slug);
         }
         abort(503,'CHECK SWITCH CASE STATEMENT');
     }

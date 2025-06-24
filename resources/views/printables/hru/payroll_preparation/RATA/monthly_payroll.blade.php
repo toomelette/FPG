@@ -1,5 +1,6 @@
 @php
     $rand = \Illuminate\Support\Str::random();
+    /** @var \App\Models\HRU\PayrollMaster $payrollMaster **/
 @endphp
 @extends('printables.print_layouts.print_layout_main')
 
@@ -9,781 +10,311 @@
             border: 1px solid black;
         }
     </style>
-<div style="font-family: Cambria">
-    <table style="width: 100%">
-        <tr>
-            <td style="width: 33%;">
-                <p class="no-margin text-strong">GENERAL PAYROLL - REGULAR</p>
-            </td>
-            <td class="text-center">
-                <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
-                <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
-                <p class="no-margin">Quezon City</p>
-            </td>
-            <td style="width: 33%;">
-                STATION:
-                TOTAL EMPLOYEES:
-            </td>
-        </tr>
-    </table>
-    @php
-        $chunkBy = 3;
-        $groupedIncentives= $payrollMaster->hmtDetails
-            ->where('type','INCENTIVE')
-            ->sortBy(function($data){
-                if($data->priority == null){
-                    return 100000;
-                }else{
-                    return $data->priority;
-                }
-            })
-            ->mapWithKeys(function ($data){
-                return [
-                    $data->code => \Illuminate\Support\Str::random(),
-                ];
-            })
-            ->flip()->values();
+    <div style="font-family: Cambria">
 
-        $chunkedIncentives = $groupedIncentives->chunk($chunkBy);
+        <div style="break-after: page">
 
-        // dd($chunkedIncentives);
-        // $groupedDeductions = $payrollMaster->hmtDetails
-        //         ->where('type','DEDUCTION')
-        //         ->sortBy(function($data){
-        //             if($data->priority == null){
-        //                 return 100000;
-        //             }else{
-        //                 return $data->priority;
-        //             }
-        //         })->mapWithKeys(function ($data){
-        //            return [
-        //                $data->code => \Illuminate\Support\Str::random(),
-        //            ];
-        //        })
-        //        ->flip()->values();
-        // $chunkedDeductions = $groupedDeductions->chunk($chunkBy)
+            <table style="width: 100%" class=" tbl-padded">
+                <thead>
+                <tr>
+                    <th style="width: 220px; padding: 0; border: none"></th>
+                    <th style="padding: 0; border: none;"></th>
+                    <th style="padding: 0; border: none;width: 5%"></th>
+                    <th style="padding: 0; border: none;width: 7%"></th>
+                    <th style="padding: 0; border: none;width: 10%"></th>
+                    <th style="padding: 0; border: none;width: 7%"></th>
+                    <th style="padding: 0; border: none;width: 5%"></th>
+                    <th style="padding: 0; border: none;width: 8%"></th>
+                    <th style="padding: 0; border: none;width: 5%"></th>
+                </tr>
 
-        $departments = $tree->mapWithKeys(function ($data){
-                        return [
-                                $data->rc_code => $data->rc_code,
-                        ];
-                    });
-        $totals = [];
-    @endphp
-    <div style="break-after: page">
-        <table style="width: 100%" class="">
-            <thead>
-            <tr>
-                <th>
-                    Name of Employee
-                </th>
-                @foreach($chunkedIncentives as $grp)
-                    <th class="text-center">
-                        @foreach($grp as $index => $incentive)
-                            {{$incentive}}
-                            @if(!$loop->last)
-                                /<br>
-                            @endif
-                        @endforeach
-                    </th>
-                @endforeach
-                {{-- @foreach($chunkedIncentives as $grp)
-                    <th class="text-center">
-                        @foreach($grp as $incentive)
-                            {{$incentive}} / <br>
-                        @endforeach
-                    </th>
-                @endforeach --}}
-                {{-- @foreach($chunkedDeductions as $grp)
-                    <th class="text-center">
-                        @foreach($grp as $deduction)
-                            {{$deduction}} / <br>
-                        @endforeach
-                    </th>
-                @endforeach --}}
-                <th class="text-center">Total RA /  TA</th>
-                {{-- <th class="text-center"></th> --}}
-                <th class="text-center">Signature</th>
-            </tr>
-            </thead>
-            <tbody>
-                {{-- DEPARTMENT LEVEL --}}
-                @foreach($tree as $dept)
+                <tr>
+                    <td colspan="9">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td class="text-center">
+                                    <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
+                                    <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
+                                    <p class="no-margin">{{\App\Swep\Helpers\Get::headerAddress()}}</p> <br>
+
+                                    <p class="no-margin text-strong">REPRESENTATION AND TRANSPORTATION ALLOWANCE</p>
+                                    <p class="no-margin text-strong">{{Carbon::parse($payrollMaster->date)->format('F Y')}}</p> <br>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-center">Name of Employee</th>
+                    <th class="text-center">Position</th>
+                    <th class="text-center">Basic Pay</th>
+                    <th class="text-center">RA</th>
+                    <th class="text-center">TA</th>
+                    <th class="text-center">Actual Days Worked</th>
+                    <th class="text-center">Deductions</th>
+                    <th class="text-center">Net Amount Received</th>
+                    <th class="text-center">Signature</th>
+                </tr>
+                </thead>
+                <tbody>
+                @forelse($groupedByDept as $deptCode => $payrollEmployees)
                     @php
-                        // $totals[$dept->rc_code] = [];
-                        // foreach ($groupedDeductions as $ded) {
-                        //     $totals[$dept->rc_code][$ded] = 0;
-                        // }
-                        foreach ($groupedIncentives as $inc) {
-                            $totals[$dept->rc_code][$inc] = null;
-                        }
-                        $totals[$dept->rc_code]['rata_deduction'] = null;
-                        $totals[$dept->rc_code]['takeHomePay'] = null;
+                        $dept = $usedRcsDB->where('rc','=',$deptCode)?->first();
                     @endphp
                     <tr>
-                        <td class="text-strong">{{$dept->desc}}</td>
+                        <td colspan="9" class="text-strong">{{$dept?->description->name}}</td>
                     </tr>
-                    {{-- FIRST LEVEL EMPLOYEES --}}
-                    @if(isset($payrollEmployeesGroupedByRespCenter[$dept->rc_code]))
-                        @forelse($payrollEmployeesGroupedByRespCenter[$dept->rc_code] as $employee)
-                            <tr>
-                                <td style="vertical-align: top" rowspan="{{$chunkBy + 1}}">
-                                    <span class="text-strong">{{$employee->employee->full_name}}</span>
-                                    <br>
-                                    {{$employee->employee->plantilla->position ?? ''}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
-                                    <br>
-                                    {{$employee->employee->employee_no}}
-                                </td>
-
-                            </tr>
-                            @for($x = 0; $x < $chunkBy ; $x++)
-                                <tr>
-                                    @foreach($chunkedIncentives as $grp)
-                                        <td class="text-right">
-                                            @if(isset($grp->values()[$x]))
-                                                {{Helper::toNumber($amt = $employee->employeePayrollDetails->where('code',$grp->values()[$x])->first()->amount ?? null,2)}}
-                                                @php
-                                                    $totals[$dept->rc_code][$grp->values()[$x]] = $totals[$dept->rc_code][$grp->values()[$x]] + $amt;
-                                                @endphp
-                                            @else
-                                                <br>
-                                            @endif
-                                        </td>
-                                    @endforeach
-                                    {{-- @foreach($chunkedDeductions as $grp)
-                                        <td class="text-right">
-                                            @if(isset($grp->values()[$x]))
-                                                {{Helper::toNumber($amt = $employee->employeePayrollDetails->where('code',$grp->values()[$x])->first()->amount ?? null,2)}}
-                                                @php
-                                                    $totals[$dept->rc_code][$grp->values()[$x]] = $totals[$dept->rc_code][$grp->values()[$x]] + $amt;
-                                                @endphp
-                                            @else
-                                                <br>
-                                            @endif
-                                        </td>
-                                    @endforeach --}}
-                                        @switch($x)
-                                            @case(0)    
-                                                {{-- <td class="text-right">
-                                                    {{\App\Swep\Helpers\Helper::toNumber($employee->pay15)}}
-                                                    @php
-                                                        $totals[$dept->rc_code]['rata_deduction'] = $totals[$dept->rc_code]['rata_deduction'];
-                                                    @endphp
-                                                </td> --}}
-                                                {{-- <td style="padding-left: 7px">RA / TA</td>
-                                                <td>____________________</td> --}}
-                                                @break
-                                            @case(2)
-                                                <td class="text-right">
-                                                    {{\App\Swep\Helpers\Helper::toNumber($employee->totals['takeHomePay'])}}
-                                                    @php
-                                                        $totals[$dept->rc_code]['takeHomePay'] = $totals[$dept->rc_code]['takeHomePay'] + $employee->totals['takeHomePay'];
-                                                    @endphp
-                                                </td>
-                                                {{-- <td style="padding-left: 7px"></td> --}}
-                                                <td class="text-center"> ____________________ </td>
-                                                @break
-                                        @endswitch
-                                </tr>
-                            @endfor
-                            <tr>
-                                <td><br></td>
-                                @foreach($chunkedIncentives as $grp)
-                                    <td class="text-right"></td>
-                                @endforeach
-                                {{-- @foreach($chunkedDeductions as $grp)
-                                    <td class="text-right"></td>
-                                @endforeach --}}
-                            </tr>
-                        @empty
-                        @endforelse
-                    @endif
-                    {{-- END FIRST LEVEL EMPLOYEES --}}
-
-                    {{-- SECOND LEVEL --}}
-                    @if($dept->children->count() > 0)
-                        @foreach($dept->children as $secondLevel)
-                            @php
-                                $totals[$secondLevel->rc_code] = [];
-                                foreach ($groupedDeductions as $ded) {
-                                    $totals[$secondLevel->rc_code][$ded] = 0;
-                                }
-                                foreach ($groupedIncentives as $inc) {
-                                    $totals[$secondLevel->rc_code][$inc] = null;
-                                }
-                                $totals[$secondLevel->rc_code]['pay15'] = null;
-                                $totals[$secondLevel->rc_code]['pay30'] = null;
-                                $totals[$secondLevel->rc_code]['takeHomePay'] = null;
-                            @endphp
-
-                            <tr>
-                                <td class="text-strong" style="padding-left: 10px">{{$secondLevel->desc}}</td>
-                            </tr>
-
-                            {{--SECOND LEVEL EMPLOYEES--}}
-                            @if(isset($payrollEmployeesGroupedByRespCenter[$secondLevel->rc_code]))
-                                @forelse($payrollEmployeesGroupedByRespCenter[$secondLevel->rc_code] as $employee)
-                                    <tr>
-                                        <td style="vertical-align: top" rowspan="{{$chunkBy + 1}}">
-                                            <span class="text-strong">{{$employee->employee->full_name}}</span>
-                                            <br>
-                                            {{$employee->employee->plantilla->position ?? ''}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
-                                            <br>
-                                            {{$employee->employee->employee_no}}
-                                        </td>
-
-                                    </tr>
-                                    @for($x = 0; $x < $chunkBy ; $x++)
-                                        <tr>
-                                            @foreach($chunkedIncentives as $grp)
-                                                <td class="text-right">
-                                                    @if(isset($grp->values()[$x]))
-                                                        {{Helper::toNumber($amt = $employee->employeePayrollDetails->where('code',$grp->values()[$x])->first()->amount ?? null,2)}}
-                                                        @php
-                                                            $totals[$secondLevel->rc_code][$grp->values()[$x]] = $totals[$secondLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                            $totals[$dept->rc_code][$grp->values()[$x]] = $totals[$dept->rc_code][$grp->values()[$x]] + $amt;
-                                                        @endphp
-                                                    @else
-                                                        <br>
-                                                    @endif
-                                                </td>
-                                            @endforeach
-                                            @foreach($chunkedDeductions as $grp)
-                                                <td class="text-right">
-                                                    @if(isset($grp->values()[$x]))
-                                                        {{Helper::toNumber($amt = $employee->employeePayrollDetails->where('code',$grp->values()[$x])->first()->amount ?? null,2)}}
-                                                        @php
-                                                            $totals[$secondLevel->rc_code][$grp->values()[$x]] = $totals[$secondLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                            $totals[$dept->rc_code][$grp->values()[$x]] = $totals[$dept->rc_code][$grp->values()[$x]] + $amt;
-                                                        @endphp
-                                                    @else
-                                                        <br>
-                                                    @endif
-                                                </td>
-                                            @endforeach
-                                            @switch($x)
-                                                @case(0)
-                                                    <td class="text-right">
-                                                        {{\App\Swep\Helpers\Helper::toNumber($employee->pay15)}}
-                                                        @php
-                                                            $totals[$secondLevel->rc_code]['pay15'] = $totals[$secondLevel->rc_code]['pay15'] + $employee->pay15;
-                                                        @endphp
-                                                    </td>
-                                                    <td style="padding-left: 7px">RA / TA</td>
-                                                    <td>____________________</td>
-                                                    @break
-                                                @case(1)
-                                                    <td class="text-right">
-                                                        {{\App\Swep\Helpers\Helper::toNumber($employee->pay30)}}
-                                                        @php
-                                                            $totals[$secondLevel->rc_code]['pay30'] = $totals[$secondLevel->rc_code]['pay30'] + $employee->pay30;
-                                                        @endphp
-                                                    </td>
-                                                    <td style="padding-left: 7px">30TH</td>
-                                                    <td>____________________</td>
-                                                    @break
-                                                @case(2)
-                                                    <td class="text-right">
-                                                        {{\App\Swep\Helpers\Helper::toNumber($employee->totals['takeHomePay'])}}
-                                                        @php
-                                                            $totals[$secondLevel->rc_code]['takeHomePay'] = $totals[$secondLevel->rc_code]['takeHomePay'] + $employee->totals['takeHomePay'];
-                                                        @endphp
-                                                    </td>
-                                                    <td style="padding-left: 7px">TOTAL</td>
-                                                    <td>____________________ </td>
-                                                    @break
-                                            @endswitch
-                                        </tr>
-                                    @endfor
-                                    <tr>
-                                        <td><br></td>
-                                        @foreach($chunkedIncentives as $grp)
-                                            <td class="text-right"></td>
-                                        @endforeach
-                                        @foreach($chunkedDeductions as $grp)
-                                            <td class="text-right"></td>
-                                        @endforeach
-                                    </tr>
-                                @empty
-                                @endforelse
-                            @endif
-                            {{-- END SECOND LEVEL EMPLOYEES --}}
-
-                            {{-- THIRD LEVEL --}}
-                            @if($secondLevel->children->count() > 0)
-                                @foreach($secondLevel->children as $thirdLevel)
-                                    @php
-                                        $totals[$thirdLevel->rc_code] = [];
-                                        foreach ($groupedDeductions as $ded) {
-                                            $totals[$thirdLevel->rc_code][$ded] = 0;
-                                        }
-                                        foreach ($groupedIncentives as $inc) {
-                                            $totals[$thirdLevel->rc_code][$inc] = null;
-                                        }
-                                        $totals[$thirdLevel->rc_code]['pay15'] = null;
-                                        $totals[$thirdLevel->rc_code]['pay30'] = null;
-                                        $totals[$thirdLevel->rc_code]['takeHomePay'] = null;
-                                    @endphp
-
-                                    <tr>
-                                        <td class="text-strong" style="padding-left: 20px">{{$thirdLevel->desc}}</td>
-                                    </tr>
-
-                                    {{-- THIRD LEVEL EMPLOYEES --}}
-                                    @if(isset($payrollEmployeesGroupedByRespCenter[$thirdLevel->rc_code]))
-                                        @forelse($payrollEmployeesGroupedByRespCenter[$thirdLevel->rc_code] as $employee)
-                                            <tr>
-                                                <td style="vertical-align: top" rowspan="{{$chunkBy + 1}}">
-                                                    <span class="text-strong">{{$employee->employee->full_name}}</span>
-                                                    <br>
-                                                    {{$employee->employee->plantilla->position ?? ''}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
-                                                    <br>
-                                                    {{$employee->employee->employee_no}}
-                                                </td>
-
-                                            </tr>
-                                            @for($x = 0; $x < $chunkBy ; $x++)
-                                                <tr>
-                                                    @foreach($chunkedIncentives as $grp)
-                                                        <td class="text-right">
-                                                            @if(isset($grp->values()[$x]))
-                                                                {{Helper::toNumber($amt = $employee->employeePayrollDetails->where('code',$grp->values()[$x])->first()->amount ?? null,2)}}
-                                                                @php
-                                                                    $totals[$thirdLevel->rc_code][$grp->values()[$x]] = $totals[$thirdLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                                    $totals[$secondLevel->rc_code][$grp->values()[$x]] = $totals[$secondLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                                    $totals[$dept->rc_code][$grp->values()[$x]] = $totals[$dept->rc_code][$grp->values()[$x]] + $amt;
-                                                                @endphp
-                                                            @else
-                                                                <br>
-                                                            @endif
-                                                        </td>
-                                                    @endforeach
-                                                    @foreach($chunkedDeductions as $grp)
-                                                        <td class="text-right">
-                                                            @if(isset($grp->values()[$x]))
-                                                                {{Helper::toNumber($amt = $employee->employeePayrollDetails->where('code',$grp->values()[$x])->first()->amount ?? null,2)}}
-                                                                @php
-                                                                    $totals[$thirdLevel->rc_code][$grp->values()[$x]] = $totals[$thirdLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                                    $totals[$secondLevel->rc_code][$grp->values()[$x]] = $totals[$secondLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                                    $totals[$dept->rc_code][$grp->values()[$x]] = $totals[$dept->rc_code][$grp->values()[$x]] + $amt;
-                                                                @endphp
-                                                            @else
-                                                                <br>
-                                                            @endif
-                                                        </td>
-                                                    @endforeach
-                                                    @switch($x)
-                                                        @case(0)
-                                                            <td class="text-right">
-                                                                {{\App\Swep\Helpers\Helper::toNumber($employee->pay15)}}
-                                                                @php
-                                                                    $totals[$thirdLevel->rc_code]['pay15'] = $totals[$thirdLevel->rc_code]['pay15'] + $employee->pay15;
-                                                                @endphp
-                                                            </td>
-                                                            <td style="padding-left: 7px">15TH</td>
-                                                            <td>____________________</td>
-                                                            @break
-                                                        @case(1)
-                                                            <td class="text-right">
-                                                                {{\App\Swep\Helpers\Helper::toNumber($employee->pay30)}}
-                                                                @php
-                                                                    $totals[$thirdLevel->rc_code]['pay30'] = $totals[$thirdLevel->rc_code]['pay30'] + $employee->pay30;
-                                                                @endphp
-                                                            </td>
-                                                            <td style="padding-left: 7px">30TH</td>
-                                                            <td>____________________</td>
-                                                            @break
-                                                        @case(2)
-                                                            <td class="text-right">
-                                                                {{\App\Swep\Helpers\Helper::toNumber($employee->totals['takeHomePay'])}}
-                                                                @php
-                                                                    $totals[$thirdLevel->rc_code]['takeHomePay'] = $totals[$thirdLevel->rc_code]['takeHomePay'] + $employee->totals['takeHomePay'];
-                                                                @endphp
-                                                            </td>
-                                                            <td style="padding-left: 7px">TOTAL</td>
-                                                            <td>____________________ </td>
-                                                            @break
-                                                    @endswitch
-                                                </tr>
-                                            @endfor
-                                            <tr>
-                                                <td><br></td>
-                                                @foreach($chunkedIncentives as $grp)
-                                                    <td class="text-right"></td>
-                                                @endforeach
-                                                @foreach($chunkedDeductions as $grp)
-                                                    <td class="text-right"></td>
-                                                @endforeach
-                                            </tr>
-                                        @empty
-                                        @endforelse
-                                    @endif
-                                    {{-- END THIRD LEVEL EMPLOYEES --}}
-
-
-                                    {{-- FOURTH LEVEL --}}
-                                    @if($thirdLevel->children->count() > 0)
-                                        @foreach($thirdLevel->children as $fourthLevel)
-                                            @php
-                                                $totals[$fourthLevel->rc_code] = [];
-                                                foreach ($groupedDeductions as $ded) {
-                                                    $totals[$fourthLevel->rc_code][$ded] = 0;
-                                                }
-                                                foreach ($groupedIncentives as $inc) {
-                                                    $totals[$fourthLevel->rc_code][$inc] = null;
-                                                }
-                                                $totals[$fourthLevel->rc_code]['pay15'] = null;
-                                                $totals[$fourthLevel->rc_code]['pay30'] = null;
-                                                $totals[$fourthLevel->rc_code]['takeHomePay'] = null;
-                                            @endphp
-
-                                            <tr>
-                                                <td class="text-strong" style="padding-left: 30px">{{$fourthLevel->desc}}</td>
-                                            </tr>
-
-                                            {{-- FOURTH LEVEL EMPLOYEES --}}
-                                            @if(isset($payrollEmployeesGroupedByRespCenter[$fourthLevel->rc_code]))
-                                                @forelse($payrollEmployeesGroupedByRespCenter[$fourthLevel->rc_code] as $employee)
-                                                    <tr>
-                                                        <td style="vertical-align: top" rowspan="{{$chunkBy + 1}}">
-                                                            <span class="text-strong">{{$employee->employee->full_name}}</span>
-                                                            <br>
-                                                            {{$employee->employee->plantilla->position ?? ''}} | {{$employee->employee->salary_grade}},{{$employee->employee->step_inc}}
-                                                            <br>
-                                                            {{$employee->employee->employee_no}}
-                                                        </td>
-
-                                                    </tr>
-                                                    @for($x = 0; $x < $chunkBy ; $x++)
-                                                        <tr>
-                                                            @foreach($chunkedIncentives as $grp)
-                                                                <td class="text-right">
-                                                                    @if(isset($grp->values()[$x]))
-                                                                        {{Helper::toNumber($amt = $employee->employeePayrollDetails->where('code',$grp->values()[$x])->first()->amount ?? null,2)}}
-                                                                        @php
-                                                                            $totals[$fourthLevel->rc_code][$grp->values()[$x]] = $totals[$fourthLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                                            $totals[$thirdLevel->rc_code][$grp->values()[$x]] = $totals[$thirdLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                                            $totals[$secondLevel->rc_code][$grp->values()[$x]] = $totals[$secondLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                                            $totals[$dept->rc_code][$grp->values()[$x]] = $totals[$dept->rc_code][$grp->values()[$x]] + $amt;
-                                                                        @endphp
-                                                                    @else
-                                                                        <br>
-                                                                    @endif
-                                                                </td>
-                                                            @endforeach
-                                                            @foreach($chunkedDeductions as $grp)
-                                                                <td class="text-right">
-                                                                    @if(isset($grp->values()[$x]))
-                                                                        {{Helper::toNumber($amt = $employee->employeePayrollDetails->where('code',$grp->values()[$x])->first()->amount ?? null,2)}}
-                                                                        @php
-                                                                            $totals[$fourthLevel->rc_code][$grp->values()[$x]] = $totals[$fourthLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                                            $totals[$thirdLevel->rc_code][$grp->values()[$x]] = $totals[$thirdLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                                            $totals[$secondLevel->rc_code][$grp->values()[$x]] = $totals[$secondLevel->rc_code][$grp->values()[$x]] + $amt;
-                                                                            $totals[$dept->rc_code][$grp->values()[$x]] = $totals[$dept->rc_code][$grp->values()[$x]] + $amt;
-                                                                        @endphp
-                                                                    @else
-                                                                        <br>
-                                                                    @endif
-                                                                </td>
-                                                            @endforeach
-                                                            @switch($x)
-                                                                @case(0)
-                                                                    <td class="text-right">
-                                                                        {{\App\Swep\Helpers\Helper::toNumber($employee->pay15)}}
-                                                                        @php
-                                                                            $totals[$fourthLevel->rc_code]['pay15'] = $totals[$fourthLevel->rc_code]['pay15'] + $employee->pay15;
-                                                                        @endphp
-                                                                    </td>
-                                                                    <td style="padding-left: 7px">15TH</td>
-                                                                    <td>____________________</td>
-                                                                    @break
-                                                                @case(1)
-                                                                    <td class="text-right">
-                                                                        {{\App\Swep\Helpers\Helper::toNumber($employee->pay30)}}
-                                                                        @php
-                                                                            $totals[$fourthLevel->rc_code]['pay30'] = $totals[$fourthLevel->rc_code]['pay30'] + $employee->pay30;
-                                                                        @endphp
-                                                                    </td>
-                                                                    <td style="padding-left: 7px">30TH</td>
-                                                                    <td>____________________</td>
-                                                                    @break
-                                                                @case(2)
-                                                                    <td class="text-right">
-                                                                        {{\App\Swep\Helpers\Helper::toNumber($employee->totals['takeHomePay'])}}
-                                                                        @php
-                                                                            $totals[$fourthLevel->rc_code]['takeHomePay'] = $totals[$fourthLevel->rc_code]['takeHomePay'] + $employee->totals['takeHomePay'];
-                                                                        @endphp
-                                                                    </td>
-                                                                    <td style="padding-left: 7px">TOTAL</td>
-                                                                    <td>____________________ </td>
-                                                                    @break
-                                                            @endswitch
-                                                        </tr>
-                                                    @endfor
-                                                    <tr>
-                                                        <td><br></td>
-                                                        @foreach($chunkedIncentives as $grp)
-                                                            <td class="text-right"></td>
-                                                        @endforeach
-                                                        @foreach($chunkedDeductions as $grp)
-                                                            <td class="text-right"></td>
-                                                        @endforeach
-                                                    </tr>
-                                                @empty
-                                                @endforelse
-                                            @endif
-                                            {{-- END FOURTH LEVEL EMPLOYEES --}}
-
-
-
-                                            {{-- FOURTH LEVEL TOTALS --}}
-                                            <tr>
-                                                <td style="vertical-align: top; padding-left: 30px" rowspan="{{$chunkBy + 1}}" class="b-top">
-                                                    TOTAL {{$fourthLevel->desc}}
-                                                </td>
-                                            </tr>
-                                            @for($x = 0; $x < $chunkBy ; $x++)
-                                                <tr>
-                                                    @foreach($chunkedIncentives as $grp)
-                                                        <td class="text-right {{$x==0?'b-top':''}}">
-                                                            @if(isset($grp->values()[$x]))
-                                                                {{Helper::toNumber($totals[$fourthLevel->rc_code][$grp->values()[$x]] ?? null,2)}}
-                                                            @else
-                                                                <br>
-                                                            @endif
-                                                        </td>
-                                                    @endforeach
-                                                    @foreach($chunkedDeductions as $grp)
-                                                        <td class="text-right {{$x==0?'b-top':''}}">
-                                                            @if(isset($grp->values()[$x]))
-                                                                {{Helper::toNumber($totals[$fourthLevel->rc_code][$grp->values()[$x]] ?? null,2)}}
-                                                            @else
-                                                                <br>
-                                                            @endif
-                                                        </td>
-                                                    @endforeach
-                                                    @switch($x)
-                                                        @case(0)
-                                                            <td class="text-right b-top">
-                                                                {{\App\Swep\Helpers\Helper::toNumber($totals[$fourthLevel->rc_code]['pay15'])}}
-                                                            </td>
-                                                            <td style="padding-left: 7px" class="b-top">15TH</td>
-                                                            <td class="b-top"></td>
-                                                            @break
-                                                        @case(1)
-                                                            <td class="text-right">
-                                                                {{\App\Swep\Helpers\Helper::toNumber($totals[$fourthLevel->rc_code]['pay30'])}}
-                                                            </td>
-                                                            <td style="padding-left: 7px">30TH</td>
-                                                            <td></td>
-                                                            @break
-                                                        @case(2)
-                                                            <td class="text-right">
-                                                                {{\App\Swep\Helpers\Helper::toNumber($totals[$fourthLevel->rc_code]['takeHomePay'])}}
-                                                            </td>
-                                                            <td style="padding-left: 7px">TOTAL</td>
-                                                            <td> </td>
-                                                            @break
-                                                    @endswitch
-                                                </tr>
-                                            @endfor
-                                            {{-- END FOURTH LEVEL TOTALS --}}
-
-
-                                        @endforeach
-                                    @endif
-                                    {{-- END FOURTH LEVEL --}}
-
-
-                                    {{-- THIRD LEVEL TOTALS --}}
-                                    <tr>
-                                        <td style="vertical-align: top; padding-left: 20px" rowspan="{{$chunkBy + 1}}" class="b-top">
-                                            TOTAL {{$thirdLevel->desc}}
-                                        </td>
-                                    </tr>
-                                    @for($x = 0; $x < $chunkBy ; $x++)
-                                        <tr>
-                                            @foreach($chunkedIncentives as $grp)
-                                                <td class="text-right {{$x==0?'b-top':''}}">
-                                                    @if(isset($grp->values()[$x]))
-                                                        {{Helper::toNumber($totals[$thirdLevel->rc_code][$grp->values()[$x]] ?? null,2)}}
-                                                    @else
-                                                        <br>
-                                                    @endif
-                                                </td>
-                                            @endforeach
-                                            @foreach($chunkedDeductions as $grp)
-                                                <td class="text-right {{$x==0?'b-top':''}}">
-                                                    @if(isset($grp->values()[$x]))
-                                                        {{Helper::toNumber($totals[$thirdLevel->rc_code][$grp->values()[$x]] ?? null,2)}}
-                                                    @else
-                                                        <br>
-                                                    @endif
-                                                </td>
-                                            @endforeach
-                                            @switch($x)
-                                                @case(0)
-                                                    <td class="text-right b-top">
-                                                        {{\App\Swep\Helpers\Helper::toNumber($totals[$thirdLevel->rc_code]['pay15'])}}
-                                                    </td>
-                                                    <td style="padding-left: 7px" class="b-top">15TH</td>
-                                                    <td class="b-top"></td>
-                                                    @break
-                                                @case(1)
-                                                    <td class="text-right">
-                                                        {{\App\Swep\Helpers\Helper::toNumber($totals[$thirdLevel->rc_code]['pay30'])}}
-                                                    </td>
-                                                    <td style="padding-left: 7px">30TH</td>
-                                                    <td></td>
-                                                    @break
-                                                @case(2)
-                                                    <td class="text-right">
-                                                        {{\App\Swep\Helpers\Helper::toNumber($totals[$thirdLevel->rc_code]['takeHomePay'])}}
-                                                    </td>
-                                                    <td style="padding-left: 7px">TOTAL</td>
-                                                    <td> </td>
-                                                    @break
-                                            @endswitch
-                                        </tr>
-                                    @endfor
-                                    {{-- END THIRD LEVEL TOTALS --}}
-
-
-                                @endforeach
-                            @endif
-                            {{-- END THIRD LEVEL --}}
-
-                            {{-- SECOND LEVEL TOTALS --}}
-                            <tr>
-                                <td style="vertical-align: top; padding-left: 10px" rowspan="{{$chunkBy + 1}}" class="b-top">
-                                    TOTAL {{$secondLevel->desc}}
-                                </td>
-                            </tr>
-                            @for($x = 0; $x < $chunkBy ; $x++)
-                                <tr>
-                                    @foreach($chunkedIncentives as $grp)
-                                        <td class="text-right {{$x==0?'b-top':''}}">
-                                            @if(isset($grp->values()[$x]))
-                                                {{Helper::toNumber($totals[$secondLevel->rc_code][$grp->values()[$x]] ?? null,2)}}
-                                            @else
-                                                <br>
-                                            @endif
-                                        </td>
-                                    @endforeach
-                                    @foreach($chunkedDeductions as $grp)
-                                        <td class="text-right {{$x==0?'b-top':''}}">
-                                            @if(isset($grp->values()[$x]))
-                                                {{Helper::toNumber($totals[$secondLevel->rc_code][$grp->values()[$x]] ?? null,2)}}
-                                            @else
-                                                <br>
-                                            @endif
-                                        </td>
-                                    @endforeach
-                                    @switch($x)
-                                        @case(0)
-                                            <td class="text-right b-top">
-                                                {{\App\Swep\Helpers\Helper::toNumber($totals[$secondLevel->rc_code]['pay15'])}}
-                                            </td>
-                                            <td style="padding-left: 7px" class="b-top">15TH</td>
-                                            <td class="b-top"></td>
-                                            @break
-                                        @case(1)
-                                            <td class="text-right">
-                                                {{\App\Swep\Helpers\Helper::toNumber($totals[$secondLevel->rc_code]['pay30'])}}
-                                            </td>
-                                            <td style="padding-left: 7px">30TH</td>
-                                            <td></td>
-                                            @break
-                                        @case(2)
-                                            <td class="text-right">
-                                                {{\App\Swep\Helpers\Helper::toNumber($totals[$secondLevel->rc_code]['takeHomePay'])}}
-                                            </td>
-                                            <td style="padding-left: 7px">TOTAL</td>
-                                            <td> </td>
-                                            @break
-                                    @endswitch
-                                </tr>
-                            @endfor
-                            {{-- END SECOND LEVEL TOTALS --}}
-
-
-                        @endforeach
-                    @endif
-                    {{-- END SECOND LEVEL --}}
-
-                    {{-- FIRST LEVEL TOTALS --}}
+                    @forelse($payrollEmployees as $payrollEmployee)
+                        <tr>
+                            <td class="indent">{{$payrollEmployee->saved_employee_data['full_name'] ?? null}}</td>
+                            <td class="indent">{{$payrollEmployee->saved_employee_data['position'] ?? null}}</td>
+                            <td class="indent text-right">{{Helper::toNumber($payrollEmployee->saved_employee_data['monthly_basic'] ?? null)}}</td>
+                            <td class="indent text-right">{{Helper::toNumber($payrollEmployee->rata_ra_rate)}}</td>
+                            <td class="indent text-right">{{Helper::toNumber($payrollEmployee->rata_ta_rate)}}</td>
+                            <td class="indent text-right">{{Helper::toNumber(Helper::toNumber($payrollEmployee->rata_actual_days_worked),3)}}</td>
+                            <td class="indent text-right">{{Helper::toNumber($payrollEmployee->rata_deductions,2,'0.00')}}</td>
+                            <td class="indent text-right">{{Helper::toNumber($payrollEmployee->rata_net_amount)}}</td>
+                            <td>_________________________</td>
+                        </tr>
+                    @empty
+                    @endforelse
                     <tr>
-                        <td style="vertical-align: top" rowspan="{{$chunkBy + 1}}" class="b-top">
-                            TOTAL {{$dept->desc}}
+                        <td colspan="2" class="text-strong b-top">TOTAL {{$dept?->description->name}}</td>
+                        <td class="text-right text-strong b-top">
+                            {{Helper::toNumber($payrollEmployees->sum(function ($payrollEmployee){
+                                return $payrollEmployee->saved_employee_data['monthly_basic'];
+                            }))}}
+                        </td>
+                        <td class="text-right text-strong b-top">
+                            {{Helper::toNumber($payrollEmployees->sum('rata_ra_rate'))}}
+                        </td>
+                        <td class="text-right text-strong b-top">
+                            {{Helper::toNumber($payrollEmployees->sum('rata_ta_rate'))}}
+                        </td>
+                        <td class="text-right text-strong b-top">
+
+                        </td>
+                        <td class="text-right text-strong b-top">
+                            {{Helper::toNumber($payrollEmployees->sum('rata_deductions'),2,'0.00')}}
+                        </td>
+                        <td class="text-right text-strong b-top">
+                            {{Helper::toNumber($payrollEmployees->sum('rata_net_amount'))}}
                         </td>
                     </tr>
-                    @for($x = 0; $x < $chunkBy ; $x++)
-                        <tr>
-                            @foreach($chunkedIncentives as $grp)
-                                <td class="text-right {{$x==0?'b-top':''}}">
-                                    @if(isset($grp->values()[$x]))
-                                        {{Helper::toNumber($totals[$dept->rc_code][$grp->values()[$x]] ?? null,2)}}
-                                    @else
-                                        <br>
-                                    @endif
-                                </td>
-                            @endforeach
-                            {{-- @foreach($chunkedDeductions as $grp)
-                                <td class="text-right {{$x==0?'b-top':''}}">
-                                    @if(isset($grp->values()[$x]))
-                                        {{Helper::toNumber($totals[$dept->rc_code][$grp->values()[$x]] ?? null,2)}}
-                                    @else
-                                        <br>
-                                    @endif
-                                </td>
-                            @endforeach --}}
-                            @switch($x)
-                                @case(0)
-                                    {{-- <td class="text-right b-top">
-                                        {{\App\Swep\Helpers\Helper::toNumber($totals[$dept->rc_code]['rata_deduction'])}}
-                                    </td> --}}
-                                    <td style="padding-left: 7px" class="b-top">&nbsp;</td>
-                                    <td class="b-top"></td>
-                                    @break
-                                @case(2)
-                                    <td class="text-right">
-                                        <strong>
-                                            {{\App\Swep\Helpers\Helper::toNumber($totals[$dept->rc_code]['takeHomePay'])}}
-                                        </strong>
+                @empty
+                @endforelse
+                <tr>
+                    <td colspan="9"><br></td>
+                </tr>
+                <tr>
+                    <td class="text-strong b-top" colspan="2">GRAND TOTAL</td>
+
+                    <td class="text-right text-strong b-top">
+                        {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum(function ($payrollEmployee){
+                            return $payrollEmployee->saved_employee_data['monthly_basic'];
+                        }))}}
+                    </td>
+                    <td class="text-right text-strong b-top">
+                        {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('rata_ra_rate'))}}
+                    </td>
+                    <td class="text-right text-strong b-top">
+                        {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('rata_ta_rate'))}}
+                    </td>
+                    <td class="text-right text-strong b-top">
+
+                    </td>
+                    <td class="text-right text-strong b-top">
+                        {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('rata_deductions'),2,'0.00')}}
+                    </td>
+                    <td class="text-right text-strong b-top">
+                        {{Helper::toNumber($grandTotal = $payrollMaster->payrollMasterEmployees->sum('rata_net_amount'))}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+
+
+
+
+
+
+            <div style="break-before: page">
+                <table style="width: 100%;">
+                    <tr>
+                        <td colspan="9">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td class="text-center">
+                                        <p class="no-margin">REPUBLIC OF THE PHILIPPINES</p>
+                                        <p class="no-margin text-strong">SUGAR REGULATORY ADMINISTRATION</p>
+                                        <p class="no-margin">{{$payrollMaster->project_id == 1 ? 'Bacolod City' : 'Quezon City'}}</p> <br>
+
+                                        <p class="no-margin text-strong">HAZARD ALLOWANCE FOR CHEMIST</p>
+                                        <p class="no-margin text-strong">{{Carbon::parse($payrollMaster->date)->format('F Y')}}</p> <br>
                                     </td>
-                                    {{-- <td style="padding-left: 7px">&nbsp;</td>
-                                    <td style="break-after: page"> </td> --}}
-                                    @break
-                            @endswitch
-                        </tr>
-                    @endfor
-                    {{-- END FIRST LEVEL TOTALS --}}
-                @endforeach
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <br><br>
+                <table style="width: 100%;">
+                    <tbody>
+                    <tr>
+                        <td style="width: 50%" class="b-top b-left b-right">
+                            <table style="width: 90%; margin: 5%">
+                                <tr>
+                                    <td class="b-side b-tb text-center" style="font-size: 20px; width: 50px; height: 50px">A</td>
+                                    <td style="padding-left: 10px" class="text-strong">
+                                        CERTIFIED: Services duly rendered as stated.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td style="height: 100px" class="text-center text-bottom">
+                                        <p class="no-margin text-strong">{{$payrollMaster->a_name}}</p>
+                                        <p class="no-margin">{{$payrollMaster->a_position}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="b-top text-center">
+                                        Authorized Official
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="b-top b-right">
 
-            </tbody>
-        </table>
+                            <table style="width: 90%; margin: 5%">
+                                <tr>
+                                    <td class="b-side b-tb text-center" style="font-size: 20px; width: 50px; height: 50px">C</td>
+                                    <td style="padding-left: 10px" class="text-strong">
+                                        APPROVED FOR PAYMENT:
+                                        <u>
+                                            {{strtoupper(\Illuminate\Support\Number::spell(floor($grandTotal)))}} PESOS
+                                            @if($grandTotal - floor($grandTotal) != 0)
+                                                AND {{strtoupper(\Illuminate\Support\Number::spell(round($grandTotal - floor($grandTotal), 2) * 100))}} CENTAVOS
+                                            @endif
+                                            ONLY
+                                        </u>
+                                        (₱ {{Helper::toNumber($grandTotal)}})
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td style="height: 100px" class="text-center text-bottom">
+                                        <p class="no-margin text-strong">{{$payrollMaster->c_name}}</p>
+                                        <p class="no-margin">{{$payrollMaster->c_position}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="b-top text-center">
+                                        Head of the Agency/Authorized Representative
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="b-top b-left b-right b-bottom">
+                            <table style="width: 90%; margin: 5%">
+                                <tr>
+                                    <td class="b-side b-tb text-center" style="font-size: 20px; width: 50px; height: 50px">B</td>
+                                    <td style="padding-left: 10px" class="text-strong">
+                                        CERTIFIED: Supporting documents complete; and cash
+                                        available in the amount of ₱{{Helper::toNumber($grandTotal)}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td style="height: 100px" class="text-center text-bottom">
+                                        <p class="no-margin text-strong">{{$payrollMaster->b_name}}</p>
+                                        <p class="no-margin">{{$payrollMaster->b_position}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="b-top text-center">
+                                        Head, Accounting Unit
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <td class="b-top b-right b-bottom">
+                            <table style="width: 90%; margin: 5%">
+                                <tr>
+                                    <td class="b-side b-tb text-center" style="font-size: 20px; width: 50px; height: 50px">D</td>
+                                    <td style="padding-left: 10px; width: 70%; ; padding-right: 10px" class="text-strong">
+                                        CERTIFIED: Each employee whose name appears above has been
+                                        paid the amount indicated opposite his/her name,
+                                    </td>
+                                    <td class="b-left" style="padding-left: 10px"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td style="height: 100px; padding-right: 10px" class="text-center text-bottom">
+                                        <table style="width: 100%">
+                                            <tr>
+                                                <td style="width: 65%;">
+                                                    <p class="no-margin text-strong text-center">{{$payrollMaster->d_name}}</p>
+                                                    <p class="no-margin text-center">{{$payrollMaster->d_position}}</p>
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="b-top text-center">
+                                                    Disbursing Officer
+                                                </td>
+                                                <td class="b-top text-center">
+                                                    Date
+                                                </td>
+                                            </tr>
+                                        </table>
 
 
-</div>
+                                    </td>
+                                    <td class="b-left" style="padding-left: 10px">
+                                        JEV NO. ____________ <br>
+                                        DATE _______________
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="text-center"></td>
+                                    <td class="b-left" style="padding-left: 10px"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-@endsection
+        </div>
 
-@section('scripts')
+        @endsection
 
-<script type="text/javascript">
-
-    $(document).ready(function () {
-        let set = 625;
-        if ($("#items_table_{{$rand}}").height() < set) {
-            let rem = set - $("#items_table_{{$rand}}").height();
-            $("#adjuster").css('height', rem)
-            print();
-        }
-    })
-    window.onafterprint = function () {
-        window.close();
-    }
-
-</script>
-
+        @section('scripts')
+            <script type="text/javascript">
+                print();
+                $(document).ready(function () {
+                    let set = 625;
+                    if ($("#items_table_{{$rand}}").height() < set) {
+                        let rem = set - $("#items_table_{{$rand}}").height();
+                        $("#adjuster").css('height', rem)
+                        // print();
+                    }
+                })
+                window.onafterprint = function () {
+                    // window.close();
+                }
+            </script>
 @endsection
