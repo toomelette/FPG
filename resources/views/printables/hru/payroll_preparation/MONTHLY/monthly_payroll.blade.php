@@ -82,7 +82,7 @@
                         <table style="width: 100%;">
                             <tr>
                                 <td style="width: 20%;">
-                                    <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
+                                    <p class="no-margin text-strong">GENERAL PAYROLL - {{implode(', ',\Request::get('payrollGroupsSelected'))}}</p>
                                     <p>PAY PERIOD: {{Carbon::parse($payrollMaster->date)->format('F Y')}}</p>
                                 </td>
                                 <td class="text-center">
@@ -407,7 +407,7 @@
                         <table style="width: 100%;">
                             <tr>
                                 <td style="width: 20%;">
-                                    <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
+                                    <p class="no-margin text-strong">GENERAL PAYROLL - {{implode(', ',\Request::get('payrollGroupsSelected'))}}</p>
                                     <p>PAY PERIOD: {{Carbon::parse($payrollMaster->date)->format('F Y')}}</p>
                                 </td>
                                 <td class="text-center">
@@ -510,7 +510,7 @@
                 <table style="width: 100%;">
                     <tr>
                         <td style="width: 20%;">
-                            <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
+                            <p class="no-margin text-strong">GENERAL PAYROLL - {{implode(', ',\Request::get('payrollGroupsSelected'))}}</p>
                             <p>PAY PERIOD: {{Carbon::parse($payrollMaster->date)->format('F Y')}}</p>
                         </td>
                         <td class="text-center">
@@ -615,7 +615,7 @@
                 <table style="width: 100%;">
                     <tr>
                         <td style="width: 20%;">
-                            <p class="no-margin text-strong">GENERAL PAYROLL - {{\Request::get('payroll_group')}}</p>
+                            <p class="no-margin text-strong">GENERAL PAYROLL - {{implode(', ',\Request::get('payrollGroupsSelected'))}}</p>
                             <p>PAY PERIOD: {{Carbon::parse($payrollMaster->date)->format('F Y')}}</p>
                         </td>
                         <td class="text-center">

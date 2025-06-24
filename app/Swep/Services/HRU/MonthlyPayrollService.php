@@ -750,8 +750,12 @@ class MonthlyPayrollService
             ->with([
                 'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
                     //Payroll Groups
-                    if($request->has('payroll_group') && $request->payroll_group != ''){
-                        $payrollMasterEmployees->where('employee_payroll_type',$request->payroll_group);
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                           foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                               $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                           }
+                        });
                     }
                 },
                 'payrollMasterEmployees.employee.plantilla',
@@ -765,6 +769,9 @@ class MonthlyPayrollService
                 'hmtDetails.chartOfAccount',
             ])
             ->findOrFail($payrollMasterSlug);
+        if($payrollMaster->payrollMasterEmployees->count() < 1){
+            abort(504,'No employee found under the payroll group you have selected.');
+        }
         $usedRc = [];
         $employees = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
             return [
@@ -1006,8 +1013,12 @@ class MonthlyPayrollService
         $with = [
             'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
                     //Payroll Groups
-                    if($request->has('payroll_group') && $request->payroll_group != ''){
-                        $payrollMasterEmployees->where('employee_payroll_type',$request->payroll_group);
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
                     }
                 },
             'payrollMasterEmployees.employeePayrollDetails',
@@ -1058,8 +1069,12 @@ class MonthlyPayrollService
             ->with([
                 'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
                     //Payroll Groups
-                    if($request->has('payroll_group') && $request->payroll_group != ''){
-                        $payrollMasterEmployees->where('employee_payroll_type',$request->payroll_group);
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
                     }
                 },
                 'payrollMasterEmployees.employeePayrollDetails',
@@ -1085,8 +1100,12 @@ class MonthlyPayrollService
             ->with([
                 'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
                     //Payroll Groups
-                    if($request->has('payroll_group') && $request->payroll_group != ''){
-                        $payrollMasterEmployees->where('employee_payroll_type',$request->payroll_group);
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
                     }
                 },
                 'payrollMasterEmployees.employeePayrollDetails',
@@ -1100,8 +1119,23 @@ class MonthlyPayrollService
             ])
             ->findOrFail($payrollMasterSlug);
 
+        $rataPayrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees',
+            ])
+            ->where('type','=','RATA')
+            ->where('date','=', $payrollMaster->date)
+            ->first();
+
+        $employeesWithRata = $rataPayrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+            return[
+                $data->employee_slug => $data,
+            ];
+        });
+
         return view('printables.hru.payroll_preparation.MONTHLY.abstract-end')->with([
             'payrollMaster' => $payrollMaster,
+            'employeesWithRata' => $employeesWithRata,
         ]);
     }
 
@@ -1112,8 +1146,12 @@ class MonthlyPayrollService
             ->with([
                 'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
                     //Payroll Groups
-                    if($request->has('payroll_group') && $request->payroll_group != ''){
-                        $payrollMasterEmployees->where('employee_payroll_type',$request->payroll_group);
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
                     }
                 },
                 'payrollMasterEmployees.employeePayrollDetails',

@@ -5,6 +5,7 @@
 @extends('printables.print_layouts.print_layout_main')
 
 @section('wrapper')
+
     <style>
         table>thead>tr>th {
             border: 1px solid black;
@@ -52,7 +53,9 @@
                         {{Helper::toNumber($payrollEmployee->pay30)}}
                     </td>
                     <td class="text-right text-top">
-
+                        @if(isset($employeesWithRata[$payrollEmployee->employee_slug]))
+                            {{Helper::toNumber($employeesWithRata[$payrollEmployee->employee_slug]->rata_net_amount)}}
+                        @endif
                     </td>
                     <td class="text-right text-top">
                         {{Helper::toNumber($totalRefunds = $payrollEmployee->employeePayrollDetails->sum('refund_amount'))}}
@@ -79,7 +82,9 @@
 
                 </th>
                 <th class="text-top text-right b-top">
-
+                    @if(count($employeesWithRata) > 0)
+                        {{Helper::toNumber(collect($employeesWithRata)->sum('rata_net_amount'))}}
+                    @endif
                 </th>
                 <th class="text-top text-right b-top">
                     {{Helper::toNumber( $grandTotalRefunds = $payrollMaster->payrollMasterEmployees->sum(function ($payrollEmployee){
