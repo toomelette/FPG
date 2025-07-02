@@ -936,7 +936,7 @@ var ws = {
 var http = {
     getInitial: function (key, params) {
         var path = (params.httpPath || '/pusher') + getGenericPath(key);
-        return getGenericURL('https', params, path);
+        return getGenericURL('http', params, path);
     }
 };
 var sockjs = {
