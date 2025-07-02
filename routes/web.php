@@ -551,7 +551,9 @@ Route::get('/getSerial',function (\Illuminate\Http\Request $request){
 
 
 
-Route::post('testMail',\App\Http\Controllers\DocumentController::class.'@mailSingle');
+Route::get('testMail',function (){
+    return \Illuminate\Support\Facades\Mail::mailer('testgov')->send(new \App\Mail\SendMail('AAAA'));
+});
 
 
 Route::get('grab',function (){

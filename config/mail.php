@@ -55,6 +55,17 @@ return [
             'auth_mode' => null,
         ],
 
+        'testgov' => [
+            'transport' => 'smtp',
+            'host' => 'mail.sra.gov.ph',
+            'port' => 25,
+            'encryption' => null,
+            'username' => 'info@sra.gov.ph',
+            'password' => 'Thispasswordisintendedforinfo',
+            'timeout' => null,
+            'auth_mode' => null,
+        ],
+
 
         'ses' => [
             'transport' => 'ses',

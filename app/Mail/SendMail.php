@@ -23,6 +23,7 @@ class SendMail extends Mailable
     public function __construct($testMailData)
     {
         $this->testMailData = $testMailData;
+        $this->mailer = 'aaa';
     }
 
     /**
@@ -32,7 +33,9 @@ class SendMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Email From AllPHPTricks.com')
+        return $this
+            ->subject('Email From AllPHPTricks.com')
+            ->to(['gguance221@gmail.com'])
             ->view('emails.testMail');
     }
 }

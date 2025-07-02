@@ -129,7 +129,7 @@
         key: 'abcdefg',
         wsHost: window.location.hostname,
         wsPort: 5001,
-        forceTLS: false,
+        forceTLS: true,
         disableStats: true,
     });
     ;
