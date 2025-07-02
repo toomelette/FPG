@@ -42,10 +42,10 @@ return [
                 'port' => env('SWEP_AFD_WS_PORT'),
                 'scheme' => 'https',
                 'encrypted' => true,
-                'curl_options' => [
-                    CURLOPT_SSL_VERIFYHOST => 0,
-                    CURLOPT_SSL_VERIFYPEER => 0,
-                ],
+//                'curl_options' => [
+//                    CURLOPT_SSL_VERIFYHOST => 0,
+//                    CURLOPT_SSL_VERIFYPEER => 0,
+//                ],
             ],
         ],
 
