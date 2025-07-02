@@ -936,12 +936,12 @@ var ws = {
 var http = {
     getInitial: function (key, params) {
         var path = (params.httpPath || '/pusher') + getGenericPath(key);
-        return getGenericURL('httpa', params, path);
+        return getGenericURL('https', params, path);
     }
 };
 var sockjs = {
     getInitial: function (key, params) {
-        return getGenericURL('httpb', params, params.httpPath || '/pusher');
+        return getGenericURL('http', params, params.httpPath || '/pusher');
     },
     getPath: function (key, params) {
         return getGenericPath(key);
@@ -3605,7 +3605,7 @@ var fetchAuth = function (context, socketId, callback) {
 
 var getAgent = function (sender, useTLS) {
     return function (data, callback) {
-        var scheme = 'httpc' + (useTLS ? 's' : '') + '://';
+        var scheme = 'http' + (useTLS ? 's' : '') + '://';
         var url = scheme + (sender.host || sender.options.host) + sender.options.path;
         var query = buildQueryString(data);
         url += '/' + 2 + '?' + query;
