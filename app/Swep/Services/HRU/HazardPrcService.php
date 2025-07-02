@@ -128,12 +128,16 @@ class HazardPrcService
 
         $usedRcsDB = PPURespCodes::query()
             ->whereIn('rc_code',$usedRcs->values())
-            ->with(['description'])
+            ->with(['description','payrollTree'])
             ->get();
 
-        $groupedByDept = $payrollMaster->payrollMasterEmployees->groupBy(function ($data) use ($usedRcsDB){
-            return $usedRcsDB->where('rc_code','=',$data->saved_employee_data['resp_center'])->first()->rc;
-        });
+        $groupedByDept = $payrollMaster->payrollMasterEmployees
+            ->sortBy(function ($data) use ($usedRcsDB){
+                return $usedRcsDB->where('rc_code','=',$data->saved_employee_data['resp_center'])->first()->payrollTree->sort;
+            })
+            ->groupBy(function ($data) use ($usedRcsDB){
+                return $usedRcsDB->where('rc_code','=',$data->saved_employee_data['resp_center'])->first()->rc;
+            });
 
         return Pdf::view('printables.hru.payroll_preparation.HAZARDPRC.monthly_payroll',[
             'pdfPrint' => true,
@@ -168,6 +172,7 @@ class HazardPrcService
                 'payrollMasterEmployees'
             ])
             ->findOrFail($slug);
+
         return Pdf::view('printables.hru.payroll_preparation.HAZARDPRC.abstract',[
             'pdfPrint' => true,
             'payrollMaster' => $payrollMaster,
@@ -183,10 +188,10 @@ class HazardPrcService
                         ->setNpmBinary(env('NODE_BINARY'));
                 }
             });
-
         return view('printables.hru.payroll_preparation.HAZARDPRC.abstract')->with([
             'payrollMaster' => $payrollMaster,
         ]);
+
     }
 
 }

@@ -5,6 +5,7 @@
 @extends('printables.print_layouts.print_layout_main')
 
 @section('wrapper')
+
     <style>
         table>thead>tr>th {
             border: 1px solid black;
@@ -52,13 +53,19 @@
                         {{Helper::toNumber($payrollEmployee->pay30)}}
                     </td>
                     <td class="text-right text-top">
-
+                        @if(isset($employeesWithRata[$payrollEmployee->employee_slug]))
+                            {{Helper::toNumber($rata = $employeesWithRata[$payrollEmployee->employee_slug]->rata_net_amount)}}
+                        @else
+                            @php
+                            $rata = 0;
+                            @endphp
+                        @endif
                     </td>
                     <td class="text-right text-top">
                         {{Helper::toNumber($totalRefunds = $payrollEmployee->employeePayrollDetails->sum('refund_amount'))}}
                     </td>
                     <td class="text-right text-top">
-                        {{Helper::toNumber($payrollEmployee->pay30 + $totalRefunds)}}
+                        {{Helper::toNumber($payrollEmployee->pay30 + $totalRefunds + $rata)}}
                     </td>
                 </tr>
             @empty
@@ -79,7 +86,13 @@
 
                 </th>
                 <th class="text-top text-right b-top">
-
+                    @if(count($employeesWithRata) > 0)
+                        {{Helper::toNumber($grandTotalRata = collect($employeesWithRata)->sum('rata_net_amount'))}}
+                    @else
+                        @php
+                        $grandTotalRata = 0;
+                         @endphp
+                    @endif
                 </th>
                 <th class="text-top text-right b-top">
                     {{Helper::toNumber( $grandTotalRefunds = $payrollMaster->payrollMasterEmployees->sum(function ($payrollEmployee){
@@ -87,7 +100,7 @@
                     }))}}
                 </th>
                 <th class="text-top text-right b-top">
-                    {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('pay15') + $grandTotalRefunds)}}
+                    {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('pay15') + $grandTotalRefunds + $grandTotalRata)}}
                 </th>
             </tr>
             </tbody>

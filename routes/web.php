@@ -984,4 +984,46 @@ Route::get('plantillaClassifications',function (){
     \App\Models\HRU\HrPlantillaClassification::query()->insert($toInsert);
     dd($toInsert);
    dd(1);
+
+
+});
+
+Route::get('/checkBlankDtr',function (){
+    $start = 2000;
+    $dateR = '2025-02%';
+    $daily = \App\Models\DailyTimeRecord::query()
+        ->where('date','like',$dateR)
+        ->offset($start)
+        ->limit(1000)
+        ->get();
+    $dtr = \App\Models\DTR::query()->selectRaw("user,type, DATE_FORMAT(timestamp, '%Y-%m-%d') as  date")->where('timestamp','like',$dateR)->get();
+
+    $slugs = [];
+    foreach ($daily as $dai){
+        $count = 0;
+        $dailyRecord = $dtr->where('date',$dai->date)
+            ->where('user',$dai->biometric_user_id);
+        if($dai->am_in != null){
+            if($dailyRecord->where('type',10)->count() < 1){
+                $slugs[$dai->biometric_user_id] = $dai->date.'---'.(10);
+            }
+        }
+        if($dai->am_out != null){
+            if($dailyRecord->where('type',20)->count() < 1){
+                $slugs[$dai->biometric_user_id] = $dai->date.'---'.(20);
+            }
+        }
+        if($dai->pm_in != null){
+            if($dailyRecord->where('type',30)->count() < 1){
+                $slugs[$dai->biometric_user_id] = $dai->date.'---'.(30);
+            }
+        }
+        if($dai->pm_out != null){
+            if($dailyRecord->where('type',40)->count() < 1){
+                $slugs[$dai->biometric_user_id] = $dai->date.'---'.(40);
+            }
+        }
+    }
+
+    dd($slugs);
 });

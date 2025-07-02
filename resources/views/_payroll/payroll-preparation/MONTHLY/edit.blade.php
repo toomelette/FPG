@@ -80,7 +80,13 @@
      @endphp
 
     <div id="payroll-group-container" style="display: none">
-            <x-forms.select label="Payroll Group" name="filterEmployees" cols="12" :options="\App\Swep\Helpers\Arrays::payrollGroups()" id="replaceMe"/>
+        <div style="text-align: left; overflow: hidden">
+            <div class="row">
+                <form class="select-form" id="replaceMe">
+                    <x-forms.checkbox type="checkbox" label="Payroll Group" name="payrollGroupsSelected" cols="12" :options="\App\Swep\Helpers\Arrays::payrollGroups()" id="replaceMe"/>
+                </form>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -481,16 +487,17 @@
             e.preventDefault();
             let link = $(this).attr('href');
             let target = $(this).attr('target');
+            let newId = 'tempId'+makeId(6);
             Swal.fire({
                 title: "Select payroll group",
-                html: $("#payroll-group-container").html().replaceAll('replaceMe','tempId'),
+                html: $("#payroll-group-container").html().replaceAll('replaceMe',newId),
                 showCancelButton: true,
                 confirmButtonText: "<i class='fa fa-print'></i> Print",
                 showLoaderOnConfirm: true,
                 allowOutsideClick: () => !Swal.isLoading()
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.open(link+'?payroll_group='+$("#tempId").val(), target);
+                    window.open(link+'?'+$("#"+newId).serialize(), target);
                 }
             });
         });

@@ -68,6 +68,16 @@
             <i class="fa fa-circle-notch fa-spin" style="font-size: 50px"></i>
         </div>
     </x-adminkit.html.card>
+
+    <div id="payroll-group-container" style="display: none">
+        <div style="text-align: left; overflow: hidden">
+            <div class="row">
+                <form class="select-form" id="replaceMe">
+                    <x-forms.checkbox type="checkbox" label="Payroll Group" name="payrollGroupsSelected" cols="12" :options="\App\Swep\Helpers\Arrays::payrollGroups()" id="replaceMe"/>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 
@@ -84,8 +94,8 @@
         <x-slot:title>
             Print Options
         </x-slot:title>
-        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'RATA'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payroll Summary</a>
-        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'RATA-ABSTRACT'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2"> <i class="fa fa-print"></i> Payroll Abstract</a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'RATA'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Payroll Summary</a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'RATA-ABSTRACT'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Payroll Abstract</a>
 
     </x-adminkit.html.offcanvas>
 @endsection
@@ -221,5 +231,25 @@
                 }
             })
         })
+
+        $("body").on('click','.require-dialog',function (e){
+            e.preventDefault();
+            let link = $(this).attr('href');
+            let target = $(this).attr('target');
+            let newId = 'tempId'+makeId(6);
+            Swal.fire({
+                title: "Select payroll group",
+                html: $("#payroll-group-container").html().replaceAll('replaceMe',newId),
+                showCancelButton: true,
+                confirmButtonText: "<i class='fa fa-print'></i> Print",
+                showLoaderOnConfirm: true,
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.open(link+'?'+$("#"+newId).serialize(), target);
+                }
+            });
+        });
+
     </script>
 @endsection
