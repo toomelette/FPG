@@ -133,7 +133,7 @@
         // wssPort: 5001,
         forceTLS: false,
         disableStats: true,
-        enabledTransports: ['ws', 'wss'],
+        // enabledTransports: ['ws', 'wss'],
     });
     ;
     window.Echo.channel('private-mis-request')
