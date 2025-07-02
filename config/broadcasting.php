@@ -40,7 +40,7 @@ return [
                 'useTLS' => true,
                 'host' => 'hrrs.sra.gov.ph',
                 'port' => env('SWEP_AFD_WS_PORT'),
-                'scheme' => 'http',
+                'scheme' => 'https',
                 'encrypted' => true,
                 'curl_options' => [
                     CURLOPT_SSL_VERIFYHOST => 0,
