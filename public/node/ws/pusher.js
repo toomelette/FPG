@@ -893,7 +893,7 @@ var Defaults = {
     wsPort: 80,
     wssPort: 443,
     wsPath: '',
-    httpHost: 'sockjs.pusher.com',
+    httpHost: 'sockjsaa.pusher.com',
     httpPort: 80,
     httpsPort: 443,
     httpPath: '/pusher',
@@ -3930,7 +3930,7 @@ function getHttpHost(opts) {
         return opts.httpHost;
     }
     if (opts.cluster) {
-        return "sockjsa-" + opts.cluster + ".pusher.com";
+        return "sockjs-" + opts.cluster + ".pusher.com";
     }
     return defaults.httpHost;
 }
