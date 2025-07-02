@@ -893,7 +893,7 @@ var Defaults = {
     wsPort: 80,
     wssPort: 443,
     wsPath: '',
-    httpHost: 'https://sockjs.pusher.com',
+    httpHost: 'sockjs.pusher.com',
     httpPort: 80,
     httpsPort: 443,
     httpPath: '/pusher',
@@ -941,7 +941,7 @@ var http = {
 };
 var sockjs = {
     getInitial: function (key, params) {
-        return getGenericURL('http', params, params.httpPath || '/pusher');
+        return getGenericURL('httpaaa', params, params.httpPath || '/pusher');
     },
     getPath: function (key, params) {
         return getGenericPath(key);
