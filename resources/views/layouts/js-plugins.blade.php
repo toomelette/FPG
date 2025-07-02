@@ -135,7 +135,7 @@
         disableStats: true,
         enabledTransports: ['ws', 'wss'],
     });
-    ;
+
     window.Echo.channel('private-mis-request')
         .listen('.new-request', (e) => {
 

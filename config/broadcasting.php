@@ -38,7 +38,7 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'useTLS' => true,
-                'host' => '127.0.0.1',
+                'host' => 'hrrs.sra.gov.ph',
                 'port' => env('SWEP_AFD_WS_PORT'),
                 'scheme' => 'http',
                 'encrypted' => true,
