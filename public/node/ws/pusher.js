@@ -894,6 +894,7 @@ var Defaults = {
     wssPort: 443,
     wsPath: '',
     httpHost: 'sockjs.pusher.com',
+    httpsHost: 'sockjs.pusher.com',
     httpPort: 80,
     httpsPort: 443,
     httpPath: '/pusher',
