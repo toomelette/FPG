@@ -118,7 +118,9 @@
 </script>
 
 <script type="module">
-
+    $(window).on('beforeunload', function(){
+        socket.close();
+    });
     import Echo from '{{ asset('node/ws/echo.js') }}'
 
     import {Pusher} from '{{asset('node/ws/pusher.js')}}'
