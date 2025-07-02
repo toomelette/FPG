@@ -118,9 +118,7 @@
 </script>
 
 <script type="module">
-    $(window).on('beforeunload', function(){
-        socket.close();
-    });
+
     import Echo from '{{ asset('node/ws/echo.js') }}'
 
     import {Pusher} from '{{asset('node/ws/pusher.js')}}'
@@ -129,7 +127,7 @@
     window.Echo = new Echo({
         broadcaster: 'pusher',
         key: 'abcdefg',
-        wsHost: window.location.hostname,
+        wssHost: window.location.hostname,
         wssPort: 5001,
         forceTLS: true,
         disableStats: true,
