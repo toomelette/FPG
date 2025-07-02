@@ -131,7 +131,7 @@
         wssHost: window.location.hostname,
         wsPort: 5001,
         wssPort: 5001,
-        forceTLS: true,
+        forceTLS: false,
         disableStats: true,
         enabledTransports: ['ws', 'wss'],
     });
