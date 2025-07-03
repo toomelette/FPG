@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>SRA Web Portal - HRRS</title>
-    <meta property="og:title" content="SRA Web Portal"/>
+    <meta property="og:title" content="SRA Web Portal - HRRS"/>
     <meta property="og:image" content="{{asset('/images/og-image.png')}}"/>
     <meta property="og:image:type" content="image/png">
-    <meta property="og:description" content="HRRS"/>
+    <meta property="og:description" content="Human Resource and Record System"/>
     <meta property="og:url" content="https://hrrs.sra.gov.ph/"/>
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="628" />
