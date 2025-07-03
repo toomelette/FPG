@@ -57,11 +57,11 @@ return [
 
         'testgov' => [
             'transport' => 'smtp',
-            'host' => 'smtp.gmail.com',
+            'host' => 'mail.sra.gov.ph',
             'port' => 465,
             'encryption' => 'tls',
-            'username' => 'mis-vis@sra.gov.ph',
-            'password' => 'ppspd_misvis',
+            'username' => 'notifications@sra.gov.ph',
+            'password' => 'ThisIsATest',
             'timeout' => null,
             'auth_mode' => null,
         ],

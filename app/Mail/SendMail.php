@@ -35,7 +35,8 @@ class SendMail extends Mailable
     {
         return $this
             ->subject('Email From AllPHPTricks.com')
-            ->to(['gguance221@gmail.com'])
+            ->from('notifications@sra.gov.ph')
+            ->to(['mis-vis@sra.gov.ph'])
             ->view('emails.testMail');
     }
 }

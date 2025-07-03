@@ -552,7 +552,8 @@ Route::get('/getSerial',function (\Illuminate\Http\Request $request){
 
 
 Route::get('testMail',function (){
-    return \Illuminate\Support\Facades\Mail::mailer('testgov')->send(new \App\Mail\SendMail('AAAA'));
+
+    dd(\Illuminate\Support\Facades\Mail::mailer('testgov')->send(new \App\Mail\SendMail('ss')));
 });
 
 
