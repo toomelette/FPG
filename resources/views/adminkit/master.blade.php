@@ -19,6 +19,7 @@
     <title>SRA | HRRS</title>
     <meta property="og:title" content="SRA Web Portal"/>
     <meta property="og:image" content="{{asset('/images/og-image.png')}}"/>
+    <meta property="og:image:type" content="image/png">
     <meta property="og:description" content="HRRS"/>
     <meta property="og:url" content="https://hrrs.sra.gov.ph/"/>
     <meta property="og:image:width" content="1200" />
