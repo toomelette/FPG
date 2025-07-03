@@ -4,6 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>SRA Web Portal - HRRS</title>
+    <meta property="og:title" content="SRA Web Portal"/>
+    <meta property="og:image" content="{{asset('/images/og-image.png')}}"/>
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:description" content="HRRS"/>
+    <meta property="og:url" content="https://hrrs.sra.gov.ph/"/>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="628" />
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
