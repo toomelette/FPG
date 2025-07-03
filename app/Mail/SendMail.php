@@ -34,9 +34,9 @@ class SendMail extends Mailable
     public function build()
     {
         return $this
-            ->subject('Email From AllPHPTricks.com')
+            ->subject('SRA Web Portal')
             ->from('notifications@sra.gov.ph')
-            ->to(['mis-vis@sra.gov.ph'])
+            ->to(['gguance221@gmail.com'])
             ->view('emails.testMail');
     }
 }

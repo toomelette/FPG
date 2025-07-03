@@ -18,11 +18,11 @@
 
     <title>SRA | HRRS</title>
     <meta property="og:title" content="SRA Web Portal"/>
-    <meta property="og:image" content="{{asset('/images/ogg.png')}}"/>
+    <meta property="og:image" content="{{asset('/images/og-image.png')}}"/>
     <meta property="og:description" content="HRRS"/>
-    <meta property="og:url" content="http://hris.sra.gov.ph/"/>
+    <meta property="og:url" content="https://hrrs.sra.gov.ph/"/>
     <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="627" />
+    <meta property="og:image:height" content="628" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="{{asset('adminkit/adminkit-css/bootstrap-icons.css')}}" crossorigin="anonymous">

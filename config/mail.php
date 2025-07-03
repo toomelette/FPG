@@ -64,6 +64,7 @@ return [
             'password' => 'ThisIsATest',
             'timeout' => null,
             'auth_mode' => null,
+            'protocol' => 'mail',
         ],
 
 
