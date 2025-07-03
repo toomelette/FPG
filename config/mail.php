@@ -58,7 +58,7 @@ return [
         'testgov' => [
             'transport' => 'smtp',
             'host' => 'mail.sra.gov.ph',
-            'port' => 25,
+            'port' => 26,
             'encryption' => null,
             'username' => 'info@sra.gov.ph',
             'password' => 'Thispasswordisintendedforinfo',
