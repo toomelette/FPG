@@ -57,7 +57,7 @@ return [
 
         'testgov' => [
             'transport' => 'smtp',
-            'host' => 'smtp.google.com',
+            'host' => 'smtp.gmail.com',
             'port' => 465,
             'encryption' => 'tls',
             'username' => 'mis-vis@sra.gov.ph',
