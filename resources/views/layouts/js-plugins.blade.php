@@ -128,11 +128,15 @@
         broadcaster: 'pusher',
         key: 'abcdefg',
         wsHost: window.location.hostname,
-        wssHost: window.location.hostname,
-        wssPort: 5001,
-        forceTLS: true,
+        wsPort: 5001,
+        // wssHost: window.location.hostname,
+        // wssPort: 5001,
+        forceTLS: false,
         disableStats: true,
-        enabledTransports: ['ws', 'wss'],
+        enabledTransports: [
+            'ws',
+            // 'wss'
+        ],
     });
 
     window.Echo.channel('private-mis-request')
