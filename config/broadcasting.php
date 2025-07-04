@@ -40,7 +40,7 @@ return [
                 'useTLS' => false,
                 'host' => '10.36.1.14',
                 'port' => env('SWEP_AFD_WS_PORT'),
-                'scheme' => 'https',
+                'scheme' => 'http',
                 'encrypted' => false,
                 'curl_options' => [
 //                    CURLOPT_SSL_VERIFYHOST => 0,
