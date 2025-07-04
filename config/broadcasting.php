@@ -38,7 +38,7 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'useTLS' => false,
-                'host' => '10.36.1.14',
+                'host' => 'hrrs.sra.gov.ph',
                 'port' => env('SWEP_AFD_WS_PORT'),
                 'scheme' => 'https',
                 'encrypted' => false,
@@ -48,6 +48,7 @@ return [
                 ],
             ],
             'client_options' => [
+                //IMPORTANT
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
                 'verify' => false,
             ],
