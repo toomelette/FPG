@@ -23,7 +23,7 @@
 </p>
 
 <p class="">
-    {{\Illuminate\Support\Carbon::now()->format('F d, Y')}}
+    {{\Illuminate\Support\Carbon::parse(Request::get('header_date'))->format('F d, Y')}}
     <br><br>
 </p>
 
@@ -80,7 +80,7 @@
         <td class="text-right" style="vertical-align: top">
             <u>
                 <p class="editable text-strong">
-                    {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('monthly_basic')),2)}}
+                    {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('monthly_basic') ?? 0),2)}}
                 </p>
             </u>
         </td>
@@ -95,7 +95,8 @@
         <td class="text-right" style="vertical-align: top">
             <u>
                 <p class="editable text-strong">
-                    {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('new_monthly_salary')) - \App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('monthly_basic')),2)}}
+
+                    {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(Request::get('new_monthly_salary')) - \App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('monthly_basic')),2)}}
                 </p>
             </u>
         </td>

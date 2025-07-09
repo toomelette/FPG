@@ -77,6 +77,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('/permission_slip/{slug}/print', [\App\Http\Controllers\PermissionSlipController::class,'print'])->name('permission_slip.print');
     Route::resource('permission_slip', 'PermissionSlipController');
 
+
+    Route::resource('time_keeping', \App\Http\Controllers\HRU\TImeKeepingController::class);
+
+
     Route::get('/showLogs/{tableName}/{subjectId}',function ($tableName,$subjectId){
 
         $activities = \Spatie\Activitylog\Models\Activity::query()

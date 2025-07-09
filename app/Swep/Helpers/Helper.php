@@ -293,7 +293,7 @@ class Helper
         return$values[$val];
     }
     public static function sanitizeNumFormat($num){
-        return str_replace(',','',$num);
+        return floatval( str_replace(',','',$num) );
     }
 
     public static function sanitizeAutonum($num){

@@ -659,3 +659,11 @@ td.w-25p{
 .swal2-container select{
     font-size: 1.1rem;
 }
+
+.has-error select,.has-error input{
+    border: 1px solid #dc3545;
+}
+
+.hide-this{
+    display: none !important;
+}

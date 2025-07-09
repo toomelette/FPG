@@ -28,6 +28,7 @@ class Select extends Component
         public $includeEmpty = true,
         public $placeholder = null,
         public $selectOnly = false,
+        public $autoClass = false,
     )
     {
         if(is_object($this->value)){

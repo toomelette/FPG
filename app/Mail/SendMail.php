@@ -35,7 +35,7 @@ class SendMail extends Mailable
     {
         return $this
             ->subject('SRA Web Portal')
-            ->from('notifications@sra.gov.ph')
+            ->from('mis-vis@sra.gov.ph')
             ->to(['gguance221@gmail.com'])
             ->view('emails.testMail');
     }

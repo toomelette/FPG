@@ -130,8 +130,9 @@
                                 NEW
                             </p>
                             <div class="row">
-                                <x-forms.input label="Item No" name="new_item_no" cols="2" required="required" :value="(isset($employee->otherNosa->values['new_item_no']) ? $employee->otherNosa->values['new_item_no'] : null) ?? null"/>
-                                <x-forms.input label="Position" name="new_position" cols="4" required="required" :value="(isset($employee->otherNosa->values['new_position']) ? $employee->otherNosa->values['new_position'] : null) ?? null"/>
+                                <x-forms.select label="Item and Position" name="item_and_position" id="item-and-position" cols="6" />
+                                <x-forms.input container-class="hide-this" label="Item No" name="new_item_no" cols="2" required="required" :value="(isset($employee->otherNosa->values['new_item_no']) ? $employee->otherNosa->values['new_item_no'] : null) ?? null"/>
+                                <x-forms.input container-class="hide-this" label="Position" name="new_position" cols="4" required="required" :value="(isset($employee->otherNosa->values['new_position']) ? $employee->otherNosa->values['new_position'] : null) ?? null"/>
                                 <x-forms.input label="Job Grade" name="new_salary_grade" cols="2" class="news" id="new_sg" type="number" required="required" :value="(isset($employee->otherNosa->values['new_salary_grade']) ? $employee->otherNosa->values['new_salary_grade'] : null) ?? null"/>
                                 <x-forms.input label="Step Inc" name="new_step_inc" cols="2" class="news" id="new_si" type="number" required="required" :value="(isset($employee->otherNosa->values['new_step_inc']) ? $employee->otherNosa->values['new_step_inc'] : null) ?? null"/>
                                 <x-forms.input label="Monthly Sal." name="new_monthly_salary" cols="2" class="news" tabindex="-1" id="new_monthly_salary"  required="required" :value="Helper::toNumber(Helper::sanitizeAutonum(isset($employee->otherNosa->values['new_monthly_salary']) ? $employee->otherNosa->values['new_monthly_salary'] : null),2)"/>
@@ -145,6 +146,7 @@
                                 DATES
                             </p>
                             <div class="row">
+                                <x-forms.input label="Header Date" name="header_date" cols="6"  type="date" :value="Carbon::now()->format('Y-m-d')"/>
                                 <x-forms.input label="Effectivity" name="effectivity" cols="6"  type="date" :value="(isset($employee->otherNosa->values['effectivity']) ? $employee->otherNosa->values['effectivity'] : null) ?? null"/>
                                 <x-forms.input label="As of" name="as_of" cols="6"  type="date" :value="(isset($employee->otherNosa->values['as_of']) ? $employee->otherNosa->values['as_of'] : null) ?? null"/>
 
@@ -202,6 +204,21 @@ Administration and Finance' }}
 
 @section('scripts')
     <script type="text/javascript">
+        var data = {!! \App\Swep\Helpers\Arrays::payPlantillasWithItemNumberAndDetails() !!};
+        $("#item-and-position").select2({data: data});
+        $('#item-and-position').on('select2:select', function (e) {
+            var data = e.params.data;
+            let form = $(".report_form[data='nosa']")
+            form.find('input[name="new_item_no"]').val(data.id)
+            form.find('input[name="new_position"]').val(data.position);
+            form.find('input[name="new_salary_grade"]').val(data.salary_grade);
+            form.find('input[name="new_step_inc"]').val(data.step_inc);
+            $('#new_si').trigger('change');
+            console.log(data);
+        });
+
+
+
         $(".report_form").submit(function (e){
             e.preventDefault();
             let form = $(this);
@@ -261,5 +278,11 @@ Administration and Finance' }}
                 }
             })
         })
+
+        $(document).ready(function (){
+            $(".currents").trigger('change');
+        })
+
+
     </script>
 @endsection

@@ -1,37 +1,36 @@
-@if($inputOnly == false)
-    <div class="form-group  col-md-{{$cols}} {{$name}} {{$containerClass}}">
-        <label for="lastname">{{$label}}:</label>
-@endif
 
-        <input class="form-control {{$class}}"
-               aria-label="{{$label}}"
-               name="{{$name}}"
-               type="{{$type}}"
-               value="{{$value}}"
-               placeholder="{{$placeholder ?? $label}}"
-               autocomplete="{{$autocomplete}}"
-               @if($id != null)
-                   id="{{$id}}"
-               @endif
-               @if($for != null)
-                   for="{{$for}}"
-               @endif
-               @if($required != null)
-                   required="required"
-               @endif
-               @if($tabindex != null)
-                   tabindex="{{$tabindex}}"
-                @endif
-               @if($step != null)
-                   step="{{$step}}"
-                @endif
-               @if($disabled == true)
-                   disabled="disabled"
-                @endif
+<div class="form-group  col-md-{{$cols}} {{$name}} {{$containerClass}} {{$autoClass ? Str::of($name)->replaceFirst('[','_')->replace('][','_')->replace('[','')->replace(']','') : ''}}">
+    @if($inputOnly == false)
+    <label for="">{{$label}}:</label>
+     @endif
 
-                {{$attributes}}
-        >
+    <input class="form-control {{$class}} "
+           aria-label="{{$label}}"
+           name="{{$name}}"
+           type="{{$type}}"
+           value="{{$value}}"
+           placeholder="{{$placeholder ?? $label}}"
+           autocomplete="{{$autocomplete}}"
+           @if($id != null)
+               id="{{$id}}"
+           @endif
+           @if($for != null)
+               for="{{$for}}"
+           @endif
+           @if($required != null)
+               required="required"
+           @endif
+           @if($tabindex != null)
+               tabindex="{{$tabindex}}"
+            @endif
+           @if($step != null)
+               step="{{$step}}"
+            @endif
+           @if($disabled == true)
+               disabled="disabled"
+            @endif
 
-@if($inputOnly == false)
-    </div>
-@endif
+            {{$attributes}}
+    >
+</div>
+

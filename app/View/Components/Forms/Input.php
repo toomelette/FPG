@@ -31,6 +31,7 @@ class Input extends Component
         public $inputOnly = false,
         public $step = null,
         public $disabled = false,
+        public $autoClass = false,
     )
     {
         if(is_object($this->value)){

@@ -1,7 +1,8 @@
-@if($selectOnly == false)
-<div class="form-group  col-md-{{$cols}} {{$name}} {{$containerClass}}">
+
+<div class="form-group  col-md-{{$cols}} {{$name}} {{$containerClass}} {{$autoClass ? Str::of($name)->replaceFirst('[','_')->replace('][','_')->replace('[','')->replace(']','') : ''}}">
+    @if($selectOnly == false)
     <label for="lastname">{{$label}}:</label>
-@endif
+   @endif
     <select name="{{$name}}" class="form-control {{$class}}"
             @if($id != null)id="{{$id}}"@endif
             @if($required != null)
@@ -34,6 +35,4 @@
             @endif
         @endforeach
     </select>
-@if($selectOnly == false)
-    </div>
-@endif
+</div>
