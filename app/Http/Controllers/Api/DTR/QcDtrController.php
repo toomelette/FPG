@@ -9,6 +9,7 @@ class QcDtrController extends Controller
 {
     public function store(Request $request)
     {
+        return $request->all();
         dd($request->all(),1);
     }
 }
