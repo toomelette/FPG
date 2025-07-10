@@ -71,7 +71,7 @@
                         <th style="padding: 0; border: none"></th>
                     @endforeach
                     <th style="padding: 0; border: none;width: 7%"></th>
-                    <th style="padding: 0; border: none;width: 7%""></th>
+                    <th style="padding: 0; border: none;width: 7%"></th>
                     <th style="padding: 0; border: none;width: 8%"></th>
                     <th style="padding: 0; border: none;width: 4%"></th>
                     <th style="padding: 0; border: none;width: 5%"></th>
@@ -142,9 +142,6 @@
                     <td colspan="{{$colspan}}" class="text-strong" style="background-color: #f0ffef">{{$group}}</td>
                 </tr>
                 @forelse($rcs as $rcCode => $rc)
-                    <tr>
-                        <td colspan="{{$colspan}}" class="indent text-strong" style="background-color: #e6f8ff">{{$rc->first()->responsibilityCenter->desc ?? ''}}</td>
-                    </tr>
                     @php
 
                         $payrollEmployeesPerRc = $payrollEmployeesGroupedByRespCenter[$rcCode] ?? [];
@@ -152,6 +149,9 @@
                         $sumPerRcSundry = [];
                     @endphp
                     @if(!empty($payrollEmployeesPerRc))
+                        <tr>
+                            <td colspan="{{$colspan}}" class="indent text-strong" style="background-color: #e6f8ff">{{$rc->first()->responsibilityCenter->desc ?? ''}}</td>
+                        </tr>
                         @forelse($payrollEmployeesPerRc as $payrollEmployee /** @var App\Models\HRU\PayrollMasterEmployees $payrollEmployee **/)
                             <tr>
                                 <td>
