@@ -43,4 +43,9 @@ Route::group(['middleware' => [], 'prefix' => 'validate'],function (){
 });
 
 
+Route::group(['middleware' => ['auth:api'], 'prefix' => 'dtr-qc'],function (){
+    Route::controller(App\Http\Controllers\Api\DTR\QcDtrController::class)->group(function (){
+        Route::post('store','store');
+    });
+});
 
