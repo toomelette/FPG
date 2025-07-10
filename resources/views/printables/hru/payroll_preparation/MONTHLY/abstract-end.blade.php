@@ -86,7 +86,7 @@
 
                 </th>
                 <th class="text-top text-right b-top">
-                    @if(count($employeesWithRata) > 0)
+                    @if(!empty($employeesWithRata) && count($employeesWithRata) > 0)
                         {{Helper::toNumber($grandTotalRata = collect($employeesWithRata)->sum('rata_net_amount'))}}
                     @else
                         @php

@@ -1,6 +1,7 @@
 @php
 /** @var \App\Models\HRU\PayrollMasterDetails $deduction **/
 $gsisDeductions = $deductions;
+
 @endphp
 <table style="width: 100% ; break-after: page" class="tbl-padded">
     <thead>
@@ -19,6 +20,7 @@ $gsisDeductions = $deductions;
               return Str::beforeLast($ded->employeePayroll->saved_employee_data['department'],'-');
             })->sortKeys();
          $monthlyBasicTotals = [];
+
     @endphp
     @forelse($groupedByDepartment as $department => $gsisDeductions)
         @php

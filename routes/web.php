@@ -557,7 +557,7 @@ Route::get('/getSerial',function (\Illuminate\Http\Request $request){
 
 Route::get('testMail',function (){
 
-    dd(\Illuminate\Support\Facades\Mail::mailer('testgov')->send(new \App\Mail\SendMail('ss')));
+    dd(\Illuminate\Support\Facades\Mail::mailer('gmail_misvis')->send(new \App\Mail\SendMail('ss')));
 });
 
 

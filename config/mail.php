@@ -67,6 +67,17 @@ return [
             'protocol' => 'mail',
         ],
 
+        'gmail_misvis' =>[
+            'transport' => 'smtp',
+            'host' => 'smtp.gmail.com',
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => 'mis-vis@sra.gov.ph',
+            'password' => 'etbvhkqvqawxzwhq',
+            'timeout' => null,
+            'auth_mode' => null,
+        ],
+
 
         'ses' => [
             'transport' => 'ses',
