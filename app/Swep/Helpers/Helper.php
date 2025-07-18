@@ -312,7 +312,6 @@ class Helper
         $natures = MisRequestsNature::query()->get();
         $array = [];
         if(!empty($natures)){
-
             foreach ($natures as $nature){
                 $array[$nature->group][$nature->slug] = $nature->nature_of_request;
             }

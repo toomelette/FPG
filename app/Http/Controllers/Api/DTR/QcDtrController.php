@@ -14,7 +14,7 @@ class QcDtrController extends Controller
     {
         $dailyTimeRecords = $request['daily_time_records'];
         $dtrs = $request['dtrs'];
-        $batchId = 'QC'.Str::random(8);
+        $batchId = 'QC-'.Str::random(8);
 
         $dailyTimeRecordsArray = [];
         if(!empty($dailyTimeRecords) ){

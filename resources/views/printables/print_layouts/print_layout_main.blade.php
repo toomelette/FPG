@@ -32,6 +32,10 @@
         table {
             font-size: 12px
         }
+
+        .exempt-font table {
+                font-size: inherit !important;
+        }
         /*td, th {*/
         /*    padding: 5px !important*/
         /*}*/

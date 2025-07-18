@@ -123,7 +123,7 @@ class MisRequestsController extends Controller
         $r = $this->findBySlug($slug);
         $user = User::query()->where('user_id','=',$r->user_created)->first();
 
-        return view('printables.mis_requests.print')->with([
+        return view('printables.mis_requests.print-fm-ppd-0615-02')->with([
             'r' => $r,
             'user' => $user,
         ]);

@@ -33,6 +33,18 @@
     <x-adminkit.html.modal id="status-modal"/>
     <x-adminkit.html.modal-template id="add-request-modal" form-id="add-request-form">
         <x-slot:title>Make Request</x-slot:title>
+
+        <div class="alert alert-primary" role="alert">
+            <div class="alert-icon">
+                <i class="fa fa-info-circle"></i>
+            </div>
+            <div class="alert-message">
+                <strong>Trivia:</strong>
+                <p class="no-margin"><b>Restarting the device</b> can fix 80–90% of the common issues with computers, laptops, tablets, and printers. Also check the device if it is <b>properly plugged</b>. Before submitting a request, you can give it a try.</p>
+            </div>
+        </div>
+
+
         <div class="row mb-2">
             <x-forms.select label="Department" name="department" cols="12" :options="\App\Swep\Helpers\Arrays::departmentList()"/>
         </div>
@@ -42,6 +54,7 @@
 
         <div class="row mb-2">
             <x-forms.textarea label="Details" name="details" cols="12" rows="3"/>
+            <small class="text-muted"><b>Tip</b>: Be specific. MIS Personnel may need devices and other paraphernalia upon visiting your office.</small>
         </div>
 
         <div class="row mb-2">

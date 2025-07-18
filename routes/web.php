@@ -225,7 +225,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('/other_hr_actions_print/{slug}/{type}',[\App\Http\Controllers\HRU\Employees\OtherActionsController::class,'print'])->name('employee.other_hr_actions_print');
     Route::get('/other_hr_actions/{slug}',[\App\Http\Controllers\HRU\Employees\OtherActionsController::class,'index'])->name('employee.other_hr_actions');
 
-
+    Route::get('/employee/{slug}/{type}/print', [\App\Http\Controllers\EmployeeController::class,'print'])->name('employee.print');
 
     Route::get('/employee/{slug}/201', [\App\Http\Controllers\HRU\Employees\TwoZeroOneFilesController::class,'index'])->name('employee.201');
 

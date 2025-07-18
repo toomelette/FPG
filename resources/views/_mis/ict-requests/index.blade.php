@@ -10,7 +10,7 @@
                 <thead>
                 <tr class="">
                     <th >Rqst #.</th>
-                    <th >Requisitioner</th>
+                    <th >Requester</th>
                     <th >Nature of Request</th>
                     <th style="width: 15%;">Created at</th>
                     <th style="width: 18%;">Status</th>

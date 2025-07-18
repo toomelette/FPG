@@ -100,6 +100,10 @@ table.tbl{
     padding: 2px 2px;
 }
 
+.tbl-padded-2-by-3>thead>tr>th, .tbl-padded-2-by-3>tbody>tr>th, .tbl-padded-2-by-3>tfoot>tr>th, .tbl-padded-2-by-3>thead>tr>td, .tbl-padded-2-by-3>tbody>tr>td, .tbl-padded-2-by-3>tfoot>tr>td{
+    padding: 2px 3px;
+}
+
 .tbl-bordered-grey>thead>tr>th, .tbl-bordered-grey>tbody>tr>th, .tbl-bordered-grey>tfoot>tr>th, .tbl-bordered-grey>thead>tr>td, .tbl-bordered-grey>tbody>tr>td, .tbl-bordered-grey>tfoot>tr>td{
     border: 1px solid #d4d4d4;
 }
