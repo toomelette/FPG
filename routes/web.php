@@ -80,6 +80,8 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     Route::resource('time_keeping', \App\Http\Controllers\HRU\TImeKeepingController::class);
 
+    Route::resource('employee_time_logs', \App\Http\Controllers\HRU\EmployeeTimeLogsController::class);
+
 
     Route::get('/showLogs/{tableName}/{subjectId}',function ($tableName,$subjectId){
 
@@ -476,6 +478,7 @@ Route::group(['as' => 'public.',
     Route::get('applicant_form/get_qs','Public\ApplicantFormController@getQs')->name('applicant_form.get_qs');
     Route::get('applicant_form','Public\ApplicantFormController@index');
     Route::post('applicant_form/submit','Public\ApplicantFormController@submit')->name('applicant_form.submit');
+    Route::get('verify/document',[\App\Http\Controllers\Public\VerifierController::class,'verifyDocument'])->name('verify.document');
 });
 
 Route::get('display_qr/{slug}',function ($slug, \App\Http\Controllers\DocumentController $documentController){
