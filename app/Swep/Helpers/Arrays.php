@@ -15,11 +15,13 @@ use App\Models\HRU\Deductions;
 use App\Models\HRU\Incentives;
 use App\Models\MDDC;
 use App\Models\Options;
+use App\Models\Plantilla;
 use App\Models\PPU\Pap;
 use App\Models\PPU\PPURespCodes;
 use App\Models\PPU\RCDesc;
 use App\Models\SSL;
 use App\Models\SuOptions;
+use App\Models\SuSettings;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -945,6 +947,7 @@ class Arrays
         });
     }
 
+
     public static function appointmentStatus(){
         $oraohra = [
             'PERMANENT' => 'PERMANENT',
@@ -1147,5 +1150,48 @@ class Arrays
         }
         ksort($arr);
         return $arr;
+    }
+
+    public static function db($for)
+    {
+        $array = [];
+        $dbOpts = SuOptions::query()->where('for','=',$for)->get();
+        foreach ($dbOpts as $dbOpt){
+            if(!empty($dbOpt->header)){
+                if(!isset($array[$dbOpt->header])){
+                    $array[$dbOpt->header] = [];
+                }
+                $array[$dbOpt->header][$dbOpt->value] = $dbOpt->option;
+            }else{
+                $array[$dbOpt->value] = $dbOpt->option;
+            }
+        }
+        return $array;
+    }
+
+    public static function coeSignatories()
+    {
+        $setting = SuSettings::query()
+            ->where('setting','=','coe_signatories')
+            ->first();
+        $array = [];
+        if(!empty($setting) && !empty($setting->json_value)){
+            $plantilla = HRPayPlanitilla::query()
+                ->with([
+                    'incumbentEmployee'
+                ])
+                ->whereIn('item_no',$setting->json_value['plantilla_nos'])
+                ->get();
+            if(!empty($plantilla)){
+                foreach ($plantilla as $p) {
+                    $array[] = [
+                        'id' => $p?->incumbentEmployee?->full['FMiLE'],
+                        'text' => $p?->incumbentEmployee?->full['FMiLE'],
+                        'position' => $p?->alias ?? $p?->position,
+                    ];
+                }
+            }
+        }
+        return $array;
     }
 }

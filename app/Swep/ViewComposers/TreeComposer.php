@@ -16,7 +16,7 @@ class TreeComposer
 
         $tree = [];
 
-        $projectId = Auth::user()->project_id;
+        $projectId = Auth::user()?->project_id;
 
         $user_submenus = UserSubmenu::query()
             ->with([
@@ -24,7 +24,7 @@ class TreeComposer
             ])
             ->leftJoin('su_submenus','su_submenus.submenu_id','su_user_submenus.submenu_id')
             ->leftJoin('su_menus','su_menus.menu_id','su_submenus.menu_id')
-            ->where('user_id','=',Auth::user()->user_id)
+            ->where('user_id','=',Auth::user()?->user_id)
             ->where('portal','=','DIGIFILE')
             ->orderBy('category','asc')
             ->orderBy('su_menus.order','asc')

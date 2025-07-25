@@ -463,6 +463,11 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     Route::get('rbac_evaluation/{slug}/print',[\App\Http\Controllers\RBAC\TWGEvaluation::class,'print'])->name('rbac_evaluation.print');
     Route::resource('rbac_evaluation',\App\Http\Controllers\RBAC\TWGEvaluation::class);
+
+    Route::get('hr_requests/{slug}/print',[\App\Http\Controllers\HRU\HRRequestsController::class,'printDocument'])->name('hr_requests.print');
+    Route::get('hr_requests/{slug}/createDocument',[\App\Http\Controllers\HRU\HRRequestsController::class,'createDocument'])->name('hr_requests.create_document');
+    Route::post('hr_requests/{slug}/createDocument',[\App\Http\Controllers\HRU\HRRequestsController::class,'saveCreatedDocument'])->name('hr_requests.create_document');
+    Route::resource('hr_requests',\App\Http\Controllers\HRU\HRRequestsController::class);
 });
 
 /** ADMIN LEVEL ROUTES REQUIRING PROJECT ID **/

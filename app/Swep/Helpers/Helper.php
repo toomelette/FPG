@@ -4,6 +4,7 @@
 namespace App\Swep\Helpers;
 use App\Models\Department;
 use App\Models\DocumentFolder;
+use App\Models\Employee;
 use App\Models\MisRequestsNature;
 use App\Models\PPU\RecommendedBudget;
 use App\Models\SuSettings;
@@ -296,7 +297,7 @@ class Helper
         return floatval( str_replace(',','',$num) );
     }
 
-    public static function sanitizeAutonum($num){
+    public static function sanitizeAutonum($num, $multiply = false){
         $num = str_replace('₱','',$num);
         $num = str_replace(',','',$num);
         if ($num == ''){
@@ -304,6 +305,9 @@ class Helper
         }
         if ($num == 0){
             return null;
+        }
+        if($multiply){
+            return $num *1;
         }
         return $num;
     }
@@ -843,5 +847,27 @@ class Helper
         $timeSpentMinsRemainder = $timeInMins % 60;
         $timeSpentHoursAbsolute = ($timeInMins - $timeSpentMinsRemainder) / 60;
         return Str::padLeft($timeSpentHoursAbsolute,'2','0').':'.Str::padLeft($timeSpentMinsRemainder,'2','0');
+    }
+
+    public static function isPermanent($employee)
+    {
+        if($employee instanceof Employee){
+            if($employee->locations == 'LUZON/MINDANAO' || $employee->locations == 'VISAYAS'){
+                return true;
+            }
+            return false;
+        }
+        else{
+            $emp = Employee::query()->where('slug','=',$employee)->first();
+            return  self::isPermanent($emp);
+        }
+    }
+
+    public static function indefiniteArticle($string)
+    {
+        if(Str::of($string)->startsWith(['A','E','I','O','U','a','e','i','o','u'])){
+            return 'an '.$string;
+        }
+        return 'a '.$string;
     }
 }

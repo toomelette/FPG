@@ -34,4 +34,15 @@ class Get
         }
     }
 
+    public static function headerCity(){
+        $project_id = \Auth::user()->project_id;
+        if($project_id == 1){
+            return 'Bacolod';
+        }elseif ($project_id == 2){
+            return 'Quezon City';
+        }else{
+            abort(503,'PLEASE SET PROJECT ID TO USER | Current project_id assigned: '. ($project_id ?? 'NULL') );
+        }
+    }
+
 }
