@@ -15,10 +15,13 @@
                 </x-adminkit.html.alert>
                 <div class="row">
                     @php
-
-                        $firstParagraph = 'This is to certify that <strong>'.($hrRequest->employee->sex == 'MALE' ? 'MR. ' : 'MR. ') .$hrRequest->employee->full['FMiLE'].'</strong> is a '.(Helper::isPermanent($hrRequest->employee) ? 'permanent employee':'Contract of Service (COS) personnel').' of the Sugar Regulatory Administration, '.\App\Swep\Helpers\Get::headerCity().' City, as '.Helper::indefiniteArticle($hrRequest->employee->position).' since '.Helper::dateFormat($hrRequest->employee->firstday_sra,'F d, Y').', to present.';
+                        if(Helper::isPermanent($hrRequest->employee)){
+                            $firstParagraph = 'This is to certify that <strong>'.($hrRequest->employee->sex == 'MALE' ? 'MR. ' : 'MS. ') .$hrRequest->employee->full['FMiLE'].'</strong> is an employee of the Sugar Regulatory Administration, since '.Helper::dateFormat($hrRequest->employee->firstday_sra,'F d, Y').' and up to present. '.($hrRequest->employee->sex == 'MALE' ? 'He ' : 'She ').' holds a permanent appointment as '.Helper::indefiniteArticle($hrRequest->employee->position).'.';
+                        }else{
+                            $firstParagraph = 'This is to certify that <strong>'.($hrRequest->employee->sex == 'MALE' ? 'MR. ' : 'MS. ') .$hrRequest->employee->full['FMiLE'].'</strong> is a Contract of Service (COS) Personnel of the Sugar Regulatory Administration, since '.Helper::dateFormat($hrRequest->employee->firstday_sra,'F d, Y').' and up to present.';
+                        }
                         $payTemplate = \App\Models\HRU\TemplateIncentives::query()->where('employee_slug','=',$hrRequest->employee_slug)->get();
-                        $purposeParagraph = 'This certification is issued upon the request of '.($hrRequest->employee->sex == 'MALE' ? 'MR. ' : 'MR. ') .$hrRequest->employee->lastname.' for whatever legal purpose it may serve '.($hrRequest->employee->sex == 'MALE' ? 'him' : 'her').' best.'
+                        $purposeParagraph = 'This certification is issued for whatever legal purpose it may serve.';
                     @endphp
 
                     <x-forms.textarea label="First Paragraph" name="first_paragraph" cols="12" id="editor3" :value="$document_fields['first_paragraph'] ?? $firstParagraph"/>

@@ -15,9 +15,9 @@
                 </x-adminkit.html.alert>
                 <div class="row">
                     @php
-                        $firstParagraph = 'This is to certify that <strong>'.($hrRequest->employee->sex == 'MALE' ? 'MR. ' : 'MR. ') .$hrRequest->employee->full['FMiLE'].'</strong> is an employee of the Sugar Regulatory Administration, having served since '.Helper::dateFormat($hrRequest->employee->firstday_sra,'F d, Y').', to present, and currently holds a permanent appointment as '.$hrRequest->employee->position.'.';
+                        $firstParagraph = 'This is to certify that <strong>'.($hrRequest->employee->sex == 'MALE' ? 'MR. ' : 'MS. ') .$hrRequest->employee->full['FMiLE'].'</strong> is an employee of the Sugar Regulatory Administration since '.Helper::dateFormat($hrRequest->employee->firstday_sra,'F d, Y').', to date. '.($hrRequest->employee->sex == 'MALE' ? 'He' : 'She').' holds a permanent appointment of '.$hrRequest->employee->position.'.';
                         $payTemplate = \App\Models\HRU\TemplateIncentives::query()->where('employee_slug','=',$hrRequest->employee_slug)->get();
-                        $purposeParagraph = 'This certification is issued upon the request of '.($hrRequest->employee->sex == 'MALE' ? 'MR. ' : 'MR. ') .$hrRequest->employee->lastname.' for whatever legal purpose it may serve '.($hrRequest->employee->sex == 'MALE' ? 'him' : 'her').' best.'
+                        $purposeParagraph = 'This certification is issued for whatever legal purpose it may serve.'
                     @endphp
 
                     <x-forms.textarea label="First Paragraph" name="first_paragraph" cols="12" id="editor" :value="$document_fields['first_paragraph'] ?? $firstParagraph"/>

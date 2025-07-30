@@ -2,7 +2,7 @@
 
 @section('wrapper')
     <div style="font-family: Cambria; font-size: 16px; margin: 150px 40px 0px 40px">
-        <small>{{$hrRequest->document_fields['memo_code']}}</small>
+        <small>MEMO-VIS-AFD-GAD-HRRS-{{Carbon::parse($hrRequest->document_fields['date'])->format('Y')}}-{{$hrRequest->document_fields['memo_code']}}</small>
         <br><br>
         <p class="text-strong text-center" style="letter-spacing: 4px; font-size: 18px">CERTIFICATION</p>
         <br><br>
@@ -17,7 +17,7 @@
         </p>
         <br><br>
         <div style="overflow: auto">
-            <div style="width: 40%; float: right">
+            <div style="width: 50%; float: right">
                 <p class="text-center">
                     <b>{{$hrRequest->document_fields['signatory_name']}}</b>
                     <br>

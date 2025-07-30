@@ -1,12 +1,19 @@
 @extends('printables.print_layouts.print_layout_main')
 
 @section('wrapper')
+    @php
+        $employee = \App\Models\Employee::where('slug','=',$hrRequest->employee_slug)->first();
+    @endphp
     <div style="font-family: Cambria; font-size: 16px; margin: 150px 40px 0px 40px">
-        <small>{{$hrRequest->document_fields['memo_code']}}</small>
-        <br><br>
-        <p class="text-strong text-center" style="letter-spacing: 2px; font-size: 18px">CERTIFICATION OF EMPLOYMENT AND COMPENSATION</p>
+        <small>MEMO-VIS-AFD-GAD-HRRS-{{Carbon::parse($hrRequest->document_fields['date'])->format('Y')}}-{{$hrRequest->document_fields['memo_code']}}</small>
+        <br><br><br>
+        <p class="text-strong text-center" style="letter-spacing: 1px; font-size: 18px">CERTIFICATE OF EMPLOYMENT AND COMPENSATION</p>
         <br><br>
         {!!  Str::of($hrRequest->document_fields['first_paragraph'])->replaceFirst('<p>','<p style="text-indent: 40px; line-height: 20px; text-align: justify">') !!}
+
+        <p style="text-indent: 40px; line-height: 20px; text-align: justify">
+            {{$employee->sex == 'MALE' ? 'His' : 'Her'}} present monthly compensation are as follows:
+        </p>
         <table style="width: 60%; margin-left: 25%; font-size: 15px">
             <tr>
                 <td style="width: 45%">Basic Salary</td>
@@ -63,8 +70,8 @@
             </tr>
         </table>
         <br>
-        <p style="text-indent: 40px; line-height: 20px">
-            Other Earnings:
+        <p style="text-indent: 40px; line-height: 20px; text-align: justify">
+            Further, {{$employee->sex == 'MALE' ? 'he' : 'she'}} receives the following additional yearly remuneration, viz:
         </p>
         <table style="width: 60%; margin-left: 25%; font-size: 15px" >
         @if(!empty($hrRequest->document_fields['other_incentives']))
@@ -114,7 +121,7 @@
         </p>
         <br><br>
         <div style="overflow: auto">
-            <div style="width: 40%; float: right">
+            <div style="width: 50%; float: right">
                 <p class="text-center">
                     <b>{{$hrRequest->document_fields['signatory_name']}}</b>
                     <br>
@@ -124,11 +131,11 @@
         </div>
 
 
-        <br><br><br><br>
+        <br><br>
 
-        <div style="display:none;">
-            <p class="no-margin text-right" style="font-size: 10px; font-style: italic">FM-AFD-HRS-036, Rev. 00</p>
-            <p class="no-margin text-right" style="font-size: 10px; font-style: italic">Effectivity Date: March 12, 2015</p>
+        <div>
+            <p class="no-margin text-right" style="font-size: 10px;">FM-AFD-HRS-037, Rev. 01</p>
+            <p class="no-margin text-right" style="font-size: 10px;">Effectivity Date: January 8, 2016</p>
         </div>
     </div>
 

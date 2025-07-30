@@ -2,9 +2,9 @@
 
 @section('wrapper')
     <div style="font-family: Cambria; font-size: 16px; margin: 180px 40px 0px 40px">
-        <small>{{$hrRequest->document_fields['memo_code']}}</small>
+        <small>MEMO-VIS-AFD-GAD-HRRS-{{Carbon::parse($hrRequest->document_fields['date'])->format('Y')}}-{{$hrRequest->document_fields['memo_code']}}</small>
         <br><br><br>
-        <p class="text-strong text-center" style="letter-spacing: 4px; font-size: 18px">CERTIFICATE</p>
+        <p class="text-strong text-center" style="letter-spacing: 2px; font-size: 18px">CERTIFICATE OF EMPLOYMENT</p>
         <br><br><br>
         {!!  Str::of($hrRequest->document_fields['first_paragraph'])->replaceFirst('<p>','<p style="text-indent: 40px; line-height: 35px; text-align: justify">') !!}
 
@@ -17,7 +17,7 @@
         </p>
         <br><br>
         <div style="overflow: auto">
-            <div style="width: 40%; float: right">
+            <div style="width: 50%; float: right">
                 <p class="text-center">
                     <b>{{$hrRequest->document_fields['signatory_name']}}</b>
                     <br>
@@ -29,9 +29,9 @@
 
         <br><br><br><br>
 
-       <div style="display:none;">
-           <p class="no-margin text-right" style="font-size: 10px; font-style: italic">FM-AFD-HRS-036, Rev. 00</p>
-           <p class="no-margin text-right" style="font-size: 10px; font-style: italic">Effectivity Date: March 12, 2015</p>
+       <div>
+           <p class="no-margin text-right" style="font-size: 10px;">FM-AFD-HRS-036, Rev. 00</p>
+           <p class="no-margin text-right" style="font-size: 10px;">Effectivity Date: March 12, 2015</p>
        </div>
     </div>
 
