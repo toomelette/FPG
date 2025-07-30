@@ -19,7 +19,7 @@
         <button id="" type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
         <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
             <li href="{{route("dashboard.hr_requests.print_request",$data->slug)}}" class="dropdown-item print-btn-dialog" data="{{$data->slug}}">
-                <i class="fa icon-print"></i> Print Request Form
+                <i class="fa fa-print"></i> Print Request Form
             </li>
         </ul>
     </div>
