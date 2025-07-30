@@ -47,11 +47,13 @@
             @include('_hru.hr-requests.portion-coe')
         @break
         @case('Certificate of Employment and Compensation')
-            @if(Helper::isPermanent($hrRequest->employee_slug))
-                @include('_hru.hr-requests.portion-coe-and-compensation')
-            @else
-                @include('_hru.hr-requests.portion-coe-and-compensation-cos')
-            @endif
+            @include('_hru.hr-requests.portion-coe-and-compensation')
+            @break
+        @case('Certificate of Engagement as COS')
+            @include('_hru.hr-requests.portion-coe-cos')
+            @break
+        @case('Certificate of Engagement as COS with Compensation')
+            @include('_hru.hr-requests.portion-coe-and-compensation-cos')
             @break
     @endswitch
 

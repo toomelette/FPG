@@ -10,7 +10,7 @@
         <br><br>
         {!!  Str::of($hrRequest->document_fields['first_paragraph'])->replaceFirst('<p>','<p style="text-indent: 40px; line-height: 35px; text-align: justify">') !!}
 
-                <br>
+        <br>
         {!!  Str::of($hrRequest->document_fields['purpose_paragraph'])->replaceFirst('<p>','<p style="text-indent: 40px; line-height: 35px; text-align: justify">') !!}
 
         <br>

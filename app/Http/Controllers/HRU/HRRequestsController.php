@@ -90,25 +90,20 @@ class HRRequestsController extends Controller
     {
 
         $hrRequest = HRRequests::query()->findOrFail($slug);
-
+        $request->validate([
+            'memo_code' => 'required',
+            'date' => 'required',
+            'signatory_name' => 'required',
+            'signatory_position' => 'required',
+        ]);
         switch ($hrRequest->document){
             case 'Certificate of Employment':
                 $request->validate([
                     'first_paragraph' => 'required',
                     'purpose_paragraph' => 'required',
-                    'memo_code' => 'required',
-                    'date' => 'required',
-                    'signatory_name' => 'required',
-                    'signatory_position' => 'required',
                 ]);
                 break;
             case 'Certificate of Employment and Compensation':
-                $request->validate([
-                    'memo_code' => 'required',
-                    'date' => 'required',
-                    'signatory_name' => 'required',
-                    'signatory_position' => 'required',
-                ]);
                 //Sanitize Values
                 $request->merge([
                     "monthly_basic" => Helper::sanitizeAutonum($request->monthly_basic, true),
@@ -123,6 +118,18 @@ class HRRequestsController extends Controller
                     }
                     $request->merge(['other_incentives'=> $toMerge]);
                 }
+                break;
+            case 'Certificate of Engagement as COS':
+                $request->validate([
+                    'first_paragraph' => 'required',
+                    'purpose_paragraph' => 'required',
+                ]);
+                break;
+            case 'Certificate of Engagement as COS with Compensation':
+                $request->validate([
+                    'first_paragraph' => 'required',
+                    'purpose_paragraph' => 'required',
+                ]);
                 break;
         }
 
@@ -144,15 +151,17 @@ class HRRequestsController extends Controller
                     'hrRequest' => $hrRequest,
                 ]);
             case 'Certificate of Employment and Compensation':
-                if(Helper::isPermanent($hrRequest->employee_slug)){
-                    return view('printables.hru.hr-requests.coe-and-compensation')->with([
-                        'hrRequest' => $hrRequest,
-                    ]);
-                }else{
-                    return  view('printables.hru.hr-requests.coe-and-compensation-cos')->with([
-                        'hrRequest' => $hrRequest,
-                    ]);
-                }
+                return view('printables.hru.hr-requests.coe-and-compensation')->with([
+                    'hrRequest' => $hrRequest,
+                ]);
+            case 'Certificate of Engagement as COS':
+                return view('printables.hru.hr-requests.coe-cos')->with([
+                    'hrRequest' => $hrRequest,
+                ]);
+            case 'Certificate of Engagement as COS with Compensation':
+                return view('printables.hru.hr-requests.coe-and-compensation-cos')->with([
+                    'hrRequest' => $hrRequest,
+                ]);
             default:
                 abort(504,'Option not defined in switch case statement');
         }

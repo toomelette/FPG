@@ -15,7 +15,7 @@
                 </x-adminkit.html.alert>
                 <div class="row">
                     @php
-                        $firstParagraph = 'This is to certify that <strong>'.($hrRequest->employee->sex == 'MALE' ? 'MR. ' : 'MS. ') .$hrRequest->employee->full['FMiLE'].'</strong> is currently engaged as a Contract of Service (COS) personnel of the Sugar Regulatory Administration, '.\App\Swep\Helpers\Get::headerCity().' City, occupying the position of '.$hrRequest->employee->position.' since '.Helper::dateFormat($hrRequest->employee->firstday_sra,'F d, Y').', to present, with a monthly salary of '.Helper::toNumber($hrRequest->employee->monthly_basic).'.';
+                        $firstParagraph = 'This is to certify that <strong>'.($hrRequest->employee->sex == 'MALE' ? 'MR. ' : 'MS. ') .$hrRequest->employee->full['FMiLE'].'</strong> is currently engaged as a Contract of Service (COS) personnel of the Sugar Regulatory Administration, '.\App\Swep\Helpers\Get::headerCity().' City, occupying the position of '.$hrRequest->employee->position.' since '.Helper::dateFormat($hrRequest->employee->firstday_sra,'F d, Y').', to present.';
                         $payTemplate = \App\Models\HRU\TemplateIncentives::query()->where('employee_slug','=',$hrRequest->employee_slug)->get();
                         $purposeParagraph = 'This certification is issued upon the request of '.($hrRequest->employee->sex == 'MALE' ? 'MR. ' : 'MS. ') .$hrRequest->employee->lastname.' for whatever legal purpose/s it may serve '.($hrRequest->employee->sex == 'MALE' ? 'him' : 'her').' best.'
                     @endphp

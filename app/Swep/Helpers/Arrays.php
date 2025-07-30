@@ -1152,10 +1152,15 @@ class Arrays
         return $arr;
     }
 
-    public static function db($for)
+    public static function db($for,$restrictionLike = null)
     {
         $array = [];
-        $dbOpts = SuOptions::query()->where('for','=',$for)->get();
+        $dbOpts = SuOptions::query()
+            ->where('for','=',$for);
+        if($restrictionLike != null){
+            $dbOpts = $dbOpts->where('restriction','like','%'.$restrictionLike.'%');
+        }
+        $dbOpts = $dbOpts->get();
         foreach ($dbOpts as $dbOpt){
             if(!empty($dbOpt->header)){
                 if(!isset($array[$dbOpt->header])){

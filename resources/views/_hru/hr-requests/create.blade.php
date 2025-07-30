@@ -44,7 +44,7 @@
                                 <p class="text-danger"> Please check if the data above are correct. Put some instructions in the "Details" box if some of the data are inaccurate.</p>
 
                                 <div class="row mt-2">
-                                    <x-forms.select :options="\App\Swep\Helpers\Arrays::db('hr_request_document')" label="What document to request" name="document" cols="12"/>
+                                    <x-forms.select :options="\App\Swep\Helpers\Arrays::db('hr_request_document',Helper::isPermanent(Auth::user()->employee) ? 'PERM' : 'COS')" label="What document to request" name="document" cols="12"/>
                                 </div>
 
                                 <div class="row mt-2">
