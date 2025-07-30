@@ -97,6 +97,7 @@ class HRRequestsController extends Controller
                     'first_paragraph' => 'required',
                     'purpose_paragraph' => 'required',
                     'memo_code' => 'required',
+                    'date' => 'required',
                     'signatory_name' => 'required',
                     'signatory_position' => 'required',
                 ]);
@@ -104,6 +105,9 @@ class HRRequestsController extends Controller
             case 'Certificate of Employment and Compensation':
                 $request->validate([
                     'memo_code' => 'required',
+                    'date' => 'required',
+                    'signatory_name' => 'required',
+                    'signatory_position' => 'required',
                 ]);
                 //Sanitize Values
                 $request->merge([

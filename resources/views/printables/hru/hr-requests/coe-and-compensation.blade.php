@@ -6,7 +6,11 @@
     @endphp
     <div style="font-family: Cambria; font-size: 16px; margin: 150px 40px 0px 40px">
         <small>MEMO-VIS-AFD-GAD-HRRS-{{Carbon::parse($hrRequest->document_fields['date'])->format('Y')}}-{{$hrRequest->document_fields['memo_code']}}</small>
-        <br><br><br>
+        <br>
+        <p style="text-align: right; line-height: 38px">
+            {{Carbon::parse($hrRequest->document_fields['date'])->format('F d, Y')}}
+        </p>
+        <br><br>
         <p class="text-strong text-center" style="letter-spacing: 1px; font-size: 18px">CERTIFICATE OF EMPLOYMENT AND COMPENSATION</p>
         <br><br>
         {!!  Str::of($hrRequest->document_fields['first_paragraph'])->replaceFirst('<p>','<p style="text-indent: 40px; line-height: 20px; text-align: justify">') !!}
@@ -116,9 +120,6 @@
         {!!  Str::of($hrRequest->document_fields['purpose_paragraph'])->replaceFirst('<p>','<p style="text-indent: 40px; line-height: 20px; text-align: justify">') !!}
 
 
-        <p style="text-indent: 40px; line-height: 38px">
-            Done in the City of {{\App\Swep\Helpers\Get::headerCity()}} this {{Helper::ordinal(Carbon::parse($hrRequest->document_fields['date'])->format('d'))}} day of {{Carbon::parse($hrRequest->document_fields['date'])->format('F, Y')}}.
-        </p>
         <br><br>
         <div style="overflow: auto">
             <div style="width: 50%; float: right">
