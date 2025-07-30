@@ -41,6 +41,6 @@
 
 @section('scripts')
     <script type="text/javascript">
-
+        print();
     </script>
 @endsection

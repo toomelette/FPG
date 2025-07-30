@@ -166,4 +166,12 @@ class HRRequestsController extends Controller
                 abort(504,'Option not defined in switch case statement');
         }
     }
+
+    public function printRequest($slug)
+    {
+        $hrRequest = HRRequests::query()->findOrFail($slug);
+        return view('printables.hru.hr-requests.request-form')->with([
+            'hrRequest' => $hrRequest,
+        ]);
+    }
 }
