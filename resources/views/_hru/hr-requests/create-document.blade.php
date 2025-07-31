@@ -41,21 +41,50 @@
             </div>
         </div>
     </x-adminkit.html.card>
+    <style>
+        .cke_top, .cke_bottom {
+            display: none;
+        }
+        .cke_editable {
+            font-size: 24px; /* Match the body font size */
+        }
+    </style>
 
-    @switch($hrRequest->document)
-        @case('Certificate of Employment')
-            @include('_hru.hr-requests.portion-coe')
-        @break
-        @case('Certificate of Employment and Compensation')
-            @include('_hru.hr-requests.portion-coe-and-compensation')
-            @break
-        @case('Certificate of Engagement as COS')
-            @include('_hru.hr-requests.portion-coe-cos')
-            @break
-        @case('Certificate of Engagement as COS with Compensation')
-            @include('_hru.hr-requests.portion-coe-and-compensation-cos')
-            @break
-    @endswitch
+    <div class="row">
+        <div class="col-md-4">
+            @switch($hrRequest->document)
+                @case('Certificate of Employment')
+                    @include('_hru.hr-requests.portion-coe')
+                    @break
+                @case('Certificate of Employment and Compensation')
+                    @include('_hru.hr-requests.portion-coe-and-compensation')
+                    @break
+                @case('Certificate of Engagement as COS')
+                    @include('_hru.hr-requests.portion-coe-cos')
+                    @break
+                @case('Certificate of Engagement as COS with Compensation')
+                    @include('_hru.hr-requests.portion-coe-and-compensation-cos')
+                    @break
+            @endswitch
+        </div>
+        <div class="col-md-8">
+            <div>
+                <x-adminkit.html.card>
+                    <div class="placeholder-container mt-5 pt-5 pb-5 mb-5" style="{{empty($hrRequest->document_fields) ? '' : 'display:none;'}} ">
+                        <div class="text-center">
+                            <h1 class="display-1 fw-bold text-muted"><i class="fa fa-print"></i></h1>
+                            <p class="lead fw-normal mt-3 mb-4">Print Preview</p>
+                        </div>
+                    </div>
+                    <div class="print-container" style="{{!empty($hrRequest->document_fields) ? '' : 'display:none;'}} ">
+                        <button class="btn btn-sm btn-secondary float-end print-btn" type="button"><i class="fa fa-print"></i> Print</button>
+                        <iframe src="{{empty($hrRequest->document_fields) ? '' : route('dashboard.hr_requests.print',$hrRequest->slug)}}" class="print-iframe" style="width: 100%; height: 1000px"></iframe>
+                    </div>
+                </x-adminkit.html.card>
+            </div>
+        </div>
+    </div>
+
 
 @endsection
 

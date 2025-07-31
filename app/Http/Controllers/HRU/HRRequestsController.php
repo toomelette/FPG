@@ -66,6 +66,11 @@ class HRRequestsController extends Controller
                         'data' => $data,
                     ]);
                 })
+                ->editColumn('status',function ($data){
+                    return view('_hru.hr-requests.dtStatus')->with([
+                        'data' => $data,
+                    ]);
+                })
                 ->escapeColumns([])
                 ->setRowId('slug')
                 ->toJson();
@@ -133,8 +138,9 @@ class HRRequestsController extends Controller
                 break;
         }
 
-
+        $hrRequest->status = 'ON PROCESS';
         $hrRequest->document_fields = $request->all();
+
         if($hrRequest->save()){
             return [
                 'link' => route('dashboard.hr_requests.print',$hrRequest->slug),
@@ -173,5 +179,25 @@ class HRRequestsController extends Controller
         return view('printables.hru.hr-requests.request-form')->with([
             'hrRequest' => $hrRequest,
         ]);
+    }
+
+    public function edit($slug)
+    {
+        $hrRequest = HRRequests::query()->findOrFail($slug);
+        return view('_hru.hr-requests.edit')->with([
+            'hrRequest' => $hrRequest,
+        ]);
+    }
+    public function update(Request $request, $slug)
+    {
+        $request->validate([
+            'status' => 'required',
+        ]);
+        $hrRequest = HRRequests::query()->findOrFail($slug);
+        $hrRequest->status = $request->status;
+        if($hrRequest->update()){
+            return $hrRequest->only('slug');
+        }
+        abort(503,'Error updating status.');
     }
 }

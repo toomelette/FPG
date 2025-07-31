@@ -15,6 +15,17 @@ class HRRequests extends Model
             $a->user_updated = \Auth::user()->user_id;
             $a->ip_updated = request()->ip();
             $a->updated_at = \Carbon::now();
+            $statusCollection = collect($a->status_trail);
+            $theSameStatus = $statusCollection->where('status',$a->status)->keys();
+            $statusCollection->forget($theSameStatus);
+            $statusArray = $statusCollection->toArray();
+            $statusArray[] = [
+                'timestamp' => \Carbon::now(),
+                'status' => $a->status,
+                'user' => \Auth::user()->user_id,
+            ];
+
+            $a->status_trail = $statusArray;
         });
 
         static::creating(function ($a){
@@ -22,6 +33,13 @@ class HRRequests extends Model
             $a->ip_created = request()->ip();
             $a->created_at = \Carbon::now();
             $a->project_id = \Auth::user()->project_id;
+            $a->status = 2;
+            $statusArray = $a->status_trail;
+            $statusArray[] = [
+                'timestamp' => Carbon::now(),
+                'status' => $a->status,
+                'user' => $a->user_created,
+            ];
         });
     }
     protected $table = 'hr_requests';
@@ -30,6 +48,7 @@ class HRRequests extends Model
 
     protected $casts = [
         'document_fields' => 'array',
+        'status_trail' => 'array',
     ];
 
     /** RELATIONSHIPS */

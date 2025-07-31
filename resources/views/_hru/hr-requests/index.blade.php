@@ -13,6 +13,7 @@
                     <th>Requester</th>
                     <th>Requested Document</th>
                     <th>Tracking No.</th>
+                    <th>Staus</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -25,13 +26,13 @@
 
 
 @section('modals')
-
+    <x-adminkit.html.modal id="update-status-modal" size="lg"/>
 @endsection
 
 @section('scripts')
     <script type="text/javascript">
         let active = '';
-        logsTbl = $("#logs-table").DataTable({
+        requestsTbl = $("#logs-table").DataTable({
             dom : 'lBfrtip',
             processing: true,
             serverSide: true,
@@ -41,6 +42,7 @@
                 {data: 'employee.full.LFEMi', name: 'employee.fullname'},
                 {data: 'document', name: 'document'},
                 {data: 'tracking_no', name: 'tracking_no'},
+                {data: 'status', name: 'status'},
                 {data: 'action', name: 'action'}
             ],
             buttons: [
@@ -60,13 +62,13 @@
                 $('#'+settings.sTableId+'_filter input').unbind();
                 $('#'+settings.sTableId+'_filter input').bind('keyup', function (e) {
                     if (e.keyCode == 13) {
-                        logsTbl.search(this.value).draw();
+                        requestsTbl.search(this.value).draw();
                     }
                 });
 
                 @if(\Illuminate\Support\Facades\Request::get('toPage') != null && \Illuminate\Support\Facades\Request::get('mark') != null)
                 setTimeout(function () {
-                    logsTbl.page({{\Illuminate\Support\Facades\Request::get('toPage')}}).draw('page');
+                    requestsTbl.page({{\Illuminate\Support\Facades\Request::get('toPage')}}).draw('page');
                     active = '{{\Illuminate\Support\Facades\Request::get("mark")}}';
                     toast('info','Leave application successfully updated..','Updated!');
                     window.history.pushState({}, document.title, "/dashboard/leave_application/user_index");
@@ -80,5 +82,24 @@
             }
         })
 
+        $("body").on("click",".update-status-btn",function () {
+            let btn = $(this);
+            load_modal2(btn);
+            let uri = '{{route("dashboard.hr_requests.edit","slug")}}';
+            uri = uri.replace('slug',btn.attr('data'));
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
     </script>
 @endsection

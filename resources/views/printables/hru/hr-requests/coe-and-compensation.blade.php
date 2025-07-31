@@ -144,6 +144,8 @@
 
 @section('scripts')
     <script type="text/javascript">
+        @if(\Illuminate\Support\Facades\Request::has('autoPrint') && \Illuminate\Support\Facades\Request::get('autoPrint') == true)
         print();
+        @endif
     </script>
 @endsection
