@@ -78,6 +78,43 @@ class HRRequestsController extends Controller
         return view('_hru.hr-requests.index');
     }
 
+    public function myIndex(Request $request)
+    {
+        if($request->ajax() && $request->has('draw')){
+            $hrRequests = HRRequests::query()
+                ->with([
+                    'employee',
+                ])
+                ->my();
+            return DataTables::of($hrRequests)
+                ->editColumn('created_at',function($data){
+                    return Carbon::parse($data->created_at)->format('M d, Y | h:i A');
+                })
+                ->addColumn('action',function($data){
+                    return view('_hru.hr-requests.my-dtActions')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->editColumn('tracking_no',function ($data){
+                    return '<code style="font-size:15px">'.$data->tracking_no.'</code>';
+                })
+                ->editColumn('document',function ($data){
+                    return view('_hru.hr-requests.dtDocument')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->editColumn('status',function ($data){
+                    return view('_hru.hr-requests.dtStatus')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->escapeColumns([])
+                ->setRowId('slug')
+                ->toJson();
+        }
+        return view('_hru.hr-requests.my-index');
+    }
+
     public function show()
     {
 
@@ -199,5 +236,13 @@ class HRRequestsController extends Controller
             return $hrRequest->only('slug');
         }
         abort(503,'Error updating status.');
+    }
+
+    public function showTimeline($slug)
+    {
+        $hrRequest = HRRequests::query()->findOrFail($slug);
+        return view('_hru.hr-requests.show-timeline')->with([
+            'hrRequest' => $hrRequest,
+        ]);
     }
 }

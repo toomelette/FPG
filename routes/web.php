@@ -107,6 +107,8 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('/document_request/{slug}/print',[\App\Http\Controllers\RECORDS\DocumentRequestsController::class,'print'])->name('document_request.print');
     Route::get('/leave_application/{slug}/print', 'LeaveApplicationController@print')->name('leave_application.print');
     Route::resource('leave_application', 'LeaveApplicationController')->only(['edit','update','store','create','destroy']);
+    Route::get('hr_requests/my',[\App\Http\Controllers\HRU\HRRequestsController::class,'myIndex'])->name('hr_requests.my_index');
+    Route::get('hr_requests/{slug}/showTimeline',[\App\Http\Controllers\HRU\HRRequestsController::class,'showTimeline'])->name('hr_requests.show_timeline');
 });
 
 

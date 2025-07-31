@@ -4,7 +4,9 @@ namespace App\Models\HRU;
 
 
 use App\Models\Employee;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class HRRequests extends Model
 {
@@ -55,5 +57,12 @@ class HRRequests extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class,'employee_slug','slug');
+    }
+
+
+    /** Scopes */
+    public function scopeMy(Builder $builder)
+    {
+        $builder->where('user_created','=',Auth::user()->user_id);
     }
 }
