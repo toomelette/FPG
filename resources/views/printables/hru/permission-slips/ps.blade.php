@@ -48,11 +48,11 @@
                             <tr class=" b-bottom b-left b-right">
                                 <td style="width: 20%">Date validity:</td>
                                 <td style="width: 20%;">{{Carbon::make($ps->date)->format('m/d/Y')}}</td>
-                                <td>
-                                    <span style="font-size: 15px">{{$ps->personal_official == 'PERSONAL' ? '☑' : '☐'}}</span> Personal
+                                <td style="width: 10%;">
+                                    <div class="hidden"><span style="font-size: 15px">{{$ps->personal_official == 'PERSONAL' ? '☑' : '☐'}}</span> Personal</div>
                                 </td>
-                                <td>
-                                    <span style="font-size: 15px">{{$ps->personal_official == 'OFFICIAL' ? '☑' : '☐'}}</span> Official
+                                <td style="width: 10%;">
+                                    <div class="hidden"><span style="font-size: 15px">{{$ps->personal_official == 'OFFICIAL' ? '☑' : '☐'}}</span> Official</div>
                                 </td>
                                 <td style="width: 10%">
 

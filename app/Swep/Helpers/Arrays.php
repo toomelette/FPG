@@ -1109,8 +1109,8 @@ class Arrays
         return [
             'SRA Vehicle' => 'SRA Vehicle',
             'Taxi' => 'Taxi',
-            'PUJ/s' => 'PUJ/s',
-            'Own Vehicle' => 'Own Vehicle',
+            'Other PUV/s' => 'Other PUV/s',
+//            'Own Vehicle' => 'Own Vehicle',
         ];
     }
     public static function jobClassifications()
