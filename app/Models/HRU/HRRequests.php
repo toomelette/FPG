@@ -38,7 +38,7 @@ class HRRequests extends Model
             $a->status = 2;
             $statusArray = $a->status_trail;
             $statusArray[] = [
-                'timestamp' => Carbon::now(),
+                'timestamp' => \Carbon::now(),
                 'status' => $a->status,
                 'user' => $a->user_created,
             ];
