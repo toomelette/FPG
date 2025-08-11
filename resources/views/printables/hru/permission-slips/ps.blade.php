@@ -16,7 +16,7 @@
                     <div>
                         <table style="width: 100%; font-size: 14px" class="b-top b-bottom b-left b-right">
                             <tr>
-                                <td style="width: 30%"  rowspan="2">
+                                <td style="width: 34%"  rowspan="2">
                                     <img src="{{asset('images/sra.png')}}" style="width: 100px; float: right">
                                 </td>
                                 <td class="text-center" style="width: 40%;" rowspan="2">
@@ -29,17 +29,23 @@
                                     </span>
 
                                     <b>REVISED PERMISSION SLIP FORM</b> <br>
-                                    <span style="font-size: 11px">(Effective 02/14/2025)</span>
+                                    <span style="font-size: 11px">(Effective 12/02/08)</span>
                                 </td>
                                 <td class="text-right text-top">
-                                    <small><span>{{$ps->ps_no}}</span></small>
+                                    {{\SimpleSoftwareIO\QrCode\Facades\QrCode::size(50)->generate($ps->ps_no)}} <br>
+                                    <small><span style="font-size: 10px">{{$ps->ps_no}}</span></small>
                                 </td>
 
                             </tr>
                             <tr>
                                 <td class="text-bottom text-right"  style="font-size: 12px">
-                                    @if($ps->personal_official == 'PERSONAL')
-                                        PS. No <u><b>{{$ps->ps_frequency}}</b></u> for the Month of <u><b>{{Carbon::make($ps->date)->format('M Y')}}</b></u>
+{{--                                    @if($ps->personal_official == 'PERSONAL')--}}
+{{--                                        PS. No <u><b>{{$ps->ps_frequency}}</b></u> for the Month of <u><b>{{Carbon::make($ps->date)->format('M Y')}}</b></u>--}}
+{{--                                    @endif--}}
+                                    @if($ps->personal_official == 'PERSONAL' && $ps->ps_frequency > 0)
+                                        @for($f = 0; $f < $ps->ps_frequency; $f++)
+                                            <span style="font-size: 8px">●</span>
+                                        @endfor
                                     @endif
                                 </td>
                             </tr>
@@ -154,8 +160,8 @@
                             </tr>
                         </table>
                         <div class="text-right" style="font-size: 10px">
-                            AFD-VIS-HRS-01 <br>
-                            Effectivity date: Feb. 14, 2025
+                            AFD-VIS-HRS-018 Rev. 00 <br>
+                            Effectivity date: Mar. 12, 2015
                         </div>
                     </div>
                     @if($i % 2 == 0)
