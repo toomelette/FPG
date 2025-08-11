@@ -285,29 +285,28 @@ class MonthlyPayrollService
        */
 
         $taxesArr = [];
-        $taxPriority = Deductions::query()->where('deduction_code','=','WTAX')->first()->n_priority ?? null;
+        $code = 'WTAX';
+        $taxPriority = Deductions::query()->where('deduction_code','=',$code)->first()->n_priority ?? null;
         foreach ($payrollMaster->payrollMasterEmployees as $employeeFromList){
 
-
-            $employee = $employeeFromList->employee;
-            $totalPreTaxDeduction = $employeeFromList->employeePayrollDetailsDeductions->sum('non_taxable_amount');
-
-
-            $tax = Helper::computeTax(
-                $employee->templateIncentives->where('incentive_code','MONTHLY')->first()->amount ?? 0,
-                $totalPreTaxDeduction
-            );
+            //if tax has already been edited, do not proceed to compute, use the user input values instead.
+            if(array_search($code,$employeeFromList->has_been_edited ?? []) === false){
+                $employee = $employeeFromList->employee;
+                $totalPreTaxDeduction = $employeeFromList->employeePayrollDetailsDeductions->sum('non_taxable_amount');
 
 
+                $tax = Helper::computeTax(
+                    $employee->templateIncentives->where('incentive_code','MONTHLY')->first()->amount ?? 0,
+                    $totalPreTaxDeduction
+                );
 
-            array_push($taxesArr,[
-                'employee_slug' => $employee->slug,
-                'deduction_code' => 'WTAX',
-                'amount' => $tax,
-                'priority' => $taxPriority,
-            ]);
-
-
+                $taxesArr[] = [
+                    'employee_slug' => $employee->slug,
+                    'deduction_code' => 'WTAX',
+                    'amount' => $tax,
+                    'priority' => $taxPriority,
+                ];
+            }
         }
 
         //Push updates to Payroll Template
@@ -1218,6 +1217,7 @@ class MonthlyPayrollService
             ->where('employee_slug',$request->employee_slug)
             ->where('deduction_code','=',$request->code)
             ->first();
+
         /*
                 $check = false;
                 if($td){
@@ -1245,7 +1245,15 @@ class MonthlyPayrollService
         $payMasterEmployee = PayrollMasterEmployees::query()->find($request->pay_master_employee_listing_slug);
         $payMasterSlug = $payMasterEmployee->pay_master_slug;
 
+        $hasBeenEdited = $payMasterEmployee->has_been_edited ?? [];
+        if(array_search($request->code,$hasBeenEdited) === false){
+            $hasBeenEdited[] = $request->code;
+            $payMasterEmployee->has_been_edited = $hasBeenEdited;
+            $payMasterEmployee->save();
+        }
 
+
+        return $this->recompute($payMasterSlug,$payMasterEmployee->slug,['PHIC']);
         if($updateOrCreate){
             return $this->recompute($payMasterSlug,$payMasterEmployee->slug,['PHIC']);
         }

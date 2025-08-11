@@ -19,6 +19,7 @@ class PayrollMasterEmployees extends Model
 
     protected $casts = [
             'saved_employee_data' => 'array',
+            'has_been_edited' => 'array',
         ];
     public function payrollMaster(){
         return $this->belongsTo(PayrollMaster::class,'payroll_master_slug','slug');

@@ -668,3 +668,7 @@ td.w-25p{
 .hide-this{
     display: none !important;
 }
+
+.deduction-edited{
+    color: #ed6200 !important;
+}

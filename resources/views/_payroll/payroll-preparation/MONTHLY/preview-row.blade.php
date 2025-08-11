@@ -12,12 +12,10 @@
 </td>
 
 @forelse($groupedDeductions as $ded => $null)
-
     @php
         $deduction = $employee->employeePayrollDetails->where('code',$ded)->first();
     @endphp
-
-    <td class="text-end {{($deduction->deduction->non_edit ?? null) == 1 ? '' : 'editable-dtr edit-deduction'}} " data="{{$deduction->slug ?? null}}" deduction-code="{{$ded ?? ''}}" data-bs-toggle="modal" data-bs-target="#edit-deduction-modal">
+    <td class="text-end {{($deduction->deduction->non_edit ?? null) == 1 ? '' : 'editable-dtr edit-deduction'}} {{array_search($ded,$employee->has_been_edited ?? []) !== false ? 'deduction-edited' : ''}}" data="{{$deduction->slug ?? null}}" deduction-code="{{$ded ?? ''}}" data-bs-toggle="modal" data-bs-target="#edit-deduction-modal">
         {{Helper::toNumber($deduction->amount ?? null,2)}}
     </td>
 @empty
