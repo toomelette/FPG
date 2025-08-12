@@ -223,6 +223,13 @@
                                                     @endif
                                                 </td>
                                                 @break
+                                            @case('employee_no')
+                                                <td>
+                                                    @if(!empty($division->incumbentEmployee))
+                                                        {{$division->incumbentEmployee->employee_no}}
+                                                    @endif
+                                                </td>
+                                                @break
                                             @default
                                                 <td class="">{{$division->$column}}</td>
                                                 @break
@@ -310,6 +317,13 @@
                                                             @endif
                                                         </td>
                                                         @break
+                                                    @case('employee_no')
+                                                        <td>
+                                                            @if(!empty($section->incumbentEmployee))
+                                                                {{$section->incumbentEmployee->employee_no}}
+                                                            @endif
+                                                        </td>
+                                                        @break
                                                     @default
                                                         <td class="">{{$section->$column}}</td>
                                                         @break
@@ -391,6 +405,13 @@
                                                                     @foreach($item->incumbentEmployee->employeeEligibility as $elig)
                                                                         {{$elig?->eligibility}};
                                                                     @endforeach
+                                                                @endif
+                                                            </td>
+                                                            @break
+                                                        @case('employee_no')
+                                                            <td>
+                                                                @if(!empty($item->incumbentEmployee))
+                                                                    {{$item->incumbentEmployee->employee_no}}
                                                                 @endif
                                                             </td>
                                                             @break
