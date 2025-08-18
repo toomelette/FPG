@@ -49,3 +49,9 @@ Route::group(['middleware' => ['auth:api'], 'prefix' => 'dtr-qc'],function (){
     });
 });
 
+Route::group(['middleware' => ['auth:api'], 'prefix' => 'dtr-lgarec'],function (){
+    Route::controller(App\Http\Controllers\Api\DTR\LgarecDtrController::class)->group(function (){
+        Route::post('store','store');
+    });
+});
+
