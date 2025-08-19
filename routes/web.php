@@ -75,7 +75,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('/permission_slip/{slug}/batch_print', [\App\Http\Controllers\PermissionSlipController::class,'batchPrint'])->name('permission_slip.batch_print');
     Route::get('/permission_slip/my', [\App\Http\Controllers\PermissionSlipController::class,'my'])->name('permission_slip.my');
     Route::get('/permission_slip/{slug}/print', [\App\Http\Controllers\PermissionSlipController::class,'print'])->name('permission_slip.print');
-    Route::resource('permission_slip', 'PermissionSlipController');
+    Route::resource('permission_slip', 'PermissionSlipController')->only(['create','store','destroy','edit','update']);
 
 
     Route::resource('time_keeping', \App\Http\Controllers\HRU\TImeKeepingController::class);
@@ -327,12 +327,13 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
 
 	/** Permission Slip **/
-
-	Route::get('/permission_slip/report', 'PermissionSlipController@report')->name('permission_slip.report');
+    Route::patch('/permission_slip/{slug}/update_time_via_scan', 'PermissionSlipController@updateTimeOutViaScan')->name('permission_slip.update-time-via-scan');
+    Route::get('/permission_slip/log', 'PermissionSlipController@scan')->name('permission_slip.log');
+    Route::get('/permission_slip/report', 'PermissionSlipController@report')->name('permission_slip.report');
 	Route::get('/permission_slip/report_generate', 'PermissionSlipController@reportGenerate')->name('permission_slip.report_generate');
     Route::get('/permission_slip/{slug}/update_time',[\App\Http\Controllers\PermissionSlipController::class,'editTime'])->name('permission_slip.update_time');
     Route::patch('/permission_slip/{slug}/update_time',[\App\Http\Controllers\PermissionSlipController::class,'updateTime'])->name('permission_slip.update_time');
-
+    Route::resource('permission_slip', 'PermissionSlipController')->only(['index']);
 
 
 	/** Leave Card **/

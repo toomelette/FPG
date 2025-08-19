@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Hru\PSUpdateTimeFormRequest;
 use App\Models\Employee;
 use App\Models\HRU\PS;
+use App\Models\PermissionSlip;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\HRU\PSService;
 use App\Swep\Services\PermissionSlipService;
@@ -67,6 +68,41 @@ class PermissionSlipController extends Controller{
     
     }
 
+    public function scan(Request $request)
+    {
+        if($request->ajax() && $request->has('scan') && $request->scan == true){
+            return  $this->scannedData($request);
+        }
+        return view('_hru.permission-slips.scan');
+    }
+
+    public function scannedData(Request $request)
+    {
+        $psNo = $request->ps_no;
+        $ps = PS::query()
+            ->where('ps_no','=',$psNo)
+            ->first();
+        return view('_hru.permission-slips.update-in-out')->with([
+            'ps' => $ps,
+        ]);
+    }
+
+    public function updateTimeOutViaScan(Request $request)
+    {
+        $ps = PS::query()->findOrFail($request->slug);
+        if($request->type == 'departure'){
+            $ps->departure = Carbon::now();
+            $ps->user_updated_departure = Auth::user()->user_id;
+        }
+        if($request->type == 'return'){
+            $ps->return = Carbon::now();
+            $ps->user_updated_return = Auth::user()->user_id;
+        }
+        if($ps->save()){
+            return $ps->only('slug');
+        }
+        abort(503,'Error updating PS.');
+    }
     public function my(Request $request)
     {
         if($request->ajax() && $request->has('draw')){
