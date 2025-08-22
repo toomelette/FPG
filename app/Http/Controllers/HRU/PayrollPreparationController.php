@@ -768,6 +768,10 @@ class PayrollPreparationController
             case 'DEDUCTION-REGISTER':
                 return $this->monthlyPayrollService->deductionRegister($slug);
                 break;
+            case 'DISTRIBUTION-SHEET':
+                return $this->monthlyPayrollService->distributionSheet($slug);
+
+
             case 'HAZARDPRC':
                 return  $this->hazardPrcService->printPayroll($slug);
             case 'HAZARDPRC-ABSTRACT':

@@ -496,12 +496,16 @@ class Arrays
     }
 
     public static function respCodeList(){
-        $rcs = PPURespCodes::query()->get();
+        $rcs = PPURespCodes::query()
+            ->with(['description'])
+            ->get();
         $arr = [];
         foreach ($rcs as $rc){
             $arr[$rc->rc_code] = [
+                'alias' => $rc->alias,
                 'dept_alias' => $rc->description->name,
                 'dept' => $rc->department,
+                'desc' => $rc->desc,
                 'div' => $rc->division,
                 'sec' => $rc->section,
             ];

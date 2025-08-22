@@ -773,237 +773,6 @@ Route::get('/leaveTest',function (\App\Swep\Services\HRU\LeaveCreditService $lea
 });
 
 
-Route::get('/ping',function (){
-    ini_set('max_execution_time', 500);
-    $threeOctet = '10.36.7.';
-    $activeIps = [];
-    $inactiveIps = [];
-    $min = 1;
-    $max = 255;
-    for ($x = $min;$x <= $max; $x++){
-        $host = $threeOctet.$x;
-
-        $ping = new \JJG\Ping($host,32,1);
-        $latency = $ping->ping();
-        if ($latency !== false) {
-            $activeIps[] = $host;
-//            print 'Latency is ' . $latency . ' ms';
-        }
-        else {
-            $inactiveIps[] = $host;
-//            print 'Host could not be reached.';
-        }
-    }
-
-    $insert = [];
-    $batch = Str::random();
-    if(count($activeIps) > 0){
-        foreach ($activeIps as $activeIp){
-            $converted = Str::of($activeIp)->replaceFirst('.','=')->replaceFirst('.','*')->replaceFirst('.','#');
-
-            $insert[] = [
-                'ip_address' => $activeIp,
-                'octet1' => $converted->before('='),
-                'octet2' => $converted->between('=','*'),
-                'octet3' => $converted->between('*','#'),
-                'octet4' => $converted->afterLast('#'),
-                'remarks' => $batch,
-            ];
-        }
-    }
-    \App\Models\SU\SuActiveIpAddress::query()->insert($insert);
-    dd($insert);
-
-//    $ping = new \JJG\Ping($host);
-//    $latency = $ping->ping();
-//    if ($latency !== false) {
-//        print 'Latency is ' . $latency . ' ms';
-//    }
-//    else {
-//        print 'Host could not be reached.';
-//    }
-});
-
-
-
-Route::get('/getHRRS',function (){
-    $client = new \GuzzleHttp\Client(['base_uri' => 'http://localhost:8001/api/employees/getByEmployeeNo/KDD224']);
-
-    //THIS TOKEN MUST BE FROM THE ONE SAVED IN THE DB
-    $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEvYXBpL2xvZ2luIiwiaWF0IjoxNzE4ODY3MDc1LCJleHAiOjE3MTg4NzA2NzUsIm5iZiI6MTcxODg2NzA3NSwianRpIjoiRFFaeHhsTmx4QzVBVEluRCIsInN1YiI6IjEiLCJwcnYiOiI0MGE5N2ZjYTJkNDI0ZTc3OGEwN2EwYTJmMTJkYzUxN2E4NWNiZGMxIn0.JgY21NuwtT5PMYqGYzt-FQoitvLjg8iMOOPuN0oJ5JI';
-
-    $headers = [
-        'Accept'        => 'application/json',
-        'Content-type' => 'application/json',
-    ];
-
-
-    try {
-        //ADD TOKEN TO THE HEADER:
-        $headers['Authorization'] = 'Bearer ' . $token;
-
-        // Make a GET request
-        $response = $client->get('',[
-            'headers' => $headers,
-        ]);
-        // Get the response body as an array
-        $data = json_decode($response->getBody(), true);
-
-        dd($data);
-
-    } catch (\Exception $e) {
-        // Handle any errors that occur during the API request
-        // If unauthorized or token expired then login:
-        if($e->getCode() == 401){
-
-            $login = new \GuzzleHttp\Client(['base_uri' => 'http://localhost:8001/api/login']);
-            $response = $login->post('',[
-                'form_params' => [
-                    'username' => 'gjg021',
-                    'password' => 'admin12345',
-                    'headers' => $headers,
-                ],
-            ]);
-            //If login is OK:
-            if($response->getStatusCode() == 200){
-                //This is the new token generated after login:
-                $newToken = json_decode($response->getBody(),true)['authorization']['token'];
-                //Insert a code here to save the token to the DB for future use:
-
-                //Perform the request again:
-                $headers['Authorization'] = 'Bearer ' . $newToken;
-                $response = $client->get('',[
-                    'headers' => $headers,
-                ]);
-                // Get the response body as an array
-                $data = json_decode($response->getBody(), true);
-                dd($data);
-            }
-        }else{
-            dd('Else');
-        }
-    }
-});
-
-Route::get('recoverDtrFromSQL',function(){
-    $temps = \App\Models\Temp\DTRTemp::query()->get();
-    $dtrs = [];
-    foreach ($temps as $temp){
-        $dateTime = Carbon::createFromFormat('d/m/Y h:i A', $temp->sTime);
-        $dtrs[$dateTime->format('Y-m-d')][$temp->Name] = [
-            10 => null,
-            20 => null,
-            30 => null,
-            40 => null,
-        ];
-    }
-
-    foreach ($temps as $temp){
-        $dateTime = Carbon::createFromFormat('d/m/Y h:i A', $temp->sTime);
-
-        $numberVal = $dateTime->format('Hi') * 1;
-        if($numberVal < 1000){
-            $dtrs[$dateTime->format('Y-m-d')][$temp->Name][10] = $dateTime->format('Y-m-d H:i:s');
-        }elseif($numberVal > 1350){
-            $dtrs[$dateTime->format('Y-m-d')][$temp->Name][40] = $dateTime->format('Y-m-d H:i:s');
-        }else{
-            if($dtrs[$dateTime->format('Y-m-d')][$temp->Name][20] != null){
-                $dtrs[$dateTime->format('Y-m-d')][$temp->Name][30] = $dateTime->format('Y-m-d H:i:s');
-            }else{
-                $dtrs[$dateTime->format('Y-m-d')][$temp->Name][20] = $dateTime->format('Y-m-d H:i:s');
-            }
-        }
-    }
-    $insert = [];
-    foreach (collect($dtrs)->dot() as $key=>$item) {
-        if($item != null){
-        $keyStr = Str::of($key);
-        $date = $keyStr->before('.');
-        $bmUserId = $keyStr->betweenFirst('.','.');
-        $type = $keyStr->afterLast('.');
-        $timestamp = $item;
-        $insert[] = [
-            'uid' => rand(11111,99999),
-            'user' => $bmUserId,
-            'state' => 1,
-            'type' => $type,
-            'timestamp' => $timestamp,
-            'device' => '0348143100075',
-            'created_at' => Carbon::now(),
-            'location' => 'UUU',
-        ];
-        }
-    }
-    \App\Models\DTR::query()->insert($insert);
-});
-
-
-Route::get('createLgarecUsers',function (){
-    $emps = \App\Models\Employee::query()
-        ->whereDoesntHave('user')
-        ->active()
-        ->vis()
-        ->limit(20)
-        ->get();
-    $usersArray = [];
-    $batchId = Str::random(5);
-    foreach ($emps as $emp){
-
-        $usersArray[] = [
-            'slug' => Str::random(),
-            'employee_slug' => $emp->slug,
-            'user_id' => strtoupper(Str::random(10)),
-            'email' => null,
-            'username' => $emp->employee_no,
-            'password' => Hash::make(Carbon::parse($emp->date_of_birth)->format('mdy')),
-            'lastname' => $emp->lastname,
-            'firstname' => $emp->firstname,
-            'middlename' => $emp->middlename,
-            'is_activated' => 1,
-            'color' => 'skin-green sidebar-mini',
-            'user_created' => 'SYSTEM-'.$batchId,
-            'employee_no' => $emp->employee_no,
-            'project_id' => 1,
-        ];
-    }
-    \App\Models\User::query()->insert($usersArray);
-    dd($usersArray);
-});
-
-Route::get('plantillaClassifications',function (){
-    $tempClass = DB::table('hr_plantilla_class_temp')
-        ->get();
-    $plantilla = \App\Models\HRPayPlanitilla::query()->get();
-    $toInsert = [];
-    $noFound = [];
-    foreach ($plantilla as $plan){
-        $findThisPosition = Str::of($plan->position);
-        $findThisPosition = $findThisPosition
-            ->replace('*','')
-            ->replace('(Co-Terminus)','')
-            ->trim()
-            ->toString();
-        $results = $tempClass->where('position','=',$findThisPosition);
-        if($results->count() > 0){
-            foreach ($results as $result){
-                $toInsert[] = [
-                    'item_no' => $plan->item_no,
-                    'classification' => $result->class,
-                ];
-            }
-        }else{
-            $noFound[] = [
-                'item_no' => $plan->item_no,
-                'position' => $findThisPosition,
-            ];
-        }
-    }
-    \App\Models\HRU\HrPlantillaClassification::query()->insert($toInsert);
-    dd($toInsert);
-   dd(1);
-
-
-});
 
 Route::get('/checkBlankDtr',function (){
     $start = 2000;
@@ -1043,4 +812,44 @@ Route::get('/checkBlankDtr',function (){
     }
 
     dd($slugs);
+});
+
+Route::get('/updateBMID',function (){
+    $qc = \App\Models\QC\Employee::query()
+        ->where('biometric_user_id','!=',0)
+        ->get();
+
+    $bacolod = \App\Models\Employee::query()->get();
+
+    $nonEx = [];
+    foreach ($qc as $q){
+        //check slug
+        $empB = $bacolod
+            ->where('slug','=',$q->slug)
+            ->first();
+        if (empty($empB)){
+            $empBB = $bacolod
+                ->where('lastname','=',$q->lastname)
+                ->where('firstname','=',$q->firstname)
+                ->first();
+            if(empty($empBB)){
+                $nonEx[] = $q->firstname.' '.$q->lastname;
+            }else{
+                if($empBB->biometric_user_id == 0){
+                    $empBB->biometric_user_id = $q->biometric_user_id;
+                    $empBB->save();
+                }
+
+            }
+        }else{
+            if($empB->biometric_user_id == 0) {
+                $empB->biometric_user_id = $q->biometric_user_id;
+                $empB->save();
+            }
+        }
+
+    }
+    dd($nonEx);
+
+    return 1;
 });

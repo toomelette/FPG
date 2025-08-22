@@ -143,7 +143,7 @@ class DTRController extends  Controller
                 })
                 ->escapeColumns([])
                 ->setRowId('slug')
-                ->make(true);
+                ->toJson();
 
 
         }

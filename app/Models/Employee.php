@@ -476,7 +476,7 @@ class Employee extends Model{
         return $this->hasMany(DTR::class,'user','biometric_user_id');
     }
     public function lastRawDtrRecord(){
-        return $this->hasOne(DTR::class,'user','biometric_user_id')->orderBy('timestamp','desc');
+        return $this->hasOne(DTR::class,'user','biometric_user_id')->orderBy('timestamp','desc')->limit(1);
     }
 
     public function empMaster(){

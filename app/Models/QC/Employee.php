@@ -19,7 +19,7 @@ class Employee extends Model{
 
     protected static function booted()
     {
-        static::addGlobalScope(new QCEmployeeScope());
+//        static::addGlobalScope(new QCEmployeeScope());
     }
 
 	use Sortable, LogsActivity;
