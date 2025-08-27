@@ -12,7 +12,7 @@
     <div style="font-family: Cambria; font-size: 16px">
         <div style="break-after: page">
             <div class="clearfix">
-                <img src="{{asset('images/sra.png')}}" style="width: 60px; float: left; margin-right: 15px;">
+                <img src="{{base_path('/public/images/sra.png')}}" style="width: 60px; float: left; margin-right: 15px;">
                 <p class="no-margin text-left" style="font-size: 14px"> <b>SUGAR REGULATORY ADMINISTRATION</b></p>
                 <p class="no-margin text-left" style="font-size: 12px;"> {{\App\Swep\Helpers\Get::headerAddress()}}</p>
             </div>
