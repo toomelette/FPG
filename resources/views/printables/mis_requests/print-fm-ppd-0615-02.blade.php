@@ -113,13 +113,9 @@
                                 <td colspan="2" style="padding-top: 5px">Recommendation (if any)</td>
                             </tr>
                             <tr>
-                                <td colspan="2" class="b-bottom"><br></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="b-bottom"><br></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="b-bottom"><br></td>
+                                <td colspan="2" class="b-bottom" style="height: 60px">
+                                    {{$r->recommendations}}
+                                </td>
                             </tr>
 
                             </tbody>
@@ -257,13 +253,9 @@
                                 <td colspan="2" style="padding-top: 5px">Recommendation (if any)</td>
                             </tr>
                             <tr>
-                                <td colspan="2" class="b-bottom"><br></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="b-bottom"><br></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="b-bottom"><br></td>
+                                <td colspan="2" class="b-bottom" style="height: 60px">
+                                    {{$r->recommendations}}
+                                </td>
                             </tr>
 
                             </tbody>
