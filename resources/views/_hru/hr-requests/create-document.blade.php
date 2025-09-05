@@ -65,6 +65,9 @@
                 @case('Certificate of Engagement as COS with Compensation')
                     @include('_hru.hr-requests.portion-coe-and-compensation-cos')
                     @break
+                @case('Letter of Introduction')
+                    @include('_hru.hr-requests.portion-letter-of-introduction')
+                    @break
             @endswitch
         </div>
         <div class="col-md-8">
@@ -95,6 +98,7 @@
 
 @section('scripts')
     <script type="text/javascript">
+        let editors = [];
         $(function () {
             CKEDITOR.replace('editor',{
                 height: '130px',
@@ -113,6 +117,25 @@
                 height: '180px'
             });
         });
+
+        $('.ck-100').each(function (){
+            editors[$(this).attr('id')] = CKEDITOR.replace($(this).attr('id'),{
+                height: '100px'
+            });
+        });
+
+        $('.ck-130').each(function (){
+            editors[$(this).attr('id')] = CKEDITOR.replace($(this).attr('id'),{
+                height: '130px'
+            });
+        });
+
+        $('.ck-180').each(function (){
+            editors[$(this).attr('id')] = CKEDITOR.replace($(this).attr('id'),{
+                height: '180px'
+            });
+        });
+
 
         $(".generate-document-form").submit(function (e){
             e.preventDefault();

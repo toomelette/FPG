@@ -36,6 +36,7 @@ class HRRequestsController extends Controller
         $hrRequest->document = $request->document;
         $hrRequest->purpose = $request->purpose;
         $hrRequest->details = $request->details;
+        $hrRequest->status = 'REQUEST SUBMITTED';
         if ($hrRequest->save()){
             return $hrRequest->only('slug','tracking_no');
         }
@@ -135,16 +136,9 @@ class HRRequestsController extends Controller
         $request->validate([
             'memo_code' => 'required',
             'date' => 'required',
-            'signatory_name' => 'required',
-            'signatory_position' => 'required',
         ]);
         switch ($hrRequest->document){
-            case 'Certificate of Employment':
-                $request->validate([
-                    'first_paragraph' => 'required',
-                    'purpose_paragraph' => 'required',
-                ]);
-                break;
+
             case 'Certificate of Employment and Compensation':
                 //Sanitize Values
                 $request->merge([
@@ -162,16 +156,16 @@ class HRRequestsController extends Controller
                 }
                 break;
             case 'Certificate of Engagement as COS':
+            case 'Certificate of Engagement as COS with Compensation':
+            case 'Certificate of Employment':
                 $request->validate([
                     'first_paragraph' => 'required',
                     'purpose_paragraph' => 'required',
+                    'signatory_name' => 'required',
+                    'signatory_position' => 'required',
                 ]);
                 break;
-            case 'Certificate of Engagement as COS with Compensation':
-                $request->validate([
-                    'first_paragraph' => 'required',
-                    'purpose_paragraph' => 'required',
-                ]);
+            case 'Letter of Introduction':
                 break;
         }
 
@@ -203,6 +197,10 @@ class HRRequestsController extends Controller
                 ]);
             case 'Certificate of Engagement as COS with Compensation':
                 return view('printables.hru.hr-requests.coe-and-compensation-cos')->with([
+                    'hrRequest' => $hrRequest,
+                ]);
+            case 'Letter of Introduction':
+                return view('printables.hru.hr-requests.letter-of-introduction')->with([
                     'hrRequest' => $hrRequest,
                 ]);
             default:

@@ -35,7 +35,6 @@ class HRRequests extends Model
             $a->ip_created = request()->ip();
             $a->created_at = \Carbon::now();
             $a->project_id = \Auth::user()->project_id;
-            $a->status = 2;
             $statusArray = $a->status_trail;
             $statusArray[] = [
                 'timestamp' => \Carbon::now(),
