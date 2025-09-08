@@ -47,6 +47,7 @@ class Employee extends Model{
 
     protected $casts = [
         'is_board_member' => 'boolean',
+        'deduction_groups' => 'array',
     ];
 
 	use Sortable, LogsActivity;

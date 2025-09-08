@@ -472,6 +472,9 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('hr_requests/{slug}/createDocument',[\App\Http\Controllers\HRU\HRRequestsController::class,'createDocument'])->name('hr_requests.create_document');
     Route::post('hr_requests/{slug}/createDocument',[\App\Http\Controllers\HRU\HRRequestsController::class,'saveCreatedDocument'])->name('hr_requests.create_document');
     Route::resource('hr_requests',\App\Http\Controllers\HRU\HRRequestsController::class);
+
+    Route::resource('deduction_registry',\App\Http\Controllers\HRU\DeductionRegistryController::class)->only(['edit','update','index']);
+    Route::resource('deduction_sudemupco',\App\Http\Controllers\HRU\DeductionSudemupcoController::class);
 });
 
 /** ADMIN LEVEL ROUTES REQUIRING PROJECT ID **/

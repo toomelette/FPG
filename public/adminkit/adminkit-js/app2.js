@@ -23,7 +23,7 @@ $('select[multiple]').select2({
 
 
 var autonum_settings = {
-    currencySymbol : ' ₱',
+    currencySymbol : ' ',
     decimalCharacter : '.',
     digitGroupSeparator : ',',
     emptyInputBehavior : 'null',
