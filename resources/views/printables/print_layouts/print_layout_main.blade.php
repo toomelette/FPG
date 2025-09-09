@@ -23,6 +23,7 @@
         <link type="text/css" rel="stylesheet" href="{{asset('template/bower_components/font-awesome/css/font-awesome.min.css')}}">
     @endif
 
+            <meta charset="utf-8">
 
     <style type="text/css">
         .no-margin{
