@@ -203,6 +203,10 @@ class HRRequestsController extends Controller
                 return view('printables.hru.hr-requests.letter-of-introduction')->with([
                     'hrRequest' => $hrRequest,
                 ]);
+            case 'Certificate of Assumption (COS)':
+                return view('printables.hru.hr-requests.certificate-of-assumption-cos')->with([
+                    'hrRequest' => $hrRequest,
+                ]);
             default:
                 abort(504,'Option not defined in switch case statement');
         }

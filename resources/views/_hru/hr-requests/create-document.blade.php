@@ -68,6 +68,9 @@
                 @case('Letter of Introduction')
                     @include('_hru.hr-requests.portion-letter-of-introduction')
                     @break
+                @case('Certificate of Assumption (COS)')
+                    @include('_hru.hr-requests.portion-certificate-of-assumption-cos')
+                    @break
             @endswitch
         </div>
         <div class="col-md-8">
@@ -96,6 +99,24 @@
 
 @endsection
 
+@php
+    $employeesBySg = \App\Models\Employee::query()
+            ->with(['plantilla'])
+            ->where('salary_grade','>',10)
+            ->orderBy('salary_grade','desc')
+            ->orderBy('lastname')
+            ->active()
+            ->permanent()
+            ->get()
+            ->map(function ($data){
+                return [
+                    'id' => $data->full['FMiLE'],
+                    'text' => $data->full['FMiLE'],
+                    'position' => $data?->plantilla?->position,
+                ];
+            })
+            ->toArray();
+@endphp
 @section('scripts')
     <script type="text/javascript">
         let editors = [];
@@ -186,7 +207,17 @@
         $('.select2-coe-signatories').val('{{$document_fields['signatory_name'] ?? null}}').trigger('change');
 
 
+        let employeesBySg = {!! json_encode($employeesBySg) !!}
+        $(".select2-employees-by-sg").select2({
+            data : employeesBySg,
+        })
+        $('.select2-employees-by-sg').on('select2:select', function (e) {
+            let data = e.params.data;
+            let form = $(this).parents('form');
+            let signatoryPosition = form.find('input[name="signatory_position_0"]');
+            signatoryPosition.val(data.position);
+        });
 
-
+        $('.select2-employees-by-sg').val('{{$document_fields['signatory_name_0'] ?? null}}').trigger('change');
     </script>
 @endsection
