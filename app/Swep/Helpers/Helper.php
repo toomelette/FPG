@@ -638,10 +638,18 @@ class Helper
     }
 
     public static function toNumber($number,$places = 2,$placeholder = ''){
-        if($number == null || $number == 0){
-            return $placeholder;
+        if(\Request::get('excel') == 'true'){
+            if($number == 0){
+                return null;
+            }else{
+                return  $number;
+            }
         }else{
-            return number_format($number,$places);
+            if($number == null || $number == 0){
+                return $placeholder;
+            }else{
+                return number_format($number,$places);
+            }
         }
     }
 

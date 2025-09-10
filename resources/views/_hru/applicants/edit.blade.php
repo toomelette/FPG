@@ -56,6 +56,7 @@
 
     <div class="row">
         <x-forms.input label="Contact No:" name="contact_no" cols="6" :value="$applicant ?? null"/>
+        <x-forms.input label="Email:" name="email" cols="6" :value="$applicant ?? null"/>
     </div>
 
 @endsection

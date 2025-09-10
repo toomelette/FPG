@@ -297,6 +297,7 @@
                                         </th>
                                     </tr>
                                     <tbody id="vw_table_body">
+
                                     @forelse($employee->employeeVoluntaryWork as $key => $data)
                                         <tr>
                                             <td>
@@ -306,10 +307,10 @@
                                                 {!! __form::textbox_for_dt('row_vw['. $key .'][address]', 'Address of Organization', $data->address,'') !!}
                                             </td>
                                             <td>
-                                                {!! __form::textbox_for_dt('row_vw['. $key .'][date_from]', $data->date_from,'','','date') !!}
+                                                {!! __form::textbox_for_dt('row_vw['. $key .'][date_from]', '',$data->date_from,'','date') !!}
                                             </td>
                                             <td>
-                                                {!! __form::textbox_for_dt('row_vw['. $key .'][date_to]', $data->date_to,'','','date') !!}
+                                                {!! __form::textbox_for_dt('row_vw['. $key .'][date_to]', '',$data->date_to,'','date') !!}
                                             </td>
                                             <td>
                                                 {!! __form::textbox_for_dt('row_vw['. $key .'][hours]', 'Hours', $data->hours,'') !!}

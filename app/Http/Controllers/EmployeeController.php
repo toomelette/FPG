@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Exports\EmployeeReportExporter;
+use App\Exports\EmployeeReportMainExporter;
 use App\Http\Requests\Employee\BiometricUserIdFormRequest;
 use App\Models\Employee;
 use App\Models\EmployeeServiceRecord;
@@ -37,6 +39,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
+use Maatwebsite\Excel\Facades\Excel;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Yajra\DataTables\DataTables;
@@ -706,13 +709,22 @@ class EmployeeController extends Controller{
             abort(505,'Try different filter criteria.');
         }
         ksort($employee_arr);
-        return view('printables.employee.report')->with([
+
+        $data = [
             'employees' => $employee_arr,
             'selected_columns' => $selected_columns,
             'all_columns' => $this->allColumnsForReport(),
             'filters_text' => implode(' | ',$filters),
             'request' => $request,
-        ]);
+        ];
+        if($request->excel == true){
+            return Excel::download(
+                new EmployeeReportMainExporter($data),
+                'Employee Reports.xlsx',
+            );
+        }
+
+        return view('printables.employee.report')->with($data);
 
     }
 

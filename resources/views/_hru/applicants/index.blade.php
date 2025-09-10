@@ -81,6 +81,7 @@
 
         <div class="row">
             <x-forms.input label="Contact No:" name="contact_no" cols="6"/>
+            <x-forms.input label="Email:" name="email" cols="6"/>
         </div>
 
         <x-slot:footer>

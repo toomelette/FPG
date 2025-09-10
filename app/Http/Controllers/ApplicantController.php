@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ApplicantsReportMainExporter;
 use App\Models\Applicant;
 use App\Models\ApplicantPositionApplied;
 use App\Models\Course;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class ApplicantController extends Controller{
@@ -72,6 +74,7 @@ class ApplicantController extends Controller{
         $applicant->civil_status = $request->civil_status;
         $applicant->address = $request->address;
         $applicant->contact_no = $request->contact_no;
+        $applicant->email = $request->email;
         $applicant->school = $request->school;
         $applicant->received_at = Carbon::parse($request->received_at)->format('Y-m-d');
         $positions = explode(',',$request->position_applied);
@@ -217,6 +220,7 @@ class ApplicantController extends Controller{
         $applicant->civil_status = $request->civil_status;
         $applicant->address = $request->address;
         $applicant->contact_no = $request->contact_no;
+        $applicant->email = $request->email;
         $applicant->school = $request->school;
         $applicant->received_at = Carbon::parse($request->received_at)->format('Y-m-d');
         $positions = explode(',',$request->position_applied);
@@ -391,15 +395,21 @@ class ApplicantController extends Controller{
         }
 
         ksort($applicants);
-
-        return view('printables.applicant.report_3')->with([
+        $data = [
             'grouped_applicants' => $applicants,
             'columns' => $this->report_columns(),
             'requested_columns' => $request->columns,
             'request' => $request,
             'filters' => $filters,
-        ]);
-		return $this->applicant->reportGenerate($request);
+        ];
+        if($request->excel == true){
+            return Excel::download(
+                new ApplicantsReportMainExporter($data),
+                'Applicants Report.xlsx',
+            );
+        }
+
+        return view('printables.applicant.report_3')->with($data);
 
     }
 
@@ -447,6 +457,7 @@ class ApplicantController extends Controller{
             'civil_status' => 'Civil Status',
             'address' => 'Address',
             'contact_no' => 'Contact #',
+            'email' => 'Email Address',
             'school' => 'School',
             'remarks' => 'Remarks',
             'position_applied' => 'Position Applied',

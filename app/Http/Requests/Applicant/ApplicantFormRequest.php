@@ -39,7 +39,7 @@ class ApplicantFormRequest extends FormRequest{
             'course'=>'required|string|max:255',
 //            'plantilla_id'=>'nullable|string|max:11',
             'contact_no'=>'nullable|string|max:90',
-//            'department_unit_id'=>'nullable|string|max:11',
+            'email'=>'nullable|email|string|max:255',
 //            'received_at' => 'required|date_format:"Y-m-d"',
 //            'remarks'=>'nullable|string|max:255',
 //            'position_applied' => 'required|string',

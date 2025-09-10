@@ -18,7 +18,7 @@
                                                 'by_course' => 'List by Course' ,
                                                 'by_position_applied' => 'List by Position Applied',
                                                 'by_item_no' => 'List by Item No.' ,
-                                            ]"/>
+                                            ]" value="all"/>
                         </div>
 
                         @php
@@ -174,7 +174,11 @@
 
 
                                     <div class="clearfix mb-3">
-                                        <button class="btn btn-primary btn-sm float-end" id="print-btn"><i class="fa fa-print"></i> Print</button>
+                                        <div class="btn-group float-end">
+                                            <button class="btn btn-primary btn-sm" id="print-btn"><i class="fa fa-print"></i> Print</button>
+                                            <a target="_blank" class="btn btn-secondary btn-sm" href="#" type="button" id="excel-btn"><i class="fa fa-file-excel"></i> Excel</a>
+
+                                        </div>
                                     </div>
                                     <iframe id="report_frame"  style="width: 100%;overflow:hidden;" height="500" class="embed-responsive" src=""></iframe>
                                 </div>
@@ -231,6 +235,8 @@
             $("#report_frame_container").hide();
             $("#report_frame_loader").fadeIn();
             remove_loading_btn(form);
+            $("#excel-btn").attr('href','{{route('dashboard.applicant.report_generate')}}?'+form.serialize()+'&excel=true');
+
         })
 
         $("#report_frame").on("load",function () {
