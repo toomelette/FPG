@@ -91,6 +91,7 @@
     $(".sidebar-nav a[href='{{url()->current()}}']").parents('.sidebar-dropdown').addClass('show');
     $(".sidebar-nav a[href='{{url()->current()}}']").parents('.sidebar-dropdown').siblings('.sidebar-link').removeClass('collapsed');
     $(".sidebar-nav a[href='{{url()->current()}}']").parents('.sidebar-item').addClass('active');
+
 </script>
 @yield('modals')
 @yield('scripts')

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\HRU;
 
+use App\Events\HrRequest\NewRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hru\HRRequestsFromRequest;
 use App\Models\HRU\HRRequests;
@@ -38,6 +39,7 @@ class HRRequestsController extends Controller
         $hrRequest->details = $request->details;
         $hrRequest->status = 'REQUEST SUBMITTED';
         if ($hrRequest->save()){
+            event(new NewRequest($hrRequest));
             return $hrRequest->only('slug','tracking_no');
         }
         abort(503,'Error making a request.');

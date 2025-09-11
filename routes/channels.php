@@ -16,3 +16,4 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('mis-request',\App\Broadcasting\MISRequestChannel::class);
+Broadcast::channel('hr-request',\App\Broadcasting\HrRequestChannel::class);

@@ -91,9 +91,9 @@ class DocumentFolderController extends Controller{
             if(!empty($documents)){
 
                 foreach ($documents as $document){
-                    if(\File::exists(env('STORAGE_LOCATION').$document->path.$document->filename)){
+                    if(\File::exists(config('custom.storage_location').$document->path.$document->filename)){
                         $zip->addFile(
-                            env('STORAGE_LOCATION').$document->path.$document->filename,
+                            config('custom.storage_location').$document->path.$document->filename,
                             \Carbon::parse($document->date)->format('Y').'/'.$document->filename,
                         );
                     }
