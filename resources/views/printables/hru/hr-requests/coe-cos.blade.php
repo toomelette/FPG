@@ -1,7 +1,7 @@
 @extends('printables.print_layouts.print_layout_main')
 
 @section('wrapper')
-    <div style="font-family: Cambria; font-size: 16px; margin: 150px 40px 0px 40px">
+    <div style="font-family: Cambria; font-size: 16px; margin: 170px 40px 0px 40px">
         <small>MEMO-VIS-AFD-GAD-HRRS-{{Carbon::parse($hrRequest->document_fields['date'])->format('Y')}}-{{$hrRequest->document_fields['memo_code']}}</small>
         <br>
         <br>
@@ -17,7 +17,7 @@
         <p style="text-indent: 40px; line-height: 35px; text-align: justify">
             Done in the City of {{\App\Swep\Helpers\Get::headerCity()}}, this {{Helper::ordinal(Carbon::parse($hrRequest->document_fields['date'])->format('d'))}} of {{Carbon::parse($hrRequest->document_fields['date'])->format('F, Y')}}.
         </p>
-        <br>
+        <br><br><br>
         <div style="overflow: auto">
             <div style="width: 50%; float: right">
                 <p class="text-center">
