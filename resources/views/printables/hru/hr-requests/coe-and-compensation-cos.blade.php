@@ -6,7 +6,7 @@
         <br>
         <br>
         <br>
-        <p class="text-strong text-center" style="letter-spacing: 4px; font-size: 18px">CERTIFICATION</p>
+        <p class="text-strong text-center" style="letter-spacing: 4px; font-size: 22px">CERTIFICATION</p>
         <br><br>
         {!!  Str::of($hrRequest->document_fields['first_paragraph'])->replaceFirst('<p>','<p style="text-indent: 40px; line-height: 35px; text-align: justify">') !!}
 
@@ -17,7 +17,7 @@
         <p style="text-indent: 40px; line-height: 35px; text-align: justify">
             Done in the City of {{\App\Swep\Helpers\Get::headerCity()}}, this {{Helper::ordinal(Carbon::parse($hrRequest->document_fields['date'])->format('d'))}} of {{Carbon::parse($hrRequest->document_fields['date'])->format('F, Y')}}.
         </p>
-        <br>
+        <br><br><br>
         <div style="overflow: auto">
             <div style="width: 50%; float: right">
                 <p class="text-center">

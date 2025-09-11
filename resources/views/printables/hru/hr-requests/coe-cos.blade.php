@@ -6,7 +6,7 @@
         <br>
         <br>
         <br>
-        <p class="text-strong text-center" style="letter-spacing: 4px; font-size: 18px">CERTIFICATION</p>
+        <p class="text-strong text-center" style="letter-spacing: 4px; font-size: 22px">CERTIFICATION</p>
         <br><br>
         {!!  Str::of($hrRequest->document_fields['first_paragraph'])->replaceFirst('<p>','<p style="text-indent: 40px; line-height: 35px; text-align: justify">') !!}
 

@@ -8,7 +8,7 @@
             {{Carbon::parse($hrRequest->document_fields['date'])->format('F d, Y')}}
         </p>
         <br><br>
-        <p class="text-strong text-center" style="letter-spacing: 2px; font-size: 18px">CERTIFICATE OF EMPLOYMENT</p>
+        <p class="text-strong text-center" style="letter-spacing: 2px; font-size: 22px">CERTIFICATE OF EMPLOYMENT</p>
         <br><br><br>
         {!!  Str::of($hrRequest->document_fields['first_paragraph'])->replaceFirst('<p>','<p style="text-indent: 40px; line-height: 35px; text-align: justify">') !!}
 
@@ -17,7 +17,7 @@
 
 
 
-        <br><br>
+        <br><br><br><br>
         <div style="overflow: auto">
             <div style="width: 50%; float: right">
                 <p class="text-center">
