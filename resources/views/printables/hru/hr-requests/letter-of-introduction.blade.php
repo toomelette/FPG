@@ -21,7 +21,7 @@
         <br>
         Noted by:
         <br><br><br>
-        {!! $hrRequest->document_fields['hr_representative'] !!}
+        {!! $hrRequest->document_fields['noted_by'] !!}
     </div>
 
 @endsection

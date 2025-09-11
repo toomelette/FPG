@@ -6,8 +6,8 @@ class Values
 {
     public static function leaveApplicationCertification(){
         return [
-            'name' => 'Lucille Mae M. Sy',
-            'position' => 'HRMO IV',
+            'name' => 'VINI GRACE O. OMARREMENTERIA',
+            'position' => 'HRMO III',
         ];
     }
 

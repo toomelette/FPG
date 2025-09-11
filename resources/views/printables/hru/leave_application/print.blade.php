@@ -168,7 +168,7 @@
 
                     <br>
                     <p class="text-center no-margin text-strong"> <u>{{$la->certified_by}}</u> </p>
-                    <p class="text-center">(Authorized Officer)</p>
+                    <p class="text-center">{{$la->certified_by_position}} </p>
                 </td>
                 <td style="vertical-align: top" class="b-top b-left b-right padded">
                     7B. RECOMMENDATION
@@ -177,7 +177,7 @@
                     <br><br>
                     <p class="text-center no-margin"><b>{{$la->recommended_by}}</b></p>
                     <p class="text-center"><u><small>{{$la->recommended_by_position}}</small></u></p>
-                    <p class="text-center">(Authorized Officer)</p>
+{{--                    <p class="text-center">(Authorized Officer)</p>--}}
                 </td>
             </tr>
         </table>
@@ -205,7 +205,7 @@
                     <br>
                     <p class="text-center no-margin text-strong"> <u>{{$la->approved_by}}</u> </p>
                     <p class="text-center no-margin">{{$la->approved_by_position}} </p>
-                    <p class="text-center">(Authorized Official)</p>
+{{--                    <p class="text-center">(Authorized Official)</p>--}}
                 </td>
             </tr>
 

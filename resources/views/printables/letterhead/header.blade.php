@@ -2,7 +2,7 @@
     <table style="width: 100%">
         <tr>
             <td style="width: 15%;">
-                <img src="{{base_path('/public/images/sra.png')}}" style="width: 100%;" alt="A">
+                <img src="https://hrrs.sra.gov.ph/images/sra.png" style="width: 60px; float: left; margin-right: 15px;">
             </td>
             <td style="font-size: 10px">
                 Republic of the Philippines <br>
