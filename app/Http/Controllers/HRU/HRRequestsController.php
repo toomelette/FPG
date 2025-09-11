@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Spatie\Browsershot\Browsershot;
+use Spatie\LaravelPdf\Facades\Pdf;
 use Yajra\DataTables\DataTables;
 
 class HRRequestsController extends Controller
@@ -198,6 +200,26 @@ class HRRequestsController extends Controller
                     'hrRequest' => $hrRequest,
                 ]);
             case 'Certificate of Engagement as COS with Compensation':
+                if(Request::capture()->has('pdf')){
+                    return Pdf::view('printables.hru.hr-requests.coe-and-compensation-cos',[
+                        'hrRequest' => $hrRequest,
+                    ])
+
+                        ->paperSize('330.2','215.9')
+                        ->landscape()
+                        ->margins(8,8, 15, 8)
+                        ->headers(['title' => 'aaaaa'])
+                        ->headerView('printables.letterhead.header')
+                        ->footerView('printables.hru.payroll_preparation.footer-view')
+                        ->name('Payroll Summary.pdf')
+                        ->withBrowsershot(function (Browsershot $browsershot){
+                            if(app()->environment('production')){
+                                $browsershot->setNodeBinary(env('NODE_BINARY'))
+                                    ->setNpmBinary(env('NODE_BINARY'));
+                            }
+                        });
+                }
+
                 return view('printables.hru.hr-requests.coe-and-compensation-cos')->with([
                     'hrRequest' => $hrRequest,
                 ]);
