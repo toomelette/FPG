@@ -1,7 +1,7 @@
 @extends('printables.print_layouts.print_layout_main')
 
 @section('wrapper')
-    <div style="font-family: Cambria; font-size: 16px; margin: 150px 40px 0px 40px">
+    <div style="font-family: Cambria; font-size: 16px; margin: 170px 40px 0px 40px">
         <small>MEMO-VIS-AFD-GAD-HRRS-{{Carbon::parse($hrRequest->document_fields['date'])->format('Y')}}-{{$hrRequest->document_fields['memo_code']}}</small>
         <br>
         <br>

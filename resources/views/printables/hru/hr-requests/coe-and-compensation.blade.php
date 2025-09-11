@@ -4,7 +4,7 @@
     @php
         $employee = \App\Models\Employee::where('slug','=',$hrRequest->employee_slug)->first();
     @endphp
-    <div style="font-family: Cambria; font-size: 16px; margin: 100px 40px 0px 40px">
+    <div style="font-family: Cambria; font-size: 16px; margin: 170px 40px 0px 40px">
         <small>MEMO-VIS-AFD-GAD-HRRS-{{Carbon::parse($hrRequest->document_fields['date'])->format('Y')}}-{{$hrRequest->document_fields['memo_code']}}</small>
         <br>
         <p style="text-align: right; line-height: 38px">
