@@ -117,10 +117,10 @@
                         @endphp
                         @if(!empty($supplier))
                             @php
-                                $amount = $items->where('supplier_slug',$supplier->slug)->first()->amount
+                                $amount = $items->where('supplier_slug',$supplier->slug)->first()->amount ?? 0
                             @endphp
                             <td class="text-center" style="font-size: 10px">{{$items->where('supplier_slug',$supplier->slug)->first()->offer}}</td>
-                            <td class="text-right">{{Helper::toNumber($amount)}}</td>
+                            <td class="text-right">{{Helper::toNumber($amount * $item->qty)}}</td>
                         @else
                             <td class="text-center" style="font-size: 10px"></td>
                             <td class="text-right"></td>

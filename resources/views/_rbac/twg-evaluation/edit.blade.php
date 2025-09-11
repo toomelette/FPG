@@ -63,10 +63,10 @@
                         <td class="text-center">{{$item->qty}}</td>
                         @forelse($groupedBySupplier as $supplier)
                             @php
-                                $amount = $items->where('supplier_slug',$supplier->slug)->first()->amount
+                                $amount = $items->where('supplier_slug',$supplier->slug)->first()->amount ?? 0
                             @endphp
                             <td class="text-center">{{$items->where('supplier_slug',$supplier->slug)->first()->offer}}</td>
-                            <td class="text-end {{$amount == null ? 'bg-warning' : ''}}">{{Helper::toNumber($amount)}}</td>
+                            <td class="text-end {{$amount == null ? 'bg-warning' : ''}}">{{Helper::toNumber($amount * $item->qty)}}</td>
                         @empty
                         @endforelse
                     </tr>

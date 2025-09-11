@@ -67,6 +67,7 @@
                                     <p class="fw-normal mt-3 mb-2">We'll send updates on your email once HR Personnel has already taken action. </p>
                                     <p class="fw-normal mt-2">Here is your tracking number:</p>
                                     <p class="h1"><code id="tracking-no"></code></p>
+                                    <p class="fw-normal mt-2 text-info">You may also see the status of your request in <a href="{{route('dashboard.hr_requests.my_index')}}"><u><b>"My Request"</b></u></a> Tab under the Certifications and Other Doc.</p>
                                 </div>
                             </div>
                         </div>
