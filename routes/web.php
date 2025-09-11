@@ -861,6 +861,6 @@ Route::get('/updateBMID',function (){
 Route::get('testWs',function (){
     $r = \App\Models\MisRequests::query()->orderBy('created_at','desc')->firstOrFail();
     $rr = \App\Models\HRU\HRRequests::query()->firstOrFail();
-//    event(new \App\Events\MisRequest\NewRequest($r));
+    event(new \App\Events\MisRequest\NewRequest($r));
     event(new \App\Events\HrRequest\NewRequest($rr));
 });

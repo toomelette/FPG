@@ -19,13 +19,19 @@ class NewRequest implements ShouldBroadcast
      */
     public $message;
     public $title;
+    public $simpleMessage;
+    public $tag;
+    public $redirectTo;
     public function __construct($misRequest)
     {
+
         $this->title = 'New MIS Request:';
         $this->message = view('broadcast.mis-request.new')->with([
             'misRequest' => $misRequest,
         ])->render();
-
+        $this->simpleMessage = 'A new request from '.$misRequest->requisitioner.' - '.$misRequest->request_details;
+        $this->tag = $misRequest->slug.\Carbon::now()->format('Y-m-dH:i');
+        $this->redirectTo = route('dashboard.mis_requests.index',[],false);
     }
 
     /**

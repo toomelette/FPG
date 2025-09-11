@@ -19,12 +19,19 @@ class NewRequest implements ShouldBroadcast
      */
     public $message;
     public $title;
+    public $simpleMessage;
+    public $tag;
+    public $redirectTo;
     public function __construct($hrRequest)
     {
         $this->title = 'New Certification/Document Request:';
         $this->message = view('broadcast.hr-request.new')->with([
             'hrRequest' => $hrRequest,
         ])->render();
+
+        $this->simpleMessage = $hrRequest->employee_full.' requested for a '.$hrRequest->document;
+        $this->tag = $hrRequest->slug.\Carbon::now()->format('Y-m-dH:i');
+        $this->redirectTo = route('dashboard.hr_requests.index',[],false);
     }
 
     /**

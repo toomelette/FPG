@@ -38,6 +38,11 @@
 <script  type="text/javascript" src="{{asset('template/plugins/html-qr-code/html-qr-code.js')}}"></script>
 
 <script type="text/javascript">
+
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+
     function filterDT(datatable_object){
 
         let data = $("#filter_form").serialize();
@@ -114,6 +119,18 @@
                 }
             });
 
+            if (Notification.permission === "granted") {
+                const notification = new Notification(e.title, {
+                    body: e.simpleMessage,
+                    tag: e.slug,
+                });
+                notification.onclick = (event) => {
+                    event.preventDefault(); // prevent the browser from focusing the notification's tab
+                    window.open(e.redirectTo, "_blank"); // redirect to Laravel route (new tab)
+                    // OR: window.location.href = "/messages"; // same tab
+                };
+            }
+
         })
     window.Echo.channel('private-hr-request')
         .listen('.new-request', (e) => {
@@ -142,8 +159,21 @@
                     clearInterval(changer);
                 }
             });
+            console.log(e);
+            if (Notification.permission === "granted") {
+                const notification = new Notification(e.title, {
+                    body: e.simpleMessage,
+                    tag: e.slug,
+                });
+                notification.onclick = (event) => {
+                    event.preventDefault(); // prevent the browser from focusing the notification's tab
+                    window.open(e.redirectTo, "_blank"); // redirect to Laravel route (new tab)
+                    // OR: window.location.href = "/messages"; // same tab
+                };
+            }
 
         })
+
 
     console.log("websockets in use");
 
