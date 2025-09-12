@@ -865,6 +865,7 @@ Route::get('testWs',function (){
     event(new \App\Events\HrRequest\NewRequest($rr));
 });
 
+/*
 Route::get('/fixPs',function (\App\Http\Controllers\PermissionSlipController $permissionSlipController){
     $pss = \App\Models\HRU\PS::query()
         ->whereNotNull('departure')
@@ -884,3 +885,4 @@ Route::get('/fixPs',function (\App\Http\Controllers\PermissionSlipController $pe
     }
     return 1;
 });
+*/
