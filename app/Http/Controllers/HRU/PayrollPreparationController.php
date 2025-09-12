@@ -759,6 +759,8 @@ class PayrollPreparationController
         switch ($type){
             case 'MONTHLY':
                 return $this->monthlyPayrollService->printPayroll($slug);
+            case 'ALPHALIST-FOR-TAX':
+                return $this->monthlyPayrollService->alphalistForTax($slug);
             case 'PAYSLIP_ALL':
                 return $this->monthlyPayrollService->printPayslips($slug,$request);
             case 'ABSTRACT-MID':

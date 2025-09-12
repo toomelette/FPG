@@ -178,6 +178,7 @@
         <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'ABSTRACT-END'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Payroll Abstract (Month-end) </a>
         <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'DEDUCTION-REGISTER'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Deduction Register </a>
         <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'DISTRIBUTION-SHEET'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Distribution Sheet </a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'ALPHALIST-FOR-TAX'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Alphalist </a>
 
     </x-adminkit.html.offcanvas>
 @endsection
