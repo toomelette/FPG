@@ -51,7 +51,7 @@
                                     <div class="clearfix mb-3">
                                         <div class="btn-group float-end">
                                             <button class="btn btn-primary btn-sm " id="print-btn"><i class="fa fa-print"></i> Print</button>
-                                            <a target="_blank" class="btn btn-secondary btn-sm" href="#" type="button" id="excel-btn"><i class="fa fa-file-excel"></i> Excel</a>
+{{--                                            <a target="_blank" class="btn btn-secondary btn-sm" href="#" type="button" id="excel-btn"><i class="fa fa-file-excel"></i> Excel</a>--}}
                                         </div>
                                     </div>
                                     <iframe id="report_frame"  style="width: 100%;overflow:hidden;" height="500" class="embed-responsive" src=""></iframe>
