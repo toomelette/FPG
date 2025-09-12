@@ -864,3 +864,23 @@ Route::get('testWs',function (){
     event(new \App\Events\MisRequest\NewRequest($r));
     event(new \App\Events\HrRequest\NewRequest($rr));
 });
+
+Route::get('/fixPs',function (\App\Http\Controllers\PermissionSlipController $permissionSlipController){
+    $pss = \App\Models\HRU\PS::query()
+        ->whereNotNull('departure')
+        ->get();
+    foreach ($pss as $ps){
+        $ps->departure = $ps->date.' '.Carbon::parse($ps->departure)->format('H:i');
+        $ps->return = $ps->date.' '.Carbon::parse($ps->return)->format('H:i');
+        $ps->save();
+    }
+
+    $pss = \App\Models\HRU\PS::query()
+        ->whereNotNull('departure')
+        ->get();
+    foreach ($pss as $ps){
+        $ps->time_spent = $permissionSlipController->timeDiffExceptLunch($ps->departure,$ps->return);
+        $ps->save();
+    }
+    return 1;
+});

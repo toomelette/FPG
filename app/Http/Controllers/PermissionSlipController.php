@@ -13,6 +13,7 @@ use App\Http\Requests\PermissionSlip\PermissionSlipFormRequest;
 use App\Http\Requests\PermissionSlip\PermissionSlipFilterRequest;
 use App\Http\Requests\PermissionSlip\PermissionSlipReportRequest;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -290,27 +291,18 @@ class PermissionSlipController extends Controller{
     public function updateTime(PSUpdateTimeFormRequest $request,$slug)
     {
         $ps = PS::query()->findOrFail($slug);
-        $departure = null;
-        $return = null;
+        $departure = $ps->date.' '.$request->departure;
+        $return = $ps->date.' '.$request->return;
         $timeSpent = 0;
         $timeExcluded = 0;
+
+
         if(!empty($request->departure) && !empty($request->return)){
-            if($request->departure < $request->return){
-                $departure = Carbon::parse($request->departure);
-                $return = Carbon::parse($request->return);
-                while ($departure < $return){
-                    if($departure >= Carbon::parse('12:00') && $departure <= Carbon::parse('12:59')){
-                        $departure = $departure->addMinute();
-                        $timeExcluded = $timeExcluded + 1;
-                    }else{
-                        $departure = $departure->addMinute();
-                        $timeSpent = $timeSpent+1;
-                    }
-                }
-            }
+            $timeSpent = $this->timeDiffExceptLunch($departure,$return);
         }
-        $ps->departure = Helper::dateFormat($request->departure,'Y-m-d H:i:s');
-        $ps->return = Helper::dateFormat($request->return,'Y-m-d H:i:s');
+
+        $ps->departure = $departure;
+        $ps->return = $return;
         $ps->time_spent = $timeSpent;
         $ps->user_updated_departure = $ps->departure != null ? Auth::user()->user_id : null;
         $ps->user_updated_return = $ps->return != null ? Auth::user()->user_id : null;
@@ -322,17 +314,63 @@ class PermissionSlipController extends Controller{
     }
 
 
-    public function report(){
-       return view('dashboard.permission_slip.report');
+    public function report(Request $request){
+        if($request->has('generate')){
+            return $this->reportGenerate($request);
+        }
+       return view('_hru.permission-slips.report');
     }
 
     
 
 
-    public function reportGenerate(PermissionSlipReportRequest $request){
+    public function reportGenerate(Request $request){
 
-       return $this->permission_slip->reportGenerate($request);
+        $permissionSlips = PS::query()
+            ->with('employee')
+            ->where('date','like',$request->month.'%')
+            ->orderBy('employee_name');
+        if($request->has('personal_official') && $request->personal_official != ''){
+            $permissionSlips = $permissionSlips->where('personal_official','=',$request->personal_official);
+        }
+        if($request->has('direct_nondirect') && $request->direct_nondirect != ''){
+            $permissionSlips = $permissionSlips->where('direct_nondirect','=',$request->direct_nondirect);
+        }
 
+        $permissionSlips = $permissionSlips->get();
+
+        $grouped = $permissionSlips->groupBy(function ($data){
+            return $data?->employee?->full['LFEMi'] ?? $data->employee_name;
+        })->sortKeys();
+
+
+        return view('printables.hru.permission-slips.report')->with([
+            'permissionSlips' => $permissionSlips,
+            'grouped' => $grouped
+        ]);
+    }
+
+    public function timeDiffExceptLunch( string $start, string $end)
+    {
+        $start = Carbon::parse($start);
+        $end = Carbon::parse($end);
+
+        $diff = $start->diffInMinutes($end);
+
+// Define break span
+        $breakStart = Carbon::parse(Carbon::parse($start)->format('Y-m-d').' 12:00:00');
+        $breakEnd   = Carbon::parse(Carbon::parse($start)->format('Y-m-d').' 13:00:00');
+
+// Check if break overlaps with working time
+        if ($breakStart->between($start, $end) || $breakEnd->between($start, $end)) {
+            $overlapStart = $breakStart->max($start);
+            $overlapEnd   = $breakEnd->min($end);
+            $breakMinutes = $overlapStart->diffInMinutes($overlapEnd);
+
+            $diff -= $breakMinutes;
+        }
+
+        return $diff;
     }
 
 

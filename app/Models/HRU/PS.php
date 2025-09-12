@@ -2,6 +2,7 @@
 
 namespace App\Models\HRU;
 
+use App\Models\Employee;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +39,11 @@ class PS extends Model
         $query->where('employee_slug','=',Auth::user()->employee->slug)
         $query->where('user_created','=',Auth::user()->user_id);
         */
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class,'employee_slug','slug');
     }
 
 }
