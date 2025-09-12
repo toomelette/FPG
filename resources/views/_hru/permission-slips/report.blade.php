@@ -2,7 +2,7 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>Employees - Reports</x-slot:title>
+        <x-slot:title>Permission Slips - Reports</x-slot:title>
     </x-adminkit.html.page-title>
     <x-adminkit.html.card>
 
@@ -15,8 +15,11 @@
                     </div>
                     <div class="row mb-2">
                         <x-forms.select label="Direct/Non-Direct" name="direct_nondirect" cols="6" :options="['DIRECT' => 'DIRECT','NON-DIRECT' => 'NON-DIRECT']"/>
-
                     </div>
+                    <div class="row mb-2">
+                        <x-forms.select id="employee-select" label="Employee" name="employee_slug" cols="12" />
+                    </div>
+
                     <div class="row mt-3">
                         <div class="col-md-12">
                             <button type="submit" id="generate_report_btn" class="float-end btn btn-success btn-sm"><i class="fa fa-refresh"></i> Generate Report</button>
@@ -70,40 +73,28 @@
 @section('modals')
 
 @endsection
+@php
+    $employees = \App\Models\Employee::query()
+        ->with(['plantilla'])
+        ->active()
+        ->orderBy('lastname')
+        ->get();
 
+    $employees = $employees->map(function ($data){
+            return [
+                'id' => $data->slug,
+                'text' => $data->full['LFEMi']
+            ];
+        });
+
+@endphp
 @section('scripts')
+
     <script type="text/javascript">
-        $(".for_sort").sortable();
-        $("#select_all_cols").change(function () {
-            let t = $(this);
-            if(t.prop('checked') == true){
-                $(".for_sort input[type='checkbox']").each(function () {
-                    let s = $(this);
-                    s.prop('checked',true);
-                })
-            }else{
-                $(".for_sort input[type='checkbox']").each(function () {
-                    let s = $(this);
-                    s.prop('checked',false);
-                })
-            }
+        let employees = {!! $employees->toJson() !!};
+        $("#employee-select").select2({
+            data : employees,
         })
-        $(".for_sort input[type='checkbox']").change(function () {
-            let t = $(this);
-            let check_for_all =  $("#select_all_cols");
-            let all = $(".for_sort input[type='checkbox']").length;
-            let checked = $(".for_sort input[type='checkbox']:checked").length;
-            let diff = all - checked;
-            if (diff == 0){
-                check_for_all.prop('checked',true);
-            }else if(diff == all){
-                check_for_all.prop('checked',false);
-            }else{
-                check_for_all.prop('indeterminate',true);
-            }
-
-        })
-
         $("#generate-report-form").submit(function (e) {
             e.preventDefault();
             let form = $(this);

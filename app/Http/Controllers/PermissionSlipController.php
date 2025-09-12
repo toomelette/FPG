@@ -336,6 +336,9 @@ class PermissionSlipController extends Controller{
         if($request->has('direct_nondirect') && $request->direct_nondirect != ''){
             $permissionSlips = $permissionSlips->where('direct_nondirect','=',$request->direct_nondirect);
         }
+        if($request->has('employee_slug') && $request->employee_slug != ''){
+            $permissionSlips = $permissionSlips->where('employee_slug','=',$request->employee_slug);
+        }
 
         $permissionSlips = $permissionSlips->get();
 
