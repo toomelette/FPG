@@ -55,3 +55,17 @@ Route::group(['middleware' => ['auth:api'], 'prefix' => 'dtr-lgarec'],function (
     });
 });
 
+//Route::group(['prefix' => 'dms-records'],function (){
+//    Route::controller(App\Http\Controllers\Api\Records\DMSController::class)->group(function (){
+//        Route::post('store','store');
+//    });
+//});
+
+Route::prefix('dms-records')->group(function () {
+    Route::post('/store', [App\Http\Controllers\Api\Records\DMSController::class, 'store']);
+    Route::post('/test-upload', [\App\Http\Controllers\Api\Records\DMSController::class, 'testUpload']);
+
+});
+
+
+

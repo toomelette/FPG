@@ -30,7 +30,7 @@ class ApiQC_DTRController extends Controller
 
         $dtr = DTR::query()->insert($dtrsToInsert);
         return 1;
-        dd($request->all());
+        dd($request>all());
     }
 
     public function updateBiometricId(Request $request)

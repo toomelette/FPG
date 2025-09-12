@@ -295,19 +295,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 	Route::post('/document/download_direct/{slug}', 'DocumentController@downloadDirect')->name('document.download_direct');
 	Route::get('/document/dissemination/{slug}', 'DocumentController@dissemination')->name('document.dissemination');
     Route::post('/document/dissemination/{slug}', \App\Http\Controllers\DocumentController::class.'@mailSingle')->name('document.dissemination');
-
 	Route::post('/document/dissemination_post/{slug}', 'DocumentController@disseminationPost')->name('document.dissemination_post');
-
 	Route::get('/document/rename_all', 'DocumentController@rename_all')->name('document.rename_all');
-
 	Route::resource('document', 'DocumentController');
-
 	Route::get('/document/dissemination/print/{slug}', 'DocumentController@print')->name('document.dissemination.print');
-
-	
-
-
-
 
 	/** Document Folder Codes **/
 	Route::get('/document_folder/{folder_code}/browse', 'DocumentFolderController@browse')->name('document_folder.browse');
@@ -318,11 +309,17 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     Route::get('/document_request/{slug}/signatories',[\App\Http\Controllers\RECORDS\DocumentRequestsController::class,'editSignatories'])->name('document_request.signatories');
     Route::patch('/document_request/{slug}/signatories',[\App\Http\Controllers\RECORDS\DocumentRequestsController::class,'updateSignatories'])->name('document_request.signatories');
-
     Route::get('/document_request/my',[\App\Http\Controllers\RECORDS\DocumentRequestsController::class,'my'])->name('document_request.my');
     Route::resource('document_request', \App\Http\Controllers\RECORDS\DocumentRequestsController::class);
 
-	/** Email Contacts **/
+    /** DMS Documents **/
+    Route::resource('dms_document', \App\Http\Controllers\RECORDS\DMSDocumentsController::class);
+    Route::get('/dms_document/{slug}/add',[\App\Http\Controllers\RECORDS\DMSDocumentsController::class,'addDmsDocument'])->name('dms_document.add');
+    Route::get('/dms_document/{slug}/attachment',[\App\Http\Controllers\RECORDS\DMSDocumentsController::class,'showAttachment'])->name('dms_document.showAttachment');
+
+
+
+    /** Email Contacts **/
 	Route::resource('email_contact', 'EmailContactController');
 
 
