@@ -34,13 +34,12 @@
                     </tr>
                 @empty
                 @endforelse
-                </tbody>
-                <tfoot>
                 <tr>
                     <th colspan="2">TOTAL</th>
                     <th class="text-right">{{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('pay15'))}}</th>
                 </tr>
-                </tfoot>
+                </tbody>
+
             </table>
         </div>
 
@@ -72,13 +71,12 @@
                     </tr>
                 @empty
                 @endforelse
-                </tbody>
-                <tfoot>
                 <tr>
                     <th colspan="2">TOTAL</th>
                     <th class="text-right">{{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('pay30'))}}</th>
                 </tr>
-                </tfoot>
+                </tbody>
+
             </table>
         </div>
     </div>
