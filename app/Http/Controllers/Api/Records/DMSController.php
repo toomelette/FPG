@@ -102,12 +102,12 @@ class DMSController extends Controller
 
     private function saveUploadedFile($uploadedFile, string $filename): ?string
     {
-        $archiveDir = __static::archive_dir() . 'dms/';
+        $archiveDir = '/external1/swep_afd_storage/' . 'dms/';
 
         // Create directory if it doesn't exist
-        if (!file_exists($archiveDir)) {
-            mkdir($archiveDir, 0755, true);
-        }
+//        if (!file_exists($archiveDir)) {
+//            mkdir($archiveDir, 0755, true);
+//        }
 
         $fullPath = $archiveDir . $filename;
 
@@ -124,12 +124,12 @@ class DMSController extends Controller
 
     private function saveAttachmentFile($uploadedFile, string $filename): ?string
     {
-        $archiveDir = __static::archive_dir() . 'dms/attachment';
+        $archiveDir = '/external1/swep_afd_storage/'. 'dms/attachment';
 
         // Create directory if it doesn't exist
-        if (!file_exists($archiveDir)) {
-            mkdir($archiveDir, 0755, true);
-        }
+//        if (!file_exists($archiveDir)) {
+//            mkdir($archiveDir, 0755, true);
+//        }
 
         $fullPath = $archiveDir . $filename;
 

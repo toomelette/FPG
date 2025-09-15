@@ -130,7 +130,7 @@ class DMSDocumentsController extends Controller
 
             foreach ($document->documentFiles as $file) {
                 if (!empty($file->file_name)) {
-                    $path = __static::archive_dir() . 'dms/' . $file->file_name;
+                    $path = '/external1/swep_afd_storage/'. . 'dms/' . $file->file_name;
 
                     if (file_exists($path)) {
                         unlink($path); // delete file physically
@@ -139,7 +139,7 @@ class DMSDocumentsController extends Controller
             }
             foreach ($document->AttachmentFiles as $file) {
                 if (!empty($file->document_attachment_file)) {
-                    $path = __static::archive_dir() . 'dms/attachment/' . $file->document_attachment_file;
+                    $path = '/external1/swep_afd_storage/'. . 'dms/attachment/' . $file->document_attachment_file;
 
                     if (file_exists($path)) {
                         unlink($path); // delete file physically
