@@ -11,7 +11,7 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
-    protected $table = 'api_users';
+    protected $table = 'swep_afd.api_users';
 
     protected $fillable = [
         'name',
