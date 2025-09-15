@@ -52,7 +52,6 @@ class DocumentController extends Controller{
             return $this->dataTable($request, $documents);
         }
         return view('_records.documents.index');
-
     }
 
     
