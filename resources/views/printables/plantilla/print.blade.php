@@ -102,7 +102,7 @@
         }
     </style>
 
-    <div >
+    <div style="font-family: Cambria">
         @foreach($planitillaArray as $k => $pls)
             <div class="printable"
                  style="break-after: {{$request->separate_page_per_table == true ? 'page' : 'none'}};
@@ -111,12 +111,12 @@
                  ">
                 @if($request->headers_per_table == true)
                     <h3 class="text-center no-margin">SUGAR REGULATORY ADMINISTRATION</h3>
-                    <p class="text-center no-margin">PLANTILLA OF PERSONNEL</p>
+                    <p class="text-center no-margin">{{request('type') == 'staffing_pattern' ? 'STAFFING PATTERN' : 'PLANTILLA OF PERSONNEL'}}</p>
                     <p class="text-center no-margin">As of {{\Illuminate\Support\Carbon::now()->format('F d, Y')}}</p>
                 @else
                     @if($loop->index == 0)
                         <h3 class="text-center no-margin">SUGAR REGULATORY ADMINISTRATION</h3>
-                        <p class="text-center no-margin">PLANTILLA OF PERSONNEL</p>
+                        <p class="text-center no-margin">{{request('type') == 'staffing_pattern' ? 'STAFFING PATTERN' : 'PLANTILLA OF PERSONNEL'}}</p>
                         <p class="text-center no-margin">As of {{\Illuminate\Support\Carbon::now()->format('F d, Y')}}</p>
                     @endif
                 @endif
@@ -230,6 +230,13 @@
                                                     @endif
                                                 </td>
                                                 @break
+                                            @case('retirement_date')
+                                                <td>
+                                                    @if(!empty($division->incumbentEmployee))
+                                                        {{Carbon::parse($division->incumbentEmployee->date_of_birth)->addYears(65)->format('m/d/Y')}}
+                                                    @endif
+                                                </td>
+                                                @break
                                             @default
                                                 <td class="">{{$division->$column}}</td>
                                                 @break
@@ -324,6 +331,13 @@
                                                             @endif
                                                         </td>
                                                         @break
+                                                    @case('retirement_date')
+                                                        <td>
+                                                            @if(!empty($section->incumbentEmployee))
+                                                                {{Carbon::parse($section->incumbentEmployee->date_of_birth)->addYears(65)->format('m/d/Y')}}
+                                                            @endif
+                                                        </td>
+                                                        @break
                                                     @default
                                                         <td class="">{{$section->$column}}</td>
                                                         @break
@@ -412,6 +426,13 @@
                                                             <td>
                                                                 @if(!empty($item->incumbentEmployee))
                                                                     {{$item->incumbentEmployee->employee_no}}
+                                                                @endif
+                                                            </td>
+                                                            @break
+                                                        @case('retirement_date')
+                                                            <td>
+                                                                @if(!empty($item->incumbentEmployee))
+                                                                    {{Carbon::parse($item->incumbentEmployee->date_of_birth)->addYears(65)->format('m/d/Y')}}
                                                                 @endif
                                                             </td>
                                                             @break

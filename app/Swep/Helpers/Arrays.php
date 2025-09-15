@@ -741,6 +741,10 @@ class Arrays
                 'name' => 'Date of Last Promotion',
                 'checked' => 1,
             ],
+            'retirement_date' => [
+                'name' => 'Date of Retirement',
+                'checked' => 0,
+            ],
         ];
     }
 

@@ -475,6 +475,9 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     Route::resource('deduction_registry',\App\Http\Controllers\HRU\DeductionRegistryController::class)->only(['edit','update','index']);
     Route::resource('deduction_sudemupco',\App\Http\Controllers\HRU\DeductionSudemupcoController::class);
+
+    Route::get('flight_booking/my',[\App\Http\Controllers\HRU\FlightBookingController::class,'my'])->name('flight_booking.my');
+    Route::resource('flight_booking',\App\Http\Controllers\HRU\FlightBookingController::class);
 });
 
 /** ADMIN LEVEL ROUTES REQUIRING PROJECT ID **/

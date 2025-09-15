@@ -14,12 +14,13 @@
                     <x-adminkit.html.accordion id="acc-fiters" class="accordion-sm mb-1" state="1">
                         <x-slot:title><i class="fa fa-filter"></i> Layout</x-slot:title>
                         <div class="row mb-2">
-                            <x-forms.select label="Layout" name="type" cols="12" :options="[
-                                            '' => 'List all',
-                                            'department' => 'By department',
-                                            'job_grade' => 'By Job Grade',
-                                            'location' => 'By Location',
-                                        ]"/>
+                            <x-forms.select label="Layout" id="layout" name="type" cols="12" :options="[
+                                '' => 'List all',
+                                'staffing_pattern' => 'Staffing Pattern',
+                                'department' => 'By department',
+                                'job_grade' => 'By Job Grade',
+                                'location' => 'By Location',
+                            ]"/>
                         </div>
                     </x-adminkit.html.accordion>
                     <x-adminkit.html.accordion id="acc-sort" class="accordion-sm" state="0">
@@ -34,7 +35,7 @@
                         </div>
                     </x-adminkit.html.accordion>
 
-                    <x-adminkit.html.accordion id="acc-columns" class="accordion-sm" state="0">
+                    <x-adminkit.html.accordion id="acc-columns" class="accordion-sm" state="1">
                         <x-slot:title><i class="fa fa-columns"></i> Select columns to show</x-slot:title>
 
                         <div class="row">
@@ -121,12 +122,10 @@
                                     <div class="text-center pt-5 pb-5" style="font-size: 50px"><i class="fas fa-fw fa-circle-notch fa-spin"></i></div>
                                 </div>
                                 <div class="row" id="report_frame_container" style="height: 100%; display: none">
-
-
                                     <div class="clearfix mb-3">
                                         <button class="btn btn-primary btn-sm float-end" id="print-btn"><i class="fa fa-print"></i> Print</button>
                                     </div>
-                                    <iframe id="report_frame"  style="width: 100%;overflow:hidden;" height="500" class="embed-responsive" src=""></iframe>
+                                    <iframe id="report_frame"  style="width: 100%;" height="700" class="" src=""></iframe>
                                 </div>
                             </div>
                         </div>
@@ -197,5 +196,11 @@
             $("#report_frame").get(0).contentWindow.print();
         })
 
+        $("#layout").change(function (){
+            if($(this).val() === 'staffing_pattern'){
+                $("input[value='retirement_date']").attr('checked','checked');
+                $("input[value='appointment_status']").removeAttr('checked');
+            }
+        });
     </script>
 @endsection
