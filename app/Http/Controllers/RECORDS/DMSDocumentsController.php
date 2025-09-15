@@ -75,7 +75,7 @@ class DMSDocumentsController extends Controller
             ->where('slug',$slug)
             ->firstOrFail();
             $uploads ?? abort(404, 'Document not found.');
-        $path = __static::archive_dir().'dms/'.$uploads->file_name;
+        $path = '/external1/swep_afd_storage/'.'dms/'.$uploads->file_name;
         return response()->file($path);
     }
     public function viewDocumentFile($slug){
@@ -85,7 +85,7 @@ class DMSDocumentsController extends Controller
             return response()->json(['message' => 'No file uploaded'], 404);
         }
 
-        $path = __static::archive_dir() . 'dms/' . $document->document_file;
+        $path = '/external1/swep_afd_storage/'. 'dms/' . $document->document_file;
 
         if (!\File::exists($path)) {
             return response()->json(['message' => 'File not found'], 404);
@@ -116,7 +116,7 @@ class DMSDocumentsController extends Controller
             ->firstOrFail();
         $uploads ?? abort(404,'Document not found.');
 
-        $path = __static::archive_dir().'dms/attachment/'.$uploads->document_attachment_file;
+        $path = '/external1/swep_afd_storage/'.'dms/attachment/'.$uploads->document_attachment_file;
         return response()->file($path);
     }
 
@@ -130,7 +130,7 @@ class DMSDocumentsController extends Controller
 
             foreach ($document->documentFiles as $file) {
                 if (!empty($file->file_name)) {
-                    $path = '/external1/swep_afd_storage/'. . 'dms/' . $file->file_name;
+                    $path = '/external1/swep_afd_storage/' . 'dms/' . $file->file_name;
 
                     if (file_exists($path)) {
                         unlink($path); // delete file physically
@@ -139,7 +139,7 @@ class DMSDocumentsController extends Controller
             }
             foreach ($document->AttachmentFiles as $file) {
                 if (!empty($file->document_attachment_file)) {
-                    $path = '/external1/swep_afd_storage/'. . 'dms/attachment/' . $file->document_attachment_file;
+                    $path = '/external1/swep_afd_storage/' . 'dms/attachment/' . $file->document_attachment_file;
 
                     if (file_exists($path)) {
                         unlink($path); // delete file physically
@@ -172,7 +172,7 @@ class DMSDocumentsController extends Controller
             $sourceName   = $selectedFile->file_name;
         } elseif ($type === 'attachment') {
             $selectedFile = DMSAttachment::where('slug', $fileSlug)->firstOrFail();
-            $sourcePath   = __static::archive_dir().'dms/attachment/'.$selectedFile->document_attachment_file;
+            $sourcePath   = '/external1/swep_afd_storage/'.'dms/attachment/'.$selectedFile->document_attachment_file;
             $sourceName   = $selectedFile->document_attachment_file;
         } else {
             abort(400, 'Invalid file type selected.');
