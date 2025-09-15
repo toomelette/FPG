@@ -10,6 +10,7 @@ use App\Models\ApplicantPositionApplied;
 use App\Models\Budget\ChartOfAccounts;
 use App\Models\DocumentFolder;
 use App\Models\Employee;
+use App\Models\FLIGHTS\FlightsAirports;
 use App\Models\HRPayPlanitilla;
 use App\Models\HRU\Deductions;
 use App\Models\HRU\Incentives;
@@ -746,6 +747,29 @@ class Arrays
                 'checked' => 0,
             ],
         ];
+    }
+
+    public static function airports()
+    {
+        return FlightsAirports::query()
+            ->orderBy('airport_name')
+            ->get()
+            ->mapWithKeys(function ($airport){
+                return [
+                    $airport->airport_code => $airport->airport_code .' - '.$airport->airport_name,
+                ];
+            })
+            ->toArray();
+
+    }
+    public static function seats()
+    {
+        return [
+            'Window' => 'Window',
+            'Aisle' => 'Aisle',
+            'Random' => 'Random'
+        ];
+
     }
 
     public static function leaveTypesForView(){

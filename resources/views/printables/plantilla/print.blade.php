@@ -111,12 +111,12 @@
                  ">
                 @if($request->headers_per_table == true)
                     <h3 class="text-center no-margin">SUGAR REGULATORY ADMINISTRATION</h3>
-                    <p class="text-center no-margin">{{request('type') == 'staffing_pattern' ? 'STAFFING PATTERN' : 'PLANTILLA OF PERSONNEL'}}</p>
+                    <p class="text-center no-margin">{{request('type') == 'staffing_plan' ? 'STAFFING PLAN' : 'PLANTILLA OF PERSONNEL'}}</p>
                     <p class="text-center no-margin">As of {{\Illuminate\Support\Carbon::now()->format('F d, Y')}}</p>
                 @else
                     @if($loop->index == 0)
                         <h3 class="text-center no-margin">SUGAR REGULATORY ADMINISTRATION</h3>
-                        <p class="text-center no-margin">{{request('type') == 'staffing_pattern' ? 'STAFFING PATTERN' : 'PLANTILLA OF PERSONNEL'}}</p>
+                        <p class="text-center no-margin">{{request('type') == 'staffing_plan' ? 'STAFFING PLAN' : 'PLANTILLA OF PERSONNEL'}}</p>
                         <p class="text-center no-margin">As of {{\Illuminate\Support\Carbon::now()->format('F d, Y')}}</p>
                     @endif
                 @endif

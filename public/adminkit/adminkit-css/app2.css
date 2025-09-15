@@ -1,3 +1,11 @@
+.well{
+    border: 1px solid #e3e3e3; border-radius: 5px
+}
+
+.well .well-body{
+    padding-left:10px; padding-right: 10px; padding-bottom: 15px
+}
+
 .tab-error {
     border-top-color: #a80000;
 }

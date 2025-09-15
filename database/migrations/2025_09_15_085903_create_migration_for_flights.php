@@ -24,6 +24,7 @@ return new class extends Migration
             $table->dateTime('departure')->nullable();
             $table->string('departure_flight_no')->nullable();
             $table->string('layover_airport')->nullable();
+            $table->dateTime('layover_departure')->nullable();
             $table->string('layover_flight_no')->nullable();
             $table->string('end_airport')->nullable();
 
@@ -31,6 +32,7 @@ return new class extends Migration
             $table->dateTime('return_departure')->nullable();
             $table->string('return_departure_flight_no')->nullable();
             $table->string('return_layover_airport')->nullable();
+            $table->dateTime('return_layover_departure')->nullable();
             $table->string('return_layover_flight_no')->nullable();
             $table->string('return_end_airport')->nullable();
 

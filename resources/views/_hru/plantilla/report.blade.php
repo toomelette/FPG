@@ -16,7 +16,7 @@
                         <div class="row mb-2">
                             <x-forms.select label="Layout" id="layout" name="type" cols="12" :options="[
                                 '' => 'List all',
-                                'staffing_pattern' => 'Staffing Pattern',
+                                'staffing_plan' => 'Staffing Plan',
                                 'department' => 'By department',
                                 'job_grade' => 'By Job Grade',
                                 'location' => 'By Location',
