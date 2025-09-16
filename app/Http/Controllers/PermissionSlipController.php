@@ -340,6 +340,18 @@ class PermissionSlipController extends Controller{
             $permissionSlips = $permissionSlips->where('employee_slug','=',$request->employee_slug);
         }
 
+        if($request->has('perm_cos') && $request->perm_cos != ''){
+            $permissionSlips = $permissionSlips->whereHas('employee',function ($employee) use ($request){
+
+                if($request->perm_cos == 'PERMANENT'){
+                    $employee->permanent();
+                }
+                if($request->perm_cos == 'COS'){
+                    $employee->cos();
+                }
+            });
+        }
+
         $permissionSlips = $permissionSlips->get();
 
         $grouped = $permissionSlips->groupBy(function ($data){

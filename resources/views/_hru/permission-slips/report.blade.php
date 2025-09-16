@@ -15,6 +15,8 @@
                     </div>
                     <div class="row mb-2">
                         <x-forms.select label="Direct/Non-Direct" name="direct_nondirect" cols="6" :options="['DIRECT' => 'DIRECT','NON-DIRECT' => 'NON-DIRECT']"/>
+                        <x-forms.select label="Permanent/COS" name="perm_cos" cols="6" :options="['PERMANENT' => 'Permanent','COS' => 'COS']"/>
+
                     </div>
                     <div class="row mb-2">
                         <x-forms.select id="employee-select" label="Employee" name="employee_slug" cols="12" />
