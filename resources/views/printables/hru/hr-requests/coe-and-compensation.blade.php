@@ -18,9 +18,9 @@
         <p style="text-indent: 40px; line-height: 20px; text-align: justify">
             {{$employee->sex == 'MALE' ? 'His' : 'Her'}} present monthly compensation are as follows:
         </p>
-        <table style="width: 60%; margin-left: 25%; font-size: 15px">
+        <table style="width: 80%; margin-left: 15%; font-size: 15px">
             <tr>
-                <td style="width: 45%">Basic Salary</td>
+                <td style="width: 60%">Basic Salary</td>
                 <td class="text-right">{{\App\Swep\Helpers\Helper::toNumber($hrRequest->document_fields['monthly_basic'])}}</td>
                 <td style="width: 60px">/month</td>
                 <td style="width: 100px"></td>
@@ -77,13 +77,15 @@
         <p style="text-indent: 40px; line-height: 20px; text-align: justify">
             Further, {{$employee->sex == 'MALE' ? 'he' : 'she'}} receives the following additional yearly remuneration, viz:
         </p>
-        <table style="width: 60%; margin-left: 25%; font-size: 15px" >
+        <table style="width: 80%; margin-left: 15%; font-size: 15px" >
         @if(!empty($hrRequest->document_fields['other_incentives']))
-
-            @foreach($hrRequest->document_fields['other_incentives'] as $incentive => $amount)
+            @php
+                $otherIncentives = collect($hrRequest->document_fields['other_incentives'])->sortDesc()
+            @endphp
+            @foreach($otherIncentives as $incentive => $amount)
                 @if($amount !== null)
                     <tr>
-                        <td style="width: 45%;">{{$incentive}}</td>
+                        <td style="width: 60%;">{{$incentive}}</td>
                         <td class="text-right">{{\App\Swep\Helpers\Helper::toNumber($amount)}}</td>
                         <td style="width: 60px">/annum</td>
                         <td style="width: 100px"></td>
