@@ -907,6 +907,10 @@ class EmployeeController extends Controller{
                 'checked' => 1,
             ],
             'salary_grade' => [
+                'name' => 'JG',
+                'checked' => 0,
+            ],
+            'sg' => [
                 'name' => 'SG',
                 'checked' => 0,
             ],
