@@ -7,7 +7,7 @@ class Values
     public static function leaveApplicationCertification(){
         return [
             'name' => 'VINI GRACE O. OMARREMENTERIA',
-            'position' => 'HRMO III',
+            'position' => 'HRMO II',
         ];
     }
 
