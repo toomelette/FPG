@@ -509,8 +509,8 @@ class UserController extends Controller{
     public function resetPassword($slug){
         $user = User::query()->where('slug','=',$slug)->first();
         if(!empty($user)){
-            if(!empty($user->employeeUnion)){
-                $new_pass = Hash::make(Carbon::parse($user->employeeUnion->birthday)->format('mdy'));
+            if(!empty($user->employee)){
+                $new_pass = Hash::make(Carbon::parse($user?->employee?->date_of_birth)->format('mdy'));
                 $user->password = $new_pass;
                 if($user->update()){
                     return $user->only('slug');
