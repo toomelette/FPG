@@ -13,7 +13,7 @@
                     <th>Requested Document</th>
                     <th>Tracking No.</th>
                     <th>Staus</th>
-                    <th>Action</th>
+                    <th style="width: 180px">Action</th>
                 </tr>
                 </thead>
                 <tbody>

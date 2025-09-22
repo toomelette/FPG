@@ -878,4 +878,12 @@ class Helper
         }
         return 'a '.$string;
     }
+
+    public static function isThisMyData($model)
+    {
+        if($model->user_created == Auth::user()->user_id){
+            return true;
+        }
+        return false;
+    }
 }

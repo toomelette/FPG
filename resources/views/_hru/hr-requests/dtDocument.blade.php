@@ -5,4 +5,8 @@
         <br>
         Details: {{$data->details}}
     @endif
+    @if($data->request_file == 1)
+        <br>
+        <span class="text-danger">Requested for a soft copy</span>
+    @endif
 </div>

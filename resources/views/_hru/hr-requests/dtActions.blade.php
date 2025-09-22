@@ -9,6 +9,14 @@
         </button>
     @else
     @endif
+
+    @if(!empty($data->file_path))
+        <a href="{{route('dashboard.hr_requests.file',$data->slug )}}?view"  target="_blank"  class="btn btn-success btn-sm"  >
+            <i class="fa fa-file-pdf"></i>
+        </a>
+    @else
+    @endif
+
     <button type="button" data-bs="{{$data->slug}}" onclick="delete_data('{{$data->slug}}','{{route("dashboard.hr_requests.destroy","slug")}}')" class="btn btn-sm btn-danger delete_jo_employee_btn" data-bs-toggle="tooltip" >
         <i class="fa fa-trash"></i>
     </button>
@@ -20,6 +28,9 @@
             </li>
             <li class="dropdown-item update-status-btn" data="{{$data->slug}}" data-bs-toggle="modal" data-bs-target="#update-status-modal">
                 <i class="fa fa-refresh"></i> Update Status
+            </li>
+            <li class="dropdown-item upload-file-btn" data="{{$data->slug}}" data-bs-toggle="modal" data-bs-target="#upload-file-modal">
+                <i class="fa fa-upload"></i> Upload File
             </li>
         </ul>
     </div>

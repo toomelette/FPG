@@ -54,6 +54,18 @@
                                 <div class="row mt-2">
                                     <x-forms.textarea  label="Details (if any)" name="details" cols="12"/>
                                 </div>
+
+                                <div class="row mt-2">
+                                    <x-forms.checkbox label="Soft copy"
+                                                      type="checkbox"
+                                                      name="request_file"
+                                                      cols="12"
+                                                      each-class="12"
+                                                      :options="['1' => 'Request a soft copy']"
+                                                      :value="[]"
+                                    />
+                                    <span class="text-info small"><i class="fa fa-info-circle"></i> (Soft copy will be available in <b>MY REQUESTS</b> tab once uploaded by HR Personnel)</span>
+                                </div>
                                 <div class="row mt-3">
                                     <div class="col-md-12">
                                         <button class="btn btn-sm btn-primary float-end" type="submit"><i class="fa fa-check"></i> Save</button>

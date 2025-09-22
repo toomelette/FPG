@@ -31,6 +31,9 @@
                 <dl class="dl-horizontal" style="">
                     <dt>Requested Document:</dt>
                     <dd>{{$hrRequest->document}} <br><i>{{$hrRequest->purpose}}</i></dd>
+                    @if($hrRequest->request_file == 1)
+                        <dd class="text-danger">Requested for a soft copy</dd>
+                    @endif
                 </dl>
             </div>
             <div class="col-md-3">

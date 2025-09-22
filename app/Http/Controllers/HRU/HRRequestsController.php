@@ -11,6 +11,7 @@ use App\Swep\Services\HRU\HRRequestsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -31,6 +32,7 @@ class HRRequestsController extends Controller
 
     public function store(HRRequestsFromRequest $request)
     {
+
         $hrRequest = new HRRequests();
         $hrRequest->slug = Str::uuid();
         $hrRequest->tracking_no = $this->HRRequestsService->newTrackingNo();
@@ -39,6 +41,7 @@ class HRRequestsController extends Controller
         $hrRequest->document = $request->document;
         $hrRequest->purpose = $request->purpose;
         $hrRequest->details = $request->details;
+        $hrRequest->request_file = $request->request_file ?? null;
         $hrRequest->status = 'REQUEST SUBMITTED';
         if ($hrRequest->save()){
             event(new NewRequest($hrRequest));
@@ -270,5 +273,62 @@ class HRRequestsController extends Controller
         return view('_hru.hr-requests.show-timeline')->with([
             'hrRequest' => $hrRequest,
         ]);
+    }
+
+    public function uploadFileForm($slug, Request $request)
+    {
+        $hrRequest = HRRequests::query()->findOrFail($slug);
+        if($request->has('view')){
+            if (Helper::isThisMyData($hrRequest) || Helper::checkRouteAccess('dashboard.hr_requests.file')){
+                $storage = Storage::disk('hr_request_attachments');
+                if ($storage->exists($hrRequest->file_path)){
+                    return  $storage->response($hrRequest->file_path);
+                }
+                abort(404,'File does not exist.');
+            }else{
+                abort(403,'Unauthorized access.');
+            }
+
+        }
+        return view('_hru.hr-requests.file-upload')->with([
+            'hrRequest' => $hrRequest,
+        ]);
+    }
+
+    public function uploadFile(Request $request,$slug)
+    {
+        $request->validate([
+            'doc_file' => 'required|mimes:pdf',
+        ]);
+        $hrRequest = HRRequests::query()->findOrFail($slug);
+        $fileName = $hrRequest->tracking_no.'.'.$request->file('doc_file')->getClientOriginalExtension();
+        $storage = Storage::disk('hr_request_attachments');
+        $store = $storage->putFileAs(null,$request->file('doc_file'),$fileName);
+
+        if($store){
+            $hrRequest->file_path = $fileName;
+            $hrRequest->file_updated_at = Carbon::now();
+            $hrRequest->file_user_updated = Auth::user()->user_id;
+            if($hrRequest->save()){
+                return $hrRequest->only('slug');
+            }
+        }
+        abort(503,'Error uploading file.');
+    }
+
+    public function deleteFile(Request $request,$slug)
+    {
+        $hrRequest = HRRequests::query()->findOrFail($slug);
+        $storage = Storage::disk('hr_request_attachments')->delete($hrRequest->file_path);
+        if($storage){
+            $hrRequest->file_path = null;
+            $hrRequest->file_updated_at = Carbon::now();
+            $hrRequest->file_user_updated = Auth::user()->user_id;
+            $hrRequest->save();
+            return [
+                'success' => true,
+            ];
+        }
+        abort(503,'Error deleting file.');
     }
 }

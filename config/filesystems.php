@@ -53,6 +53,15 @@ return [
             'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/').'symlinks',
         ],
 
+        'hr_request_attachments' => [
+            'driver' => 'local',
+            'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/').'HR/HRRequestsAttachments',
+        ],
+
+
+
+
+
         'local_hru' => [
             'driver' => 'local',
             'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/').'HR/',
