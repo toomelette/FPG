@@ -1,6 +1,8 @@
 @php
     $rand = \Illuminate\Support\Str::random();
     /** @var \App\Models\HRU\PayrollMaster $payrollMaster **/
+
+    $grandTotalRata = 0;
 @endphp
 @extends('printables.print_layouts.print_layout_main')
 
@@ -55,6 +57,9 @@
                     <td class="text-right text-top">
                         @if(isset($employeesWithRata[$payrollEmployee->employee_slug]))
                             {{Helper::toNumber($rata = $employeesWithRata[$payrollEmployee->employee_slug]->rata_net_amount)}}
+                            @php
+                                $grandTotalRata = $grandTotalRata + $rata;
+                            @endphp
                         @else
                             @php
                             $rata = 0;
@@ -87,7 +92,7 @@
                 </th>
                 <th class="text-top text-right b-top">
                     @if(!empty($employeesWithRata) && count($employeesWithRata) > 0)
-                        {{Helper::toNumber($grandTotalRata = collect($employeesWithRata)->sum('rata_net_amount'))}}
+                        {{Helper::toNumber($grandTotalRata)}}
                     @else
                         @php
                         $grandTotalRata = 0;
