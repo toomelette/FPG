@@ -46,7 +46,7 @@
 
         <div class="row">
             <div class="col-md-9">
-                <p class="text-info" style="padding-left: 10px"><i class="fa fa-info-circle"></i> You may double-click ACTUAL DAYS WORKED column to update parameter.</p>
+                <p class="text-info" style="padding-left: 10px"><i class="fa fa-info-circle"></i> You may double-click ACTUAL DAYS WORKED & DEDUCTIONS columns to update parameters.</p>
             </div>
             <div class="col-md-3" style="margin-bottom: 5px">
                 <div class="mb-1 row">
@@ -139,20 +139,20 @@
         $("body").on("dblclick",".double-click-edit",function (){
             let td = $(this);
             td.find('.text-ph').hide();
-            td.find('.no-of-days-form').show();
-            td.find('.no-of-days-form').find('input[name="ineligible_days"]').focus();
+            td.find('.dynamic-form').show();
+            td.find('.dynamic-form').find('input').focus();
         });
 
-        $("body").on('submit','.no-of-days-form',function (e) {
+        $("body").on('submit','.dynamic-form',function (e) {
             e.preventDefault();
             let form = $(this);
             let slug = form.parents('tr').attr('data');
-            let uri = '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}?updateRataDays=true&employeeListSlug='+slug;
+            let uri = '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}?employeeListSlug='+slug;
             uri = uri.replace('slug',form.attr('data'));
             loading_btn(form);
             $.ajax({
                 url : uri,
-                data : form.serialize(),
+                data : form.serialize()+'&'+$(this).attr('data'),
                 type: 'POST',
                 headers: {
                     {!! __html::token_header() !!}

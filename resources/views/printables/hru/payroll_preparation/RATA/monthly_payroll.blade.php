@@ -51,6 +51,7 @@
                     <th class="text-center">RA</th>
                     <th class="text-center">TA</th>
                     <th class="text-center">Actual Days Worked</th>
+                    <th class="text-center">RATA</th>
                     <th class="text-center">Deductions</th>
                     <th class="text-center">Net Amount Received</th>
                     <th class="text-center">Signature</th>
@@ -72,6 +73,7 @@
                             <td class="indent text-right">{{Helper::toNumber($payrollEmployee->rata_ra_rate)}}</td>
                             <td class="indent text-right">{{Helper::toNumber($payrollEmployee->rata_ta_rate)}}</td>
                             <td class="indent text-right">{{Helper::toNumber(Helper::toNumber($payrollEmployee->rata_actual_days_worked),3)}}</td>
+                            <td class="indent text-right">{{Helper::toNumber($payrollEmployee->rata_total)}}</td>
                             <td class="indent text-right">{{Helper::toNumber($payrollEmployee->rata_deductions,2,'0.00')}}</td>
                             <td class="indent text-right">{{Helper::toNumber($payrollEmployee->rata_net_amount)}}</td>
                             <td>_________________________</td>
@@ -93,6 +95,9 @@
                         </td>
                         <td class="text-right text-strong b-top">
 
+                        </td>
+                        <td class="text-right text-strong b-top">
+                            {{Helper::toNumber($payrollEmployees->sum('rata_total'))}}
                         </td>
                         <td class="text-right text-strong b-top">
                             {{Helper::toNumber($payrollEmployees->sum('rata_deductions'),2,'0.00')}}
@@ -122,6 +127,9 @@
                     </td>
                     <td class="text-right text-strong b-top">
 
+                    </td>
+                    <td class="text-right text-strong b-top">
+                        {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('rata_total'))}}
                     </td>
                     <td class="text-right text-strong b-top">
                         {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('rata_deductions'),2,'0.00')}}

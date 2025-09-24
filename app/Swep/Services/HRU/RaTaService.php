@@ -5,6 +5,7 @@ namespace App\Swep\Services\HRU;
 use App\Models\HRU\PayrollMaster;
 use App\Models\HRU\PayrollMasterEmployees;
 use App\Models\PPU\PPURespCodes;
+use App\Swep\Helpers\Helper;
 use Illuminate\Http\Request;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -57,16 +58,16 @@ class RaTaService
             $totalRata = $payrollMasterEmployee?->employee?->payrollSettings?->ra_rate + $payrollMasterEmployee?->employee?->payrollSettings?->ta_rate;
             $actualDaysWorked = $payrollMasterEmployee->rata_actual_days_worked ?? 22;
             $factor = $this->getFactor($actualDaysWorked);
+
             $modifiedRata = $totalRata * $factor;
-            $deductions = $totalRata - $modifiedRata;
             $upsert[] = [
                 'saved_employee_data' => json_encode($payrollMasterEmployee->saved_employee_data),
                 'slug' => $payrollMasterEmployee->slug,
                 'rata_ra_rate' => $payrollMasterEmployee?->employee?->payrollSettings?->ra_rate,
                 'rata_ta_rate' => $payrollMasterEmployee?->employee?->payrollSettings?->ta_rate,
                 'rata_actual_days_worked' => $actualDaysWorked,
-                'rata_deductions' => $deductions,
-                'rata_net_amount' => $totalRata - $deductions,
+                'rata_total' => $modifiedRata,
+                'rata_net_amount' => $modifiedRata - $payrollMasterEmployee->rata_deductions,
             ];
         }
 
@@ -78,7 +79,7 @@ class RaTaService
                 'rata_ra_rate',
                 'rata_ta_rate',
                 'rata_actual_days_worked',
-                'rata_deductions',
+                'rata_total',
                 'rata_net_amount',
             ]);
 
@@ -97,13 +98,23 @@ class RaTaService
 
     public function update(Request $request,$payrollMaster)
     {
-        if($request->has('updateRataDays') && $request->updateRataDays == true){
+
+        if($request->has('updateRataDays')){
+
             $employeeFromList = PayrollMasterEmployees::query()->findOrFail($request->employeeListSlug);
             $employeeFromList->rata_actual_days_worked = $request->rata_actual_days_worked;
             if($employeeFromList->save()){
                 return $this->recompute($payrollMaster->slug,$request->employeeListSlug);
             }
         }
+        if($request->has('updateRataDeductions')){
+            $employeeFromList = PayrollMasterEmployees::query()->findOrFail($request->employeeListSlug);
+            $employeeFromList->rata_deductions = Helper::sanitizeAutonum($request->rata_deductions);
+            if($employeeFromList->save()){
+                return $this->recompute($payrollMaster->slug,$request->employeeListSlug);
+            }
+        }
+
     }
 
     public function printPayroll($slug)

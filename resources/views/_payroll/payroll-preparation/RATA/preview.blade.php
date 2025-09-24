@@ -8,6 +8,7 @@
             <th class="text-center" style="min-width: 90px">RA</th>
             <th class="text-center" style="min-width: 90px">TA</th>
             <th class="text-center text-info" style="min-width: 90px">Actual Days Worked</th>
+            <th class="text-center" style="min-width: 90px">RATA</th>
             <th class="text-center" style="min-width: 90px">Deductions</th>
             <th class="text-center" style="min-width: 90px">Net Amount Received</th>
         </tr>
