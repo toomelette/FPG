@@ -26,7 +26,7 @@
     </tr>
     </thead>
     <tbody>
-    @for($i = 1; $i<$days_in_this_month; $i++)
+    @for($i = 1; $i<=$days_in_this_month; $i++)
         @php
             $day = Str::of($i)->padLeft(2,'0');
             $carbonDate = Carbon::parse($month.'-'.$day);
