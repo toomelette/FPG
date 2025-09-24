@@ -301,7 +301,6 @@ class DTRController extends  Controller
     }
 
     public function download(Request $request){
-
         if(!request()->has('month')){
             abort(404);
         }
@@ -352,13 +351,20 @@ class DTRController extends  Controller
             'sup_name' => $request->sup_name,
             'dtr_edits_array' => $dtr_edits_array,
         ];
+        if($request->raw == 'true'){
+            $dtrs = DTR::query()
+                ->where('user','=',$request->bm_u_id)
+                ->where('timestamp','like',$request->month.'%')
+                ->get();
 
-        //return $request;
-        $pdf = PDF::loadView('_hru.dtr.downloadable_dtr',$data)->setPaper('letter');
+            return view('_hru.dtr.downloadable-dtr-raw')->with([
+                'holidays' => $holidays,
+                'dtrs'=> $dtrs,
+                'month' => $request->month,
+                'employee' => $employee,
+            ]);
+        }
         return view('_hru.dtr.downloadable_dtr',$data);
-        //$pdf->adminPassword('123456');
-        return $pdf->download('DTR-'.$employee->lastname.'-'.Carbon::parse($request->month)->format("Y,F").'.pdf');
-
     }
 
     public function holidaysArray($month = null){
