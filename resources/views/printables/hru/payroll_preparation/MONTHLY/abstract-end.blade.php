@@ -105,7 +105,7 @@
                     }))}}
                 </th>
                 <th class="text-top text-right b-top">
-                    {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('pay15') + $grandTotalRefunds + $grandTotalRata)}}
+                    {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('pay30') + $grandTotalRefunds + $grandTotalRata)}}
                 </th>
             </tr>
             </tbody>
