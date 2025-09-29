@@ -979,7 +979,23 @@ class Arrays
         });
     }
 
-
+    public static function salaryTypes()
+    {
+        return [
+            'SG' => 'Salary Grade',
+            'JG' => 'Job Grade',
+            'PG' => 'Pay Grade',
+        ];
+    }
+    public static function serviceRecordDueTo()
+    {
+        return [
+            'APPOINTMENT' => 'APPOINTMENT',
+            'NOSA' => 'NOSA',
+            'NOSI' => 'NOSI',
+            'PROMOTION' => 'PROMOTION',
+        ];
+    }
     public static function appointmentStatus(){
         $oraohra = [
             'PERMANENT' => 'PERMANENT',

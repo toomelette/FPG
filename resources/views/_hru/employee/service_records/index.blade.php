@@ -47,7 +47,7 @@
             Add Service Record
         </x-slot:title>
 
-        <div class="row mb-2">
+        <div class="row">
             <x-forms.input label="Seq. #" name="sequence_no" cols="4" />
             <x-forms.input label="Date From" name="from_date" cols="4" type="date"/>
             <div class="form-group col-md-4 to_date ">
@@ -61,12 +61,23 @@
             </div>
         </div>
         <div class="row mb-2">
-            <x-forms.input label="Position" name="position" cols="6" />
-            <x-forms.select label="Appointment Status" name="appointment_status" cols="6" :options="\App\Swep\Helpers\Arrays::appointmentStatus()"/>
-
+            <x-forms.select label="Item No. (If applicable)" name="item_no" id="item_no" cols="12" :options="[]"/>
         </div>
         <div class="row mb-2">
-            <x-forms.input label="Salary" name="salary" cols="6" class="autonum" />
+            <x-forms.input label="Position Title" name="position" cols="8" />
+            <x-forms.select label="Appointment Status" name="appointment_status" cols="4" :options="\App\Swep\Helpers\Arrays::appointmentStatus()"/>
+        </div>
+        <div class="row mb-2">
+            <x-forms.select label="Salary Type" name="salary_type" cols="4" :options="\App\Swep\Helpers\Arrays::salaryTypes()"/>
+            <x-forms.input label="SG/JG/PG" name="grade" cols="4" type="number"/>
+            <x-forms.select label="Step" name="step" cols="4" :options="\App\Swep\Helpers\Arrays::stepIncements()"/>
+        </div>
+        <div class="row mb-2">
+            <x-forms.input label="Monthly Basic Salary" name="monthly_basic" cols="6" target="#annual_salary"  class="targeted-autonum monthly_basic" />
+            <x-forms.select label="Due to" name="due_to" cols="6" :options="\App\Swep\Helpers\Arrays::serviceRecordDueTo()"/>
+        </div>
+        <div class="row mb-2">
+            <x-forms.input label="Salary (Annual)" name="salary" cols="6" id="annual_salary" class="targeted-autonum" />
             <x-forms.input label="Mode of Payment" name="mode_of_payment" cols="6" />
         </div>
         <div class="row mb-2">
@@ -115,7 +126,20 @@
     </x-adminkit.html.modal-template>
 
 @endsection
-
+@php
+    $plantillas = \App\Models\HRPayPlanitilla::query()
+        ->get()
+        ->map(function ($plantilla){
+            return [
+                'id' => $plantilla->item_no,
+                'text' => $plantilla->item_no .' - '.$plantilla->position,
+                'position' => $plantilla->position,
+                'JG' => $plantilla->original_job_grade,
+                'SG' => $plantilla->original_salary_grade,
+                'PG' => $plantilla->original_salary_grade,
+            ];
+        });
+@endphp
 @section('scripts')
     <script type="text/javascript">
         sr_active = '';
@@ -227,6 +251,26 @@
                 }
             })
         })
+
+        let plantillas = {!! $plantillas->toJson() !!}
+        $("#item_no").select2({
+            data: plantillas,
+            dropdownParent: $("#add-service-record-modal")
+        });
+        $('#item_no').on('select2:select', function (e) {
+            let data = e.params.data;
+            let form = $(this).parents('form');
+            form.find('input[name="position"]').val(data.position);
+            form.find('input[name="grade"]').val(data.JG);
+        });
+        $("body").on("change keyup",".monthly_basic",function (){
+            let monthlySalary = sanitizeAutonum($(this).val());
+            let annualSalary = monthlySalary * 12;
+            if(annualSalary != 0){
+                AutoNumeric.getAutoNumericElement($(this).attr('target')).set(annualSalary);
+            }
+        })
+
 
     </script>
 @endsection

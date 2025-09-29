@@ -35,15 +35,28 @@
             </div>
         </div>
     </div>
+    <div class="row mb-2">
+        <x-forms.select label="Item No. (If applicable)" name="item_no" id="item_no_{{$rand}}" cols="12" :options="[]"/>
+    </div>
 
     <div class="row mb-2">
-        <x-forms.input label="Position" name="position" cols="6"  :value="$sr"/>
-        <x-forms.select label="Appointment Status" name="appointment_status" cols="6" :options="\App\Swep\Helpers\Arrays::appointmentStatus()" :value="$sr"/>
+        <x-forms.input label="Position" name="position" cols="8"  :value="$sr"/>
+        <x-forms.select label="Appointment Status" name="appointment_status" cols="4" :options="\App\Swep\Helpers\Arrays::appointmentStatus()" :value="$sr"/>
 
     </div>
 
     <div class="row mb-2">
-        <x-forms.input label="Salary" name="salary" cols="6" class="autonum" :value="$sr"/>
+        <x-forms.select label="Salary Type" name="salary_type" cols="4" :options="\App\Swep\Helpers\Arrays::salaryTypes()" :value="$sr ?? null"/>
+        <x-forms.input label="SG/JG/PG" name="grade" cols="4" type="number" :value="$sr ?? null"/>
+        <x-forms.select label="Step" name="step" cols="4" :options="\App\Swep\Helpers\Arrays::stepIncements()" :value="$sr ?? null"/>
+    </div>
+    <div class="row mb-2">
+        <x-forms.input label="Monthly Basic Salary" name="monthly_basic" cols="6" target="#annual-salary-{{$rand}}" class="autonum-{{$rand}} monthly_basic"  :value="$sr ?? null"/>
+        <x-forms.select label="Due to" name="due_to" cols="6" target="#annual-salary-{{$rand}}" :options="\App\Swep\Helpers\Arrays::serviceRecordDueTo()" :value="$sr ?? null"/>
+    </div>
+
+    <div class="row mb-2">
+        <x-forms.input label="Salary (Annual)" name="salary" id="annual-salary-{{$rand}}" cols="6" class="autonum-{{$rand}}" :value="$sr"/>
         <x-forms.input label="Mode of Payment" name="mode_of_payment" cols="6" :value="$sr"/>
     </div>
 
@@ -72,6 +85,13 @@
 
 @section('scripts')
     <script type="text/javascript">
+
+        $(document).ready(function (){
+            AutoNumeric.multiple('.autonum-{{$rand}}', {
+                decimalPlaces: 2,
+                digitGroupSeparator: ','
+            });
+        })
         $("#edit-sr-form-{{$rand}}").submit(function (e) {
             e.preventDefault();
             let form = $(this);
@@ -95,8 +115,26 @@
                     errored(form,res);
                 }
             })
-        
+
         })
+        $("#item_no_{{$rand}}").select2({
+            data: plantillas,
+            dropdownParent: $("#edit-sr-modal")
+        });
+
+        $('#item_no_{{$rand}}').on('select2:select', function (e) {
+            let data = e.params.data;
+            let form = $(this).parents('form');
+            form.find('input[name="position"]').val(data.position);
+            form.find('input[name="grade"]').val(data.JG);
+        });
+
+
+        @if(!empty($sr->item_no))
+            $('#item_no_{{$rand}}').val({{$sr->item_no}}).change();
+        @endif
+
+
     </script>
 @endsection
 

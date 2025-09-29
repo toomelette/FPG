@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\EmployeeServiceRecord;
 
+use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 
 class EmployeeServiceRecordEditForm extends FormRequest{
@@ -14,9 +15,14 @@ class EmployeeServiceRecordEditForm extends FormRequest{
     
     }
 
-    
 
 
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'monthly_basic' => Helper::sanitizeAutonum($this->monthly_basic),
+        ]);
+    }
 
     public function rules(){
 
@@ -35,7 +41,10 @@ class EmployeeServiceRecordEditForm extends FormRequest{
             'spdate'=>'nullable|string|max:20',
             'status'=>'nullable|string|max:90',
             'remarks'=>'nullable|string|max:200',
-
+            'salary_type' => 'required_with:grade,step',
+            'grade' => 'required_with:step,salary_type',
+            'step' => 'required_with:grade,salary_type',
+            'monthly_basic' => 'required|numeric',
         ];
 
     }

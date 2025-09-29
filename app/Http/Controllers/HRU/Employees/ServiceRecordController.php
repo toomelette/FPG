@@ -119,6 +119,12 @@ class ServiceRecordController extends Controller
         $sr->gov_serve = $request->gov_serve;
         $sr->psc_serve = $request->psc_serve;
         $sr->lwp = $request->lwp;
+        $sr->item_no = $request->item_no;
+        $sr->salary_type = $request->salary_type;
+        $sr->grade = $request->grade;
+        $sr->step = $request->step;
+        $sr->monthly_basic = $request->monthly_basic;
+        $sr->due_to = $request->due_to;
         if($request->upto_date == true){
             $sr->upto_date = 1;
         }else{
@@ -150,6 +156,12 @@ class ServiceRecordController extends Controller
         $serviceRecord->gov_serve = $request->gov_serve;
         $serviceRecord->psc_serve = $request->psc_serve;
         $serviceRecord->lwp = $request->lwp;
+        $serviceRecord->item_no = $request->item_no;
+        $serviceRecord->salary_type = $request->salary_type;
+        $serviceRecord->grade = $request->grade;
+        $serviceRecord->step = $request->step;
+        $serviceRecord->monthly_basic = $request->monthly_basic;
+        $serviceRecord->due_to = $request->due_to;
         if($request->upto_date == true){
             $serviceRecord->upto_date = 1;
         }else{

@@ -73,6 +73,13 @@
         @endif
     })
 
+    $(document).ready(function (){
+        AutoNumeric.multiple('.targeted-autonum', {
+            decimalPlaces: 2,
+            digitGroupSeparator: ','
+        });
+    })
+
 </script>
 
 <script type="module">
