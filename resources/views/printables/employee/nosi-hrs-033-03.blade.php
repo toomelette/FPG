@@ -42,7 +42,7 @@
                 <td></td>
                 <td style="padding-left: 40px">
                     {{request('new_salary_type')}} <b><u>{{request('new_salary_grade')}}</u></b>
-                    Step <b><u>{{request('new_step_inc')}}</u></b>
+                    Step <b><u>{{request('step_inc')}}</u></b>
                 </td>
                 <td></td>
             </tr>
