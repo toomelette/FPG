@@ -4,7 +4,7 @@
 @section('content2')
     <x-adminkit.html.page-title>
         <x-slot:title>{{$employee->full['LFEMi'] ?? ''}}</x-slot:title>
-        <x-slot:subtitle>{{$employee->plantilla->position ?? $employee->position}}</x-slot:subtitle>
+        <x-slot:subtitle>{{$employee->plantilla->position ?? $employee->position}} ({{$employee?->plantilla?->item_no}})</x-slot:subtitle>
     </x-adminkit.html.page-title>
 
     <div class="tab">

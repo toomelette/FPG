@@ -239,6 +239,7 @@ class HomeController extends Controller{
                     ->orWhere('locations','=','VISAYAS');
             })
             ->whereMonth('adjustment_date','=',$month)
+            ->applyProjectId()
             ->orderBy('lastname','asc')
             ->get();
         $employees_with_adjustments = [];
