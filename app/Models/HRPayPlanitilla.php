@@ -5,6 +5,7 @@ namespace App\Models;
 
 
 use App\Models\HRU\HrPlantillaClassification;
+use App\Models\PPU\PPURespCodes;
 use Illuminate\Database\Eloquent\Model;
 
 class HRPayPlanitilla extends Model
@@ -29,5 +30,10 @@ class HRPayPlanitilla extends Model
     public function classifications()
     {
         return $this->hasMany(HrPlantillaClassification::class,'item_no','item_no');
+    }
+
+    public function responsibilityCenter()
+    {
+        return $this->hasOne(PPURespCodes::class,'rc_code','resp_center');
     }
 }

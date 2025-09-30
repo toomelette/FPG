@@ -30,12 +30,11 @@ class OtherActionsController extends Controller
                     'employee' => $employee,
                 ]);
             case 'nosa':
-                $oa = new HrOtherActions();
-                $oa->employee_slug = $slug;
-                $oa->type = $type;
-                $oa->values = $request->all();
-                $oa->save();
-                return \view('printables.employee.nosa-hrs-034-02')->with([
+               return \view('printables.employee.nosa-hrs-034-02')->with([
+                    'employee' => $employee,
+                ]);
+            case 'nosi':
+                return view('printables.employee.nosi-hrs-033-03')->with([
                     'employee' => $employee,
                 ]);
 

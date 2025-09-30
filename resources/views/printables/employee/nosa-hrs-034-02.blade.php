@@ -23,7 +23,7 @@
 </p>
 
 <p class="">
-    {{\Illuminate\Support\Carbon::parse(Request::get('header_date'))->format('F d, Y')}}
+    {{Carbon::parse(request('header_date'))->format('F d, Y')}}
     <br><br>
 </p>
 
@@ -43,11 +43,7 @@
 </p>
 
 <p style="text-align: justify">
-    Pursuant to CPCS Implementing Guidelines No. 2021-1 dated January 12, 2022, implementing Executive Order No. 150 s 2021,
-    and Sugar Regulatory Administration Board Resolution No. 2023-157 dated September 26, 2023 duly approved by GCG on March 25, 2024,
-    your salary is hereby adjusted effective
-    <b><u>{{\Carbon\Carbon::parse(\Illuminate\Support\Facades\Request::get('effectivity'))->format('F d, Y')}}</u></b>
-    as follows:
+    {!!  Str::of(request('body'))->replace(Carbon::parse(request('effectivity'))->format('F d, Y'),'<b>'.Carbon::parse(request('effectivity'))->format('F d, Y').'</b>')  !!}
 </p>
 
 <table style="width: 93%;font-size: 14px; margin-left: 25px">
@@ -55,15 +51,15 @@
         <td style="width: 15px; vertical-align: top">1.</td>
         <td style="width: 75%">
             Adjusted monthly basic salary effective
-            <b><u>{{\Carbon\Carbon::parse(\Illuminate\Support\Facades\Request::get('effectivity'))->format('F d, Y')}}</u></b>
+            <b><u>{{Carbon::parse(request('effectivity'))->format('F d, Y')}}</u></b>
             under the new salary schedule
-            JG <b>{{\Illuminate\Support\Facades\Request::get('new_salary_grade')}}</b>
-            Step <b>{{\Illuminate\Support\Facades\Request::get('new_step_inc')}}</b>
+            {{request('new_salary_type')}} <b>{{request('new_salary_grade')}}</b>
+            Step <b>{{request('new_step_inc')}}</b>
         </td>
         <td class="text-right" style="vertical-align: top">
             <u>
                 <p class="editable text-strong">
-                    {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('new_monthly_salary')),2)}}
+                    {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(request('new_monthly_salary')),2)}}
                 </p>
             </u>
         </td>
@@ -73,14 +69,14 @@
         <td style="width: 15px; vertical-align: top">2.</td>
         <td>
             Actual monthly salary as of
-            <b><u>{{\Carbon\Carbon::parse(\Illuminate\Support\Facades\Request::get('as_of'))->format('F d, Y')}}</u></b>
-            JG <b>{{\Illuminate\Support\Facades\Request::get('salary_grade')}}</b>
+            <b><u>{{Carbon::parse(request('effectivity'))->subDays(1)->format('F d, Y')}}</u></b>
+            {{request('salary_type')}} <b>{{\Illuminate\Support\Facades\Request::get('salary_grade')}}</b>
             Step <b>{{\Illuminate\Support\Facades\Request::get('step_inc')}}</b>
         </td>
         <td class="text-right" style="vertical-align: top">
             <u>
                 <p class="editable text-strong">
-                    {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('monthly_basic') ?? 0),2)}}
+                    {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(request('monthly_basic') ?? 0),2)}}
                 </p>
             </u>
         </td>
@@ -90,13 +86,13 @@
         <td style="width: 15px; vertical-align: top">3.</td>
         <td>
             Monthly Salary Adjustment effective
-            <b><u>{{\Carbon\Carbon::parse(\Illuminate\Support\Facades\Request::get('effectivity'))->format('F d, Y')}}</u></b>
+            <b><u>{{Carbon::parse(request('effectivity'))->format('F d, Y')}}</u></b>
         </td>
         <td class="text-right" style="vertical-align: top">
             <u>
                 <p class="editable text-strong">
 
-                    {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(Request::get('new_monthly_salary')) - \App\Swep\Helpers\Helper::sanitizeNumFormat(\Illuminate\Support\Facades\Request::get('monthly_basic')),2)}}
+                    {{number_format(Helper::sanitizeNumFormat(request('new_monthly_salary')) - Helper::sanitizeNumFormat(request('monthly_basic')),2)}}
                 </p>
             </u>
         </td>
@@ -113,18 +109,18 @@
         </p>
 
         <p class="">
-            <b>{{\Illuminate\Support\Facades\Request::get('signatory_name')}}</b>
+            <b>{{request('signatory_name')}}</b>
             <span style="white-space: pre-line">
-                {{\Illuminate\Support\Facades\Request::get('signatory_position')}}
+                {{request('signatory_position')}}
             </span>
         </p>
     </div>
 </div>
 
 <p style="font-size: 12px">
-    Position Title:<b> {{strtoupper(\Illuminate\Support\Facades\Request::get('new_position'))}}</b>
+    Position Title:<b> {{strtoupper(request('new_position'))}}</b>
     <br>
-    Job Grade:  <b>{{\Illuminate\Support\Facades\Request::get('new_salary_grade')}}</b> Step:  <b>{{\Illuminate\Support\Facades\Request::get('new_step_inc')}}</b>
+    {{\App\Swep\Helpers\Arrays::salaryTypes()[request('new_salary_type')] ?? '-'}}:  <b>{{request('new_salary_grade')}}</b> Step:  <b>{{request('new_step_inc')}}</b>
 </p>
 <p style="font-size: 12px">
     Item No./ Unique Item No., FY 2021 Personal Services Itemization <br> and/or Plantilla of Personnel:  <b>{{\Illuminate\Support\Facades\Request::get('new_item_no')}}</b>
@@ -148,25 +144,7 @@
 </div>
 
 <script>
-    $("body").on('dblclick',".editable",function () {
-        let p = $(this);
-        p.removeClass('editable');
-        p.addClass('non-editable');
-        let old_value = $(this).html();
-        $(this).html('<form class="edit_form"><input class="inpt" type="text" value="'+old_value+'"></form>')
-    })
 
-    $("body").on("submit",".edit_form",function (e) {
-        e.preventDefault();
-        let form = $(this);
-        let p = form.parent('p');
-        let input = p.find(".inpt");
-        input.remove();
-        p.html(input.val());
-        p.addClass('editable');
-        p.removeClass('non-editable');
-
-    })
 </script>
 </body>
 </html>

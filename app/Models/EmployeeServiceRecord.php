@@ -37,6 +37,10 @@ class EmployeeServiceRecord extends Model{
     public $incrementing = false;
     use SoftDeletes;
 
+    protected $casts = [
+        'salary' => 'float',
+    ];
+
 
 
     protected $attributes = [

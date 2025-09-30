@@ -42,6 +42,7 @@ class ServiceRecordController extends Controller
                     if($data->from_date != ''){
                         return Carbon::parse($data->from_date)->format('m/d/Y');
                     }
+                    return  '';
                 })
                 ->editColumn('to_date',function ($data){
                     if($data->upto_date == 1){
@@ -50,6 +51,17 @@ class ServiceRecordController extends Controller
                     if($data->to_date != ''){
                         return Carbon::parse($data->to_date)->format('m/d/Y');
                     }
+                    return  '';
+                })
+                ->editColumn('monthly_basic',function ($data){
+                    return view('_hru.employee.service_records.dtMonthlyBasic')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->editColumn('position',function ($data){
+                    return view('_hru.employee.service_records.dtPosition')->with([
+                        'data' => $data,
+                    ]);
                 })
                 ->setRowId('slug')
                 ->toJson();
@@ -69,6 +81,7 @@ class ServiceRecordController extends Controller
                 ]
             );
         }
+
         if(request()->has('print')){
            return  $this->print($employeeSlug,$request);
         }
@@ -78,8 +91,12 @@ class ServiceRecordController extends Controller
 
     public function print($employeeSlug,Request $request)
     {
-
-
+        if($request->doc == 'NOSA'){
+            return $this->printNosa($employeeSlug,$request);
+        }
+        if($request->doc == 'NOSI'){
+            return $this->printNosi($employeeSlug,$request);
+        }
         $employee =  Employee::query()
             ->with([
                 'employeeServiceRecord' => function ($q) use($request) {
@@ -102,6 +119,77 @@ class ServiceRecordController extends Controller
             'employee' => $employee,
             'employee_service_records' => $srArr,
         ]);
+
+
+    }
+
+    public function printNosa($slug,Request $request)
+    {
+        $selectedSr = EmployeeServiceRecord::query()
+            ->findOrFail($slug);
+        $srBeforeSelected = EmployeeServiceRecord::query()
+            ->where('sequence_no','<',$selectedSr->sequence_no)
+            ->where('employee_slug','=',$selectedSr->employee_slug)
+            ->orderBy('sequence_no','desc')
+            ->first();
+        $employee = Employee::query()->findOrFail($selectedSr->employee_slug);
+        $array = $employee->other_hr_actions_data ?? [];
+        $array['nosa'] = [
+            'old' => [
+                'salary_type' => $srBeforeSelected->salary_type,
+                'grade' => $srBeforeSelected->grade,
+                'step' => $srBeforeSelected->step,
+                'monthly_basic' => $srBeforeSelected->monthly_basic,
+            ],
+            'new' => [
+                'salary_type' => $selectedSr->salary_type,
+                'grade' => $selectedSr->grade,
+                'step' => $selectedSr->step,
+                'monthly_basic' => $selectedSr->monthly_basic,
+            ],
+            'body' => 'Pursuant to CPCS Implementing Guidelines No. 2021-1 dated January 12, 2022, implementing Executive Order No. 150 s 2021, and Sugar Regulatory Administration Board Resolution No. 2023-157 dated September 26, 2023 duly approved by GCG on March 25, 2024, your salary is hereby adjusted effective '.Carbon::parse($selectedSr->from_date)->format('F d, Y').' as follows:',
+            'date_of_effectivity' => $selectedSr->from_date,
+            'item_no' => $selectedSr->item_no,
+            'position' => $selectedSr->position,
+        ];
+        $employee->other_hr_actions_data = $array;
+        if($employee->save()){
+            return redirect(route('dashboard.employee.other_hr_actions',$employee->slug).'?tab=nosa');
+        }
+    }
+    public function printNosi($slug,Request $request)
+    {
+        $selectedSr = EmployeeServiceRecord::query()
+            ->findOrFail($slug);
+        $srBeforeSelected = EmployeeServiceRecord::query()
+            ->where('sequence_no','<',$selectedSr->sequence_no)
+            ->where('employee_slug','=',$selectedSr->employee_slug)
+            ->orderBy('sequence_no','desc')
+            ->first();
+        $employee = Employee::query()->findOrFail($selectedSr->employee_slug);
+        $array = $employee->other_hr_actions_data ?? [];
+        $array['nosi'] = [
+            'old' => [
+                'salary_type' => $srBeforeSelected->salary_type,
+                'grade' => $srBeforeSelected->grade,
+                'step' => $srBeforeSelected->step,
+                'monthly_basic' => $srBeforeSelected->monthly_basic,
+            ],
+            'new' => [
+                'salary_type' => $selectedSr->salary_type,
+                'grade' => $selectedSr->grade,
+                'step' => $selectedSr->step,
+                'monthly_basic' => $selectedSr->monthly_basic,
+            ],
+            'body' => 'Pursuant to CPCS Implementing Guidelines No. 2021-1 dated January 12, 2022, implementing Executive Order No. 150 s 2021, and implementing Item (5.2)(5.5.1) of the CPCS Implementing Guidelines, your salary as $position$ is hereby adjusted effective $effectivity$ as follows:',
+            'date_of_effectivity' => $selectedSr->from_date,
+            'item_no' => $selectedSr->item_no,
+            'position' => $selectedSr->position,
+        ];
+        $employee->other_hr_actions_data = $array;
+        if($employee->save()){
+            return redirect(route('dashboard.employee.other_hr_actions',$employee->slug).'?tab=nosi');
+        }
     }
     public function store($employeeSlug,EmployeeServiceRecordCreateForm $request)
     {
@@ -144,7 +232,6 @@ class ServiceRecordController extends Controller
     {
 
         $serviceRecord = EmployeeServiceRecord::findOrFail($slug);
-
         $serviceRecord->sequence_no = $request->sequence_no;
         $serviceRecord->from_date = $request->from_date;
         $serviceRecord->to_date = $request->to_date ?? null;

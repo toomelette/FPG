@@ -889,27 +889,6 @@ Route::get('/fixPs',function (\App\Http\Controllers\PermissionSlipController $pe
     return 1;
 });
 */
-Route::get('sg',function (){
-    $employees = \App\Models\Employee::query()
-        ->active()
-        ->permanent()
-        ->get();
-    $newSg = DB::table('temp_sg')
-        ->get();
-
-    $empty = [];
-    foreach ($newSg as $new){
-        $emp = $employees
-            ->where('lastname',Str::of($new->name)->before(','))
-            ->where('salary_grade',$new->jg)
-            ->first();
-        if(empty($emp)){
-            $empty[] = $emp->full['LFEMi'];
-        }else{
-            $emp->sg = $new->sg;
-            $emp->save();
-        }
-    }
-    dd($empty);
+Route::get('rc',function (){
 
 });

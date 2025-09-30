@@ -27,7 +27,8 @@
                     <th>Date To</th>
                     <th>Position</th>
                     <th>Appt. Status</th>
-                    <th>Salary</th>
+                    <th>Monthly Basic</th>
+                    <th>Annual Salary</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -128,15 +129,17 @@
 @endsection
 @php
     $plantillas = \App\Models\HRPayPlanitilla::query()
+        ->with(['responsibilityCenter'])
         ->get()
         ->map(function ($plantilla){
             return [
                 'id' => $plantilla->item_no,
-                'text' => $plantilla->item_no .' - '.$plantilla->position,
+                'text' => $plantilla->item_no .' - '.$plantilla->position .' --- ('.$plantilla?->responsibilityCenter?->desc.')',
                 'position' => $plantilla->position,
                 'JG' => $plantilla->original_job_grade,
                 'SG' => $plantilla->original_salary_grade,
                 'PG' => $plantilla->original_salary_grade,
+                'resp_center' => $plantilla?->responsibilityCenter?->desc
             ];
         });
 @endphp
@@ -156,6 +159,7 @@
                 { "data": "to_date" },
                 { "data": "position" },
                 { "data": "appointment_status" },
+                { "data": "monthly_basic" },
                 { "data": "salary" },
                 { "data": "action" }
             ],
@@ -165,10 +169,14 @@
             "columnDefs":[
                 {
                     "targets" : 5,
-                    "class" : 'text-end'
+                    "class" : 'text-end',
                 },
                 {
                     "targets" : 6,
+                    "class" : 'text-end'
+                },
+                {
+                    "targets" : 7,
                     "orderable" : false,
                     "class" : 'action-10p'
                 },
@@ -223,12 +231,12 @@
             })
         })
 
-        $("input[name='upto_date']").change(function () {
+        $('body').on('change',"input[name='upto_date']",function (){
             let t = $(this);
             if(t.prop('checked')){
-                t.parent('label').parent('div').siblings('#to_date').attr('disabled','disabled');
+                t.parents('.to_date').find('input[name="to_date"]').attr('disabled','disabled');
             }else{
-                t.parent('label').parent('div').siblings('#to_date').removeAttr('disabled');
+                t.parents('.to_date').find('input[name="to_date"]').removeAttr('disabled');
             }
         })
 
