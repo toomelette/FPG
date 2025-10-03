@@ -4,6 +4,10 @@
     <div style="font-family: Cambria; padding-top: 180px">
         <p class="text-center text-strong" style="font-size: 18px">NOTICE OF STEP INCREMENT DUE TO LENGTH OF SERVICE</p>
         <br> <br>
+        <p class="">
+            {{Carbon::parse(request('header_date'))->format('F d, Y')}}
+            <br><br>
+        </p>
         <p>
             <b>{{($employee->sex == 'FEMALE') ? 'Ms.' : 'Mr.'}} {{$employee->firstname}} {{\Illuminate\Support\Str::limit($employee->middlename,1,'.')}} {{$employee->lastname}}</b>
             <br>
