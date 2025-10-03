@@ -273,7 +273,7 @@
                                     </p>
                                     <div class="row">
                                         <x-forms.input label="Header Date" name="header_date" cols="6"  type="date" :value="Carbon::now()->format('Y-m-d')"/>
-                                        <x-forms.input label="Effectivity" name="effectivity" cols="6"  type="date" :value="$nosa['date_of_effectivity'] ?? null"/>
+                                        <x-forms.input label="Effectivity" name="effectivity" cols="6"  type="date" :value="$nosi['date_of_effectivity'] ?? null"/>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
