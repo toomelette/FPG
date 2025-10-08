@@ -26,6 +26,24 @@
 
 @section('modals')
     <x-adminkit.html.modal id="show-timeline-modal" />
+    <x-adminkit.html.modal-template id="download-cos-modal" form-id="download-cos-form" form-target="_blank">
+        <x-slot:title>Download Contract of Service</x-slot:title>
+        <div class="row mb-2">
+            <x-forms.input label="Address" name="address" cols="8" required="required"/>
+            <x-forms.select label="Civil Status" name="civil_status" cols="4" :options="\App\Swep\Helpers\Arrays::civil_status()" required="required"/>
+        </div>
+        <div class="row mb-2">
+            <x-forms.input label="Witness" name="witness_1" cols="6" required="required"/>
+            <x-forms.input label="Witness" name="witness_2" cols="6" required="required"/>
+        </div>
+        <div class="row mb-2">
+            <x-forms.input label="Valid ID" name="valid_id" cols="6" required="required"/>
+            <x-forms.input label="Issued at" name="valid_id_issued_at" cols="6" required="required"/>
+        </div>
+        <x-slot:footer>
+            <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-download"></i> Download Contract</button>
+        </x-slot:footer>
+    </x-adminkit.html.modal-template>
 @endsection
 
 @section('scripts')
@@ -99,5 +117,11 @@
                 }
             })
         })
+        $("body").on("click",".download-cos-btn",function (){
+            let route = '{{route('dashboard.hr_requests.download','slug')}}';
+            route = route.replace('slug',$(this).attr('data'));
+            $("#download-cos-form").attr('action',route);
+        })
+
     </script>
 @endsection

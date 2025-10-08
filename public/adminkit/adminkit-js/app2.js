@@ -415,6 +415,7 @@ function delete_data(slug,url){
                     setTimeout(function () {
                         btn.parents('#'+slug).parent('tbody').parent('table').DataTable().draw(false);
                     },500);
+
                 }else{
                     btn.parents('#'+slug).removeClass('table-warning');
                     toast('danger','Error deleting data.','danger');

@@ -34,7 +34,7 @@
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "^7.2",
         "rats/zkteco": "^002.0",
-        "rmunate/spell-number": "^1.0",
+        "rmunate/spell-number": "^4.3",
         "setasign/fpdf": "1.8.*",
         "setasign/fpdi": "^2.0",
         "simplesoftwareio/simple-qrcode": "~4",

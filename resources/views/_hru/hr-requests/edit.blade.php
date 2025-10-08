@@ -40,7 +40,7 @@
             $.ajax({
                 url : uri,
                 data : form.serialize(),
-                type: 'PATCH',
+                type: 'PUT',
                 headers: {
                     {!! __html::token_header() !!}
                 },

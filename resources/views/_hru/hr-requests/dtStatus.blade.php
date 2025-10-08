@@ -9,7 +9,11 @@
         <span class="badge bg-primary" style="width: 100%;">{{$data->status}}</span>
         @break
     @case('READY FOR PICK-UP')
+    @case('APPROVED')
         <span class="badge bg-success" style="width: 100%;">{{$data->status}}</span>
+        @break
+    @case('DISAPPROVED')
+        <span class="badge bg-danger" style="width: 100%;">{{$data->status}}</span>
         @break
     @default()
         <span class="badge bg-secondary" style="width: 100%;">{{$data->status}}</span>

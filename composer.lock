@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d73ffcc27f603b96a62f8907267269bb",
+    "content-hash": "4c602d88d6853e27e029ad9e9f79c167",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -6870,23 +6870,33 @@
         },
         {
             "name": "rmunate/spell-number",
-            "version": "v1.0.0",
+            "version": "v4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rmunate/SpellNumber.git",
-                "reference": "c225b10c03a82570c0be2ad0a1e916c2637aadcf"
+                "reference": "4dfa6b72328968bb001af97ec6072796c03fa0c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rmunate/SpellNumber/zipball/c225b10c03a82570c0be2ad0a1e916c2637aadcf",
-                "reference": "c225b10c03a82570c0be2ad0a1e916c2637aadcf",
+                "url": "https://api.github.com/repos/rmunate/SpellNumber/zipball/4dfa6b72328968bb001af97ec6072796c03fa0c1",
+                "reference": "4dfa6b72328968bb001af97ec6072796c03fa0c1",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.4"
+                "ext-intl": "*",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.4"
             },
             "type": "library",
             "extra": {
+                "laravel": {
+                    "providers": [
+                        "Rmunate\\Utilities\\Providers\\SpellNumberProvider"
+                    ]
+                },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
                 }
@@ -6903,23 +6913,60 @@
             "authors": [
                 {
                     "name": "Raul Mauricio Uñate Castro",
-                    "email": "raulmauriciounate@gmail.com"
+                    "email": "raulmauriciounate@gmail.com",
+                    "homepage": "https://github.com/rmunate",
+                    "role": "owner"
+                },
+                {
+                    "name": "Olsza",
+                    "homepage": "https://github.com/olsza",
+                    "role": "developer"
+                },
+                {
+                    "name": "Er. Ashok Devatwal",
+                    "email": "ashokdev78@gmail.com",
+                    "homepage": "https://github.com/ashokdevatwal",
+                    "role": "developer"
+                },
+                {
+                    "name": "Siros Fakhri",
+                    "homepage": "https://github.com/sirosfakhri",
+                    "role": "developer"
+                },
+                {
+                    "name": "Jens Twesmann",
+                    "homepage": "https://github.com/jetwes",
+                    "role": "developer"
+                },
+                {
+                    "name": "Gabriel Rausch",
+                    "homepage": "https://github.com/gdsrmygdsrjr",
+                    "role": "developer"
+                },
+                {
+                    "name": "Alejandro Diaz",
+                    "homepage": "https://github.com/alejandrodiazpinilla",
+                    "role": "developer"
                 }
             ],
-            "description": "Convierta de números a letras, ideal para uso en facturas, remisiones ó similares.",
+            "description": "Easily convert numbers to letters, this library supports the native PHP INTL extension with which we can easily convert numbers to letters. This library provides us with the possibility of converting only to numbers or to currency formats depending on the language to be used, this package has support in the languages en: English, es: Spanish, pt: Portuguese, fr: French, it: Italian, ro: Romanian, fa: Farsi, hi: Hindi, pl: Polish.",
+            "homepage": "https://github.com/rmunate/SpellNumber",
             "keywords": [
-                "altum",
-                "letras",
-                "numeros",
+                "code-maestro",
+                "numbers",
                 "rmunate",
-                "spell"
+                "spell",
+                "spell-number",
+                "spell-numbers",
+                "toletters",
+                "towords"
             ],
             "support": {
                 "issues": "https://github.com/rmunate/SpellNumber/issues",
-                "source": "https://github.com/rmunate/SpellNumber/tree/v1.0.0"
+                "source": "https://github.com/rmunate/SpellNumber/tree/v4.3.0"
             },
             "abandoned": "illuminate/support",
-            "time": "2023-02-13T12:59:28+00:00"
+            "time": "2025-06-10T14:06:51+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",

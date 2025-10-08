@@ -109,8 +109,8 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::resource('leave_application', 'LeaveApplicationController')->only(['edit','update','store','create','destroy']);
     Route::get('hr_requests/my',[\App\Http\Controllers\HRU\HRRequestsController::class,'myIndex'])->name('hr_requests.my_index');
     Route::get('hr_requests/{slug}/showTimeline',[\App\Http\Controllers\HRU\HRRequestsController::class,'showTimeline'])->name('hr_requests.show_timeline');
+    Route::get('hr_requests/{slug}/download',[\App\Http\Controllers\HRU\HRRequestsController::class,'download'])->name('hr_requests.download');
     Route::get('hr_requests/{slug}/file',[\App\Http\Controllers\HRU\HRRequestsController::class,'uploadFileForm'])->name('hr_requests.file');
-
 });
 
 
@@ -471,7 +471,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('hr_requests/{slug}/createDocument',[\App\Http\Controllers\HRU\HRRequestsController::class,'createDocument'])->name('hr_requests.create_document');Route::delete('hr_requests/{slug}/file',[\App\Http\Controllers\HRU\HRRequestsController::class,'deleteFile'])->name('hr_requests.file');
     Route::post('hr_requests/{slug}/file',[\App\Http\Controllers\HRU\HRRequestsController::class,'uploadFile'])->name('hr_requests.file');
     Route::post('hr_requests/{slug}/createDocument',[\App\Http\Controllers\HRU\HRRequestsController::class,'saveCreatedDocument'])->name('hr_requests.create_document');
-    Route::resource('hr_requests',\App\Http\Controllers\HRU\HRRequestsController::class);
+    Route::put('hr_requests/{slug}/update',[\App\Http\Controllers\HRU\HRRequestsController::class,'update'])->name('hr_requests.update');
+    Route::patch('hr_requests/{slug}/update',[\App\Http\Controllers\HRU\HRRequestsController::class,'patch'])->name('hr_requests.update');
+
+    Route::resource('hr_requests',\App\Http\Controllers\HRU\HRRequestsController::class)->except(['update']);
 
     Route::resource('deduction_registry',\App\Http\Controllers\HRU\DeductionRegistryController::class)->only(['edit','update','index']);
     Route::resource('deduction_sudemupco',\App\Http\Controllers\HRU\DeductionSudemupcoController::class);

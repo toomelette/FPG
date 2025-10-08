@@ -28,6 +28,7 @@
 @section('modals')
     <x-adminkit.html.modal id="update-status-modal" size="lg"/>
     <x-adminkit.html.modal id="upload-file-modal"/>
+    <x-adminkit.html.modal id="cos-action-modal"/>
 @endsection
 
 @section('scripts')
@@ -107,6 +108,52 @@
             let btn = $(this);
             load_modal2(btn);
             let uri = '{{route("dashboard.hr_requests.file","slug")}}';
+            uri = uri.replace('slug',btn.attr('data'));
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
+
+        $("body").on('click','.disapprove-btn',function (){
+            let t = $(this);
+            let val = t.val();
+            let slug = t.attr('data');
+            let uri = '{{route('dashboard.hr_requests.update','slug')}}';
+            uri = uri.replace('slug',slug);
+            $.ajax({
+                url : uri,
+                type: 'PATCH',
+                data : {
+                    'value' : val,
+                },
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    active = res.slug;
+                    requestsTbl.draw(false);
+                    toast('info','Updated successfully.','Success');
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
+
+        $("body").on("click",".approve-btn",function () {
+            let btn = $(this);
+            load_modal2(btn);
+            let uri = '{{route("dashboard.hr_requests.edit","slug")}}?contractOfService';
             uri = uri.replace('slug',btn.attr('data'));
             $.ajax({
                 url : uri,

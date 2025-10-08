@@ -886,4 +886,16 @@ class Helper
         }
         return false;
     }
+
+    public static function imageUrlToBase64(string $imageUrl): string {
+        $imageContents = file_get_contents($imageUrl);
+        if ($imageContents === false) {
+            throw new \RuntimeException("Failed to fetch the image from URL: {$imageUrl}");
+        }
+
+        $mimeType = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $imageContents);
+        $base64 = base64_encode($imageContents);
+
+        return "data:{$mimeType};base64,{$base64}";
+    }
 }

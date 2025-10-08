@@ -1218,6 +1218,7 @@ class MonthlyPayrollService
             ])
             ->findOrFail($payrollMasterSlug);
 
+
         return Pdf::view('printables.hru.payroll_preparation.MONTHLY.deduction-register',[
             'payrollMaster' => $payrollMaster,
             'pdfPrint' => true,

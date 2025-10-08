@@ -6,6 +6,7 @@ use App\Events\HrRequest\NewRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hru\HRRequestsFromRequest;
 use App\Models\HRU\HRRequests;
+use App\Swep\Helpers\Get;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\HRU\HRRequestsService;
 use Illuminate\Http\Request;
@@ -32,10 +33,15 @@ class HRRequestsController extends Controller
 
     public function store(HRRequestsFromRequest $request)
     {
-
         $hrRequest = new HRRequests();
         $hrRequest->slug = Str::uuid();
         $hrRequest->tracking_no = $this->HRRequestsService->newTrackingNo();
+        if(!empty($request->doc_file)){
+            $storage = Storage::disk('hr_request_attachments');
+            $fileName = $hrRequest->tracking_no.' - User.'.$request->file('doc_file')->getClientOriginalExtension();
+            $store = $storage->putFileAs('UserAttachments',$request->file('doc_file'),$fileName);
+            $hrRequest->user_file_path = $store;
+        }
         $hrRequest->employee_slug = Auth::user()->employee->slug;
         $hrRequest->employee_full = Auth::user()->employee->full['LFEMi'];
         $hrRequest->document = $request->document;
@@ -43,8 +49,11 @@ class HRRequestsController extends Controller
         $hrRequest->details = $request->details;
         $hrRequest->request_file = $request->request_file ?? null;
         $hrRequest->status = 'REQUEST SUBMITTED';
+
         if ($hrRequest->save()){
-            event(new NewRequest($hrRequest));
+            if(\App::environment() != 'local'){
+                event(new NewRequest($hrRequest));
+            }
             return $hrRequest->only('slug','tracking_no');
         }
         abort(503,'Error making a request.');
@@ -247,11 +256,23 @@ class HRRequestsController extends Controller
         ]);
     }
 
-    public function edit($slug)
+    public function edit(Request $request,$slug)
     {
         $hrRequest = HRRequests::query()->findOrFail($slug);
+        if($request->has('contractOfService')){
+
+            return $this->contractOfService($hrRequest);
+        }
         return view('_hru.hr-requests.edit')->with([
             'hrRequest' => $hrRequest,
+        ]);
+    }
+    public function contractOfService($hrRequest)
+    {
+        $hrRequest->load('employee.responsibilityCenter.description');
+        return view('_hru.hr-requests.contract-of-service')->with([
+            'hrRequest' => $hrRequest,
+            'settings' => Get::setting('cos_template')->json_value,
         ]);
     }
     public function update(Request $request, $slug)
@@ -330,5 +351,66 @@ class HRRequestsController extends Controller
             ];
         }
         abort(503,'Error deleting file.');
+    }
+
+    public function patch(Request $request,$slug)
+    {
+        $hrRequest = HRRequests::query()->findOrFail($slug);
+        if($request->value == 0){
+            $hrRequest->status = 'DISAPPROVED' ;
+            if($hrRequest->update()){
+                return $hrRequest->only('slug');
+            }
+        }else{
+            $hrRequest->document_fields = collect($request->all())->forget(['value','_token'])->toArray();
+            $hrRequest->status = 'APPROVED' ;
+            if($hrRequest->update()){
+                return $hrRequest->only('slug');
+            }
+        }
+
+        abort(503,'Error performing action.');
+    }
+
+    public function download(Request $request,$slug)
+    {
+        $hrRequest = HRRequests::query()->findOrFail($slug);
+
+        if($hrRequest->status == 'APPROVED'){
+
+
+//            dd(Helper::imageUrlToBase64(asset('images/iso.jpg')));
+            return Pdf::view('printables.hru.hr-requests.contract-of-service',[
+                'hrRequest' => $hrRequest,
+            ])
+                ->paperSize(215.9,330.2)
+                ->margins(20,20, 20, 20)
+                ->headers(['title' => 'aaaaa'])
+                ->footerView('printables.hru.hr-requests.contract-of-service-footer',[
+                    'image' => Helper::imageUrlToBase64(asset('images/sra.png')),
+                ])
+                ->name('Contract of Service.pdf')
+                ->withBrowsershot(function (Browsershot $browsershot){
+                    if(app()->environment('production')){
+                        $browsershot->setNodeBinary(env('NODE_BINARY'))
+                            ->setNpmBinary(env('NODE_BINARY'));
+                    }
+                });
+
+            return view('printables.hru.hr-requests.contract-of-service')->with([
+                'hrRequest' => $hrRequest,
+            ]);
+        }else{
+            abort(503,'Cannot download contract of DISAPPROVED Status');
+        }
+    }
+
+    public function destroy($slug)
+    {
+        $hrRequest = HRRequests::query()->findOrFail($slug);
+        if($hrRequest->delete()){
+            return 1;
+        }
+        abort(503,'Error deleting data.');
     }
 }
