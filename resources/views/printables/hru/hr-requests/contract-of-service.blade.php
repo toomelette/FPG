@@ -43,8 +43,10 @@
                 <li>That the <b>SECOND PARTY</b> will be hired by the <b>FIRST PARTY</b> on a contractual basis  for a period of six ({{Carbon::parse($hrRequest->document_fields['contract_start'])->diffInMonths(Carbon::parse($hrRequest->document_fields['contract_end'])) + 1 }}) months from {{Carbon::parse($hrRequest->document_fields['contract_start'])->format('F d, Y')}} July 1, 2025 to {{Carbon::parse($hrRequest->document_fields['contract_end'])->format('F d, Y')}}.</li>
                 <li>
 
-                    That the <b>SECOND PARTY</b> shall receive a monthly salary of <b>Pesos:
-                        {{ucwords(\Rmunate\Utilities\SpellNumber::integer( $sal = (int) Helper::sanitizeAutonum($hrRequest->document_fields['salary']) * 1)->toLetters())}}</b>
+                    That the <b>SECOND PARTY</b> shall receive a monthly salary of
+                    <b>Pesos:
+                        {{ucwords(\NumberToWords\NumberToWords::transformNumber('en',$sal = Helper::sanitizeAutonum($hrRequest->document_fields['salary'])))}}
+                    </b>
                     <b>(Php {{Helper::toNumber($sal)}})</b> to be paid on a quincenas basis, rates under SSL4, Tranche 4, Step 1 of SSL 4 inclusive of a premium of 20% of such salary or wage. Provided however, that if he/she is required to render services outside of his/her official workstation, he/she may be allowed to collect <b>Actual Travelling Expenses</b> subject to pertinent guidelines duly issued by the <b>FIRST PARTY</b>. Provided, further, that he/she will be allowed to claim overtime pay for services rendered beyond government office hours in accordance with the duly established rules on government accounting.
                 </li>
                 <li>
