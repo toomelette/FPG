@@ -377,18 +377,13 @@ class HRRequestsController extends Controller
         $hrRequest = HRRequests::query()->findOrFail($slug);
 
         if($hrRequest->status == 'APPROVED'){
-
-
-//            dd(Helper::imageUrlToBase64(asset('images/iso.jpg')));
             return Pdf::view('printables.hru.hr-requests.contract-of-service',[
                 'hrRequest' => $hrRequest,
             ])
                 ->paperSize(215.9,330.2)
                 ->margins(20,20, 20, 20)
                 ->headers(['title' => 'aaaaa'])
-                ->footerView('printables.hru.hr-requests.contract-of-service-footer',[
-                    'image' => Helper::imageUrlToBase64(asset('images/sra.png')),
-                ])
+                ->footerView('printables.hru.hr-requests.contract-of-service-footer')
                 ->name('Contract of Service.pdf')
                 ->withBrowsershot(function (Browsershot $browsershot){
                     if(app()->environment('production')){
