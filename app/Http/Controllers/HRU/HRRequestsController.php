@@ -379,6 +379,7 @@ class HRRequestsController extends Controller
         if($hrRequest->status == 'APPROVED'){
             return Pdf::view('printables.hru.hr-requests.contract-of-service',[
                 'hrRequest' => $hrRequest,
+                'pdfPrint' => true,
             ])
                 ->paperSize(215.9,330.2)
                 ->margins(20,20, 20, 20)

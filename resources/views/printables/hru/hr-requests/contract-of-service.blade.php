@@ -7,8 +7,6 @@
         }
     </style>
 
-
-
     <div style="font-family: Cambria; text-align: justify; font-size: 16px">
         <div style="break-after: page">
             <p class="text-strong text-center">CONTRACT OF SERVICE</p>
