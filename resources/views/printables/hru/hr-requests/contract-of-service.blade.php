@@ -119,10 +119,12 @@
             <table style="width: 100%; font-size: inherit">
                 <tr>
                     <td style="width: 50%;" class="text-center">
-                        <p><b><u>{{Str::upper(request('witness_1'))}}</u></b></p>
+                        <p class="no-margin"><b><u>{{$witness_1?->full['FMiLE']}}</u></b></p>
+                        <p class="no-margin">{{$witness_1?->plantilla->position}}</p>
                     </td>
                     <td style="width: 50%;" class="text-center">
-                        <p><b><u>{{Str::upper(request('witness_2'))}}</u></b></p>
+                        <p class="no-margin"><b><u>{{$witness_2?->full['FMiLE']}}</u></b></p>
+                        <p class="no-margin">{{$witness_2?->plantilla->position}}</p>
                     </td>
                 </tr>
             </table>

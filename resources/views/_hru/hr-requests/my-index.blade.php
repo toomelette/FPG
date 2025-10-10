@@ -33,8 +33,8 @@
             <x-forms.select label="Civil Status" name="civil_status" cols="4" :options="\App\Swep\Helpers\Arrays::civil_status()" required="required"/>
         </div>
         <div class="row mb-2">
-            <x-forms.input label="Witness" name="witness_1" cols="6" required="required"/>
-            <x-forms.input label="Witness" name="witness_2" cols="6" required="required"/>
+            <x-forms.select label="Witness" name="witness_1" cols="6" class="select-employee" required="required" :options="[]"/>
+            <x-forms.select label="Witness" name="witness_2" cols="6" class="select-employee" required="required" :options="[]"/>
         </div>
         <div class="row mb-2">
             <x-forms.input label="Valid ID" name="valid_id" cols="6" required="required"/>
@@ -46,6 +46,20 @@
     </x-adminkit.html.modal-template>
 @endsection
 
+@php
+    $employees = \App\Models\Employee::query()
+                ->with(['plantilla'])
+                ->active()
+                ->permanent()
+                ->orderBy('lastname')
+                ->get()
+                ->map(function ($data){
+                    return [
+                        'id' => $data->slug,
+                        'text' => $data->full['FMiLE'],
+                    ];
+                });
+@endphp
 @section('scripts')
     <script type="text/javascript">
         let active = '';
@@ -122,6 +136,15 @@
             route = route.replace('slug',$(this).attr('data'));
             $("#download-cos-form").attr('action',route);
         })
+
+        let employees = {!! json_encode($employees) !!}
+        $(document).ready(function (){
+            $(".select-employee").select2({
+                data : employees,
+                dropdownParent: $("#download-cos-modal"),
+            })
+        })
+
 
     </script>
 @endsection

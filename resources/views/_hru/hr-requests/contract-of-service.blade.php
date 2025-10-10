@@ -25,10 +25,26 @@ Create Contract of Service
     </div>
 
     <div class="row mb-2">
-        <x-forms.input label="Department" name="department" cols="12" :value="$hrRequest?->employee?->responsibilityCenter?->description?->descriptive_name"/>
+        <x-forms.input label="Department" name="department" cols="12" :value="strtoupper($hrRequest?->employee?->responsibilityCenter?->description?->descriptive_name)"/>
     </div>
+    @php
+        $assignment = '';
+        $rc = $hrRequest?->employee?->responsibilityCenter;
+        $dept = $rc?->description?->descriptive_name;
+        $div = $hrRequest?->employee?->responsibilityCenter?->division;
+        $sec = $hrRequest?->employee?->responsibilityCenter?->section;
+        if (!empty($dept)){
+            $assignment .= strtoupper($dept);
+        }
+        if (!empty($div)){
+            $assignment .= ' - '. $div;
+        }
+        if (!empty($sec)){
+            $assignment .= ' - '. $sec;
+        }
+    @endphp
     <div class="row mb-2">
-        <x-forms.input label="Assignment" name="assignment" cols="12" :value="$hrRequest?->employee?->responsibilityCenter?->description?->descriptive_name"/>
+        <x-forms.textarea label="Assignment" name="assignment" cols="12" :value="$assignment"/>
     </div>
 
     <div class="row mb-2">

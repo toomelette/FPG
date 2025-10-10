@@ -761,6 +761,8 @@ class PayrollPreparationController
                 return $this->monthlyPayrollService->printPayroll($slug);
             case 'ALPHALIST-FOR-TAX':
                 return $this->monthlyPayrollService->alphalistForTax($slug);
+            case 'ALPHALIST-GSIS-HDMF':
+                return $this->monthlyPayrollService->alphalistGsisHdmf($slug);
             case 'PAYSLIP_ALL':
                 return $this->monthlyPayrollService->printPayslips($slug,$request);
             case 'ABSTRACT-MID':

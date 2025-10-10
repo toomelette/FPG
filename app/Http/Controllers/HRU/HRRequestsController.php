@@ -5,6 +5,7 @@ namespace App\Http\Controllers\HRU;
 use App\Events\HrRequest\NewRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hru\HRRequestsFromRequest;
+use App\Models\Employee;
 use App\Models\HRU\HRRequests;
 use App\Swep\Helpers\Get;
 use App\Swep\Helpers\Helper;
@@ -376,9 +377,19 @@ class HRRequestsController extends Controller
     {
         $hrRequest = HRRequests::query()->findOrFail($slug);
 
+        $emp = Employee::query()
+            ->with('plantilla')
+            ->whereIn('slug',[$request->witness_1, $request->witness_2])
+            ->get();
+
+        $witness_1 = $emp?->where('slug',$request->witness_1)?->first() ;
+        $witness_2 = $emp?->where('slug',$request->witness_2)?->first() ;
+
         if($hrRequest->status == 'APPROVED'){
             return Pdf::view('printables.hru.hr-requests.contract-of-service',[
                 'hrRequest' => $hrRequest,
+                'witness_1' => $witness_1,
+                'witness_2' => $witness_2,
                 'pdfPrint' => true,
             ])
                 ->paperSize(215.9,330.2)
@@ -395,6 +406,8 @@ class HRRequestsController extends Controller
 
             return view('printables.hru.hr-requests.contract-of-service')->with([
                 'hrRequest' => $hrRequest,
+                'witness_1' => $witness_1,
+                'witness_2' => $witness_2,
             ]);
         }else{
             abort(503,'Cannot download contract of DISAPPROVED Status');
