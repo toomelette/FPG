@@ -259,16 +259,16 @@ class HomeController extends Controller{
     private function milestones($yr = null){
         $year = $yr == null ? Carbon::now()->format('Y') : $yr;
         $loyaltys = Employee::query()
-            ->select('slug','employee_no','lastname','firstname','firstday_gov',DB::raw('YEAR(firstday_gov) as firstday_gov_year'),DB::raw('YEAR(firstday_gov) as firstday_gov_year'),DB::raw($year.' - YEAR(firstday_gov) as years_in_gov'))
-            ->where(DB::raw('('.$year.' - YEAR(firstday_gov)) % 5'),'=',0)
-            ->where(DB::raw($year.' - YEAR(firstday_gov)'),'>',9)
+            ->select('slug','employee_no','lastname','firstname','firstday_sra',DB::raw('YEAR(firstday_sra) as firstday_sra_year'),DB::raw('YEAR(firstday_sra) as firstday_sra_year'),DB::raw($year.' - YEAR(firstday_sra) as years_in_gov'))
+            ->where(DB::raw('('.$year.' - YEAR(firstday_sra)) % 5'),'=',0)
+            ->where(DB::raw($year.' - YEAR(firstday_sra)'),'>',9)
             ->where(function ($q){
                 $q->where('locations','!=', 'COS-VISAYAS')
                     ->where('locations','!=', 'COS-LM')
                     ->where('locations','!=','RETIREE')
                     ->where('is_active','!=','INACTIVE');
             })
-            ->orderBy('firstday_gov','desc')
+            ->orderBy('firstday_sra','desc')
             ->orderBy('lastname','asc');
         if(Auth::user()->project_id == 1){
             $loyaltys = $loyaltys->where('locations','=','VISAYAS');

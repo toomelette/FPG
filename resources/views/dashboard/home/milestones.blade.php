@@ -4,7 +4,7 @@
         <tr>
             <th></th>
             <th>Name of Employee</th>
-            <th>First day in government</th>
+            <th>First day in SRA</th>
             <th>Years in govt. service</th>
             <th  style="width: 130px;">Action</th>
         </tr>
@@ -13,7 +13,7 @@
             <tr>
                 <th>{{$loop->iteration}}</th>
                 <td class="text-strong">{{$employee->lastname}}, {{$employee->firstname}}</td>
-                <td>{{\Illuminate\Support\Carbon::parse($employee->firstday_gov)->format('F d, Y')}}</td>
+                <td>{{\Illuminate\Support\Carbon::parse($employee->firstday_sra)->format('F d, Y')}}</td>
                 <td>{{$employee->years_in_gov}} years</td>
                 <td>
                     <a href="{{route('dashboard.employee.index')}}?find={{$employee->employee_no}}" target="_blank"><button class="btn btn-outline-secondary btn-sm"><i class="fa fa-user"></i> View Employee</button></a></td>

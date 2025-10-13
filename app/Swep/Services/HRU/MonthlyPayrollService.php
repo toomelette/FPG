@@ -1159,6 +1159,22 @@ class MonthlyPayrollService
                 $data->employee_slug => $data,
             ];
         });
+        if($request->has('pdf') && $request->pdf == 1){
+            return Pdf::view('printables.hru.payroll_preparation.MONTHLY.payslip_all',[
+                'payrollMaster' => $payrollMaster,
+                'pdfPrint' => true,
+            ])
+                ->paperSize(210,115)
+                ->margins(8,8, 15, 8)
+                ->headers(['title' => 'aaaaa'])
+                ->name('Deduction Register.pdf')
+                ->withBrowsershot(function (Browsershot $browsershot){
+                    if(app()->environment('production')){
+                        $browsershot->setNodeBinary(env('NODE_BINARY'))
+                            ->setNpmBinary(env('NODE_BINARY'));
+                    }
+                });
+        }
 
         return view('printables.hru.payroll_preparation.MONTHLY.payslip_all')->with([
             'payrollMaster' => $payrollMaster,

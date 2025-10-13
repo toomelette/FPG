@@ -13,8 +13,11 @@ use App\Models\EmployeeExperience;
 use App\Models\EmployeeFamilyDetail;
 use App\Models\EmployeeServiceRecord;
 use App\Models\EmployeeTraining;
+use App\Models\HRU\PayrollMaster;
+use App\Models\HRU\PayrollMasterEmployees;
 use App\Models\User;
 use App\Swep\Helpers\Helper;
+use App\Swep\Services\HRU\MonthlyPayrollService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Swep\Services\ProfileService;
@@ -22,29 +25,54 @@ use App\Http\Requests\Profile\ProfileUpdateAccountUsernameRequest;
 use App\Http\Requests\Profile\ProfileUpdateAccountPasswordRequest;
 use App\Http\Requests\Profile\ProfileUpdateAccountColorRequest;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 
 class ProfileController extends Controller{
 
 
+    private int $yearStartOfPayroll;
 
-	protected $profile_service; 
-
-
-
-    public function __construct(ProfileService $profile_service){
-
-        $this->profile_service = $profile_service;
-
+    public function __construct(
+        protected  ProfileService $profile_service,
+        protected MonthlyPayrollService $monthlyPayrollService,
+    ){
+        $this->yearStartOfPayroll = 2025;
     }
 
     public function index()
     {
+        $payrollsOfThisEmployee = PayrollMaster::query()
+            ->whereHas('payrollMasterEmployees',function ($payrollMasterEmployees){
+                $payrollMasterEmployees->where('type','=','MONTHLY')
+                    ->where('employee_slug','=',Auth::user()->employee->slug);
+            })
+            ->get();
+
 
         return view('_profile.index')->with([
             'employee' => Auth::user()->employee,
+            'payrollMonths' => $this->months(),
+            'payrollsOfThisEmployee' => $payrollsOfThisEmployee,
         ]);
+    }
+
+    private function months()
+    {
+        $months = [];
+        $startYear = $this->yearStartOfPayroll;
+        $endYear = Carbon::now()->format('Y');
+        for ($i = $endYear; $i >= $startYear ;$i--){
+            $months[$i] = [];
+            for ($m = 1; $m <= 12; $m++){
+                $months[$i][] = $i.'-'.Str::of($m)->padLeft(2,'0').'-01';
+            }
+        }
+        return $months;
     }
 
 
@@ -77,6 +105,38 @@ class ProfileController extends Controller{
         abort(503,'Error updating password.');
     }
 
+    public function payslipVerifyPassword(Request $request)
+    {
+        if(!Hash::check($request->password,Auth::user()->password)){
+            abort(503,'Incorrect password.');
+        }
+
+        $payMasterEmployees = PayrollMasterEmployees::query()
+            ->where('pay_master_slug','=',$request->payroll)
+            ->where('employee_slug','=',Auth::user()->employee->slug)
+            ->firstOrFail();
+        $tempRoute = URL::temporarySignedRoute(
+            'dashboard.profile.payslip',
+            now()->addSeconds(10),
+            [
+                'user' => Auth::user()->user_id,
+                'employeeList' => $payMasterEmployees->slug,
+                'payrollMasterSlug' => $payMasterEmployees->pay_master_slug,
+                'pdf' => true,
+            ]
+        );
+        return $tempRoute;
+    }
+
+    public function payslipShow(Request $request)
+    {
+//        if (! $request->hasValidSignature()) {
+//            abort(403, 'Invalid or expired link.');
+//        }
+        $request->employeeList = Auth::user()->employee->slug;
+        return $this->monthlyPayrollService->printPayslips($request->payrollMasterSlug,$request);
+
+    }
 
 
 

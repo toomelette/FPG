@@ -6,6 +6,7 @@ use App\Models\HRU\HrOtherActions;
 use App\Models\HRU\LeaveApplicationDates;
 use App\Models\HRU\LeaveBeginningBalance;
 use App\Models\HRU\PayrollEmployeeSettings;
+use App\Models\HRU\PayrollMasterEmployees;
 use App\Models\HRU\TemplateDeductions;
 use App\Models\HRU\TemplateIncentives;
 use App\Models\PPU\PPURespCodes;
@@ -435,6 +436,10 @@ class Employee extends Model{
         return $this->hasOne(LeaveBeginningBalance::class,'employee_slug','slug');
     }
 
+    public function payrollEmployees()
+    {
+        return $this->hasMany(PayrollMasterEmployees::class,'employee_slug','slug');
+    }
 
 
     /** Scopes **/

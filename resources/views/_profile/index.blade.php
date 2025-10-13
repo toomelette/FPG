@@ -32,7 +32,9 @@
                     <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#password" role="tab" aria-selected="false" tabindex="-1">
                         Password
                     </a>
-
+                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#payslip" role="tab" aria-selected="false" tabindex="-1">
+                        Payslips
+                    </a>
                 </div>
             </div>
         </div>
@@ -293,7 +295,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="tab-pane fade" id="service-records" role="tabpanel">
                     <div class="card">
                         <div class="card-body">
@@ -327,7 +328,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="tab-pane fade" id="trainings" role="tabpanel">
                     <div class="card">
                         <div class="card-body">
@@ -359,8 +359,6 @@
                         </div>
                     </div>
                 </div>
-
-
                 <div class="tab-pane fade" id="password" role="tabpanel">
                     <div class="card">
                         <div class="card-body">
@@ -380,6 +378,39 @@
                         </div>
                     </div>
                 </div>
+                <div class="tab-pane fade" id="payslip" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="accordion" id="accordionExample">
+                                @forelse($payrollMonths as $year => $months)
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingOne">
+                                            <button class="accordion-button {{$year != Carbon::now()->format('Y') ? "collapsed" : ""}}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$year}}" aria-expanded="true" aria-controls="collapse{{$year}}">
+                                                {{$year}}
+                                            </button>
+                                        </h2>
+                                        <div id="collapse{{$year}}" class="accordion-collapse collapse {{$year == Carbon::now()->format('Y') ? "show" : ""}}" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                                            <div class="accordion-body">
+                                                <div class="row">
+                                                    @foreach($months as $month)
+                                                        <div class="col-md-2 col-sm-4 col-lg-2 col-xl-2 col-xxl-1">
+                                                            <button style="width: 100%;" class="btn {{Carbon::now()->format('Y-m-01') == $month ? 'btn-success': 'btn-outline-primary'}}  payslip-btn mb-2"  data="{{$month}}" {{$payrollsOfThisEmployee->where('date','=',$month)->count() == 0 ? 'disabled' : '' }} payroll="{{$payrollsOfThisEmployee->where('date','=',$month)?->first()?->slug}}">
+                                                                {{strtoupper(Carbon::parse($month)->format('M'))}}
+                                                            </button>
+                                                        </div>
+                                                    @endforeach
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -416,5 +447,49 @@
 
         })
 
+        $(".payslip-btn").click(function (){
+            let url = '{{route('dashboard.profile.payslip')}}';
+            let btn = $(this);
+            Swal.fire({
+                title: '',
+                input: 'password',
+                html: 'Enter your password to proceed:',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: '<i class="fa fa-check"></i> Continue',
+                showLoaderOnConfirm: true,
+                confirmButtonColor: '#0d6efd',
+                preConfirm: (password) => {
+                    return $.ajax({
+                        url : url,
+                        type: 'POST',
+                        data: {
+                            'password':password,
+                            'month' : btn.attr('data'),
+                            'payroll' : btn.attr('payroll'),
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        },
+                        success: function (res){
+                            window.open(res, '_blank');
+                        }
+                    })
+                        .catch(error => {
+                            console.log(error);
+                            Swal.showValidationMessage(
+                                'Error : '+ error.responseJSON.message,
+                            );
+                        })
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (!result.isConfirmed) {
+
+                }
+            })
+        })
     </script>
 @endsection

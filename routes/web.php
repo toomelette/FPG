@@ -58,6 +58,8 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     /** PROFILE **/
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class,'index'])->name('profile');
+    Route::get('/profile/payslip', [\App\Http\Controllers\ProfileController::class,'payslipShow'])->name('profile.payslip');
+    Route::post('/profile/payslip', [\App\Http\Controllers\ProfileController::class,'payslipVerifyPassword'])->name('profile.payslip');
     Route::get('/profile_details', [\App\Http\Controllers\ProfileController::class,'index'])->name('profile.details');
     Route::patch('/profile/update_password', [\App\Http\Controllers\ProfileController::class,'updatePassword'])->name('profile.update_password');
 
