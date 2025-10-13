@@ -381,6 +381,7 @@
                 <div class="tab-pane fade" id="payslip" role="tabpanel">
                     <div class="card">
                         <div class="card-body">
+                            <h5 class="card-title">Payslips</h5>
                             <div class="accordion" id="accordionExample">
                                 @forelse($payrollMonths as $year => $months)
                                     <div class="accordion-item">

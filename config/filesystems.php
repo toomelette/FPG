@@ -58,6 +58,10 @@ return [
             'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/').'HR/HRRequestsAttachments',
         ],
 
+        'service_records_attachments' => [
+            'driver' => 'local',
+            'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/').'HR/ServiceRecordsAttachments',
+        ],
 
 
 

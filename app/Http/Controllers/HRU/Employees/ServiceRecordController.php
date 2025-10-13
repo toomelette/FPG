@@ -10,6 +10,8 @@ use App\Models\EmployeeServiceRecord;
 use App\Swep\Helpers\Helper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
 class ServiceRecordController extends Controller
@@ -80,6 +82,11 @@ class ServiceRecordController extends Controller
                     'sr' => $sr,
                 ]
             );
+        }
+
+        if(request()->has('showFile')){
+            $slug = $employeeSlug;
+            return  $this->showFile($slug);
         }
 
         if(request()->has('print')){
@@ -193,6 +200,9 @@ class ServiceRecordController extends Controller
     }
     public function store($employeeSlug,EmployeeServiceRecordCreateForm $request)
     {
+        if($request->has('update')){
+            return  $this->update($employeeSlug,$request);
+        }
         $sr = new EmployeeServiceRecord();
         $sr->slug = \Str::random();
         $sr->employee_slug = $employeeSlug;
@@ -228,7 +238,7 @@ class ServiceRecordController extends Controller
         abort(503,'Error saving data.');
     }
 
-    public function update($slug,EmployeeServiceRecordEditForm $request)
+    public function update($slug, $request)
     {
 
         $serviceRecord = EmployeeServiceRecord::findOrFail($slug);
@@ -257,6 +267,17 @@ class ServiceRecordController extends Controller
         $serviceRecord->spdate = $request->spdate;
         $serviceRecord->status = $request->status;
         $serviceRecord->remarks = $request->remarks;
+
+        if(!empty($request->doc_file)){
+            $storage = Storage::disk('service_records_attachments');
+            if($request->is_file_changed == 1){
+                $oldFileName = $serviceRecord->file_path;
+                $storage->delete($oldFileName);
+            }
+            $fileName = 'Service Record - '.Str::random().'.'.$request->file('doc_file')->getClientOriginalExtension();
+            $store = $storage->putFileAs(null,$request->file('doc_file'),$fileName);
+            $serviceRecord->file_path = $store;
+        }
         if($serviceRecord->save()){
             return $serviceRecord->only('slug');
         }
@@ -270,5 +291,15 @@ class ServiceRecordController extends Controller
             return 1;
         }
         abort(503,'Error deleting item.');
+    }
+
+    public function showFile($slug)
+    {
+        $serviceRecord = EmployeeServiceRecord::findOrFail($slug);
+        $storage = Storage::disk('service_records_attachments');
+        if ($storage->exists($serviceRecord->file_path)){
+            return  $storage->response($serviceRecord->file_path);
+        }
+        abort(404,'File does not exist.');
     }
 }

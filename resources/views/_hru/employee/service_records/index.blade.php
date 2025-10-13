@@ -41,7 +41,7 @@
 
 
 @section('modals')
-    <x-adminkit.html.modal id="edit-sr-modal" />
+    <x-adminkit.html.modal id="edit-sr-modal" size="60"/>
 
     <x-adminkit.html.modal-template id="add-service-record-modal" form-id="add-sr-form">
         <x-slot:title>
