@@ -22,7 +22,12 @@
                                 <span class="text-strong"> {{$payrollEmployee->saved_employee_data['full_name'] ?? ''}} </span>
                             </td>
                             <td style="width: 20%">
-                                <img style="width: 50px; float: right; margin-right: 20px" src="{{asset('images/sra_only2_low.png')}}">
+                                @if(!empty($pdfPrint) && $pdfPrint == true)
+                                    <img style="width: 50px; float: right; margin-right: 20px" src="{{base_path('/public/images/sra_only2_low.png')}}">
+                                @else
+                                    <img style="width: 50px; float: right; margin-right: 20px" src="{{asset('images/sra_only2_low.png')}}">
+                                @endif
+
                             </td>
                         </tr>
                     </table>
