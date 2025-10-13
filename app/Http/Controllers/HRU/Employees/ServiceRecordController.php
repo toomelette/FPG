@@ -270,7 +270,7 @@ class ServiceRecordController extends Controller
 
         if(!empty($request->doc_file)){
             $storage = Storage::disk('service_records_attachments');
-            if($request->is_file_changed == 1){
+            if($request->is_file_changed == 1 && $serviceRecord->file_path != null){
                 $oldFileName = $serviceRecord->file_path;
                 $storage->delete($oldFileName);
             }
