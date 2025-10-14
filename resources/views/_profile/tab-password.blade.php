@@ -16,7 +16,7 @@
                 </form>
             </div>
             <div class="col-md-9">
-                <h4>Currently Login Devices</h4>
+                <h4>Currently Logged-in Devices</h4>
                 <table class="table table-bordered">
                     <thead>
                     <tr>
