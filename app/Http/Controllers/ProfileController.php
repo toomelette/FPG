@@ -15,6 +15,7 @@ use App\Models\EmployeeServiceRecord;
 use App\Models\EmployeeTraining;
 use App\Models\HRU\PayrollMaster;
 use App\Models\HRU\PayrollMasterEmployees;
+use App\Models\Sessions;
 use App\Models\User;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\HRU\MonthlyPayrollService;
@@ -53,11 +54,17 @@ class ProfileController extends Controller{
             })
             ->get();
 
+        $sessions = Sessions::query()
+            ->where('user_id','=',Auth::user()->id)
+            ->orderBy('last_activity','desc')
+            ->get();
+
 
         return view('_profile.index')->with([
             'employee' => Auth::user()->employee,
             'payrollMonths' => $this->months(),
             'payrollsOfThisEmployee' => $payrollsOfThisEmployee,
+            'sessions' => $sessions,
         ]);
     }
 
@@ -136,6 +143,16 @@ class ProfileController extends Controller{
         $request->employeeList = Auth::user()->employee->slug;
         return $this->monthlyPayrollService->printPayslips($request->payrollMasterSlug,$request);
 
+    }
+
+    public function signOutDevice (Request $request)
+    {
+
+        $session = Sessions::query()->findOrFail($request->session_id);
+        if($session->delete()){
+            return $session->only('id');
+        }
+        abort(503,'An error occurred while logging out your account.');
     }
 
 

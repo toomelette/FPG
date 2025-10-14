@@ -62,6 +62,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::post('/profile/payslip', [\App\Http\Controllers\ProfileController::class,'payslipVerifyPassword'])->name('profile.payslip');
     Route::get('/profile_details', [\App\Http\Controllers\ProfileController::class,'index'])->name('profile.details');
     Route::patch('/profile/update_password', [\App\Http\Controllers\ProfileController::class,'updatePassword'])->name('profile.update_password');
+    Route::delete('/profile/signOutDevice', [\App\Http\Controllers\ProfileController::class,'signOutDevice'])->name('profile.sign_out_device');
 
 
 
