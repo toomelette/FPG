@@ -29,7 +29,7 @@
                     <th>Appt. Status</th>
                     <th>Monthly Basic</th>
                     <th>Annual Salary</th>
-                    <th>Action</th>
+                    <th style="width: 180px">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -178,7 +178,6 @@
                 {
                     "targets" : 7,
                     "orderable" : false,
-                    "class" : 'action-10p'
                 },
             ],
             "order":[[0,'desc']],
