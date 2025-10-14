@@ -7,5 +7,9 @@
         <a href="{{route('dashboard.employee.service_record',$data->slug)}}?print=true&doc=NOSI" target="_blank"  class="btn btn-outline-secondary  btn-sm"  data="{{$data->slug}}"><i class="fa fa-print"></i> NOSI</a>
     @endif
 
+    @if($data->file_path != null)
+        <a href="{{route('dashboard.employee.service_record',$data->slug)}}?showFile" target="_blank"  class="btn btn-outline-success  btn-sm"  data="{{$data->slug}}"><i class="fa fa-file-pdf"></i></a>
+    @endif
+
     <button data="{{$data->slug}}" type="button" onclick="delete_data('{{$data->slug}}','{{route('dashboard.employee.service_record',$data->slug)}}')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
 </div>
