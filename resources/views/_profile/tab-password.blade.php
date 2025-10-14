@@ -34,6 +34,12 @@
                          @endphp
                         <tr>
                             <td>
+                                @if($agent->isMobile())
+                                    <i class="align-middle me-2 fas fa-fw fa-mobile-alt"></i> -
+                                @endif
+                                @if($agent->isDesktop())
+                                    <i class="align-middle me-2 fas fa-fw fa-desktop"></i> -
+                                @endif
                                 <i class="align-middle  fab fa-fw fa-{{strtolower($agent->platform())}}"></i> {{$agent->platform()}} | <i class="align-middle  fab fa-fw fa-{{strtolower($agent->browser())}}"></i> {{$agent->browser()}}
                                 @if(request()->session()->getId() == $session->id)
                                     <span class="badge bg-success float-end">CURRENT</span>
