@@ -35,6 +35,7 @@ class MisRequestCreate extends Mailable
      */
     public function build()
     {
+
         $data = $this->data;
         $r = $this->r;
         $user = $this->user;
