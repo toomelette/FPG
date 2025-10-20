@@ -71,7 +71,7 @@ class MisRequestsController extends Controller
                 \Illuminate\Support\Facades\Mail::mailer('system')->send(new \App\Mail\MisRequestCreate($data,$r,$user));
             }catch (\Exception $e){
                 $r->delete();
-                abort(503,'Error sending email verification: '.$e->getMessage());
+                //abort(503,'Error sending email verification: '.$e->getMessage());
             }
 
             try{
