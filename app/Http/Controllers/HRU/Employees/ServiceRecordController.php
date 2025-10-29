@@ -238,9 +238,8 @@ class ServiceRecordController extends Controller
         abort(503,'Error saving data.');
     }
 
-    public function update($slug, $request)
+    public function update($slug, EmployeeServiceRecordCreateForm $request)
     {
-
         $serviceRecord = EmployeeServiceRecord::findOrFail($slug);
         $serviceRecord->sequence_no = $request->sequence_no;
         $serviceRecord->from_date = $request->from_date;
