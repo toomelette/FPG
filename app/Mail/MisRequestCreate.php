@@ -46,11 +46,12 @@ class MisRequestCreate extends Mailable
             foreach ($recipients as $recipient){
                 array_push($recipients_arr,$recipient->email);
             }
+            return $this
+                ->to($recipients_arr)
+                ->subject('MIS Service Request - '.$r->nature_of_request . ' '.strtoupper(Str::random(5)))
+                ->view('mailables.mis_requests.inform')->with(['data' => $data,'r'=> $r,'user'=> $user]);
         }
 
-        return $this
-            ->to($recipients_arr)
-            ->subject('MIS Service Request - '.$r->nature_of_request . ' '.strtoupper(Str::random(5)))
-            ->view('mailables.mis_requests.inform')->with(['data' => $data,'r'=> $r,'user'=> $user]);
+
     }
 }
