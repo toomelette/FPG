@@ -98,6 +98,7 @@ class ServiceRecordController extends Controller
 
     public function print($employeeSlug,Request $request)
     {
+
         if($request->doc == 'NOSA'){
             return $this->printNosa($employeeSlug,$request);
         }

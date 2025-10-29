@@ -119,6 +119,13 @@ class NewsController extends Controller
         $response->header("Content-Type", $type);
         return $response;
     }
+    public function show($slug)
+    {
+        $news = News::findOrFail($slug);
+        return view('_su.news.show')->with([
+            'news' => $news
+        ]);
+    }
     public function destroy($slug){
         $news = $this->findBySlug($slug);
 

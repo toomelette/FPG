@@ -72,6 +72,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     Route::get('/view_doc/{id}','NewsController@viewDoc')->name('news.view_doc');
     Route::get('/view_document/{id}/{type}','ViewDocument@index')->name('view_document.index');
+    Route::get('/news/{id}',[\App\Http\Controllers\NewsController::class,'show'])->name('news.show');
 
     /** PERMISSION SLIPS **/
     Route::get('/permission_slips/my_permission_slips','PermissionSlipController@myPermissionSlips')->name('permission_slip.my_permission_slips');
@@ -394,7 +395,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::resource('jo_employees','JOEmployeesController');
 
     /** DTR **/
-    Route::resource('news','NewsController');
+    Route::resource('news','NewsController')->except(['show']);
 
     /** DTR **/
     Route::get('holidays/fetch_google','HolidayController@fetchGoogleApi')->name('holidays.fetch_google');

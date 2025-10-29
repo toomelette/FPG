@@ -36,6 +36,13 @@
 <body>
 <div class="wrapper">
 
+    @php
+        $news = \App\Models\News::query()
+            ->active()
+            ->get();
+    @endphp
+
+
     @include('adminkit.sidebar')
 
     <div class="main">
@@ -43,6 +50,7 @@
 
         <main class="content">
             <div class="container-fluid p-0">
+                @include('adminkit.news')
                 @yield('content')
 
                 @yield('content2')
@@ -83,16 +91,35 @@
         let href = $(this).attr('href');
         window.open(href, "popupWindow", "width=1200, height=800, scrollbars=yes");
     })
-
-
-
-
     $(".sidebar-nav a[href='{{url()->current()}}']").parent('li').addClass('active');
     $(".sidebar-nav a[href='{{url()->current()}}']").parents('.sidebar-dropdown').addClass('show');
     $(".sidebar-nav a[href='{{url()->current()}}']").parents('.sidebar-dropdown').siblings('.sidebar-link').removeClass('collapsed');
     $(".sidebar-nav a[href='{{url()->current()}}']").parents('.sidebar-item').addClass('active');
-
+    $(".news-trigger").click(function (){
+        let btn = $(this);
+        load_modal2(btn);
+        let uri = '{{route("dashboard.news.show","slug")}}';
+        uri = uri.replace('slug',btn.attr('data'));
+        $.ajax({
+            url : uri,
+            type: 'GET',
+            headers: {
+                {!! __html::token_header() !!}
+            },
+            success: function (res) {
+                populate_modal2(btn,res);
+            },
+            error: function (res) {
+                populate_modal2_error(res);
+            }
+        })
+    })
+    $(".news-close").click(function (){
+        setCookie('news_'+$(this).attr('data'),'ok',7);
+    });
 </script>
+<x-adminkit.html.modal id="news-modal" size="lg"/>
+
 @yield('modals')
 @yield('scripts')
 

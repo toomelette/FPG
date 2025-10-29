@@ -59,7 +59,7 @@
                   {!! strtoupper($userName['firstname']) !!}  {!! strtoupper($userName['lastname']) !!}
                   <small>{!! strtoupper($userName['position']) !!}</small>
                 @endif
-                
+
               </p>
             </li>
 
