@@ -44,7 +44,7 @@ class MybService
             abort(503,'This Payroll is locked. Unlock it first to perform action.');
         }
 
-        $this->payrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
+        //$this->payrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
 
         //Insert incentives to payroll master details:
         $incentivesToInsert = ['MYB'];

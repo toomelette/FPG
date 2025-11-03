@@ -43,7 +43,7 @@ class YebService
             abort(503,'This Payroll is locked. Unlock it first to perform action.');
         }
 
-        $this->payrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
+        //$this->payrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
 
         //Insert incentives to payroll master details:
         $incentivesToInsert = ['YEB','CASHGIFT'];
@@ -61,7 +61,8 @@ class YebService
                     'slug' => Str::random(),
                     'type' => 'INCENTIVE',
                     'code' => $incentiveToInsert,
-                    'amount' => $payrollMasterEmployee->employee?->templateIncentives?->where('incentive_code',$incentiveToInsert)?->first()?->amount,
+//                    'amount' => $payrollMasterEmployee->employee?->templateIncentives?->where('incentive_code',$incentiveToInsert)?->first()?->amount,
+                    'amount' => $payrollMasterEmployee->saved_employee_data["monthly_basic"] ?? null,
                     'account_code' => $incentivesFromDb->where('incentive_code',$incentiveToInsert)?->first()?->account_code,
                     'priority' => $incentivesFromDb->where('incentive_code',$incentiveToInsert)?->first()?->priority,
                     'taxable' => $incentivesFromDb->where('incentive_code',$incentiveToInsert)?->first()?->taxable,

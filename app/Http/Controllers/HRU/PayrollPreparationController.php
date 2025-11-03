@@ -191,6 +191,7 @@ class PayrollPreparationController
             ['employee_slug','incentive_code'],
             ['priority','amount']
         );
+        $this->payrollService->updateEmployeesData($payMaster,null);
         switch ($request->type){
             case 'MONTHLY' :
                 $this->monthlyPayrollService->recompute($payMaster->slug);
