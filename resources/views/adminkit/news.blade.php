@@ -10,7 +10,7 @@
             <div class="alert alert-danger  alert-dismissible" role="alert">
                 <button type="button" class="btn-close news-close" data-bs-dismiss="alert" aria-label="Close" data="{{$new->slug}}"></button>
                 <div class="alert-message">
-                    <h4 class="alert-heading text-strong">{{$new->title}}!</h4>
+                    <h4 class="alert-heading text-strong">{{$new->title}}</h4>
                     {!! Str::of(strip_tags($new->details))->replace('&nbsp;',' ')->limit(130) !!}
                     @if($new->attachments->count() > 0 )
                         <br>
