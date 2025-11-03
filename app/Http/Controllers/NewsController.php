@@ -12,6 +12,7 @@ use App\Models\NewsAttachments;
 use App\Swep\Helpers\__static;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
@@ -121,6 +122,13 @@ class NewsController extends Controller
     public function show($slug)
     {
         $news = News::findOrFail($slug);
+        $viewers = $news->viewers ?? [];
+        $viewers[] = [
+            'user_id' => Auth::user()->user_id,
+            'name' => Auth::user()->employee->full['FMiLE'],
+        ];
+        $news->viewers = $viewers;
+        $news->saveQuietly();
         return view('_su.news.show')->with([
             'news' => $news
         ]);

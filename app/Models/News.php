@@ -34,6 +34,9 @@ class News extends Model
     public $incrementing = false;
     protected $primaryKey = 'slug';
 
+    protected $casts = [
+        'viewers' => 'array',
+    ];
     public static function booted()
     {
         static::addGlobalScope(new ProjectScope());
