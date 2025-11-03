@@ -7,7 +7,7 @@
     @endphp
     @if(!isset($cArray['news_'.$new->slug]))
         <div class="news-trigger" style="cursor: pointer" data="{{$new->slug}}"  data-bs-target="#news-modal" data-bs-toggle="modal">
-            <div class="alert alert-danger  alert-dismissible" role="alert">
+            <div class="alert alert-danger  alert-dismissible animate__animated animate__headShake" role="alert">
                 <button type="button" class="btn-close news-close" data-bs-dismiss="alert" aria-label="Close" data="{{$new->slug}}"></button>
                 <div class="alert-message">
                     <h4 class="alert-heading text-strong">{{$new->title}}</h4>

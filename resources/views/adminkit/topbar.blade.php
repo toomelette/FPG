@@ -32,7 +32,7 @@
                     <div class="position-relative">
                         <i class="align-middle" data-feather="bell"></i>
                         @if($news->count() > 0)
-                            <span class="indicator news bg-danger">{{$news->count()}}</span>
+                            <span class="indicator news bg-danger animate__animated animate__rubberBand">{{$news->count()}}</span>
                         @endif
                     </div>
                 </a>
