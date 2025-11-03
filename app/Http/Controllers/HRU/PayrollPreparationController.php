@@ -204,6 +204,9 @@ class PayrollPreparationController
             case  'MYB':
                 $this->mybService->recompute($payMaster->slug);
                 break;
+            case  'YEB':
+                $this->yebService->recompute($payMaster->slug);
+                break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);
                 break;
@@ -904,6 +907,8 @@ class PayrollPreparationController
 
         switch ($payrollMaster->type){
             case 'MONTHLY':
+            case 'YEB':
+            case 'MYB':
                 if($payrollMaster->hmtDetails()->delete()){
                     if($payrollMaster->payrollMasterEmployees()->delete()){
                         if($payrollMaster->delete()){

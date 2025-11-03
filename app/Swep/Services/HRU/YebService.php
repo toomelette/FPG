@@ -99,7 +99,7 @@ class YebService
             ->where('type','=',"MYB")
             ->first();
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
-            $mybAmount = $payrollMasterMyb->hmtDetails->where('employee_slug','=',$payrollMasterEmployee->employee_slug)?->first()?->amount ?? 0;
+            $mybAmount = $payrollMasterMyb?->hmtDetails?->where('employee_slug','=',$payrollMasterEmployee->employee_slug)?->first()?->amount ?? 0;
             $taxableAmount = $payrollMasterEmployee->employeePayrollDetails->where('type','INCENTIVE')->where('taxable','=',1)->sum('amount');
             //$mybAmount = $payrollMasterEmployee->employee?->templateIncentives?->where('incentive_code',$incentiveToInsert)?->first()?->amount;
             $taxable = $taxableAmount + $mybAmount - $this->maxNonTax;
