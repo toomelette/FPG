@@ -875,27 +875,34 @@ Route::get('testWs',function (){
     event(new \App\Events\HrRequest\NewRequest($rr));
 });
 
-/*
-Route::get('/fixPs',function (\App\Http\Controllers\PermissionSlipController $permissionSlipController){
-    $pss = \App\Models\HRU\PS::query()
-        ->whereNotNull('departure')
-        ->get();
-    foreach ($pss as $ps){
-        $ps->departure = $ps->date.' '.Carbon::parse($ps->departure)->format('H:i');
-        $ps->return = $ps->date.' '.Carbon::parse($ps->return)->format('H:i');
-        $ps->save();
-    }
 
-    $pss = \App\Models\HRU\PS::query()
-        ->whereNotNull('departure')
+Route::get('myb_yeb_cg',function (){
+    //delete myb
+    $incTemplate = \App\Models\HRU\TemplateIncentives::query()
+        ->whereIn('incentive_code',['MYB','YEB','CASHGIFT'])
+        ->delete();
+    $insert = [];
+    $emps = \App\Models\Employee::query()
+        ->active()
+        ->permanent()
         ->get();
-    foreach ($pss as $ps){
-        $ps->time_spent = $permissionSlipController->timeDiffExceptLunch($ps->departure,$ps->return);
-        $ps->save();
+    foreach ($emps as $emp){
+        $sal = (float) $emp->monthly_basic;
+        $insert[] = [
+            'employee_slug' => $emp->slug,
+            'incentive_code' => 'MYB',
+            'amount' => $emp->monthly_basic,
+        ];
+        $insert[] = [
+            'employee_slug' => $emp->slug,
+            'incentive_code' => 'YEB',
+            'amount' => $emp->monthly_basic,
+        ];
+        $insert[] = [
+            'employee_slug' => $emp->slug,
+            'incentive_code' => 'CASHGIFT',
+            'amount' => 5000,
+        ];
     }
-    return 1;
-});
-*/
-Route::get('rc',function (){
-
+    \App\Models\HRU\TemplateIncentives::insert($insert);
 });

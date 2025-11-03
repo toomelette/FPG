@@ -2,6 +2,7 @@
     $rand = Str::random();
     /** @var \App\Models\HRU\PayrollMasterDetails $payMasterDetail **/
     /** @var \App\Models\HRU\PayrollMasterEmployees $payMasterEmployee **/
+
 @endphp
 @extends('adminkit.modal',[
     'id' => 'edit-deduction-form-'.$rand,

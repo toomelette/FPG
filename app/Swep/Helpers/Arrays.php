@@ -907,6 +907,8 @@ class Arrays
             'MONTHLY' => 'MONTHLY',
             'HAZARDPRC' => 'HAZARDPRC',
             'RATA' => 'RATA',
+            'MYB' => 'MYB',
+            'YEB' => 'YEB',
         ];
     }
 

@@ -21,7 +21,10 @@ use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\HRU\HazardPrcService;
 use App\Swep\Services\HRU\MonthlyPayrollService;
+use App\Swep\Services\HRU\MybService;
+use App\Swep\Services\HRU\PayrollService;
 use App\Swep\Services\HRU\RaTaService;
+use App\Swep\Services\HRU\YebService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -39,6 +42,9 @@ class PayrollPreparationController
         public MonthlyPayrollService $monthlyPayrollService,
         public HazardPrcService $hazardPrcService,
         public RaTaService $rataService,
+        public MybService $mybService,
+        public YebService $yebService,
+        public PayrollService $payrollService,
     )
     {
 
@@ -195,6 +201,9 @@ class PayrollPreparationController
             case  'RATA':
                 $this->rataService->recompute($payMaster->slug);
                 break;
+            case  'MYB':
+                $this->mybService->recompute($payMaster->slug);
+                break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);
                 break;
@@ -247,17 +256,23 @@ class PayrollPreparationController
 
     public function edit($slug,Request $request){
 
-
-        if($request->has('editDeduction')){
-            return  $this->monthlyPayrollService->editDeduction($request);
-        }
-
         $payrollMaster = PayrollMaster::query()
                 ->with([
                     'payrollMasterEmployees.employee',
                     'payrollMasterEmployees.employeePayrollDetails',
                 ])
                 ->find($slug);
+
+        if($request->has('editDeduction')){
+            switch ($payrollMaster->type){
+                case 'MONTHLY' :
+                case 'MYB':
+                case 'YEB':
+                    return  $this->payrollService->editDeduction($request);
+
+            }
+
+        }
 
         //IF EDIT SIGNATORIES ONLY
         if($request->ajax() && $request->has('signatories') && $request->signatories == true){
@@ -335,6 +350,29 @@ class PayrollPreparationController
                     'payrollMaster' => $payrollMaster,
                 ]);
                 break;
+            case 'MYB':
+                //show employee offcanvas
+                if($request->has('employee')){
+                    return  $this->mybService->showEmployee($slug,$request);
+                }
+                if($request->has('recompute') && $request->recompute == true){
+                    return $this->mybService->recompute($slug);
+                }
+                return view('_payroll.payroll-preparation.MYB.edit')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
+
+            case 'YEB':
+                //show employee offcanvas
+                if($request->has('employee')){
+                    return  $this->yebService->showEmployee($slug,$request);
+                }
+                if($request->has('recompute') && $request->recompute == true){
+                    return $this->yebService->recompute($slug);
+                }
+                return view('_payroll.payroll-preparation.YEB.edit')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
         }
         
     }
@@ -668,6 +706,10 @@ class PayrollPreparationController
                 return $this->hazardPrcService->update($request,$payrollMaster);
             case 'RATA' :
                 return $this->rataService->update($request,$payrollMaster);
+            case 'MYB' :
+                return $this->mybService->update($request,$payrollMaster);
+            case 'YEB' :
+                return $this->yebService->update($request,$payrollMaster);
             default:
                 break;
         }
@@ -780,8 +822,14 @@ class PayrollPreparationController
                 return  $this->hazardPrcService->printPayroll($slug);
             case 'HAZARDPRC-ABSTRACT':
                 return  $this->hazardPrcService->printAbstract($slug);
+
             case 'RATA':
                 return $this->rataService->printPayroll($slug);
+
+            case 'MYB':
+                return $this->mybService->printPayroll($slug);
+            case 'YEB':
+                return $this->yebService->printPayroll($slug);
         }
         abort(503,'CHECK SWITCH CASE STATEMENT');
     }

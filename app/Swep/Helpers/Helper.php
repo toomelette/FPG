@@ -798,6 +798,30 @@ class Helper
             }
         }
     }
+    public static function taxRate($monthlyBasic)
+    {
+        switch ($monthlyBasic){
+            case $monthlyBasic <= 20833:
+                $taxRate = 0;
+                break;
+            case $monthlyBasic <= 33332:
+                $taxRate = 0.15;
+                break;
+            case $monthlyBasic <= 66666:
+                $taxRate = 0.2;
+                break;
+            case $monthlyBasic <= 166666:
+                $taxRate = 0.25;
+                break;
+            case $monthlyBasic <= 666666:
+                $taxRate = 0.3;
+                break;
+            default:
+                $taxRate = 0.35;
+                break;
+        }
+        return $taxRate;
+    }
 
     public static function computeTax($monthlyBasic,$preTaxDeductions){
         $taxableAmount = $monthlyBasic - $preTaxDeductions;

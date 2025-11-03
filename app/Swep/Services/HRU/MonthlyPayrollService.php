@@ -23,6 +23,11 @@ use Spatie\LaravelPdf\Facades\Pdf;
 class MonthlyPayrollService
 {
 
+    public function __construct(
+        protected PayrollService $payrollService,
+    )
+    {
+    }
 
 
     public function edit($payMasterSlug,Request $request)
@@ -62,7 +67,7 @@ class MonthlyPayrollService
 
 //        $payrollMaster->hmtDetails()->delete();
 
-        $this->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
+        $this->payrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
 
         //1. Update basic pay based on employee master file
         $toBeUpserted = [];
@@ -1059,53 +1064,11 @@ class MonthlyPayrollService
         }
         if($request->has('updateEmployeesData')){
 
-            return $this->updateEmployeesData($payrollMaster);
+            return $this->payrollService->updateEmployeesData($payrollMaster);
         }
     }
 
-    public function updateEmployeesData(PayrollMaster $payrollMaster,$payMasterEmployeeSlug)
-    {
-        $payrollMaster = $payrollMaster->load([
-            'payrollMasterEmployees' => function ($e) use ($payMasterEmployeeSlug) {
-                if($payMasterEmployeeSlug != null){
-                    $e->where('slug','=',$payMasterEmployeeSlug);
-                }
-            },
-            'payrollMasterEmployees.employee' =>[
-                'plantilla',
-                'responsibilityCenter.description',
-            ]
-        ]);
 
-
-        $jobGrades = Arrays::jobGrades();
-        $upsert = [];
-        foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
-            $payrollMasterEmployee->saved_employee_data = [
-                'employee_no' => $payrollMasterEmployee->employee->employee_no,
-                'full_name' => $payrollMasterEmployee->employee->full['LFEMi'] ?? '',
-                'lastname' => $payrollMasterEmployee->employee->lastname,
-                'firstname' => $payrollMasterEmployee->employee->firstname,
-                'middlename' => $payrollMasterEmployee->employee->middlename,
-                'name_ext' => $payrollMasterEmployee->employee->name_ext,
-                'position' => $payrollMasterEmployee->employee->plantilla->position ?? $payrollMasterEmployee->employee->position,
-                'item_no' => $payrollMasterEmployee->employee->item_no,
-                'salary_grade' => $payrollMasterEmployee->employee->salary_grade,
-                'step_inc' => $payrollMasterEmployee->employee->step_inc,
-                'monthly_basic' => $jobGrades[$payrollMasterEmployee->employee->salary_grade][$payrollMasterEmployee->employee->step_inc] ?? null,
-                'resp_center' => $payrollMasterEmployee->employee->resp_center,
-                'department' => $payrollMasterEmployee->employee->responsibilityCenter->description->name ?? '',
-            ];
-            $upsert[] = [
-                'saved_employee_data' => json_encode($payrollMasterEmployee->saved_employee_data),
-                'slug' => $payrollMasterEmployee->slug
-            ];
-
-        }
-
-        PayrollMasterEmployees::query()->upsert($upsert,['slug'],['saved_employee_data']);
-        return true;
-    }
 
     public function printPayslips($slug,Request $request){
 
@@ -1389,18 +1352,7 @@ class MonthlyPayrollService
 
     }
 
-    public function editDeduction(Request $request)
-    {
-        $payMasterDetail = PayrollMasterDetails::query()
-            ->find($request->slug);
-        $payMasterEmployee = PayrollMasterEmployees::query()
-            ->find($request->employeeListSlug);
-        return view('_payroll.payroll-preparation.MONTHLY.edit-deduction')->with([
-            'payMasterDetail' => $payMasterDetail,
-            'payMasterEmployee' => $payMasterEmployee,
-            'deductionCode' => $request->deductionCode,
-        ]);
-    }
+
     public function updateDeduction(Request $request)
     {
         $deductionMaster = Deductions::query()->where('deduction_code','=',$request->code)->first();
