@@ -12,6 +12,10 @@
                 <div class="alert-message">
                     <h4 class="alert-heading text-strong">{{$new->title}}!</h4>
                     {!! Str::of(strip_tags($new->details))->replace('&nbsp;',' ')->limit(130) !!}
+                    @if($new->attachments->count() > 0 )
+                        <br>
+                        <small>With {{$new->attachments->count()}} {{Str::plural('attachment',$new->attachments->count())}}</small>
+                    @endif
                 </div>
             </div>
         </div>

@@ -146,7 +146,18 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(function () {
-            CKEDITOR.replace('editor');
+            CKEDITOR.replace('editor',{
+                customConfig: '',
+                toolbarGroups: [
+                    { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+                    { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
+                    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                    { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align' ] },
+                    { name: 'links', groups: [ 'links' ] },
+                    { name: 'insert', groups: [ 'insert' ] },
+                    { name: 'tools', groups: [ 'tools' ] }
+                ]
+            });
         });
     })
 

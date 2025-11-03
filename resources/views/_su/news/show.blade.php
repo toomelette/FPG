@@ -6,6 +6,16 @@
 
 @section('modal-body')
     {!! $news->details !!}
+
+    @if($news->attachments->count() > 0)
+        Attachment(s):
+        <ul>
+            @forelse($news->attachments as $attachment)
+                <li><a href="{{route('dashboard.news.view_doc',$attachment->slug)}}" target="_blank"><i class="fa fa-link"></i> {{$attachment->original_file_name}}</a></li>
+            @empty
+            @endforelse
+        </ul>
+    @endif
     <hr class="mb-1">
     <div class="row">
         <div class="col-md-6">

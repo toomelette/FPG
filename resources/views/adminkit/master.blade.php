@@ -38,6 +38,7 @@
 
     @php
         $news = \App\Models\News::query()
+            ->orderBy('created_at','desc')
             ->active()
             ->get();
     @endphp

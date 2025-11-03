@@ -37,7 +37,7 @@ class NewsController extends Controller
                     $return = '';
                     if($data->attachments->count() > 0){
                         foreach ($data->attachments as $attachment){
-                            $return = $return.'<a href="'.route('dashboard.news.view_doc',$attachment->id).'" target="_blank"><p class="no-margin text-info" style="margin-bottom: 10px !important;"><i class="fa fa-paperclip"></i> '.$attachment->file.'</p></a>';
+                            $return = $return.'<a href="'.route('dashboard.news.view_doc',$attachment->slug).'" target="_blank"><p class="no-margin text-info" style="margin-bottom: 10px !important;"><i class="fa fa-paperclip"></i> '.$attachment->file.'</p></a>';
                         }
                     }else{
                         $return = 'No attachment.';
@@ -78,6 +78,7 @@ class NewsController extends Controller
 
                     $file->storeAs('news/',$new_file_name_full);
                     $arr = [
+                        'slug' => Str::random(),
                         'news' => $news->slug,
                         'file' => $new_file_name_full,
                         'original_file_name' => $original_file_name_only.'.'.$original_ext,
@@ -104,20 +105,18 @@ class NewsController extends Controller
     }
 
     public function viewDoc($id){
-        $attachment = NewsAttachments::query()->find($id);
+
+        $attachment = NewsAttachments::query()->findOrFail($id);
         $filename = $attachment->file;
 
         if(\request()->has('download')){
             return $dl = Storage::disk('local')->download('news/'.$filename);
         }
-
-        $path = __static::archive_dir().'news/'.$filename;
-        if (!File::exists($path)) { abort(404); }
-        $file = File::get($path);
-        $type = File::mimeType($path);
-        $response = response()->make($file, 200);
-        $response->header("Content-Type", $type);
-        return $response;
+        $storage = Storage::disk('news');
+        if ($storage->exists($filename)){
+            return  $storage->response($filename);
+        }
+        abort(404);
     }
     public function show($slug)
     {
