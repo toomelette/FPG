@@ -10,7 +10,7 @@
             <div class="alert alert-danger  alert-dismissible animate__animated animate__headShake" role="alert">
                 <button type="button" class="btn-close news-close" data-bs-dismiss="alert" aria-label="Close" data="{{$new->slug}}"></button>
                 <div class="alert-message">
-                    <h4 class="alert-heading text-strong">{{$new->title}}</h4>
+                    <h4 class="alert-heading text-strong">{{$new->title}} <small class="text-muted"> | {{Carbon::parse($new->created_at)->diffForHumans()}}</small></h4>
                     {!! Str::of(strip_tags($new->details))->replace('&nbsp;',' ')->limit(130) !!}
                     @if($new->attachments->count() > 0 )
                         <br>
