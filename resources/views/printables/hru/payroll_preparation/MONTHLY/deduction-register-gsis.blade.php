@@ -16,9 +16,6 @@ $gsisDeductions = $deductions;
     </thead>
     <tbody>
     @php
-        if(($ded->employeePayroll->saved_employee_data['department'] ?? null) == null){
-            dd($ded->employeePayroll);
-        }
         $groupedByDepartment = $gsisDeductions->groupBy(function ($ded){
               return Str::beforeLast($ded->employeePayroll->saved_employee_data['department'] ?? null,'-');
             })->sortKeys();
