@@ -7,7 +7,11 @@
         <thead>
         <tr>
             <th class="first" style="width: 350px !important;"><span style="margin-right: 12em">Employee</span></th>
-            <th class="text-center" style="min-width: 90px">Basic Pay</th>
+            <th class="text-center" style="min-width: 90px">Old Basic Pay</th>
+            <th class="text-center" style="min-width: 90px">From</th>
+            <th class="text-center" style="min-width: 90px">To</th>
+            <th class="text-center" style="min-width: 90px">No. of working days</th>
+            <th class="text-center" style="min-width: 90px">New Basic Pay</th>
             @forelse($incentives as $incentive)
                 <th class="text-center" style="min-width: 90px">{{$incentive}} </th>
             @empty
@@ -22,7 +26,7 @@
         <tbody>
         @forelse($payrollMaster->payrollMasterEmployees as $employee)
             <tr class="{{$loop->iteration % 5 == 0 ? 'fifth' : ''}}" data="{{$employee->slug ?? null}}">
-                @include('_payroll.payroll-preparation.YEB.preview-row')
+                @include('_payroll.payroll-preparation.DIFF.preview-row')
             </tr>
         @empty
         @endforelse

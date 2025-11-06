@@ -909,6 +909,7 @@ class Arrays
             'RATA' => 'RATA',
             'MYB' => 'MYB',
             'YEB' => 'YEB',
+            'DIFF' => 'DIFFERENTIAL',
         ];
     }
 

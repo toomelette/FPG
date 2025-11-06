@@ -19,6 +19,7 @@ use App\Models\PPU\PPURespCodes;
 use App\Models\RCCodeTree;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
+use App\Swep\Services\HRU\DifferentialService;
 use App\Swep\Services\HRU\HazardPrcService;
 use App\Swep\Services\HRU\MonthlyPayrollService;
 use App\Swep\Services\HRU\MybService;
@@ -45,6 +46,7 @@ class PayrollPreparationController
         public MybService $mybService,
         public YebService $yebService,
         public PayrollService $payrollService,
+        public DifferentialService $differentialService,
     )
     {
 
@@ -192,6 +194,7 @@ class PayrollPreparationController
             ['priority','amount']
         );
         $this->payrollService->updateEmployeesData($payMaster,null);
+
         switch ($request->type){
             case 'MONTHLY' :
                 $this->monthlyPayrollService->recompute($payMaster->slug);
@@ -207,6 +210,9 @@ class PayrollPreparationController
                 break;
             case  'YEB':
                 $this->yebService->recompute($payMaster->slug);
+                break;
+            case  'DIFF':
+                $this->differentialService->recompute($payMaster->slug);
                 break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);
@@ -375,6 +381,18 @@ class PayrollPreparationController
                     return $this->yebService->recompute($slug);
                 }
                 return view('_payroll.payroll-preparation.YEB.edit')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
+
+            case 'DIFF':
+                //show employee offcanvas
+                if($request->has('employee')){
+                    return  $this->differentialService->showEmployee($slug,$request);
+                }
+                if($request->has('recompute') && $request->recompute == true){
+                    return $this->differentialService->recompute($slug);
+                }
+                return view('_payroll.payroll-preparation.DIFF.edit')->with([
                     'payrollMaster' => $payrollMaster,
                 ]);
         }

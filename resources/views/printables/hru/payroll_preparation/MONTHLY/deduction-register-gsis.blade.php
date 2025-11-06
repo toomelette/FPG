@@ -17,7 +17,7 @@ $gsisDeductions = $deductions;
     <tbody>
     @php
         $groupedByDepartment = $gsisDeductions->groupBy(function ($ded){
-              return Str::beforeLast($ded->employeePayroll->saved_employee_data['department'],'-');
+              return Str::beforeLast($ded->employeePayroll->saved_employee_data['department'] ?? null,'-');
             })->sortKeys();
          $monthlyBasicTotals = [];
 
