@@ -834,6 +834,8 @@ class PayrollPreparationController
                 return $this->mybService->printPayroll($slug);
             case 'YEB':
                 return $this->yebService->printPayroll($slug);
+            case 'YEB-DEDUCTION-REGISTER':
+                return $this->yebService->deductionRegister($slug);
         }
         abort(503,'CHECK SWITCH CASE STATEMENT');
     }

@@ -415,5 +415,56 @@ class YebService
             'usedRc' => $usedRc,
         ]);
         */
+
+    }
+    public function deductionRegister($payrollMasterSlug)
+    {
+        $request = Request::capture();
+
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
+                    }
+                },
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    if($request->has('payrollGroupsSelected') && $request->payrollGroupsSelected != ''){
+                        $hmtDetails->intermediateGroup($request->payrollGroupsSelected);
+                    }
+                },
+                'hmtDetails.chartOfAccount',
+                'hmtDetails.deduction',
+                'hmtDetails.employeePayroll'
+            ])
+            ->findOrFail($payrollMasterSlug);
+
+
+
+        return Pdf::view('printables.hru.payroll_preparation.YEB.deduction-register',[
+            'payrollMaster' => $payrollMaster,
+            'pdfPrint' => true,
+        ])
+            ->format('a4')
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Deduction Register.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+
+        return view('printables.hru.payroll_preparation.YEB.deduction-register')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
     }
 }
