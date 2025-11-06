@@ -15,7 +15,7 @@
     <tbody>
     @php
         $groupedByDepartment = $phicDeductions->groupBy(function ($ded){
-              return Str::beforeLast($ded->employeePayroll->saved_employee_data['department'],'-');
+              return Str::beforeLast($ded->employeePayroll->saved_employee_data['department'] ?? null,'-');
             })->sortKeys();
          $monthlyBasicTotals = [];
     @endphp
