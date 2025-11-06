@@ -35,7 +35,7 @@ $gsisDeductions = $deductions;
                 $monthlyBasicTotals[$department] = $monthlyBasicTotals[$department] + $monthlyBasic;
             @endphp
             <tr>
-                <td>{{$gsisDeduction->employeePayroll->saved_employee_data['employee_no'] ?? ''}}</td>
+                <td>{{$gsisDeduction->employeePayroll->saved_employee_data['employee_no'] ?? $gsisDeduction->employeePayroll->slug ?? ''}}</td>
                 <td>{{$gsisDeduction->employeePayroll->saved_employee_data['full_name'] ?? ''}}</td>
                 <td class="text-right">{{Helper::toNumber($monthlyBasic)}}</td>
                 <td class="text-right">{{Helper::toNumber($gsisDeduction->amount ?? null)}}</td>

@@ -32,7 +32,7 @@
                 $monthlyBasicTotals[$department] = $monthlyBasicTotals[$department] + $monthlyBasic;
             @endphp
             <tr>
-                <td>{{$phicDeduction->employeePayroll->saved_employee_data['employee_no'] ?? ''}}</td>
+                <td>{{$phicDeduction->employeePayroll->saved_employee_data['employee_no'] ?? $phicDeduction->employeePayroll->slug ?? ''}}</td>
                 <td>{{$phicDeduction->employeePayroll->saved_employee_data['full_name'] ?? ''}}</td>
                 <td class="text-right">{{Helper::toNumber($monthlyBasic)}}</td>
                 <td class="text-right">{{Helper::toNumber($phicDeduction->amount ?? null)}}</td>

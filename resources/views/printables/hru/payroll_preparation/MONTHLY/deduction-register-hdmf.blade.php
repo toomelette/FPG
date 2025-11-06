@@ -25,7 +25,7 @@
         </tr>
         @forelse($hdmfDeductions as $hdmfDeduction)
             <tr>
-                <td>{{$hdmfDeduction->employeePayroll->saved_employee_data['employee_no'] ?? ''}}</td>
+                <td>{{$hdmfDeduction->employeePayroll->saved_employee_data['employee_no'] ?? $hdmfDeduction->employeePayroll->slug ?? ''}}</td>
                 <td>{{$hdmfDeduction->employeePayroll->saved_employee_data['full_name'] ?? ''}}</td>
                 <td class="text-right">{{Helper::toNumber($hdmfDeduction->amount ?? null)}}</td>
                 <td class="text-right">{{Helper::toNumber($hdmfDeduction->govt_share ?? null)}}</td>
