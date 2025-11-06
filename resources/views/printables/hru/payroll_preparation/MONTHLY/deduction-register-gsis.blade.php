@@ -30,6 +30,7 @@ $gsisDeductions = $deductions;
             <td colspan="6" class="text-strong">{{$department}}</td>
         </tr>
         @forelse($gsisDeductions as $gsisDeduction)
+
             @php
                 $monthlyBasic = $gsisDeduction->employeePayroll->saved_employee_data['monthly_basic'] ?? null;
                 $monthlyBasicTotals[$department] = $monthlyBasicTotals[$department] + $monthlyBasic;

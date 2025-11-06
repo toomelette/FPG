@@ -14,6 +14,7 @@ class RaTaService
 {
     public function __construct(
         public MonthlyPayrollService $monthlyPayrollService,
+        public PayrollService $payrollService,
     )
     {
 
@@ -51,7 +52,7 @@ class RaTaService
             ->findOrFail($payrollMasterSlug);
 
 
-        $this->monthlyPayrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
+        $this->payrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
 
 
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
