@@ -269,6 +269,13 @@ class YebService
 
     public function updateDeduction(Request $request)
     {
+        if($request->type == 'INCENTIVE'){
+            $incentiveMaster = Incentives::query()->where('incentive_code','=',$request->code)->first();
+            $priority = $incentiveMaster->priority;
+        }else{
+            $deductionMaster = Deductions::query()->where('deduction_code','=',$request->code)->first();
+            $priority = $deductionMaster->n_priority;
+        }
 
         $deductionMaster = Deductions::query()->where('deduction_code','=',$request->code)->first();
 
@@ -276,11 +283,11 @@ class YebService
             'pay_master_employee_listing_slug' => $request->pay_master_employee_listing_slug,
             'employee_slug' => $request->employee_slug,
             'slug' => Str::random(),
-            'type' => 'DEDUCTION',
+            'type' => $request->type,
             'code' => $request->code,
             'amount' => Helper::sanitizeAutonum($request->amount),
             'original_amount' => Helper::sanitizeAutonum($request->amount),
-            'priority' => $deductionMaster->n_priority,
+            'priority' => $priority,
         ];
         PayrollMasterDetails::query()
             ->upsert(
