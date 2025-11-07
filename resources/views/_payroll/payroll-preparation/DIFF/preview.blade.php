@@ -8,8 +8,15 @@
         <tr>
             <th class="first" style="width: 350px !important;"><span style="margin-right: 12em">Employee</span></th>
             <th class="text-center" style="min-width: 90px">Old Basic Pay</th>
-            <th class="text-center" style="min-width: 90px">From</th>
-            <th class="text-center" style="min-width: 90px">To</th>
+            <th class="text-center" style="min-width: 90px">
+                From <br>
+                <button type="button" class="btn btn-outline-primary btn-sm update-row-btn" data='{"element" : "diff_from" , "title" : "FROM","type" : "date"}' data-bs-target="#update-row-modal" data-bs-toggle="modal"><i class="fa fa-edit"></i></button>
+            </th>
+            <th class="text-center" style="min-width: 90px">
+                To <br>
+                <button type="button" class="btn btn-outline-primary btn-sm update-row-btn" data='{"element" : "diff_to" , "title" : "TO","type" : "date"}' data-bs-target="#update-row-modal" data-bs-toggle="modal"><i class="fa fa-edit"></i></button>
+
+            </th>
             <th class="text-center" style="min-width: 90px">No. of working days</th>
             <th class="text-center" style="min-width: 90px">New Basic Pay</th>
             @forelse($incentives as $incentive)

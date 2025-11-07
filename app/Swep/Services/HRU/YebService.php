@@ -467,4 +467,50 @@ class YebService
             'payrollMaster' => $payrollMaster,
         ]);
     }
+
+    public function abstract($payrollMasterSlug)
+    {
+        $request = Request::capture();
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
+                    }
+                },
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    if($request->has('payrollGroupsSelected') && $request->payrollGroupsSelected != ''){
+                        $hmtDetails->intermediateGroup($request->payrollGroupsSelected);
+                    }
+
+                },
+                'hmtDetails.chartOfAccount',
+            ])
+            ->findOrFail($payrollMasterSlug);
+
+        $rataPayrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees',
+            ])
+            ->where('type','=','RATA')
+            ->where('date','=', $payrollMaster->date)
+            ->first();
+
+        $employeesWithRata = $rataPayrollMaster?->payrollMasterEmployees->mapWithKeys(function ($data){
+            return[
+                $data->employee_slug => $data,
+            ];
+        });
+
+        return view('printables.hru.payroll_preparation.GLOBAL.abstract')->with([
+            'payrollMaster' => $payrollMaster,
+            'employeesWithRata' => $employeesWithRata,
+        ]);
+    }
 }

@@ -2,13 +2,19 @@
 
 namespace App\Swep\Services\HRU;
 
+use App\Models\HRU\Deductions;
+use App\Models\HRU\PayrollMaster;
+use App\Models\HRU\PayrollMasterDetails;
+use App\Models\HRU\PayrollMasterEmployees;
+use App\Swep\Helpers\Helper;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class DifferentialService
 {
     public function recompute($payrollMasterSlug,$payMasterEmployeeSlug = null,$avoid = [])
     {
-        dd(1);
         $payrollMaster = PayrollMaster::query()
             ->with([
                 'payrollMasterEmployees' => function ($e) use ($payMasterEmployeeSlug) {
@@ -24,6 +30,8 @@ class DifferentialService
             abort(503,'This Payroll is locked. Unlock it first to perform action.');
         }
 
+
+        dd($payrollMaster);
         //$this->payrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
 
         //Insert incentives to payroll master details:
@@ -217,5 +225,103 @@ class DifferentialService
         return view('_payroll.payroll-preparation.YEB.preview')->with([
             'payrollMaster' => $payrollMaster,
         ]);
+    }
+
+    public function update(Request $request,$payrollMaster)
+    {
+
+        $upsert = [];
+        $deductions = [];
+        $deductionsFromDb = Deductions::query()
+            ->whereIn('deduction_code',['WTAX','GSIS'])
+            ->get();
+        $usedEmployees = 1;
+
+        if(count($request['data']) > 0){
+            foreach ($request['data'] as $slug => $datum) {
+                $daysInAMonth = Carbon::parse($payrollMaster->date)->daysInMonth;
+                $workingDaysInAMonth = 22;
+                $workingDaysCoveredInDiff = $datum['diff_days'];
+                $daysCoveredInDiff = Carbon::parse($datum['diff_from'])->diffInDays(Carbon::parse($datum['diff_to'])) + 1;
+                $oldMbs = Helper::sanitizeAutonum($datum['diff_old_monthly_basic']) * 1;
+                $newMbs = Helper::sanitizeAutonum($datum['diff_new_monthly_basic']) * 1;
+                $diffGross = ($newMbs - $oldMbs) * $workingDaysCoveredInDiff / $workingDaysInAMonth;
+                $gsisPs = $diffGross  / $daysInAMonth * $daysCoveredInDiff * 0.09;
+                $gsisGs = $diffGross  / $daysInAMonth * $daysCoveredInDiff * 0.12;
+                $tax = ( $diffGross - $gsisPs) * Helper::taxRate($oldMbs);
+                $diffNet = $diffGross - $gsisPs - $tax;
+
+                //to employee list
+                $upsert[] = [
+                    'slug' => $slug,
+                    'diff_old_monthly_basic' => $oldMbs,
+                    'diff_new_monthly_basic' => $newMbs,
+                    'diff_from' => $datum['diff_from'],
+                    'diff_to' => $datum['diff_to'],
+                    'diff_days' => $datum['diff_days'],
+                    'diff_gross' => $diffGross,
+                    'diff_net' => $diffNet,
+                ];
+
+                //deductions
+                //TAX
+                $deductions[] = [
+                    'pay_master_employee_listing_slug' => $slug,
+                    'slug' => Str::random(),
+                    'type' => 'DEDUCTION',
+                    'code' => 'WTAX',
+                    'amount' => $tax,
+                    'original_amount' => $tax,
+                    'priority' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->n_priority,
+                    'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
+                    'govt_share' => null,
+                ];
+                //GSIS
+                $deductions[] = [
+                    'pay_master_employee_listing_slug' => $slug,
+                    'slug' => Str::random(),
+                    'type' => 'DEDUCTION',
+                    'code' => 'GSIS',
+                    'amount' => $gsisPs,
+                    'original_amount' => $gsisPs,
+                    'priority' => $deductionsFromDb->where('deduction_code','GSIS')?->first()?->n_priority,
+                    'account_code' => $deductionsFromDb->where('deduction_code','GSIS')?->first()?->account_code,
+                    'govt_share' => $gsisGs,
+                ];
+            }
+
+        }
+
+
+        PayrollMasterEmployees::query()->upsert(
+            $upsert,
+            ['slug'],
+            [
+                'diff_old_monthly_basic',
+                'diff_new_monthly_basic',
+                'diff_from',
+                'diff_to',
+                'diff_days',
+                'diff_gross',
+                'diff_net',
+            ]);
+
+        PayrollMasterDetails::query()
+            ->upsert(
+                $deductions,
+                ['pay_master_employee_listing_slug','type','code'],
+                [
+                    'slug',
+                    'type',
+                    'code',
+                    'amount',
+                    'original_amount',
+                    'priority',
+                    'account_code',
+                    'govt_share',
+                ]
+            );
+
+        return 1;
     }
 }

@@ -1,6 +1,17 @@
 @extends('adminkit.master')
 
 @section('content2')
+    @php
+        $daysInMonthArray = [];
+        $totalNoOfDaysInMonth = Carbon::parse($payrollMaster->date)->daysInMonth;
+        $yearMonth = Carbon::parse($payrollMaster->date)->format('Y-m-');
+
+        for ($i = 1; $i <= $totalNoOfDaysInMonth; $i ++){
+            $padded = Str::of($i)->padLeft(2,'0')->toString();
+            $currDate = Carbon::parse($yearMonth.$padded);
+            $daysInMonthArray[$i] = $currDate->isWeekday();
+        }
+    @endphp
     <x-adminkit.html.page-title>
         <x-slot:title>Differential</x-slot:title>
         <x-slot:subtitle>Payroll</x-slot:subtitle>
@@ -29,46 +40,50 @@
         </div>
     </x-adminkit.html.card>
 
-    <x-adminkit.html.card body-class="pt-0">
-        <x-slot:title>
-            <div class="btn-group">
-                <button type="button" class="btn btn-outline-secondary btn-sm edit-signatories-btn" data-bs-toggle="modal" data-bs-target="#edit-signatories-modal"> <i class="fa fa-edit"></i> Edit Signatories </button>
-                <button class="btn btn-success btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#print-offcanvas" aria-controls="offcanvasRight"><i class="fa fa-print"></i> Print</button>
-                <button type="button" id="update-employees-data-btn" class="btn btn-outline-secondary btn-sm visually-hidden" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recapture Employees Data </button>
+    <form id="diff-form">
+        <x-adminkit.html.card body-class="pt-0">
+            <x-slot:title>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-secondary btn-sm edit-signatories-btn" data-bs-toggle="modal" data-bs-target="#edit-signatories-modal"> <i class="fa fa-edit"></i> Edit Signatories </button>
+                    <button class="btn btn-success btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#print-offcanvas" aria-controls="offcanvasRight"><i class="fa fa-print"></i> Print</button>
+                    <button type="button" id="update-employees-data-btn" class="btn btn-outline-secondary btn-sm visually-hidden" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recapture Employees Data </button>
 
-                <button type="button" id="lock-btn" class="btn btn-outline-secondary btn-sm" action="{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"> <span class="text-danger"><i class="fa fa-{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"></i> {{$payrollMaster->is_locked == 1 ? 'Unlock':'Lock'}} </span></button>
+                    <button type="button" id="lock-btn" class="btn btn-outline-secondary btn-sm" action="{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"> <span class="text-danger"><i class="fa fa-{{$payrollMaster->is_locked == 1 ? 'unlock':'lock'}}"></i> {{$payrollMaster->is_locked == 1 ? 'Unlock':'Lock'}} </span></button>
 
-            </div>
-            <div class="btn-group float-end">
-                <button type="button" id="upload-btn" data-bs-target="#upload-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-folder-open"></i> Upload Excel File </button>
-
-                <button type="button" id="recompute-btn" class="btn btn-primary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recompute </button>
-            </div>
-        </x-slot:title>
-
-        <div class="row">
-            <div class="col-md-9">
-            </div>
-            <div class="col-md-3" style="margin-bottom: 5px">
-                <div class="mb-1 row">
-                    <label class="col-form-label col-sm-3 text-sm-end">Search:</label>
-                    <div class="col-sm-9">
-                        <input type="email" class="form-control" id="search" placeholder="Search employee" autocomplete="off">
-                    </div>
                 </div>
+                <div class="btn-group float-end">
+                    <button type="button" id="upload-btn" data-bs-target="#upload-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-folder-open"></i> Upload Excel File </button>
 
+                    {{--                <button type="button" id="recompute-btn" class="btn btn-primary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recompute </button>--}}
+                    <button type="submit" class="btn btn-primary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i>Save & Recompute </button>
+
+                </div>
+            </x-slot:title>
+
+            <div class="row">
+                <div class="col-md-9">
+                </div>
+                <div class="col-md-3" style="margin-bottom: 5px">
+                    <div class="mb-1 row">
+                        <label class="col-form-label col-sm-3 text-sm-end">Search:</label>
+                        <div class="col-sm-9">
+                            <input type="email" class="form-control" id="search" placeholder="Search employee" autocomplete="off">
+                        </div>
+                    </div>
+
+                </div>
             </div>
-        </div>
-        <div class="box-body" id="payroll-table">
-            @include('_payroll.payroll-preparation.DIFF.preview',[
-                'payrollMaster' => $payrollMaster,
-            ])
-        </div>
+            <div class="box-body" id="payroll-table">
+                @include('_payroll.payroll-preparation.DIFF.preview',[
+                    'payrollMaster' => $payrollMaster,
+                ])
+            </div>
 
-        <div class="text-center visually-hidden" style="padding: 8%" id="loading-placeholder">
-            <i class="fa fa-circle-notch fa-spin" style="font-size: 50px"></i>
-        </div>
-    </x-adminkit.html.card>
+            <div class="text-center visually-hidden" style="padding: 8%" id="loading-placeholder">
+                <i class="fa fa-circle-notch fa-spin" style="font-size: 50px"></i>
+            </div>
+        </x-adminkit.html.card>
+    </form>
     <div id="payroll-group-container" style="display: none">
         <div style="text-align: left; overflow: hidden">
             <div class="row">
@@ -109,6 +124,23 @@
         </x-slot:footer>
     </x-adminkit.html.modal-template>
 
+    <x-adminkit.html.modal-template id="update-row-modal" size="sm" form-id="update-row-form">
+        <x-slot:title>
+            Update all values in selected row
+        </x-slot:title>
+        <div class="row mb-2">
+            <x-forms.input label="Value" name="value" cols="12" type="text" />
+            <x-forms.input label="Element" name="element" cols="12" type="text" container-class="hide-this"/>
+        </div>
+        <div class="row mb-2 hide-this">
+            <x-forms.checkbox label="Include Non-empty fields" type="checkbox" name="include_non_empty" cols="12" :options="['1' => 'Include']" :value="null"/>
+
+        </div>
+        <x-slot:footer>
+            <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Set</button>
+        </x-slot:footer>
+    </x-adminkit.html.modal-template>
+
     <x-adminkit.html.offcanvas class="end asdasd" id="offcanvasLeft">
         <x-slot:title>
             Employee Options
@@ -127,6 +159,7 @@
 
 @section('scripts')
     <script type="text/javascript">
+        const daysInMonth = {!! json_encode($daysInMonthArray) !!};
         function recompute(btn){
             let uri = '{{route("dashboard.payroll_preparation.edit",$payrollMaster->slug)}}?recompute=true';
             let placeholder = $("#loading-placeholder");
@@ -360,5 +393,78 @@
                 }
             });
         })
+
+        $("#diff-form").submit(function (e){
+            e.preventDefault();
+            let uri = '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}';
+            $.ajax({
+                url : uri,
+                type: 'POST',
+                data: $(this).serializeArray(),
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
+
+        $('body').on('change','.date-change',function (){
+            let parentTr = $(this).parents('tr');
+            let from = parentTr.find('input[for="diff_from"]').val().split('-')[2];
+            let to = parentTr.find('input[for="diff_to"]').val().split('-')[2];
+            let workingDays = 0;
+            if(typeof from !== "undefined" && typeof to !== "undefined"){
+                from = parseInt(from);
+                to = parseInt(to);
+                for (let i = from; i <= to; i++ ){
+                    if(daysInMonth[i]){
+                        workingDays++;
+                    }
+                }
+            }
+            if(workingDays > 22){
+                workingDays = 22;
+            }
+            parentTr.find('input[for="diff_days"]').val(workingDays);
+            // console.log(workingDays);
+        })
+
+        $("body").on("click",".update-row-btn",function (){
+            let btn = $(this);
+            let data =  JSON.parse(btn.attr('data'));
+            let form = $("#update-row-form");
+            let input = form.find('input[name="value"]');
+            let min = '{{Carbon::parse($payrollMaster->date)->firstOfMonth()->format('Y-m-d')}}';
+            let max = '{{Carbon::parse($payrollMaster->date)->lastOfMonth()->format('Y-m-d')}}';
+            if(data['type'] === 'date'){
+                input.attr('type',data['type']);
+                input.attr('min',min);
+                input.attr('max',max);
+            }else{
+                input.removeAttr('min');
+                input.removeAttr('max');
+            }
+            form.find('input[name="element"]').val(data.element);
+        })
+
+        $("#update-row-form").submit(function (e){
+            e.preventDefault();
+            let data = $(this).serializeArray();
+
+
+            let element = data.find(item => item.name === "element").value;
+            let value = data.find(item => item.name === "value").value;
+            let elementsToUpdate = $("#payroll-employees-table").find('input[for="'+element+'"]');
+            elementsToUpdate.each(function (){
+                $(this).val(value).trigger('change');
+
+            })
+        })
+
     </script>
 @endsection

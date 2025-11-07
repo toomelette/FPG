@@ -701,6 +701,7 @@ class PayrollPreparationController
     }
 
     public function update(PayrollUpdateFormRequest $request,$payrollMasterSlug){
+
         $payrollMaster = PayrollMaster::findOrFail($payrollMasterSlug);
         $this->checkLockStataus($payrollMaster);
 
@@ -732,6 +733,9 @@ class PayrollPreparationController
                 return $this->mybService->update($request,$payrollMaster);
             case 'YEB' :
                 return $this->yebService->update($request,$payrollMaster);
+            case "DIFF" :
+
+                return $this->differentialService->update($request,$payrollMaster);
             default:
                 break;
         }
@@ -854,6 +858,8 @@ class PayrollPreparationController
                 return $this->yebService->printPayroll($slug);
             case 'YEB-DEDUCTION-REGISTER':
                 return $this->yebService->deductionRegister($slug);
+            case 'YEB-ABSTRACT':
+                return $this->yebService->abstract($slug);
         }
         abort(503,'CHECK SWITCH CASE STATEMENT');
     }
