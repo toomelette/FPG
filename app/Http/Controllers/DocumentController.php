@@ -228,6 +228,7 @@ class DocumentController extends Controller{
             $pdf->useTemplate($tplIdx, 0, 0, null, null, true);
             $pdf->SetAutoPageBreak(false);
             $pdf->SetXY($mainX,$mainY);
+            dd($totalPages);
             if($pageNo < 2){
 
                 $pdf->SetFont('Arial', '', '8');
@@ -242,7 +243,6 @@ class DocumentController extends Controller{
             }
 
         }
-        dd(2);
         return  $output = $pdf->Output('S');
     }
     private  function getXY($location,$page_width, $page_height){
