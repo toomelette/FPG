@@ -237,7 +237,7 @@ class DocumentController extends Controller{
                 if (!is_readable($image1)) {
                     throw new \Exception("Image not readable: $image1");
                 }
-                dd($image1);
+                dd($mainX,$mainY);
                 $pdf->Image($image1,$mainX-20,$mainY-15,15 , 15);
 
                 $pdf->SetFont('Arial', '', '8');
