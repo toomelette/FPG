@@ -237,9 +237,9 @@ class DocumentController extends Controller{
                 if (!is_readable($image1)) {
                     throw new \Exception("Image not readable: $image1");
                 }
-                dd($mainX,$mainY);
-                $pdf->Image($image1,$mainX-20,$mainY-15,15 , 15);
 
+                $pdf->Image($image1,$mainX-0,$mainY-0,15 , 15);
+                dd($mainX,$mainY);
                 $pdf->SetFont('Arial', '', '8');
                 $pdf->SetXY($mainX-5,$mainY-7);
                 $pdf->Multicell(60,2    ,$document_id,0,"L");
