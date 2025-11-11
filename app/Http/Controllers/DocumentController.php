@@ -231,10 +231,10 @@ class DocumentController extends Controller{
 
             if($pageNo < 2){
                 $pdf->SetFont('Arial', '', '8');
-                if (!file_exists($image1.'a')) {
+                if (!file_exists($image1)) {
                     throw new \Exception("Image not found: $image1");
                 }
-                if (!is_readable($image1.'a')) {
+                if (!is_readable($image1)) {
                     throw new \Exception("Image not readable: $image1");
                 }
                 dd($image1);
