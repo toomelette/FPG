@@ -231,7 +231,7 @@ class DocumentController extends Controller{
 
             if($pageNo < 2){
                 $pdf->SetFont('Arial', '', '8');
-                dd(12);
+                dd($image1);
                 $pdf->Image($image1,$mainX-20,$mainY-15,15 , 15);
 
                 $pdf->SetFont('Arial', '', '8');
