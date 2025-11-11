@@ -231,6 +231,7 @@ class DocumentController extends Controller{
 
             if($pageNo < 2){
                 $pdf->SetFont('Arial', '', '8');
+                dd(11);
                 $pdf->Image($image1,$mainX-20,$mainY-15,15 , 15);
                 $pdf->SetFont('Arial', '', '8');
                 $pdf->SetXY($mainX-5,$mainY-7);
@@ -238,7 +239,7 @@ class DocumentController extends Controller{
                 $pdf->SetXY($mainX-5,$mainY-15);
                 $pdf->SetFont('Arial', '', '6');
                 $pdf->Multicell(60,2    ,"SUGAR REGULATORY ADMINISTRATION\nHUMAN RESOURCE & RECORDS SECTION\nDOCUMENT ARCHIVING SYSTEM",0,"L");
-                dd(11);
+
             }
 
         }
