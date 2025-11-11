@@ -175,9 +175,10 @@ class DocumentController extends Controller{
             //Make QR
             $this->makeQR($document,$document_id);
             $image1 = $storage->path('/QRCODE_TEMP/'.$document_id.'.png');
-            dd(1);
+
             //Processed PDF
             $output = $this->stampPDFwithQR($request,$image1,$document_id);
+            dd(1);
         }else{
             $output = $request->file('doc_file')->get();
         }
