@@ -233,8 +233,8 @@ class DocumentController extends Controller{
                 $pdf->SetFont('Arial', '', '8');
 
                 $pdf->Image($image1,$mainX-20,$mainY-15,15 , 15);
+                dd(12);
                 $pdf->SetFont('Arial', '', '8');
-                dd(11);
                 $pdf->SetXY($mainX-5,$mainY-7);
                 $pdf->Multicell(60,2    ,$document_id,0,"L");
                 $pdf->SetXY($mainX-5,$mainY-15);
