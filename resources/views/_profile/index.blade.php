@@ -32,9 +32,11 @@
                     <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#password" role="tab" aria-selected="false" tabindex="-1">
                         Password & Login
                     </a>
-                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#payslip" role="tab" aria-selected="false" tabindex="-1">
-                        Payslips
-                    </a>
+                    @if(Helper::isPermanent(Auth::user()->employee))
+                        <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#payslip" role="tab" aria-selected="false" tabindex="-1">
+                            Payslips <span class="sidebar-badge badge bg-success">Beta</span>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -56,10 +58,11 @@
                 <div class="tab-pane fade" id="password" role="tabpanel">
                     @include('_profile.tab-password')
                 </div>
-                <div class="tab-pane fade" id="payslip" role="tabpanel">
-                    @include('_profile.tab-payslip')
-                </div>
-
+                @if(Helper::isPermanent(Auth::user()->employee))
+                    <div class="tab-pane fade" id="payslip" role="tabpanel">
+                        @include('_profile.tab-payslip')
+                    </div>
+                @endif
             </div>
         </div>
     </div>
