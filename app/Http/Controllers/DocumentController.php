@@ -175,10 +175,8 @@ class DocumentController extends Controller{
             //Make QR
             $this->makeQR($document,$document_id);
             $image1 = $storage->path('/QRCODE_TEMP/'.$document_id.'.png');
-
             //Processed PDF
             $output = $this->stampPDFwithQR($request,$image1,$document_id);
-
         }else{
             $output = $request->file('doc_file')->get();
         }
@@ -208,8 +206,7 @@ class DocumentController extends Controller{
             ->format('png')
             ->merge('/public/images/sra_only2.png',0.4)
             ->errorCorrection('H')
-            ->generate(route("dashboard.document.view_file",$document->reference_no).'?trigger=SCANNER')
-        ;
+            ->generate(route("dashboard.document.view_file",$document->reference_no).'?trigger=SCANNER');
         //Store QR Code temporarily
         $this->getStorage()->put('/QRCODE_TEMP/'.$document_id.'.png',$image);
     }
@@ -218,7 +215,6 @@ class DocumentController extends Controller{
         $pdf = new \setasign\Fpdi\Fpdi();
 
         $totalPages = $pdf->setSourceFile($request->file('doc_file')->path());
-
         for ($pageNo = 1;$pageNo <= $totalPages; $pageNo++){
             $pdf->AddPage();
             $tplIdx = $pdf->importPage($pageNo);
@@ -229,10 +225,10 @@ class DocumentController extends Controller{
             $pdf->useTemplate($tplIdx, 0, 0, null, null, true);
             $pdf->SetAutoPageBreak(false);
             $pdf->SetXY($mainX,$mainY);
-
             if($pageNo < 2){
+
                 $pdf->SetFont('Arial', '', '8');
-                $pdf->Image($image1,$mainX-0,$mainY-0,15 , 15);
+                $pdf->Image($image1,$mainX-20,$mainY-15,15 , 15);
                 $pdf->SetFont('Arial', '', '8');
                 $pdf->SetXY($mainX-5,$mainY-7);
                 $pdf->Multicell(60,2    ,$document_id,0,"L");

@@ -881,7 +881,7 @@ Route::get('qr',function (){
         ->format('png')
         ->merge('/public/images/sra_only2.png',0.4)
         ->errorCorrection('H')
-        ->generate('HAHAHAH'.'?trigger=SCANNER','/external1/swep_afd_storage/QRCODE_TEMP/TEST.png')
+        ->generate('HAHAHAH'.'?trigger=SCANNER','/ex.png')
     ;
     return 1;
 
