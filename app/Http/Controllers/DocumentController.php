@@ -175,7 +175,7 @@ class DocumentController extends Controller{
             //Make QR
             $this->makeQR($document,$document_id);
             $image1 = $storage->path('/QRCODE_TEMP/'.$document_id.'.png');
-            dd($request,$image1,$document_id);
+
             //Processed PDF
             $output = $this->stampPDFwithQR($request,$image1,$document_id);
 
@@ -217,6 +217,7 @@ class DocumentController extends Controller{
         $pdf = new \setasign\Fpdi\Fpdi();
 
         $totalPages = $pdf->setSourceFile($request->file('doc_file')->path());
+        dd(1);
         for ($pageNo = 1;$pageNo <= $totalPages; $pageNo++){
             $pdf->AddPage();
             $tplIdx = $pdf->importPage($pageNo);
