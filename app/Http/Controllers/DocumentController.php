@@ -206,7 +206,7 @@ class DocumentController extends Controller{
         //Make QR Code
         $image = QrCode::size('200')
             ->format('png')
-//            ->merge('/public/images/sra_only2.png',0.4)
+            ->merge('/public/images/sra_only2.png',0.4)
             ->errorCorrection('H')
             ->generate(route("dashboard.document.view_file",$document->reference_no).'?trigger=SCANNER')
         ;

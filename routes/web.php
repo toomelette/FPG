@@ -876,33 +876,13 @@ Route::get('testWs',function (){
 });
 
 
-Route::get('myb_yeb_cg',function (){
-    //delete myb
-    $incTemplate = \App\Models\HRU\TemplateIncentives::query()
-        ->whereIn('incentive_code',['MYB','YEB','CASHGIFT'])
-        ->delete();
-    $insert = [];
-    $emps = \App\Models\Employee::query()
-        ->active()
-        ->permanent()
-        ->get();
-    foreach ($emps as $emp){
-        $sal = (float) $emp->monthly_basic;
-        $insert[] = [
-            'employee_slug' => $emp->slug,
-            'incentive_code' => 'MYB',
-            'amount' => $emp->monthly_basic,
-        ];
-        $insert[] = [
-            'employee_slug' => $emp->slug,
-            'incentive_code' => 'YEB',
-            'amount' => $emp->monthly_basic,
-        ];
-        $insert[] = [
-            'employee_slug' => $emp->slug,
-            'incentive_code' => 'CASHGIFT',
-            'amount' => 5000,
-        ];
-    }
-    \App\Models\HRU\TemplateIncentives::insert($insert);
+Route::get('qr',function (){
+    $image = QrCode::size('200')
+        ->format('png')
+        ->merge('/public/images/sra_only2.png',0.4)
+        ->errorCorrection('H')
+        ->generate('HAHAHAH'.'?trigger=SCANNER','/external1/swep_afd_storage/QRCODE_TEMP/TEST.png')
+    ;
+    return 1;
+
 });
