@@ -196,6 +196,7 @@ class YebService
         //Total Net amount to be received:
         $upsertValues = [];
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
+
             $totalIncentives = $payrollMasterEmployee->employeePayrollDetails->where('type','INCENTIVE')->sum('amount');
             $totalDeductions = $payrollMasterEmployee->employeePayrollDetails->where('type','DEDUCTION')->sum('amount');
             $upsertValues[] = [

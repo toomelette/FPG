@@ -504,7 +504,9 @@
                         <td>{{$payrollMaster->account_code ?? 'ACCT CODE NOT ASSIGNED'}}</td>
                         <td>{{$payrollMaster->chartOfAccounts->account_title ?? 'ACCT CODE NOT ASSIGNED'}}</td>
                         <td></td>
+
                         <td class="text-right">{{Helper::toNumber($totalSalaries = $grand15 + $grand30)}}</td>
+
                         @php
                             $recap['credit'] = $recap['credit'] + $totalSalaries;
                         @endphp
