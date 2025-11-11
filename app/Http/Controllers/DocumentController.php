@@ -206,9 +206,10 @@ class DocumentController extends Controller{
         //Make QR Code
         $image = QrCode::size('200')
             ->format('png')
-            ->merge('/public/images/sra_only2.png',0.4)
+//            ->merge('/public/images/sra_only2.png',0.4)
             ->errorCorrection('H')
-            ->generate(route("dashboard.document.view_file",$document->reference_no).'?trigger=SCANNER');
+            ->generate(route("dashboard.document.view_file",$document->reference_no).'?trigger=SCANNER')
+        ;
         //Store QR Code temporarily
         $this->getStorage()->put('/QRCODE_TEMP/'.$document_id.'.png',$image);
     }
@@ -231,15 +232,7 @@ class DocumentController extends Controller{
 
             if($pageNo < 2){
                 $pdf->SetFont('Arial', '', '8');
-                if (!file_exists($image1)) {
-                    throw new \Exception("Image not found: $image1");
-                }
-                if (!is_readable($image1)) {
-                    throw new \Exception("Image not readable: $image1");
-                }
-
                 $pdf->Image($image1,$mainX-0,$mainY-0,15 , 15);
-                dd($mainX,$mainY);
                 $pdf->SetFont('Arial', '', '8');
                 $pdf->SetXY($mainX-5,$mainY-7);
                 $pdf->Multicell(60,2    ,$document_id,0,"L");
