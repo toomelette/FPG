@@ -217,7 +217,7 @@ class DocumentController extends Controller{
         $pdf = new \setasign\Fpdi\Fpdi();
 
         $totalPages = $pdf->setSourceFile($request->file('doc_file')->path());
-        dd(1);
+
         for ($pageNo = 1;$pageNo <= $totalPages; $pageNo++){
             $pdf->AddPage();
             $tplIdx = $pdf->importPage($pageNo);
@@ -242,6 +242,7 @@ class DocumentController extends Controller{
             }
 
         }
+        dd(2);
         return  $output = $pdf->Output('S');
     }
     private  function getXY($location,$page_width, $page_height){
