@@ -228,9 +228,8 @@ class DocumentController extends Controller{
             $pdf->useTemplate($tplIdx, 0, 0, null, null, true);
             $pdf->SetAutoPageBreak(false);
             $pdf->SetXY($mainX,$mainY);
-            dd($totalPages);
-            if($pageNo < 2){
 
+            if($pageNo < 2){
                 $pdf->SetFont('Arial', '', '8');
                 $pdf->Image($image1,$mainX-20,$mainY-15,15 , 15);
                 $pdf->SetFont('Arial', '', '8');
@@ -239,7 +238,7 @@ class DocumentController extends Controller{
                 $pdf->SetXY($mainX-5,$mainY-15);
                 $pdf->SetFont('Arial', '', '6');
                 $pdf->Multicell(60,2    ,"SUGAR REGULATORY ADMINISTRATION\nHUMAN RESOURCE & RECORDS SECTION\nDOCUMENT ARCHIVING SYSTEM",0,"L");
-
+                dd(11);
             }
 
         }
