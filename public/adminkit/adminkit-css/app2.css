@@ -680,3 +680,7 @@ td.w-25p{
 .deduction-edited{
     color: #ed6200 !important;
 }
+
+.highlight{
+    background-color: yellow;
+}
