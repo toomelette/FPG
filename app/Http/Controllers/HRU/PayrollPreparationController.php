@@ -860,6 +860,8 @@ class PayrollPreparationController
                 return $this->yebService->deductionRegister($slug);
             case 'YEB-ABSTRACT':
                 return $this->yebService->abstract($slug);
+            case 'YEB-ALPHALIST':
+                return $this->yebService->alphalist($slug);
         }
         abort(503,'CHECK SWITCH CASE STATEMENT');
     }

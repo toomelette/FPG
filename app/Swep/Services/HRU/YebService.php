@@ -521,4 +521,57 @@ class YebService
             'employeesWithRata' => $employeesWithRata,
         ]);
     }
+
+    public function alphalist($payrollMasterSlug)
+    {
+        $request = Request::capture();
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
+                    }
+                },
+                'payrollMasterEmployees.employee.plantilla',
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $hmtDetails->intermediateGroup($request->payrollGroupsSelected);
+                    }
+
+                },
+                'hmtDetails.chartOfAccount',
+            ])
+            ->findOrFail($payrollMasterSlug);
+        if($payrollMaster->payrollMasterEmployees->count() < 1){
+            abort(504,'No employee found under the payroll group you have selected.');
+        }
+        return Pdf::view('printables.hru.payroll_preparation.YEB.alphalist',[
+            'pdfPrint' => true,
+            'payrollMaster' => $payrollMaster,
+        ])
+            ->paperSize('215.9','330.2')
+            ->portrait()
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Payroll Summary.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+
+        return view('printables.hru.payroll_preparation.YEB.alphalist')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
+
+    }
 }

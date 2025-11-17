@@ -121,6 +121,18 @@ class DocumentController extends Controller{
                     'data' => $data,
                 ]);
             })
+            ->editColumn('person_to',function($data){
+                return view('_records.documents.dtCommon')->with([
+                    'data' => $data,
+                    'column' => 'person_to',
+                ]);
+            })
+            ->editColumn('person_from',function($data){
+                return view('_records.documents.dtCommon')->with([
+                    'data' => $data,
+                    'column' => 'person_from',
+                ]);
+            })
             ->escapeColumns([])
             ->setRowId('slug')
             ->toJson();

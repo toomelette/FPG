@@ -1,4 +1,6 @@
-<strong>{{$data->reference_no}}</strong>
+<strong>
+    @foreach(Str::of($data->reference_no)->explode('-') as $text)<span class="allow-search">{{$text}}@if(!$loop->last)-@endif</span>@endforeach
+</strong>
 <div class="subdetail" style="margin-top: 3px">
     <span class="float-end">
         @if(!empty($data->folder_code))

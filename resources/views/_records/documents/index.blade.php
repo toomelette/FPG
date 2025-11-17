@@ -198,6 +198,21 @@
                 if(active != ''){
                     $("#"+settings.sTableId+" #"+active).addClass('table-success');
                 }
+                let search = this.api().search();
+                let table = $("#"+settings.sTableId);
+                let searchWords = search.split(' ');
+
+                if (search !== ''){
+                    table.find('.allow-search').each(function (){
+                        let text = $(this).text();
+                        let elem = $(this);
+                        $.each(searchWords,function (i, word){
+                            if(text.toLowerCase().includes(word.toLowerCase())){
+                                elem.addClass('highlight');
+                            }
+                        });
+                    })
+                }
             }
         })
         $('.select2-folder-code').select2({
