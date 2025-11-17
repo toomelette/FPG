@@ -149,11 +149,19 @@
                                           {!! __html::dtrTime($dtr_array[$month.'-'.$date]->pm_out) !!}
                                       @endif
                                   </td>
-                                  <td>
-                                      {!! __html::dtrTime($dtr_array[$month.'-'.$date]->ot_in) !!}
+                                  <td  id="{{Str::random(8)}}" class="{{$editable_class}}" val="{{$dtr_array[$month.'-'.$date]->ot_in}}" data="{{$month}}-{{$date}}" data-type="ot_in" title="Click to edit Time">
+                                      @if(isset($dtr_edits_array[$fullDate]['ot_in']))
+                                          <span class="text-red">{{$dtr_edits_array[$fullDate]['ot_in']}}</span>
+                                      @else
+                                          {!! __html::dtrTime($dtr_array[$month.'-'.$date]->ot_in) !!}
+                                      @endif
                                   </td>
-                                  <td>
-                                      {!! __html::dtrTime($dtr_array[$month.'-'.$date]->ot_out) !!}
+                                  <td  id="{{Str::random(8)}}" class="{{$editable_class}}" val="{{$dtr_array[$month.'-'.$date]->ot_out}}" data="{{$month}}-{{$date}}" data-type="ot_out" title="Click to edit Time">
+                                      @if(isset($dtr_edits_array[$fullDate]['ot_out']))
+                                          <span class="text-red">{{$dtr_edits_array[$fullDate]['ot_out']}}</span>
+                                      @else
+                                          {!! __html::dtrTime($dtr_array[$month.'-'.$date]->ot_out) !!}
+                                      @endif
                                   </td>
 
                                   <td id="{{\Illuminate\Support\Str::random(9)}}" class="{{$editable_lt_ut}}" data-type="late" data="{{$dtr_array[$month.'-'.$date]->id}}">
@@ -205,8 +213,8 @@
                                   <td id="{{Str::random(8)}}" class="{{$editable_class}}" val="{{\Carbon::now()->format('H:i')}}" data="{{$month}}-{{$date}}" data-type="am_out" title="Click to edit Time"></td>
                                   <td id="{{Str::random(8)}}" class="{{$editable_class}}" val="{{\Carbon::now()->format('H:i')}}" data="{{$month}}-{{$date}}" data-type="pm_in" title="Click to edit Time"></td>
                                   <td id="{{Str::random(8)}}" class="{{$editable_class}}" val="{{\Carbon::now()->format('H:i')}}" data="{{$month}}-{{$date}}" data-type="pm_out" title="Click to edit Time"></td>
-                                  <td></td>
-                                  <td></td>
+                                  <td id="{{Str::random(8)}}" class="{{$editable_class}}" val="{{\Carbon::now()->format('H:i')}}" data="{{$month}}-{{$date}}" data-type="ot_in" title="Click to edit Time"></td>
+                                  <td id="{{Str::random(8)}}" class="{{$editable_class}}" val="{{\Carbon::now()->format('H:i')}}" data="{{$month}}-{{$date}}" data-type="ot_out" title="Click to edit Time"></td>
                                   <td id="{{\Illuminate\Support\Str::random(9)}}" class="{{$editable_lt_ut}}"></td>
                                   <td id="{{\Illuminate\Support\Str::random(9)}}" class="{{$editable_lt_ut}}"></td>
                                   <td class="text-left {{$editable_remarks_class}}" id="a{{\Illuminate\Support\Str::random(8)}}" data="{{$month}}-{{$date}}" title="Click to edit remark">

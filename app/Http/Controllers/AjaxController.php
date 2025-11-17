@@ -16,10 +16,12 @@ use App\Models\SSL;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\Budget\ORSService;
 use App\Swep\Services\Budget\PapService;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
@@ -92,6 +94,10 @@ class AjaxController extends Controller
 
         if($for == 'new-user-from-employee'){
             return $this->newUserFromEmployee($r);
+        }
+
+        if($for == 'new-employee-for-cos'){
+            return $this->newEmployeeForCos($r);
         }
 
         if($for == 'add_row'){
@@ -321,13 +327,17 @@ class AjaxController extends Controller
         return Session::get('last_slug');
     }
 
-    private function newUserFromEmployee(Request $request){
+    private function newEmployeeForCos(Request $request){
+
         $arr = [];
         $employees = Employee::query()
-            ->whereDoesntHave('user')
+            ->whereDoesntHave('cosEmployees',function ($query) use ($request){
+                $query->where('cos_slug',$request->cos);
+            })
             ->orderBy('lastname')
             ->orderBy('firstname')
-            ->active();
+            ->active()
+            ->applyProjectId();
         if($request->get('q') != ''){
             $employees = $employees
                 ->where(function ($q) use ($request){

@@ -115,6 +115,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::get('hr_requests/{slug}/showTimeline',[\App\Http\Controllers\HRU\HRRequestsController::class,'showTimeline'])->name('hr_requests.show_timeline');
     Route::get('hr_requests/{slug}/download',[\App\Http\Controllers\HRU\HRRequestsController::class,'download'])->name('hr_requests.download');
     Route::get('hr_requests/{slug}/file',[\App\Http\Controllers\HRU\HRRequestsController::class,'uploadFileForm'])->name('hr_requests.file');
+    Route::get('/cos_employees/{slug}/myIndex',[\App\Http\Controllers\HRU\COSEmployeesController::class,'myIndex'])->name('my_cos.index');
+    Route::post('/cos_employees/{slug}/uploadEvaluation',[\App\Http\Controllers\HRU\COSEmployeesController::class,'uploadEvaluation'])->name('my_cos.uploadEvaluation');
+    Route::patch('/cos_employees/{slug}/updateData',[\App\Http\Controllers\HRU\COSEmployeesController::class,'updateData'])->name('my_cos.updateData');
+
 });
 
 
@@ -485,6 +489,13 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
     Route::get('flight_booking/my',[\App\Http\Controllers\HRU\FlightBookingController::class,'my'])->name('flight_booking.my');
     Route::resource('flight_booking',\App\Http\Controllers\HRU\FlightBookingController::class);
+
+
+    Route::resource('cos',\App\Http\Controllers\HRU\COSController::class);
+    Route::get('cos_employees/{slug}/index',[\App\Http\Controllers\HRU\COSEmployeesController::class,'index'])->name('cos_employees.index');
+    Route::post('cos_employees/{slug}/store',[\App\Http\Controllers\HRU\COSEmployeesController::class,'store'])->name('cos_employees.store');
+
+    Route::resource('cos_employees',\App\Http\Controllers\HRU\COSEmployeesController::class)->except(['index','store']);
 });
 
 /** ADMIN LEVEL ROUTES REQUIRING PROJECT ID **/
@@ -617,64 +628,6 @@ Route::post('/verifyEmail',function (\Illuminate\Http\Request $request){
     }
     abort(503,'Error updating email.');
 });
-
-//Route::get('summaryOfOrsWithProjects',function (\Illuminate\Http\Request $request){
-//    if(!$request->has('start') || !$request->has('end')){
-//        return view('dashboard.budget.ors.pre');
-//    }
-//    $arr = [];
-//    $start = $request->start;
-//    $end = $request->end;
-//    $burs = \App\Models\SqlServer\BUR::query()
-//        ->with('BURDetails')
-//        ->whereBetween('BURDate',[
-//            $start,$end
-//        ]);
-//
-//    if(!empty($request->funds)){
-//        $funds = $request->funds;
-//        $burs = $burs->where(function ($q) use ($funds){
-//            foreach ($funds as $fund){
-//                $q = $q->orWhere('Funds','=',$fund);
-//            }
-//        });
-//    }
-//
-//    $burs = $burs->orderBy('BURDate','asc')
-//        ->get();
-//    $cols = \App\Models\SqlServer\BURDet::query()
-//        ->whereHas('BURParentData',function ($q) use ($start,$end){
-//            return $q->whereBetween('BURDate',[
-//                $start,$end
-//            ]);
-//        })
-//        ->groupBy('Dept')->pluck('dept')->toArray();
-//    $colss = [];
-//    foreach ($cols as $col){
-//        $colss[$col] = null;
-//    }
-//    ksort($colss);
-//
-//    foreach ($burs as $bur){
-//        $arr[$bur->BURNo]['obj'] = $bur;
-//        $arr[$bur->BURNo]['accountEntries'] = $colss;
-//        if(!empty($bur->BURDetails)){
-//            foreach ($bur->BURDetails as $det){
-//                $arr[$bur->BURNo]['accountEntries'][$det->Dept] = $arr[$bur->BURNo]['accountEntries'][$det->Dept] + $det->Debit;
-//            }
-//        }
-//
-//        if(!empty($bur->BURProjApplied)){
-//            foreach ($bur->BURProjApplied as $proj){
-//                $arr[$bur->BURNo]['projectsApplied'][\Illuminate\Support\Str::random()] = $proj;
-//            }
-//        }
-//    }
-//    return view('printables.bur.bur_with_projects')->with([
-//        'burs' => $arr,
-//        'cols' => $colss,
-//    ]);
-//});
 
 
 Route::resource('mail',\App\Http\Controllers\Test\MailController::class);
@@ -827,46 +780,6 @@ Route::get('/checkBlankDtr',function (){
     dd($slugs);
 });
 
-Route::get('/updateBMID',function (){
-    $qc = \App\Models\QC\Employee::query()
-        ->where('biometric_user_id','!=',0)
-        ->get();
-
-    $bacolod = \App\Models\Employee::query()->get();
-
-    $nonEx = [];
-    foreach ($qc as $q){
-        //check slug
-        $empB = $bacolod
-            ->where('slug','=',$q->slug)
-            ->first();
-        if (empty($empB)){
-            $empBB = $bacolod
-                ->where('lastname','=',$q->lastname)
-                ->where('firstname','=',$q->firstname)
-                ->first();
-            if(empty($empBB)){
-                $nonEx[] = $q->firstname.' '.$q->lastname;
-            }else{
-                if($empBB->biometric_user_id == 0){
-                    $empBB->biometric_user_id = $q->biometric_user_id;
-                    $empBB->save();
-                }
-
-            }
-        }else{
-            if($empB->biometric_user_id == 0) {
-                $empB->biometric_user_id = $q->biometric_user_id;
-                $empB->save();
-            }
-        }
-
-    }
-    dd($nonEx);
-
-    return 1;
-
-});
 
 Route::get('testWs',function (){
     $r = \App\Models\MisRequests::query()->orderBy('created_at','desc')->firstOrFail();
@@ -876,13 +789,3 @@ Route::get('testWs',function (){
 });
 
 
-Route::get('qr',function (){
-    $image = QrCode::size('200')
-        ->format('png')
-        ->merge('/public/images/sra_only2.png',0.4)
-        ->errorCorrection('H')
-        ->generate('HAHAHAH'.'?trigger=SCANNER','/ex.png')
-    ;
-    return 1;
-
-});

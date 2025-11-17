@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\HRU\COSEmployees;
 use App\Models\HRU\HrOtherActions;
 use App\Models\HRU\LeaveApplicationDates;
 use App\Models\HRU\LeaveBeginningBalance;
@@ -490,6 +491,7 @@ class Employee extends Model{
         return $this->hasOne(EmpMaster::class,'EmpNo','employee_no');
     }
 
+
     public function nonZeroIncentives(){
         return $this->hasMany(TemplateIncentives::class,'employee_slug','slug')
             ->where('amount','!=',0)
@@ -613,5 +615,10 @@ class Employee extends Model{
             ->where('timestamp','like',Carbon::now()->format('Y-m-d').'%')
             ->where('type','=',10)
             ->orderBy('timestamp','desc');
+    }
+
+    public function cosEmployees()
+    {
+        return $this->hasMany(COSEmployees::class,'employee_slug','slug');
     }
 }
