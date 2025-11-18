@@ -31,3 +31,4 @@
 
 {{-- Calendar--}}
 <link type="text/css" rel="stylesheet" href="{{asset('template/bower_components/fullcalendar/dist/fullcalendar.min.css')}}">
+<link rel="stylesheet" href="{{asset('adminkit/adminkit-plugins/datatables-ext/RowGroup-1.1.1/css/rowGroup.bootstrap.min.css')}}">

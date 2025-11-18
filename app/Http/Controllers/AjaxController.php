@@ -331,6 +331,7 @@ class AjaxController extends Controller
 
         $arr = [];
         $employees = Employee::query()
+            ->cos()
             ->whereDoesntHave('cosEmployees',function ($query) use ($request){
                 $query->where('cos_slug',$request->cos);
             })

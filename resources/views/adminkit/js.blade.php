@@ -37,6 +37,8 @@
 <script type="text/javascript" src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
 <script  type="text/javascript" src="{{asset('template/plugins/html-qr-code/html-qr-code.js')}}"></script>
 
+<script src="{{asset('adminkit/adminkit-plugins/datatables-ext/RowGroup-1.1.1/js/dataTables.rowGroup.min.js')}}"></script>
+
 <script type="text/javascript">
 
     if (Notification.permission !== "granted") {

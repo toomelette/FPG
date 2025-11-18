@@ -1,0 +1,1 @@
+{{Helper::dateFormat($data->date_from)}} to {{Helper::dateFormat($data->date_to)}}

@@ -40,29 +40,30 @@
                 @if(!empty(Auth::user()->employee))
                     <li class="@if('dashboard.profile' == Route::currentRouteName() ) sidebar-item @endif" id="home-nav" >
                         <a class="sidebar-link" href="{{route('dashboard.profile')}}">
-                            <i class="align-middle fa fa-user" ></i> <span class="">Personal Data </span>  <span style="border-radius: 50%" class="sidebar-badge badge bg-success animate__animated animate__flash">●</span>
+                            <i class="align-middle fa fa-user" ></i> <span class="">Personal Data </span>  <span style="border-radius: 50%" class=" hide-this sidebar-badge badge bg-success animate__animated animate__flash">●</span>
                         </a>
                     </li>
                 @endif
-{{--                @php--}}
-{{--                    $cos = \App\Models\HRU\COS::query()--}}
-{{--                        ->with(['employees'])--}}
-{{--                        ->get();--}}
-{{--                @endphp--}}
-{{--                @if($cos->count() > 0)--}}
-{{--                    @if(!Helper::isPermanent(Auth::user()->employee))--}}
-{{--                        @forelse($cos as $co)--}}
-{{--                            @if($co->employees->firstWhere('employee_slug',Auth::user()->employee->slug))--}}
-{{--                                <li class="" id="home-nav" >--}}
-{{--                                    <a class="sidebar-link" href="{{route('dashboard.my_cos.index', $co->employees->firstWhere('employee_slug',Auth::user()->employee->slug)->slug)}}">--}}
-{{--                                        <i class="align-middle fa fa-file" ></i> <span class="">Contract of Service</span>  <span style="border-radius: 50%" class="sidebar-badge badge bg-success animate__animated animate__flash">●</span>--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
-{{--                            @endif--}}
-{{--                        @empty--}}
-{{--                        @endforelse--}}
-{{--                    @endif--}}
-{{--                @endif--}}
+                @php
+                    $cos = \App\Models\HRU\COS::query()
+                        ->with(['employees'])
+                        ->active()
+                        ->get();
+                @endphp
+                @if($cos->count() > 0)
+                    @if(!Helper::isPermanent(Auth::user()->employee))
+                        @forelse($cos as $co)
+                            @if($co->employees->firstWhere('employee_slug',Auth::user()->employee->slug))
+                                <li class="" id="home-nav" >
+                                    <a class="sidebar-link" href="{{route('dashboard.my_cos.index', $co->employees->firstWhere('employee_slug',Auth::user()->employee->slug)->hr_cos_employees_slug)}}">
+                                        <i class="align-middle fa fa-file" ></i> <span class="">Contract of Service</span>  <span style="border-radius: 50%" class="sidebar-badge badge bg-success animate__animated animate__flash">●</span>
+                                    </a>
+                                </li>
+                            @endif
+                        @empty
+                        @endforelse
+                    @endif
+                @endif
 
 
                 <li class="@if('dashboard.home' == Route::currentRouteName() ) sidebar-item active @endif" id="home-nav" >
