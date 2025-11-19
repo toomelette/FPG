@@ -327,6 +327,38 @@ class AjaxController extends Controller
         return Session::get('last_slug');
     }
 
+    private function newUserFromEmployee(Request $request){
+        $arr = [];
+        $employees = Employee::query()
+            ->whereDoesntHave('user')
+            ->orderBy('lastname')
+            ->orderBy('firstname')
+            ->active();
+        if($request->get('q') != ''){
+            $employees = $employees
+                ->where(function ($q) use ($request){
+                    $q->where('lastname','like','%'.$request->get('q').'%')
+                        ->orWhere('firstname','like','%'.$request->get('q').'%');
+                });
+        }
+        if($request->has('page')){
+            $employees = $employees->offset((($request->page) - 1) * 10);
+        }
+        $employees = $employees->limit(10)
+            ->get();
+        if($employees->count() > 0){
+            foreach ($employees as $employee){
+                array_push($arr,['id'=>$employee->slug,'text' => $employee->full['LFEMi']]);
+            }
+        }else{
+            return  [];
+        }
+
+
+        $request->add_null = true;
+        return Helper::wrapForSelect2($arr,true,$request);
+    }
+
     private function newEmployeeForCos(Request $request){
 
         $arr = [];

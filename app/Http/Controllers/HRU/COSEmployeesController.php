@@ -66,14 +66,14 @@ class COSEmployeesController extends Controller
             return $this->storeMultiple($request,$slug);
         }
         $cosEmp = new COSEmployees();
-        $cosEmp->slug = Str::random();
+        $cosEmp->hr_cos_employees_slug = Str::random();
         $cosEmp->cos_slug = $slug;
         $cosEmp->employee_slug = $request->employee_slug;
         if ($cosEmp->save()){
             $cosEmp->load('employee');
             $cosEmp->employee_fullname = $cosEmp->employee->full['LFEMi'];
             $cosEmp->resp_center = $cosEmp->employee->resp_center;
-            $cosEmp->assignment = $cosEmp->employee->responsibilityCenter->long_name ?? $cosEmp->employee->responsibilityCenter->desc;
+            $cosEmp->cos_assignment = $cosEmp->employee->responsibilityCenter->long_name ?? $cosEmp?->employee?->responsibilityCenter?->desc;
 
             $cosEmp->saveQuietly();
             $cosEmp->cos->touch();
