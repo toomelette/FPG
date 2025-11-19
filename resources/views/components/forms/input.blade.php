@@ -4,33 +4,42 @@
     <label for="">{{$label}}:</label>
      @endif
 
-    <input class="form-control {{$class}} "
-           aria-label="{{$label}}"
-           name="{{$name}}"
-           type="{{$type}}"
-           value="{{$value}}"
-           placeholder="{{$placeholder ?? $label}}"
-           autocomplete="{{$autocomplete}}"
-           @if($id != null)
-               id="{{$id}}"
-           @endif
-           @if($for != null)
-               for="{{$for}}"
-           @endif
-           @if($required != null)
-               required="required"
-           @endif
-           @if($tabindex != null)
-               tabindex="{{$tabindex}}"
-            @endif
-           @if($step != null)
-               step="{{$step}}"
-            @endif
-           @if($disabled == true)
-               disabled="disabled"
-            @endif
+    @if($inputGroup)
+            <div class="input-group">
+    @endif
+                <input class="form-control {{$class}} "
+                       aria-label="{{$label}}"
+                       name="{{$name}}"
+                       type="{{$type}}"
+                       value="{{$value}}"
+                       placeholder="{{$placeholder ?? $label}}"
+                       autocomplete="{{$autocomplete}}"
+                       @if($id != null)
+                           id="{{$id}}"
+                       @endif
+                       @if($for != null)
+                           for="{{$for}}"
+                       @endif
+                       @if($required != null)
+                           required="required"
+                       @endif
+                       @if($tabindex != null)
+                           tabindex="{{$tabindex}}"
+                        @endif
+                       @if($step != null)
+                           step="{{$step}}"
+                        @endif
+                       @if($disabled == true)
+                           disabled="disabled"
+                        @endif
 
-            {{$attributes}}
-    >
+                        {{$attributes}}
+                >
+
+
+        @if($inputGroup)
+                    <button class="btn {{$inputGroupClass}}" type="button">{!! $inputGroupText !!}</button>
+            </div>
+        @endif
 </div>
 

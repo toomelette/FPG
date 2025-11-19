@@ -268,6 +268,10 @@ class PayrollPreparationController
 
         $payrollMaster = PayrollMaster::query()
                 ->with([
+                    'payrollMasterEmployees'  => function ($q) {
+                        $q->orderBy('saved_employee_data->lastname')
+                        ->orderBy('id');
+                    },
                     'payrollMasterEmployees.employee',
                     'payrollMasterEmployees.employeePayrollDetails',
                 ])
@@ -392,6 +396,11 @@ class PayrollPreparationController
                 if($request->has('recompute') && $request->recompute == true){
                     return $this->differentialService->recompute($slug);
                 }
+                if($request->has('fetchMbs')){
+                    return $this->differentialService->fetchMbs($payrollMaster);
+                }
+
+
                 return view('_payroll.payroll-preparation.DIFF.edit')->with([
                     'payrollMaster' => $payrollMaster,
                 ]);

@@ -32,6 +32,9 @@ class Input extends Component
         public $step = null,
         public $disabled = false,
         public $autoClass = false,
+        public $inputGroup = false,
+        public $inputGroupText = '',
+        public $inputGroupClass = '',
     )
     {
         if(is_object($this->value)){

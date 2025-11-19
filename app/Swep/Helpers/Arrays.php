@@ -933,6 +933,60 @@ class Arrays
         });
     }
 
+    public static function salaryTable($scale = null)
+    {
+        $ssls = SSL::query()
+            ->orderBy('salary_grade','asc')
+            ->get();
+        $arr = [];
+        foreach ($ssls as $ssl) {
+            $arr[$ssl->scale][$ssl->salary_grade] = [
+                1 => $ssl->step1,
+                2 => $ssl->step2,
+                3 => $ssl->step3,
+                4 => $ssl->step4,
+                5 => $ssl->step5,
+                6 => $ssl->step6,
+                7 => $ssl->step7,
+                8 => $ssl->step8,
+            ];
+        }
+        if($scale != null && isset($arr[$scale])){
+            return $arr[$scale];
+        }
+        return $arr;
+    }
+
+    public static function salaryTableMin($scale = null)
+    {
+        $ssls = SSL::query()
+            ->orderBy('salary_grade','asc')
+            ->get();
+        $arr = [];
+        foreach ($ssls as $ssl) {
+            $arr[$ssl->scale][] = [
+                'id' => $ssl->salary_grade,
+                'text' => $ssl->salary_grade,
+            ];
+        }
+        if($scale != null && isset($arr[$scale])){
+            return $arr[$scale];
+        }
+        return $arr;
+    }
+
+    public static function salaryTableScales()
+    {
+        $ssls = SSL::query()
+            ->groupBy('scale')
+            ->get();
+        return $ssls->mapWithKeys(function ($data){
+            return [
+                $data->scale => $data->scale,
+            ];
+        })->toArray();
+    }
+
     public static function incentives(){
         $incs = Incentives::query()->get();
         return $incs->mapWithKeys(function ($data){

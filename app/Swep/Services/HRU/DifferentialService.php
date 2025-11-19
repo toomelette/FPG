@@ -2,6 +2,7 @@
 
 namespace App\Swep\Services\HRU;
 
+use App\Models\Employee;
 use App\Models\HRU\Deductions;
 use App\Models\HRU\PayrollMaster;
 use App\Models\HRU\PayrollMasterDetails;
@@ -227,8 +228,58 @@ class DifferentialService
         ]);
     }
 
+    public function clone(Request $request,$payrollMaster)
+    {
+        $clonePME = $payrollMaster->payrollMasterEmployees
+            ->firstWhere('slug',$request->data)
+            ->replicate([
+                'diff_old_monthly_basic',
+                'diff_new_monthly_basic',
+                'diff_from',
+                'diff_to',
+                'diff_days',
+                'diff_gross',
+                'diff_net',
+                'diff_other',
+            ]);
+        $clonePME->id = null;
+        $clonePME->slug = Str::random();
+        if($clonePME->save()){
+            $deductions = $payrollMaster->hmtDetails->where('type','DEDUCTION')->sortBy('priority')->groupBy('code')->keys();
+            return [
+                'slug' => $clonePME->slug,
+                'employee_slug' => $clonePME->employee_slug,
+                'view' => view('_payroll.payroll-preparation.DIFF.preview-row')->with([
+                    'payrollMaster' => $payrollMaster,
+                    'employee' => $clonePME,
+                    'deductions' => $deductions,
+                ])->render(),
+            ];
+        }
+    }
+
+    public function deleteEmployee(Request $request,$payrollMaster)
+    {
+        $pme = $payrollMaster->payrollMasterEmployees()->firstWhere('slug',$request->data);
+        if($pme->delete()){
+            $pme->employeePayrollDetails()->delete();
+            return $pme->slug;
+        }
+        abort(503,'Error deleting item.');
+    }
+
     public function update(Request $request,$payrollMaster)
     {
+
+
+        if($request->has('clone')){
+            if($request->type == 'clone'){
+                return  $this->clone($request,$payrollMaster);
+            }
+            if($request->type == 'delete'){
+                return  $this->deleteEmployee($request,$payrollMaster);
+            }
+        }
 
         $upsert = [];
         $deductions = [];
@@ -236,9 +287,13 @@ class DifferentialService
             ->whereIn('deduction_code',['WTAX','GSIS'])
             ->get();
         $usedEmployees = 1;
+        $hasBeenChanged = [];
 
         if(count($request['data']) > 0){
             foreach ($request['data'] as $slug => $datum) {
+                if($datum['has_been_changed'] == 1){
+                    $hasBeenChanged[] = $slug;
+                }
                 $daysInAMonth = Carbon::parse($payrollMaster->date)->daysInMonth;
                 $workingDaysInAMonth = 22;
                 $workingDaysCoveredInDiff = $datum['diff_days'];
@@ -250,6 +305,8 @@ class DifferentialService
                 $gsisGs = $diffGross  / $daysInAMonth * $daysCoveredInDiff * 0.12;
                 $tax = ( $diffGross - $gsisPs) * Helper::taxRate($oldMbs);
                 $diffNet = $diffGross - $gsisPs - $tax;
+
+
 
                 //to employee list
                 $upsert[] = [
@@ -293,7 +350,7 @@ class DifferentialService
         }
 
 
-        PayrollMasterEmployees::query()->upsert(
+        $emp = PayrollMasterEmployees::query()->upsert(
             $upsert,
             ['slug'],
             [
@@ -305,6 +362,7 @@ class DifferentialService
                 'diff_gross',
                 'diff_net',
             ]);
+
 
         PayrollMasterDetails::query()
             ->upsert(
@@ -322,6 +380,55 @@ class DifferentialService
                 ]
             );
 
-        return 1;
+
+        //refresh again
+        $payMasterEmployeeSlug = null;
+        $payrollMaster->refresh()->load([
+            'payrollMasterEmployees' => function ($e) use ($hasBeenChanged) {
+                if(count($hasBeenChanged) > 0){
+                    $e->whereIn('slug',$hasBeenChanged);
+                }
+            },
+            'payrollMasterEmployees.employee.templateIncentives',
+            'payrollMasterEmployees.employeePayrollDetails',
+        ]);
+        $views = [];
+        $deductions = $payrollMaster->hmtDetails->where('type','DEDUCTION')->sortBy('priority')->groupBy('code')->keys();
+
+        foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
+            $views[$payrollMasterEmployee->slug] = view('_payroll.payroll-preparation.DIFF.preview-row')->with([
+                'payrollMaster' => $payrollMaster,
+                'employee' => $payrollMasterEmployee,
+                'deductions' => $deductions,
+            ])->render();
+        }
+        return $views;
+    }
+
+    public function fetchMbs($payrollMaster)
+    {
+        $employees = $payrollMaster->payrollMasterEmployees->pluck('employee_slug');
+        $employeesWithOldMbs = [];
+        $employeesFromDb = Employee::query()
+            ->with([
+                'employeeServiceRecord' => function ($sr) {
+                    $sr->orderBy('sequence_no','desc');
+                }
+            ])
+            ->whereIn('slug',$employees)
+            ->get();
+
+        foreach ($employeesFromDb as $employeeFromDb){
+
+            if(request('type') == 'old' ){
+                $sr = $employeeFromDb->employeeServiceRecord?->skip(1)?->first();
+            }
+            if(request('type') == 'new'){
+                $sr = $employeeFromDb->employeeServiceRecord?->first();
+            }
+            $amount = Helper::sanitizeAutonum($sr?->monthly_basic ?? null);
+            $employeesWithOldMbs[$employeeFromDb->slug] = $amount == null ? null : $amount * 1;
+        }
+        return $employeesWithOldMbs;
     }
 }

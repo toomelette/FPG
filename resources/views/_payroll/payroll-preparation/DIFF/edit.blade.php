@@ -11,6 +11,8 @@
             $currDate = Carbon::parse($yearMonth.$padded);
             $daysInMonthArray[$i] = $currDate->isWeekday();
         }
+
+
     @endphp
     <x-adminkit.html.page-title>
         <x-slot:title>Differential</x-slot:title>
@@ -248,30 +250,7 @@
             td.find('.no-of-days-form').find('input[name="ineligible_days"]').focus();
         });
 
-        $("body").on('submit','.no-of-days-form',function (e) {
-            e.preventDefault();
-            let form = $(this);
-            let slug = form.parents('tr').attr('data');
-            let uri = '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}?updateHazardDays=true&employeeListSlug='+slug;
-            uri = uri.replace('slug',form.attr('data'));
-            loading_btn(form);
-            $.ajax({
-                url : uri,
-                data : form.serialize(),
-                type: 'POST',
-                headers: {
-                    {!! __html::token_header() !!}
-                },
-                success: function (res) {
-                    toast('info','No. of days successfully updated.','Updated');
-                    $("tr[data='"+slug+"']").html(res);
-                },
-                error: function (res) {
-                    errored(form,res);
-                }
-            })
 
-        })
         $("body").on("click",".edit-signatories-btn",function () {
             let btn = $(this);
             load_modal2(btn);
@@ -363,6 +342,41 @@
                 }
             })
         })
+        $("body").on("click",".delete-clone-btn",function (){
+            let uri = '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}?clone=true';
+            let btn = $(this);
+            let tr = btn.parents('tr');
+            let type = btn.attr('for')
+            let data = {
+                data : btn.attr('data'),
+                type : type,
+            }
+            $.ajax({
+                url : uri,
+                data: data,
+                type: 'POST',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    if(type === 'clone'){
+                        $('<tr class="animate__animated animate__flash" data="'+res.slug+'" data-emp="'+res.employee_slug+'">'+res.view+'</tr>').insertAfter(tr);
+                        $($("tr[data='"+res.slug+"']").find(".autonum-simple")).each(function(){
+                            new AutoNumeric(this, autonum_settings_simple);
+                        });
+                    }
+                    if(type === 'delete'){
+                        $("tr[data='"+res+"']").remove();
+                    }
+
+
+                },
+                error: function (res) {
+
+                }
+            })
+        })
+
 
         $("body").on("click",".remove-column-btn",function (){
             let btn = $(this);
@@ -397,6 +411,10 @@
         $("#diff-form").submit(function (e){
             e.preventDefault();
             let uri = '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}';
+            let tbl = $("#payroll-employees-table");
+            tbl.find('.animate__flash').each(function (){
+                $(this).removeClass('animate__flash');
+            })
             $.ajax({
                 url : uri,
                 type: 'POST',
@@ -405,7 +423,23 @@
                     {!! __html::token_header() !!}
                 },
                 success: function (res) {
-                    populate_modal2(btn,res);
+                    let count;
+                    if (Array.isArray(res)) {
+                        count = res.length;           // JSON array
+                    } else {
+                        count = Object.keys(res).length; // JSON object
+                    }
+                    if(count > 0){
+                        $.each(res,function (index,value){
+                            let row = tbl.find('tr[data="'+index+'"]');
+                            row.addClass('animate__flash');
+                            row.html(value);
+
+                            $(row.find(".autonum-simple")).each(function(){
+                                new AutoNumeric(this, autonum_settings_simple);
+                            });
+                        })
+                    }
                 },
                 error: function (res) {
                     populate_modal2_error(res);
@@ -441,8 +475,8 @@
             let input = form.find('input[name="value"]');
             let min = '{{Carbon::parse($payrollMaster->date)->firstOfMonth()->format('Y-m-d')}}';
             let max = '{{Carbon::parse($payrollMaster->date)->lastOfMonth()->format('Y-m-d')}}';
+            input.attr('type',data['type']);
             if(data['type'] === 'date'){
-                input.attr('type',data['type']);
                 input.attr('min',min);
                 input.attr('max',max);
             }else{
@@ -462,9 +496,46 @@
             let elementsToUpdate = $("#payroll-employees-table").find('input[for="'+element+'"]');
             elementsToUpdate.each(function (){
                 $(this).val(value).trigger('change');
+            })
+        })
+        $("body").on('change','.detect-change',function (){
+            let t = $(this);
+            let tr = t.parents('tr');
+            tr.find("input[for='has_been_changed']").val(1);
+        })
 
+        $(".fetch-mbs-btn").click(function (){
+            let btn = $(this);
+            let type = $(this).attr('data');
+            wait_this_button(btn, 'Fetch');
+
+            let uri = '{{route("dashboard.payroll_preparation.edit",$payrollMaster->slug)}}?fetchMbs&type='+type;
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    $.each(res,function (employeeSlug,oldMbs){
+                        if(oldMbs !== null){
+                            $("tr[data-emp='"+employeeSlug+"']").each(function (){
+                                let slug = $(this).attr('data');
+                                AutoNumeric.getAutoNumericElement('#an-'+type+'-mbs-'+slug).set(oldMbs);
+                            })
+                        }
+                    });
+                    toast('info','Fetch successful.','');
+                    unwait_this_button(btn);
+                },
+                error: function (res) {
+                    unwait_this_button(btn);
+                }
             })
         })
 
+
+
     </script>
+
 @endsection

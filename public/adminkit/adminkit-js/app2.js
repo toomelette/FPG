@@ -30,6 +30,14 @@ var autonum_settings = {
     modifyValueOnWheel: false,
 };
 
+var autonum_settings_simple = {
+    currencySymbol : '',
+    decimalCharacter : '.',
+    digitGroupSeparator : ',',
+    emptyInputBehavior : 'null',
+    modifyValueOnWheel: false,
+};
+
 
 
 
@@ -37,6 +45,13 @@ function autonum_init(){
     $(".autonum").each(function(){
         $(this).attr('autocomplete','off');
         new AutoNumeric(this, autonum_settings);
+    });
+}
+
+function autonum_init_simple(){
+    $(".autonum-simple").each(function(){
+        $(this).attr('autocomplete','off');
+        new AutoNumeric(this, autonum_settings_simple);
     });
 }
 function autonum_init_modal_new(btn){

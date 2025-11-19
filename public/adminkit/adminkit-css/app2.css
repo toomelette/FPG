@@ -736,3 +736,14 @@ td.w-25p{
 .dtrg-group td{
     background-color: #deebfc !important;
 }
+
+tr.color-change td {
+    background-color: green !important;
+    /*animation: colorChange 10s infinite alternate;*/
+}
+
+@keyframes colorChange {
+    0% { background-color: #ff0000 !important; }  /* red */
+    50% { background-color: #00ff00 !important; } /* green */
+    100% { background-color: #0000ff !important; } /* blue */
+}

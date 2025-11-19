@@ -80,6 +80,8 @@
             decimalPlaces: 2,
             digitGroupSeparator: ','
         });
+
+        autonum_init_simple();
     })
 
 </script>
