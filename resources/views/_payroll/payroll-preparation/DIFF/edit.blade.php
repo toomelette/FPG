@@ -334,7 +334,7 @@
                 },
                 success: function (res) {
                     succeed(form,true,true);
-                    recompute($("#recompute_btn"));
+                    // recompute($("#recompute_btn"));
                     toast('info','Excel data successfully imported','Updated');
                 },
                 error: function (res) {
@@ -415,10 +415,17 @@
             tbl.find('.animate__flash').each(function (){
                 $(this).removeClass('animate__flash');
             })
+            let data = $(this).serializeArray();
+            let focusedInput = $('input:focus');
+            let focusedInputTr = focusedInput.parents('tr');
+            focusedInputTr.find('input').each(function (){
+                $(this).attr('disabled','disabled');
+            });
+
             $.ajax({
                 url : uri,
                 type: 'POST',
-                data: $(this).serializeArray(),
+                data: data,
                 headers: {
                     {!! __html::token_header() !!}
                 },
@@ -489,8 +496,6 @@
         $("#update-row-form").submit(function (e){
             e.preventDefault();
             let data = $(this).serializeArray();
-
-
             let element = data.find(item => item.name === "element").value;
             let value = data.find(item => item.name === "value").value;
             let elementsToUpdate = $("#payroll-employees-table").find('input[for="'+element+'"]');

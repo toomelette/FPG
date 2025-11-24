@@ -15,6 +15,7 @@ class HazardPrcService
 {
     public function __construct(
         public MonthlyPayrollService $monthlyPayrollService,
+        public PayrollService $payrollService,
     )
     {
         $this->daysInMonth = 22;
@@ -38,7 +39,7 @@ class HazardPrcService
             ])
             ->findOrFail($payrollMasterSlug);
 
-        $this->monthlyPayrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
+        $this->payrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
 
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
             $eligibleDays = $this->daysInMonth - $payrollMasterEmployee->hazardprc_ineligible_days;

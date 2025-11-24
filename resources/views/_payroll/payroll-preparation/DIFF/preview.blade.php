@@ -1,5 +1,6 @@
 @php
-    $deductions = $payrollMaster->hmtDetails->where('type','DEDUCTION')->sortBy('priority')->groupBy('code')->keys();
+    $deductions = $payrollMaster->hmtDetails->where('type','DEDUCTION')->sortBy('account_code')->groupBy('code')->keys();
+
     $incentives = $payrollMaster->hmtDetails->where('type','INCENTIVE')->sortBy('priority')->groupBy('code')->keys();
 @endphp
 <div class="tscroll">
@@ -10,7 +11,7 @@
             <th class="text-center" style="width: 70px !important;"></th>
 
 
-            <th class="text-center" style="min-width: 90px; width: 160px">
+            <th class="text-center" style="min-width: 90px; width: 140px">
                 Old Basic Pay
                 <br>
                 <button type="button" class="btn btn-outline-primary btn-sm fetch-mbs-btn"  data="old"><i class="fa fa-download"></i> Fetch</button>
@@ -25,23 +26,27 @@
                 <button type="button" class="btn btn-outline-primary btn-sm update-row-btn" data='{"element" : "diff_to" , "title" : "TO","type" : "date"}' data-bs-target="#update-row-modal" data-bs-toggle="modal"><i class="fa fa-edit"></i></button>
 
             </th>
-            <th class="text-center" style="min-width: 90px">
+            <th class="text-center" style="width: 110px">
                 # Wkng Days <br>
                 <button type="button" class="btn btn-outline-primary btn-sm update-row-btn" data='{"element" : "diff_days" , "title" : "No of Working Days","type" : "number"}' data-bs-target="#update-row-modal" data-bs-toggle="modal"><i class="fa fa-edit"></i></button>
 
             </th>
-            <th class="text-center" style="min-width: 90px;width: 160px">
+            <th class="text-center" style="min-width: 90px;width: 140px">
                 New Basic Pay
                 <br>
                 <button type="button" class="btn btn-outline-primary btn-sm fetch-mbs-btn" data="new"><i class="fa fa-download"></i> Fetch</button>
 
             </th>
-            <th class="text-center" style="min-width: 90px">Gross</th>
-            @forelse($deductions as $deduction)
-                <th class="text-center" style="min-width: 90px">{{$deduction}}</th>
+            @forelse($incentives as $incentive)
+                <th class="text-center" style="width: 120px !important;">{{$incentive}}</th>
             @empty
             @endforelse
-            <th class="text-center" style="min-width: 90px">Net Amount Received</th>
+
+            @forelse($deductions as $deduction)
+                <th class="text-center" style="width: 120px !important;">{{$deduction}}</th>
+            @empty
+            @endforelse
+            <th class="text-center" style="width: 120px">Net Amount Received</th>
         </tr>
         </thead>
         <tbody>

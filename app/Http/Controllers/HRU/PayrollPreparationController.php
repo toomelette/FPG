@@ -871,6 +871,10 @@ class PayrollPreparationController
                 return $this->yebService->abstract($slug);
             case 'YEB-ALPHALIST':
                 return $this->yebService->alphalist($slug);
+
+
+            case 'DIFF':
+                return $this->differentialService->printPayroll($slug);
         }
         abort(503,'CHECK SWITCH CASE STATEMENT');
     }

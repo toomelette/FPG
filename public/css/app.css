@@ -137,6 +137,9 @@ h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6{
 .text-strong{
     font-weight: bold;
 }
+.text-red{
+    color: red;
+}
 
 .bootstrap-tagsinput{
     width: 100% !important;
@@ -825,7 +828,7 @@ li.has-error>a{
     overflow-x: scroll;
     margin-bottom: 10px;
     border: solid black 1px;
-    overflow-y: scroll;
+    overflow-y: scroll !important;
     height: calc(100vh - 23em);
 }
 .tscroll table{
@@ -839,10 +842,13 @@ li.has-error>a{
     background-color: #ddd;
     width: 1000px;
 }
+
+
 .tscroll table thead tr {
     position: sticky;
     top: 0;
     background-color: white;
+    z-index: 50;
 }
 
 .tscroll td, .tscroll th {
