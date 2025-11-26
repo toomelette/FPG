@@ -497,6 +497,10 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::post('cos_employees/{slug}/store',[\App\Http\Controllers\HRU\COSEmployeesController::class,'store'])->name('cos_employees.store');
 
     Route::resource('cos_employees',\App\Http\Controllers\HRU\COSEmployeesController::class)->except(['index','store','create','show']);
+
+    Route::prefix('employees')->name('employee.')->group(function (){
+        Route::resource('batch',\App\Http\Controllers\Employee\BatchActionsController::class);
+    });
 });
 
 /** ADMIN LEVEL ROUTES REQUIRING PROJECT ID **/
