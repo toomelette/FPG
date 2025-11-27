@@ -10,6 +10,7 @@ use App\Models\Plantilla;
 use App\Swep\Helpers\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -38,7 +39,44 @@ class BatchActionsController
 
     public function bulkPrinting(Request $request)
     {
-        dd($request->all());
+        $serviceRecords = EmployeeServiceRecord::query()
+            ->with([
+                'employee.employeeServiceRecord' => function ($employeeServiceRecord) {
+                    $employeeServiceRecord->orderBy('sequence_no','desc');
+                }
+            ])
+            ->where('batch_code','=',$request->batch_code)
+            ->get();
+
+        $srs = [];
+        foreach ($serviceRecords as $serviceRecord){
+            $latest = $serviceRecord->employee->employeeServiceRecord->first();
+            $secondLatest = $serviceRecord->employee->employeeServiceRecord->skip(1)->first();
+            $newRequest = new Collection();
+            $newRequest->body = $request->body;
+            $newRequest->header_date = $request->header_date;
+            $newRequest->effectivity = $latest->from_date;
+            $newRequest->new_salary_grade = $latest->grade;
+            $newRequest->new_salary_type = $latest->salary_type;
+            $newRequest->new_step_inc = $latest->step;
+            $newRequest->new_monthly_salary = $latest->monthly_basic;
+            $newRequest->salary_type = $secondLatest->salary_type;
+            $newRequest->salary_grade = $secondLatest->grade;
+            $newRequest->step_inc = $secondLatest->step;
+            $newRequest->monthly_basic = $secondLatest->monthly_basic;
+            $newRequest->signatory_name = $request->signatory_name;
+            $newRequest->signatory_position = $request->signatory_position;
+            $newRequest->new_position = $latest->position;
+
+            $srs[] = [
+                'request' => $newRequest,
+                'employee' => $serviceRecord->employee,
+            ];
+        }
+
+        return view('printables.employee.nosa-multiple')->with([
+            'srs' => $srs,
+        ]);
     }
 
     public function newSr(Request $request,$slug)

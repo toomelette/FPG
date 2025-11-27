@@ -36,7 +36,7 @@
             <li class="nav-item" role="presentation"><a class="nav-link" href="#tab-3" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Bulk Printing</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane active" id="tab-2" role="tabpanel">
+            <div class="tab-pane " id="tab-2" role="tabpanel">
                 <h4 class="tab-title">Incomplete Service Record Data</h4>
 
 
@@ -199,14 +199,39 @@
                 </table>
             </div>
 
-            <div class="tab-pane" id="tab-3" role="tabpanel">
+            <div class="tab-pane active" id="tab-3" role="tabpanel">
                 <h4 class="tab-title">Bulk Printing</h4>
-                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor tellus eget condimentum
-                    rhoncus. Aenean massa. Cum sociis natoque penatibus et magnis neque dis parturient montes, nascetur ridiculus mus.
-                </p>
-                <p>Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede
-                    justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
-                    justo.</p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <x-adminkit.html.alert type="info" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
+                            NOSA
+                        </x-adminkit.html.alert>
+                        <form action="{{route('dashboard.employee.batch.index')}}?bulkPrinting" target="_blank" method="GET">
+                            <div class="row">
+                                <x-forms.input container-class="hide-this" label="Type" name="bulkPrinting" cols="12" value="true"/>
+                                <x-forms.input container-class="hide-this" label="Type" name="type" cols="12" value="NOSA"/>
+                                <x-forms.input label="Batch Code" name="batch_code" cols="6" :value="\App\Swep\Helpers\Values::activeBatchCodeSr()"/>
+                                <x-forms.input label="Header date" name="header_date" cols="6" type="date"/>
+                            </div>
+
+                            <div class="row mt-2">
+                                <x-forms.textarea label="Body" name="body" cols="12" type="date" rows="8" required="required"/>
+                            </div>
+
+                            <div class="row mt-2">
+                                <x-forms.input label="Signatory Name" name="signatory_name" cols="12"  required="required"/>
+                            </div>
+                            <div class="row mt-2">
+                                <x-forms.input label="Signatory Name" name="signatory_position" cols="12"  required="required"/>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-3 offset-9">
+                                    <button class="btn btn-sm btn-primary col-md-12" type="submit" > <i class="fa fa-check"></i> Generate</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

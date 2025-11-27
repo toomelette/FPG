@@ -405,6 +405,12 @@ class Employee extends Model{
         return $this->hasOne(EmployeeServiceRecord::class, 'employee_slug', 'slug')->latest('sequence_no');
     }
 
+    public function employeeServiceRecordSecondToLatest(){
+        return $this->hasOne(EmployeeServiceRecord::class, 'employee_slug', 'slug')
+            ->orderBy('sequence_no','desc')
+            ->offset(1);
+    }
+
     public function employeeMatrix(){
         return $this->hasOne(EmployeeMatrix::class, 'employee_slug', 'slug');
     }

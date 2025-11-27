@@ -32,6 +32,7 @@ class OtherActionsController extends Controller
             case 'nosa':
                return \view('printables.employee.nosa-hrs-034-02')->with([
                     'employee' => $employee,
+                    'request' => $request,
                 ]);
             case 'nosi':
                 return view('printables.employee.nosi-hrs-033-03')->with([
