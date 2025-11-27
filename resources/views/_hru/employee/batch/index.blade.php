@@ -31,12 +31,63 @@
 
     <div class="tab">
         <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item" role="presentation"><a class="nav-link active" href="#tab-1" data-bs-toggle="tab" role="tab" aria-selected="true">Add New Service Records</a></li>
-            <li class="nav-item" role="presentation"><a class="nav-link" href="#tab-2" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Incomplete Service Record Data</a></li>
+            <li class="nav-item" role="presentation"><a class="nav-link active" href="#tab-2" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Incomplete Service Record Data</a></li>
+            <li class="nav-item" role="presentation"><a class="nav-link " href="#tab-1" data-bs-toggle="tab" role="tab" aria-selected="true">Add New Service Records</a></li>
+
             <li class="nav-item" role="presentation"><a class="nav-link" href="#tab-3" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Messages</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane active" id="tab-1" role="tabpanel">
+            <div class="tab-pane active" id="tab-2" role="tabpanel">
+                <h4 class="tab-title">Incomplete Service Record Data</h4>
+
+
+                <table class="table table-sm table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Seq #</th>
+                        <th>Dates</th>
+                        <th>Item No.</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @forelse($employees as $employee)
+                        @if($employee->employeeServiceRecord->count() > 0)
+                            @if($employee->employeeServiceRecord->last()->item_no == null)
+                                @php
+                                    $last = $employee->employeeServiceRecord->last();
+                                @endphp
+                                <tr>
+                                    <td class="v-top text-strong">
+                                        <a href="{{route('dashboard.employee.service_record',$employee->slug)}}" target="_blank">{{$employee->full['LFEMi']}}</a>
+                                    </td>
+                                    <td class="text-center v-top">{{$last->sequence_no}}</td>
+                                    <td class="v-top">{{Helper::dateFormat($last->from_date)}} to {{$last->to_date != null ? $last->to_date : 'PRESENT'}}</td>
+                                    <td style="width: 60%">
+                                        <form class="update-lastest-sr-form" id="sr-{{$last->slug}}" data="{{$last->slug}}">
+                                            <div class="row">
+                                                <x-forms.select id="item-no-{{$employee->slug}}" label="Item No. (If applicable)" name="item_no" class="item-no" cols="6" :options="[]"/>
+                                                <x-forms.input label="Position" name="position" cols="6" :value="$employee?->plantilla?->position"/>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <x-forms.select label="Salary Type" name="salary_type" cols="3" :options="$salaryTypes" :value="$last ?? null"/>
+                                                <x-forms.input  label="SG/JG/PG" name="grade" cols="2" type="number" :value="$employee->salary_grade ?? null"/>
+                                                <x-forms.select  label="Step" name="step" cols="2" :options="\App\Swep\Helpers\Arrays::stepIncements()" :value="$employee->step_inc ?? null"/>
+                                                <x-forms.select label="Due to" name="due_to" cols="2"  :options="$serviceRecordDueTo" :value="$last ?? null"/>
+                                                <x-forms.input  label="Monthly Basic Salary" name="monthly_basic" cols="3"  class="autonum text-end"  :value="$employee ?? null"/>
+                                            </div>
+                                            <button type="submit" class="btn btn-sm btn-primary mt-2 mb-3"><i class="fa fa-check"></i> Save</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endif
+                        @endif
+                    @empty
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane " id="tab-1" role="tabpanel">
                 <h4 class="tab-title">Add New Service Records</h4>
 
                 <h4 class="tab-title">Edit all fields:</h4>
@@ -148,56 +199,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="tab-pane" id="tab-2" role="tabpanel">
-                <h4 class="tab-title">Incomplete Service Record Data</h4>
 
-
-                <table class="table table-sm table-striped table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Employee</th>
-                        <th>Seq #</th>
-                        <th>Dates</th>
-                        <th>Item No.</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @forelse($employees as $employee)
-                        @if($employee->employeeServiceRecord->count() > 0)
-                            @if($employee->employeeServiceRecord->last()->item_no == null)
-                                @php
-                                    $last = $employee->employeeServiceRecord->last();
-                                @endphp
-                                <tr>
-                                    <td class="v-top text-strong">
-                                        <a href="{{route('dashboard.employee.service_record',$employee->slug)}}" target="_blank">{{$employee->full['LFEMi']}}</a>
-                                    </td>
-                                    <td class="text-center v-top">{{$last->sequence_no}}</td>
-                                    <td class="v-top">{{Helper::dateFormat($last->from_date)}} to {{$last->to_date != null ? $last->to_date : 'PRESENT'}}</td>
-                                    <td style="width: 60%">
-                                        <form class="update-lastest-sr-form" id="sr-{{$last->slug}}" data="{{$last->slug}}">
-                                            <div class="row">
-                                                <x-forms.select id="item-no-{{$employee->slug}}" label="Item No. (If applicable)" name="item_no" class="item-no" cols="6" :options="[]"/>
-                                                <x-forms.input label="Position" name="position" cols="6" :value="$employee?->plantilla?->position"/>
-                                            </div>
-                                            <div class="row mt-2">
-                                                <x-forms.select label="Salary Type" name="salary_type" cols="3" :options="$salaryTypes" :value="$last ?? null"/>
-                                                <x-forms.input  label="SG/JG/PG" name="grade" cols="2" type="number" :value="$employee->salary_grade ?? null"/>
-                                                <x-forms.select  label="Step" name="step" cols="2" :options="\App\Swep\Helpers\Arrays::stepIncements()" :value="$employee->step_inc ?? null"/>
-                                                <x-forms.select label="Due to" name="due_to" cols="2"  :options="$serviceRecordDueTo" :value="$last ?? null"/>
-                                                <x-forms.input  label="Monthly Basic Salary" name="monthly_basic" cols="3"  class="autonum text-end"  :value="$employee ?? null"/>
-                                            </div>
-                                            <button type="submit" class="btn btn-sm btn-primary mt-2 mb-3"><i class="fa fa-check"></i> Save</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endif
-                        @endif
-                    @empty
-                    @endforelse
-                    </tbody>
-                </table>
-            </div>
             <div class="tab-pane" id="tab-3" role="tabpanel">
                 <h4 class="tab-title">One more</h4>
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor tellus eget condimentum
