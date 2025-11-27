@@ -91,8 +91,12 @@
                 $otherIncentives = $employee->templateIncentives
                     ->where('amount','!=',0)
                     ->where('amount','!=',null)
-                    ->where('incentive_code','!=','MONTHLY')
-                    ->where('incentive_code','!=','PERA')
+                    ->whereNotIn('incentive_code',[
+                        'MONTHLY',
+                        'PERA',
+                        'RA',
+                        'TA'
+                    ])
                     ->sortByDesc('amount');
 
             @endphp
