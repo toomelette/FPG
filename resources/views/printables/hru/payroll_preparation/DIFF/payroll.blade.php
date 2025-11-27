@@ -34,6 +34,9 @@
                     ->where('type','DEDUCTION')
                     ->where('sundry_account','=',0)
                     ->sortBy(function($data){
+                        if($data->code == 'GSIS'){
+                            return 5;
+                        }
                         if($data->priority == null){
                             return 100000;
                         }else{
@@ -45,6 +48,7 @@
                        ];
                    })
                    ->flip()->values();
+
             $chunkedDeductions = $groupedDeductions->chunk($chunkBy);
 
             $colspan = 6 + $chunkedIncentives->count() + $chunkedDeductions->count() + 2;
@@ -55,7 +59,19 @@
 
             $recap = [];
             $headerIncentives = $payrollMaster->hmtDetails->where('type','INCENTIVE')->sortBy('priority')->groupBy('code')->keys();
-            $headerDeductions = $payrollMaster->hmtDetails->where('type','DEDUCTION')->sortBy('priority')->groupBy('code')->keys();
+            $headerDeductions = $payrollMaster->hmtDetails->where('type','DEDUCTION')
+                ->sortBy(function($data){
+                    if($data->code == 'GSIS'){
+                        return 5;
+                    }
+                    if($data->priority == null){
+                        return 100000;
+                    }else{
+                        return $data->priority;
+                    }
+                })
+                ->groupBy('code')
+                ->keys();
 
         @endphp
         <div style="break-after: page">

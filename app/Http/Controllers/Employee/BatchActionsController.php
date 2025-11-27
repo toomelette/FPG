@@ -15,8 +15,11 @@ use Illuminate\Validation\Rule;
 
 class BatchActionsController
 {
-    public function index()
+    public function index(Request $request)
     {
+        if($request->has('bulkPrinting')){
+            return $this->bulkPrinting($request);
+        }
         return view('_hru.employee.batch.index');
     }
 
@@ -31,6 +34,11 @@ class BatchActionsController
         }
         dd($request->all());
 
+    }
+
+    public function bulkPrinting(Request $request)
+    {
+        dd($request->all());
     }
 
     public function newSr(Request $request,$slug)

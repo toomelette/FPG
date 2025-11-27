@@ -33,8 +33,7 @@
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item" role="presentation"><a class="nav-link active" href="#tab-2" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Incomplete Service Record Data</a></li>
             <li class="nav-item" role="presentation"><a class="nav-link " href="#tab-1" data-bs-toggle="tab" role="tab" aria-selected="true">Add New Service Records</a></li>
-
-            <li class="nav-item" role="presentation"><a class="nav-link" href="#tab-3" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Messages</a></li>
+            <li class="nav-item" role="presentation"><a class="nav-link" href="#tab-3" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Bulk Printing</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab-2" role="tabpanel">
@@ -201,7 +200,7 @@
             </div>
 
             <div class="tab-pane" id="tab-3" role="tabpanel">
-                <h4 class="tab-title">One more</h4>
+                <h4 class="tab-title">Bulk Printing</h4>
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor tellus eget condimentum
                     rhoncus. Aenean massa. Cum sociis natoque penatibus et magnis neque dis parturient montes, nascetur ridiculus mus.
                 </p>
