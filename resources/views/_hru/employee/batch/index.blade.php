@@ -110,88 +110,90 @@
                         @php
                             $last = $employee->employeeServiceRecord->last();
                         @endphp
-                        @if($last->batch_code != \App\Swep\Helpers\Values::activeBatchCodeSr())
-                            <tr>
-                                <td class="v-top text-strong">
-                                    <a href="{{route('dashboard.employee.service_record',$employee->slug)}}" target="_blank">{{$employee->full['LFEMi']}}</a>
-                                </td>
-                                <td class="v-top">
-                                    <table style="width: 100%;">
-                                        <tr>
-                                            <td style="width: 150px">Seq no:</td>
-                                            <td>{{$last->sequence_no}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Date from:</td>
-                                            <td>{{Helper::dateFormat($last->from_date)}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Date to:</td>
-                                            <td>{{$last->to_date}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Item no:</td>
-                                            <td>{{$last->item_no}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Position:</td>
-                                            <td>{{$last->position}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Appt. Status:</td>
-                                            <td>{{$last->appointment_status}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Salary Type:</td>
-                                            <td>{{$last->salary_type}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Grade:</td>
-                                            <td>{{$last->grade}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Step:</td>
-                                            <td>{{$last->step}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Monthly Basic:</td>
-                                            <td>{{$last->monthly_basic}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Due to:</td>
-                                            <td>{{$last->due_to}}</td>
-                                        </tr>
-                                    </table>
-                                </td>
-                                <td class="v-top">
-                                    <form class="new-sr-form" id="new-sr-form-{{$employee->slug}}" data="{{$employee->slug}}">
-                                        <div class="row">
-                                            <x-forms.input label="Batch Code" name="batch_code" cols="3" :value="\App\Swep\Helpers\Values::activeBatchCodeSr()" readonly="readonly"/>
-                                            <x-forms.input label="Date from" name="from_date" cols="3" type="date"/>
-                                            <x-forms.input label="Date to (leave blank if PRESENT)" name="to_date" cols="6" type="date"/>
-                                        </div>
-                                        <div class="row">
-                                            <x-forms.select class="item-no" label="Item no." name="item_no" cols="12" :options="[]"/>
-                                            <x-forms.input  class="item-no-default" label="Item no." name="item_no_default" cols="12" :value="$last->item_no" container-class="hide-this"/>
+                        @if(!empty($last))
+                            @if($last->batch_code != \App\Swep\Helpers\Values::activeBatchCodeSr())
+                                <tr>
+                                    <td class="v-top text-strong">
+                                        <a href="{{route('dashboard.employee.service_record',$employee->slug)}}" target="_blank">{{$employee->full['LFEMi']}}</a>
+                                    </td>
+                                    <td class="v-top">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 150px">Seq no:</td>
+                                                <td>{{$last->sequence_no}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Date from:</td>
+                                                <td>{{Helper::dateFormat($last->from_date)}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Date to:</td>
+                                                <td>{{$last->to_date}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Item no:</td>
+                                                <td>{{$last->item_no}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Position:</td>
+                                                <td>{{$last->position}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Appt. Status:</td>
+                                                <td>{{$last->appointment_status}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Salary Type:</td>
+                                                <td>{{$last->salary_type}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Grade:</td>
+                                                <td>{{$last->grade}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Step:</td>
+                                                <td>{{$last->step}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Monthly Basic:</td>
+                                                <td>{{$last->monthly_basic}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Due to:</td>
+                                                <td>{{$last->due_to}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td class="v-top">
+                                        <form class="new-sr-form" id="new-sr-form-{{$employee->slug}}" data="{{$employee->slug}}">
+                                            <div class="row">
+                                                <x-forms.input label="Batch Code" name="batch_code" cols="3" :value="\App\Swep\Helpers\Values::activeBatchCodeSr()" readonly="readonly"/>
+                                                <x-forms.input label="Date from" name="from_date" cols="3" type="date"/>
+                                                <x-forms.input label="Date to (leave blank if PRESENT)" name="to_date" cols="6" type="date"/>
+                                            </div>
+                                            <div class="row">
+                                                <x-forms.select class="item-no" label="Item no." name="item_no" cols="12" :options="[]"/>
+                                                <x-forms.input  class="item-no-default" label="Item no." name="item_no_default" cols="12" :value="$last->item_no" container-class="hide-this"/>
 
-                                        </div>
-                                        <div class="row">
-                                            <x-forms.select label="Appt. Status" name="appointment_status" cols="6" type="date" :value="strtoupper($employee->appointment_status)" :options="\App\Swep\Helpers\Arrays::appointmentStatus()" />
-                                            <x-forms.select label="Due to" name="due_to" cols="6" type="date" :options="$serviceRecordDueTo"/>
-                                        </div>
-                                        <div class="row">
-                                            <x-forms.select class="change-scale"  label="Salary Scale" name="salary_scale" cols="3" type="date" :options="$salaryTableScales" />
-                                            <x-forms.select label="Type" name="salary_type" cols="3" type="date" :options="$salaryTypes"/>
-                                            <x-forms.input class="change-scale" label="Grade" name="grade" cols="3" type="number"/>
-                                            <x-forms.select class="change-scale" label="Step" name="step" cols="3" type="date" :options="\App\Swep\Helpers\Arrays::stepIncements()"/>
-                                        </div>
-                                        <div class="row">
-                                            <x-forms.input label="Monthly Basic" name="monthly_basic" cols="4" readonly="readonly"/>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-sm mt-2 mb-3"><i class="fa fa-check"></i> Save</button>
-                                    </form>
-                                </td>
-                            </tr>
+                                            </div>
+                                            <div class="row">
+                                                <x-forms.select label="Appt. Status" name="appointment_status" cols="6" type="date" :value="strtoupper($employee->appointment_status)" :options="\App\Swep\Helpers\Arrays::appointmentStatus()" />
+                                                <x-forms.select label="Due to" name="due_to" cols="6" type="date" :options="$serviceRecordDueTo"/>
+                                            </div>
+                                            <div class="row">
+                                                <x-forms.select class="change-scale"  label="Salary Scale" name="salary_scale" cols="3" type="date" :options="$salaryTableScales" />
+                                                <x-forms.select label="Type" name="salary_type" cols="3" type="date" :options="$salaryTypes"/>
+                                                <x-forms.input class="change-scale" label="Grade" name="grade" cols="3" type="number"/>
+                                                <x-forms.select class="change-scale" label="Step" name="step" cols="3" type="date" :options="\App\Swep\Helpers\Arrays::stepIncements()"/>
+                                            </div>
+                                            <div class="row">
+                                                <x-forms.input label="Monthly Basic" name="monthly_basic" cols="4" readonly="readonly"/>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-sm mt-2 mb-3"><i class="fa fa-check"></i> Save</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endif
                         @endif
                     @empty
                     @endforelse
