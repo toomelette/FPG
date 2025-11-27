@@ -29,6 +29,9 @@ class Select extends Component
         public $placeholder = null,
         public $selectOnly = false,
         public $autoClass = false,
+        public $inputGroup = false,
+        public $inputGroupText = '',
+        public $inputGroupClass = '',
     )
     {
         if(is_object($this->value)){
@@ -43,7 +46,6 @@ class Select extends Component
      */
     public function render()
     {
-
         return view('components.forms.select');
     }
 }

@@ -401,6 +401,10 @@ class Employee extends Model{
         return $this->hasMany(EmployeeServiceRecord::class, 'employee_slug', 'slug');
     }
 
+    public function employeeServiceRecordLatest(){
+        return $this->hasOne(EmployeeServiceRecord::class, 'employee_slug', 'slug')->latest('sequence_no');
+    }
+
     public function employeeMatrix(){
         return $this->hasOne(EmployeeMatrix::class, 'employee_slug', 'slug');
     }
