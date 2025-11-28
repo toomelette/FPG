@@ -27,7 +27,7 @@
 
 
 @section('modals')
-
+    <x-adminkit.html.modal id="clone-payroll-modal" size="sm"/>
 @endsection
 
 @section('scripts')
@@ -87,5 +87,29 @@
             }
         })
 
+
+        $("body").on("click",".clone-payroll-btn",function () {
+            let btn = $(this);
+            load_modal2(btn);
+            let uri = '{{route("dashboard.payroll_preparation.index","slug")}}';
+            uri = uri.replace('slug',btn.attr('data'));
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                data: {
+                    clone : true,
+                    slug : btn.attr('data'),
+                },
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
     </script>
 @endsection

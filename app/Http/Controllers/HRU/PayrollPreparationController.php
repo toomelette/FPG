@@ -30,6 +30,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpParser\Builder\Function_;
@@ -55,6 +56,9 @@ class PayrollPreparationController
 
     public function index(Request $request){
 
+        if($request->has('clone')){
+            return  $this->clone($request);
+        }
         if ($request->ajax() && $request->has('draw')){
             $pays = PayrollMaster::query()
                 ->withCount('payrollMasterEmployees')
@@ -82,6 +86,15 @@ class PayrollPreparationController
                 ->toJson();
         }
         return view('_payroll.payroll-preparation.index');
+    }
+
+    public function clone(Request $request)
+    {
+        $payrollMaster = PayrollMaster::query()->findOrFail($request->slug);
+        return view('_payroll.payroll-preparation.clone')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
+        dd($request->all());
     }
 
     public function create(Request $request){
@@ -134,7 +147,6 @@ class PayrollPreparationController
     }
 
     public function store(PayrollPreparationFormRequest $request){
-
         $payMaster = new PayrollMaster();
         $payMaster->slug = Str::random();
         $payMaster->date = Carbon::parse($request->date)->firstOfMonth()->format('Y-m-d');
@@ -709,11 +721,73 @@ class PayrollPreparationController
         ]);
     }
 
+    public function saveAs($request, $payrollMasterSlug)
+    {
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees.employeePayrollDetails',
+            ])
+            ->findOrFail($payrollMasterSlug);
+
+        $newPayrollMaster = $payrollMaster->replicate();
+        $newPayrollMaster->id = null;
+        $newPayrollMaster->slug = Str::random();
+        $newPayrollMaster->date = $request->month.'-01';
+        $employeesArray = [];
+        $detailsArray = [];
+        foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
+            $employeeListSlug = Str::random();
+            $keys = array_keys(Arr::except($payrollMasterEmployee->getAttributes(),[
+                'id',
+                'pay_master_slug',
+                'slug',
+            ]));
+
+            $singleEmployeeArr = [];
+            foreach ($keys as $key){
+                $singleEmployeeArr[$key] = $payrollMasterEmployee->$key;
+            }
+            $singleEmployeeArr['pay_master_slug'] = $newPayrollMaster->slug;
+            $singleEmployeeArr['slug'] = $employeeListSlug;
+            $singleEmployeeArr['has_been_edited'] = json_encode($payrollMasterEmployee->has_been_edited);
+            $singleEmployeeArr['saved_employee_data'] = json_encode($payrollMasterEmployee->saved_employee_data);
+            $singleEmployeeArr['diff_other'] = json_encode($payrollMasterEmployee->diff_other);
+
+            $employeesArray[] = $singleEmployeeArr;
+
+            foreach ($payrollMasterEmployee->employeePayrollDetails as $employeePayrollDetail){
+                $keysDetail = array_keys(Arr::except($employeePayrollDetail->getAttributes(),[
+                    'id',
+                    'pay_master_employee_listing_slug',
+                    'slug',
+                ]));
+
+                $singleDetailArr = [];
+                foreach ($keysDetail as $key){
+                    $singleDetailArr[$key] = $employeePayrollDetail->$key;
+                }
+                $singleDetailArr['pay_master_employee_listing_slug'] = $employeeListSlug;
+                $detailsArray[] = $singleDetailArr;
+            }
+
+        }
+
+        if($newPayrollMaster->save()){
+            PayrollMasterEmployees::query()->insert($employeesArray);
+            PayrollMasterDetails::query()->insert($detailsArray);
+            return $newPayrollMaster->only('slug');
+        }
+        abort(503,'Error cloning payroll.');
+    }
     public function update(PayrollUpdateFormRequest $request,$payrollMasterSlug){
 
         $payrollMaster = PayrollMaster::findOrFail($payrollMasterSlug);
-        $this->checkLockStataus($payrollMaster);
 
+        if($request->has('saveAs')){
+            return  $this->saveAs($request,$payrollMasterSlug);
+        }
+
+        $this->checkLockStataus($payrollMaster);
         //IF UPDATE SIGNATORIES
         if($request->ajax() && $request->has('signatories') && $request->signatories == true){
             $payrollMaster->a_name = $request->a_name;
@@ -945,38 +1019,14 @@ class PayrollPreparationController
 
     public function destroy($slug)
     {
+
         $payrollMaster = PayrollMaster::query()->findOrFail($slug);
 
-        switch ($payrollMaster->type){
-            case 'MONTHLY':
-            case 'YEB':
-            case 'MYB':
-                if($payrollMaster->hmtDetails()->delete()){
-                    if($payrollMaster->payrollMasterEmployees()->delete()){
-                        if($payrollMaster->delete()){
-                            return 1;
-                        }
-                    }
-                }
-                break;
-            case 'HAZARDPRC':
-                if($payrollMaster->payrollMasterEmployees()->delete()){
-                    if($payrollMaster->delete()){
-                        return 1;
-                    }
-                }
-                break;
-            case 'RATA':
-
-                if($payrollMaster->payrollMasterEmployees()->delete()){
-                    if($payrollMaster->delete()){
-                        return 1;
-                    }
-                    return 1;
-                }
-                break;
+        if($payrollMaster->delete()){
+            $payrollMaster->hmtDetails()->delete();
+            $payrollMaster->payrollMasterEmployees()->delete();
+            return 1;
         }
-
         abort(503,'Error deleting payroll.');
     }
 

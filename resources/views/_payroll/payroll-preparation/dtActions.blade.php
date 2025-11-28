@@ -1,7 +1,9 @@
-<div class="btn-group btn-group-sm">
-    <button type="button" class="btn btn-outline-secondary btn-sm view_document_btn" data="{{$data->slug}}" data-toggle="modal" data-target ="#show_document_modal">
-        <i class="fa fa-file-text"></i>
-    </button>
+<div class="btn-group btn-group-sm float-end">
+    @if($data->type == 'DIFF')
+        <button type="button" class="btn btn-outline-secondary btn-sm clone-payroll-btn" data="{{$data->slug}}" data-bs-toggle="modal" data-bs-target ="#clone-payroll-modal">
+            <i class="fa fa-clone"></i>
+        </button>
+    @endif
 
     <a href="{{route('dashboard.payroll_preparation.edit',$data->slug)}}" type="button" data="{{$data->slug}}" class="btn btn-outline-secondary btn-sm edit_document_btn"  >
         <i class="fa fa-edit"></i>
