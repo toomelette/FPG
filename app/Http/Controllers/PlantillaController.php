@@ -272,6 +272,7 @@ class PlantillaController extends Controller{
         }
         if($request->has('pdf')){
             return Pdf::view('printables.plantilla.print',[
+                'pdfPrint' => true,
                 'planitillaArray' => $plsArr,
                 'columns' => $request->columns,
                 'request' => $request,
