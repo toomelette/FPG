@@ -787,6 +787,10 @@ class PayrollPreparationController
             return  $this->saveAs($request,$payrollMasterSlug);
         }
 
+        if($request->has('addEmployee')){
+            return  $this->addEmployee($request,$payrollMasterSlug);
+        }
+
         $this->checkLockStataus($payrollMaster);
         //IF UPDATE SIGNATORIES
         if($request->ajax() && $request->has('signatories') && $request->signatories == true){
@@ -1035,4 +1039,42 @@ class PayrollPreparationController
         return $this->payrollService->reports( $request );
     }
 
+    public function addEmployee(Request $request,$slug)
+    {
+        $request->validate([
+            'employee_slug' => 'required',
+            'payroll_group' => 'required',
+        ]);
+        $employee = Employee::query()
+            ->with([
+                'plantilla',
+                'responsibilityCenter',
+            ])
+            ->findOrFail($request->employee_slug);
+
+        $pme = new PayrollMasterEmployees();
+        $pme->pay_master_slug = $slug;
+        $pme->employee_slug = $request->employee_slug;
+        $pme->slug = Str::random();
+        $pme->employee_payroll_type = $request->payroll_group;
+        $pme->saved_employee_data = [
+            "item_no" => $employee->item_no,
+            "lastname" => $employee->lastname,
+            "name_ext" => $employee->name_ext,
+            "position" => $employee->plantilla->position,
+            "step_inc" => $employee->step_inc,
+            "firstname" => $employee->firstname,
+            "full_name" => $employee->full['LFEMi'],
+            "department" => $employee->responsibilityCenter->desc,
+            "middlename" => $employee->middlename,
+            "employee_no" => $employee->employee_no,
+            "resp_center" => $employee->responsibilityCenter->rc_code,
+            "salary_grade" => $employee->salary_grade,
+            "monthly_basic" => $employee->monthly_basic,
+        ];
+        if($pme->save()){
+            return $pme->only('slug');
+        }
+        abort(503,'Error adding employee.');
+    }
 }
