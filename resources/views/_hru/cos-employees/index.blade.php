@@ -21,7 +21,7 @@
                 <th>Assignment</th>
                 <th>Salary</th>
                 <th>Evaluation Form</th>
-                <th>Allow Print</th>
+                <th>Print Contract</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -69,7 +69,7 @@
                     }
                 },
                 { data : "evaluation_path" , name: 'evaluation_path' },
-                { data : "allow_print"},
+                { data : "print_contract"},
                 { data : "actions"},
             ],
             buttons : [

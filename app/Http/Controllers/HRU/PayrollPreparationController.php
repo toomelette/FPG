@@ -1030,4 +1030,9 @@ class PayrollPreparationController
         abort(503,'Error deleting payroll.');
     }
 
+    public function reports(Request $request)
+    {
+        return $this->payrollService->reports( $request );
+    }
+
 }

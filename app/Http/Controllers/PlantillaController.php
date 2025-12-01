@@ -14,6 +14,8 @@ use App\Swep\Services\PlantillaService;
 use App\Http\Requests\Plantilla\PlantillaFormRequest;
 use App\Http\Requests\Plantilla\PlantillaFilterRequest;
 use Illuminate\Http\Request;
+use Spatie\Browsershot\Browsershot;
+use Spatie\LaravelPdf\Facades\Pdf;
 use Yajra\DataTables\DataTables;
 
 
@@ -267,6 +269,26 @@ class PlantillaController extends Controller{
                 }
             }
 
+        }
+        if($request->has('pdf')){
+            return Pdf::view('printables.plantilla.print',[
+                'planitillaArray' => $plsArr,
+                'columns' => $request->columns,
+                'request' => $request,
+                'jobGrades' => \App\Swep\Helpers\Arrays::jobGrades(),
+            ])
+                ->paperSize(216 ,330)
+                ->margins(10,10, 10, 10)
+                ->landscape()
+                ->headers(['title' => 'aaaaa'])
+                ->footerView('printables.hru.payroll_preparation.footer-view')
+                ->name('Contract of Service.pdf')
+                ->withBrowsershot(function (Browsershot $browsershot){
+                    if(app()->environment('production')){
+                        $browsershot->setNodeBinary(env('NODE_BINARY'))
+                            ->setNpmBinary(env('NODE_BINARY'));
+                    }
+                });
         }
         ksort($plsArr);
         return view('printables.plantilla.print')->with([

@@ -123,7 +123,10 @@
                                 </div>
                                 <div class="row" id="report_frame_container" style="height: 100%; display: none">
                                     <div class="clearfix mb-3">
-                                        <button class="btn btn-primary btn-sm float-end" id="print-btn"><i class="fa fa-print"></i> Print</button>
+                                        <div class="btn-group float-end">
+                                            <a class="btn btn-secondary btn-sm" id="print-pdf"><i class="fa fa-file-pdf"></i> PDF</a>
+                                            <button class="btn btn-primary btn-sm" id="print-btn"><i class="fa fa-print"></i> Print</button>
+                                        </div>
                                     </div>
                                     <iframe id="report_frame"  style="width: 100%;" height="700" class="" src=""></iframe>
                                 </div>
@@ -194,6 +197,14 @@
 
         $("#print-btn").click(function () {
             $("#report_frame").get(0).contentWindow.print();
+        })
+
+        $("#print-pdf").click(function () {
+            let link = $("#report_frame").attr('src');
+            let base = link.split('?')[0];
+            let params = link.split('?')[1];
+            let newLink = base+'?pdf&'+params;
+            window.open(newLink, '_blank');
         })
 
         $("#layout").change(function (){

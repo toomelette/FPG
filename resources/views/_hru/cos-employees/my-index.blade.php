@@ -77,7 +77,7 @@
                     <div class="text-center pt-6">
                         <a href="{{request()->getUri()}}?printContract" target="_blank" class="text-success">
                             <span style="font-size: 72px"><i class="fa fa-file-pdf"></i></span>
-                            <p>Download and print contract</p>
+                            <p>HR prepares your contract</p>
                         </a>
                     </div>
                 @else
@@ -86,7 +86,7 @@
                             <i class="far fa-fw fa-bell"></i>
                         </div>
                         <div class="alert-message">
-                            After uploading your evaluation form and once the HR personnel has approved your contract draft, you can download it here. <br><br> Please wait until your contract is ready.
+                            Please wait until your contract is ready.
                         </div>
                     </div>
                 @endif

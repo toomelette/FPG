@@ -7,7 +7,9 @@ use App\Models\HRU\Deductions;
 use App\Models\HRU\PayrollMaster;
 use App\Models\HRU\PayrollMasterDetails;
 use App\Models\HRU\PayrollMasterEmployees;
+use App\Models\HRU\PayrollTree;
 use App\Models\HRU\TemplateDeductions;
+use App\Models\PPU\PPURespCodes;
 use App\Swep\Helpers\Arrays;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -135,6 +137,147 @@ class PayrollService
             return true;
         }
         abort(503,'Error removing column.');
+    }
+
+    public function reports(Request $request)
+    {
+        if($request->has('generate')){
+            return $this->reportGenerate($request);
+        }
+        return view('_payroll.payroll-preparation.reports');
+    }
+
+    public function reportGenerate(Request $request)
+    {
+
+        $usedRc = [];
+
+        /*
+        $employees = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+            return [
+                $data->employee->slug => $data,
+            ];
+        });
+        */
+
+        $payrollMasterEmployeesGrouped = PayrollMasterEmployees::query()
+            ->whereIn('pay_master_slug',$request->payrolls)
+            ->groupBy('employee_slug')
+            ->get();
+        $employees = PayrollMasterEmployees::query()
+            ->whereIn('pay_master_slug',$request->payrolls)
+            ->groupBy('employee_slug')
+            ->get()
+            ->mapWithKeys(function ($data){
+                return [
+                    $data->employee_slug => $data,
+                ];
+            });
+
+        $payrollMasterEmployees = PayrollMasterEmployees::query()
+            ->with(['employeePayrollDetails'])
+            ->whereIn('pay_master_slug',$request->payrolls)
+            ->get();
+
+
+
+        $rcsGroupedByRcCode = PPURespCodes::query()->get()->mapWithKeys(function ($data){return [$data->rc_code => $data];});
+
+
+
+        foreach ($employees as $employee){
+            $respCenter = $employee->saved_employee_data['resp_center'];
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.$rcsGroupedByRcCode[$respCenter]->sec] = $rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.$rcsGroupedByRcCode[$respCenter]->sec;
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.'0'] = $rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.'0';
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.'0'.'0'] = $rcsGroupedByRcCode[$respCenter]->rc.'0'.'0';
+        }
+
+        $tree = PayrollTree::query()
+            ->with('responsibilityCenter')
+            ->whereIn('resp_center',array_flatten($usedRc))
+            ->orderBy('sort','asc')
+            ->get()
+            ->groupBy(['group','resp_center']);
+
+        /*
+        $t = $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
+            return $data->employee->resp_center;
+        })->toArray();
+        */
+        $t = $payrollMasterEmployeesGrouped->groupBy(function ($data){
+            return $data->employee->resp_center;
+        })->toArray();
+        ksort($t);
+        $t = array_keys($t);
+        $dbRcs = collect($tree)->flatten()->mapWithKeys(function ($data){
+            return [
+                $data->resp_center => $data,
+            ];
+        })->toArray();
+        ksort($dbRcs);
+        $dbRcs = array_keys($dbRcs);
+        $diff = array_diff($t,$dbRcs);
+        if(count($diff) > 0){
+            abort(503,'There are some RCs not found on the hierarchy of RCs. Contact database administrator. ---------------------------- '.print_r($diff,true));
+        }
+        ksort($usedRc);
+
+
+        $payrollMasters = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        })
+                            ->orderBy('saved_employee_data->full_name');
+                    }
+                },
+                'payrollMasterEmployees.employee.plantilla',
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $hmtDetails->intermediateGroup($request->payrollGroupsSelected);
+                    }
+
+                },
+                'hmtDetails.chartOfAccount',
+            ])
+            ->orderBy('date','desc')
+            ->whereIn('slug',$request->payrolls)
+            ->get();
+
+        $usedCodes = [];
+        foreach ($payrollMasters as $payrollMaster){
+            foreach ($payrollMaster->hmtDetails->groupBy('code')->keys() as $key){
+                $usedCodes[] = $key;
+            }
+        }
+        $usedCodes = array_unique($usedCodes);
+
+        return view('printables.hru.payroll_preparation.DIFF.payroll-consolidated')->with([
+            'payrollMasters' => $payrollMasters,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMasterEmployeesGrouped->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+            'payrollEmployeesBySlug' => $payrollMasterEmployeesGrouped->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+            'payrollMasterEmployees' => $payrollMasterEmployees,
+            'usedCodes' => $usedCodes,
+        ]);
+
+
+
+
     }
 
 

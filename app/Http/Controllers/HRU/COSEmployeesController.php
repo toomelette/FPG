@@ -26,6 +26,9 @@ class COSEmployeesController extends Controller
             $cosEmployee = COSEmployees::query()->findOrFail($slug);
             return $this->viewEvaluation($cosEmployee);
         }
+        if($request->has('printContract')){
+            return $this->printContract($slug);
+        }
         if($request->ajax() && $request->has('draw')){
 
             $cosEmps = COSEmployees::query()
@@ -38,7 +41,10 @@ class COSEmployeesController extends Controller
                         'cosEmployee' => $cosEmployee,
                     ]);
                 })
-                ->addColumn('allow_print',function ($cosEmployee){
+                ->addColumn('print_contract',function ($cosEmployee){
+                    return view('_hru.cos-employees.dtPrintContract')->with([
+                        'cosEmployee' => $cosEmployee,
+                    ]);
                     return view('_hru.cos-employees.dtAllowPrint')->with([
                         'cosEmployee' => $cosEmployee,
                     ]);
@@ -266,14 +272,10 @@ class COSEmployeesController extends Controller
 
     public function printContract($slug)
     {
-
         $cosEmp = COSEmployees::query()
             ->with(['cos','employee'])
             ->findOrFail($slug);
 
-        if($cosEmp->status != 'APPROVED'){
-            abort(503,'Contract not yet ready.');
-        }
         if($cosEmp->cos->is_active != 1){
             abort(503,'Contract of service not active.');
         }
