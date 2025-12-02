@@ -31,17 +31,17 @@
     <table style="width: 93%;font-size: 14px; margin-left: 25px">
         <tr>
             <td style="width: 15px; vertical-align: top">1.</td>
-            <td style="width: 75%">
+            <td style="width: 75%" class="v-top">
                 Adjusted monthly basic salary effective
-                <b><u>{{Carbon::parse($request->effectivity)->format('F d, Y')}}</u></b>
+                <b>{{Carbon::parse($request->effectivity)->format('F d, Y')}}</b>
                 under the new salary schedule
-                {{$request->new_salary_type}} <b>{{$request->new_salary_grade}}</b>
-                Step <b>{{$request->new_step_inc}}</b>
+                {{$request->new_salary_type}} <b><u>{{$request->new_salary_grade}}</u></b>
+                Step <b><u>{{$request->new_step_inc}}</u></b>
             </td>
-            <td class="text-right" style="vertical-align: top">
+            <td class="text-right v-top" style="vertical-align: top">
                 <u>
                     <p class="editable text-strong">
-                        {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat($request->new_monthly_salary),2)}}
+                        Php {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat($request->new_monthly_salary),2)}}
                     </p>
                 </u>
             </td>
@@ -49,16 +49,16 @@
 
         <tr>
             <td style="width: 15px; vertical-align: top">2.</td>
-            <td>
+            <td class="v-top">
                 Actual monthly salary as of
-                <b><u>{{Carbon::parse($request->effectivity)->subDays(1)->format('F d, Y')}}</u></b>
-                {{$request->salary_type}} <b>{{$request->salary_grade}}</b>
-                Step <b>{{$request->step_inc}}</b>
+                <b>{{Carbon::parse($request->effectivity)->subDays(1)->format('F d, Y')}}</b>
+                {{$request->salary_type}} <b><u>{{$request->salary_grade}}</u></b>
+                Step <b><u>{{$request->step_inc}}</u></b>
             </td>
-            <td class="text-right" style="vertical-align: top">
+            <td class="text-right v-top" style="vertical-align: top">
                 <u>
                     <p class="editable text-strong">
-                        {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat($request->monthly_basic ?? 0),2)}}
+                        Php {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat($request->monthly_basic ?? 0),2)}}
                     </p>
                 </u>
             </td>
@@ -66,7 +66,7 @@
 
         <tr>
             <td style="width: 15px; vertical-align: top">3.</td>
-            <td>
+            <td class="v-top">
                 Monthly Salary Adjustment effective
                 <b><u>{{Carbon::parse($request->effectivity)->format('F d, Y')}}</u></b>
             </td>
@@ -74,7 +74,7 @@
                 <u>
                     <p class="editable text-strong">
 
-                        {{number_format(Helper::sanitizeNumFormat($request->new_monthly_salary) - Helper::sanitizeNumFormat($request->monthly_basic),2)}}
+                        Php {{number_format(Helper::sanitizeNumFormat($request->new_monthly_salary) - Helper::sanitizeNumFormat($request->monthly_basic),2)}}
                     </p>
                 </u>
             </td>
@@ -105,7 +105,7 @@
         {{\App\Swep\Helpers\Arrays::salaryTypes()[$request->new_salary_type] ?? '-'}}:  <b>{{$request->new_salary_grade}}</b> Step:  <b>{{$request->new_step_inc}}</b>
     </p>
     <p style="font-size: 12px">
-        Item No./ Unique Item No., FY 2021 Personal Services Itemization <br> and/or Plantilla of Personnel:  <b>{{\Illuminate\Support\Facades\Request::get('new_item_no')}}</b>
+        Item No./ Unique Item No., FY 2025 Personal Services Itemization <br> and/or Plantilla of Personnel:  <b>{{\Illuminate\Support\Facades\Request::get('new_item_no')}}</b>
     </p>
 
     <table style="font-size: 12px; border-collapse: collapse">
