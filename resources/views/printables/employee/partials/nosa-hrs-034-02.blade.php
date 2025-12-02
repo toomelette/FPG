@@ -25,7 +25,14 @@
     </p>
 
     <p style="text-align: justify">
-        {!!  Str::of($request->body)->replace(Carbon::parse($request->effectivity)->format('F d, Y'),'<b>'.Carbon::parse($request->effectivity)->format('F d, Y').'</b>')  !!}
+
+        {!!
+            Str::of($request->body)
+                ->replace(Carbon::parse($request->effectivity)->format('F d, Y'),'<b>'.Carbon::parse($request->effectivity)->format('F d, Y').'</b>')
+                ->replace('January 01, 2025','<b>January 01, 2025</b>')
+                ->replace('October 22, 2025','<b>October 22, 2025</b>')
+                ->replace('2025-01','<b>2025-01</b>')
+        !!}
     </p>
 
     <table style="width: 93%;font-size: 14px; margin-left: 25px">
