@@ -31,14 +31,14 @@
     <table style="width: 93%;font-size: 14px; margin-left: 25px">
         <tr>
             <td style="width: 15px; vertical-align: top">1.</td>
-            <td style="width: 75%" class="v-top">
+            <td style="width: 75%" class="text-top">
                 Adjusted monthly basic salary effective
                 <b>{{Carbon::parse($request->effectivity)->format('F d, Y')}}</b>
                 under the new salary schedule
                 {{$request->new_salary_type}} <b><u>{{$request->new_salary_grade}}</u></b>
                 Step <b><u>{{$request->new_step_inc}}</u></b>
             </td>
-            <td class="text-right v-top" style="vertical-align: top">
+            <td class="text-right text-top" style="vertical-align: top">
                 <u>
                     <p class="editable text-strong">
                         Php {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat($request->new_monthly_salary),2)}}
@@ -49,13 +49,13 @@
 
         <tr>
             <td style="width: 15px; vertical-align: top">2.</td>
-            <td class="v-top">
+            <td class="text-top">
                 Actual monthly salary as of
                 <b>{{Carbon::parse($request->effectivity)->subDays(1)->format('F d, Y')}}</b>
                 {{$request->salary_type}} <b><u>{{$request->salary_grade}}</u></b>
                 Step <b><u>{{$request->step_inc}}</u></b>
             </td>
-            <td class="text-right v-top" style="vertical-align: top">
+            <td class="text-right text-top" style="vertical-align: top">
                 <u>
                     <p class="editable text-strong">
                         Php {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat($request->monthly_basic ?? 0),2)}}
@@ -66,9 +66,9 @@
 
         <tr>
             <td style="width: 15px; vertical-align: top">3.</td>
-            <td class="v-top">
+            <td class="text-top">
                 Monthly Salary Adjustment effective
-                <b><u>{{Carbon::parse($request->effectivity)->format('F d, Y')}}</u></b>
+                <b>{{Carbon::parse($request->effectivity)->format('F d, Y')}}</b>
             </td>
             <td class="text-right" style="vertical-align: top">
                 <u>
