@@ -47,8 +47,8 @@
                 <x-forms.select label="Appointment Status" name="appointment_status" cols="4" :options="\App\Swep\Helpers\Arrays::appointmentStatus()" :value="$sr"/>
             </div>
             <div class="row mb-2">
-                <x-forms.select class="change-scale"  label="Salary Scale" name="salary_scale" cols="3" type="date" :options="$salaryTableScales" />
-                <x-forms.select label="Salary Type" class="change-scale-{{$rand}}" name="salary_type" cols="3" :options="\App\Swep\Helpers\Arrays::salaryTypes()" :value="$sr ?? null"/>
+                <x-forms.select class="change-scale-{{$rand}}"  label="Salary Scale" name="salary_scale" cols="3" type="date" :options="$salaryTableScales" />
+                <x-forms.select label="Salary Type"  name="salary_type" cols="3" :options="\App\Swep\Helpers\Arrays::salaryTypes()" :value="$sr ?? null"/>
                 <x-forms.input label="SG/JG/PG" class="change-scale-{{$rand}}" name="grade" cols="3" type="number" :value="$sr ?? null"/>
                 <x-forms.select label="Step" class="change-scale-{{$rand}}" name="step" cols="3" :options="\App\Swep\Helpers\Arrays::stepIncements()" :value="$sr ?? null"/>
             </div>
