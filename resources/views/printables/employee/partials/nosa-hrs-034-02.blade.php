@@ -126,7 +126,7 @@
 
     <div style="overflow: auto">
         <div style="width: 20%; float: right; font-size: 10px">
-            <p>
+            <p style="display: none">
                 FM-AFD-HRS-034, Rev. 002<br>Effectivity Date: April 4, 2024
             </p>
         </div>

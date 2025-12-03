@@ -795,3 +795,40 @@ Route::get('testWs',function (){
 });
 
 
+Route::get('testWs',function (){
+    $r = \App\Models\MisRequests::query()->orderBy('created_at','desc')->firstOrFail();
+    $rr = \App\Models\HRU\HRRequests::query()->firstOrFail();
+    event(new \App\Events\MisRequest\NewRequest($r));
+    event(new \App\Events\HrRequest\NewRequest($rr));
+});
+
+
+
+
+
+
+
+
+
+Route::get('updateSalaries',function (){
+    $newSal = DB::table('temp_new_salary')->get();
+    $empsInNewSal = $newSal->pluck('emp_no');
+    $employees = \App\Models\Employee::query()
+        ->active()
+        ->permanent()
+        ->whereIn('employee_no',$empsInNewSal)
+        ->get();
+
+    $ssl = \App\Swep\Helpers\Arrays::salaryTable('CPCS 2 - CAT 1');
+
+    foreach ($employees as $employee){
+        $empInNewSal = $newSal->where('emp_no','=',$employee->employee_no)->first();
+        $employee->monthly_basic = $ssl[$empInNewSal->new_grade][$empInNewSal->new_step];
+        $employee->salary_grade = $empInNewSal->new_grade;
+        $employee->step_inc = $empInNewSal->new_step;
+        $employee->save();
+    }
+    dd(1);
+});
+
+
