@@ -37,7 +37,7 @@
                 <td class="text-right">
                     <u>
                         <p class="editable text-strong">
-                            {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(request('monthly_basic')),2)}}
+                            Php {{number_format(\App\Swep\Helpers\Helper::sanitizeNumFormat(request('monthly_basic')),2)}}
                         </p>
                     </u>
                 </td>
@@ -59,7 +59,7 @@
                 <td class="text-right" style="">
                     <u>
                         <p class="editable text-strong">
-                            {{number_format(Helper::sanitizeNumFormat(request('new_monthly_salary')) - Helper::sanitizeNumFormat(request('monthly_basic')),2)}}
+                            Php {{number_format(Helper::sanitizeNumFormat(request('new_monthly_salary')) - Helper::sanitizeNumFormat(request('monthly_basic')),2)}}
                         </p>
                     </u>
                 </td>
@@ -79,7 +79,7 @@
                 <td class="text-right" style="">
                     <u>
                         <p class="editable text-strong">
-                            {{number_format(Helper::sanitizeNumFormat(request('new_monthly_salary') ?? 0),2)}}
+                            Php {{number_format(Helper::sanitizeNumFormat(request('new_monthly_salary') ?? 0),2)}}
 
                         </p>
                     </u>
