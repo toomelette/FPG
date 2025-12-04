@@ -59,10 +59,17 @@
             <td class="text-top">
                 Actual monthly salary as of
                 <b>
-                    @if(($request->before_effectivity ?? null) == null)
+                    @php
+                        if(isset($request->before_effectivity)){
+                            $bf = $request->before_effectivity;
+                        }else{
+                            $bf = null;
+                        }
+                    @endphp
+                    @if($bf == null)
                         {{Carbon::parse($request->effectivity)->subDays(1)->format('F d, Y')}}
                     @else
-                        {{Carbon::parse($request->before_effectivity)->format('F d, Y')}}
+                        {{Carbon::parse($bf)->format('F d, Y')}}
                     @endif
 
                 </b>
