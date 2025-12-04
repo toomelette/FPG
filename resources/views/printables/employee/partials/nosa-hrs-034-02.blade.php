@@ -58,7 +58,14 @@
             <td style="width: 15px; vertical-align: top">2.</td>
             <td class="text-top">
                 Actual monthly salary as of
-                <b>{{Carbon::parse($request->effectivity)->subDays(1)->format('F d, Y')}}</b>
+                <b>
+                    @if($request->before_effectivity == null)
+                        {{Carbon::parse($request->effectivity)->subDays(1)->format('F d, Y')}}
+                    @else
+                        {{Carbon::parse($request->before_effectivity)->format('F d, Y')}}
+                    @endif
+
+                </b>
                 {{$request->salary_type}} <b><u>{{$request->salary_grade}}</u></b>
                 Step <b><u>{{$request->step_inc}}</u></b>
             </td>
