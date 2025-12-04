@@ -126,7 +126,7 @@
         {{\App\Swep\Helpers\Arrays::salaryTypes()[$request->new_salary_type] ?? '-'}}:  <b>{{$request->new_salary_grade}}</b> Step:  <b>{{$request->new_step_inc}}</b>
     </p>
     <p style="font-size: 12px">
-        Item No./ Unique Item No., FY 2025 Personal Services Itemization <br> and/or Plantilla of Personnel:  <b>{{\Illuminate\Support\Facades\Request::get('new_item_no')}}</b>
+        Item No./ Unique Item No., FY 2025 Personal Services Itemization <br> and/or Plantilla of Personnel:  <b>{{$request->new_item_no}}</b>
     </p>
 
     <table style="font-size: 12px; border-collapse: collapse">
