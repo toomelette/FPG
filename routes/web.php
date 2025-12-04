@@ -794,4 +794,14 @@ Route::get('testWs',function (){
     event(new \App\Events\HrRequest\NewRequest($rr));
 });
 
+Route::get('createUsers',function (){
+    $emps = \App\Models\Employee::query()
+        ->whereDoesntHave('user')
+        ->active()
+        ->applyProjectId()
+        ->get();
+    dd($emps);
+});
+
+
 

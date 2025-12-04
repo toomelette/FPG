@@ -118,7 +118,6 @@
                                 <x-forms.select label="Item and Position" name="item_and_position" id="item-and-position" cols="12" />
                                 <x-forms.input container-class="hide-thiss" label="Item No" name="new_item_no" cols="4" required="required" :value="$nosa['item_no'] ?? null"/>
                                 <x-forms.input container-class="hide-thiss" label="Position" name="new_position" cols="8" required="required" :value="$nosa['position'] ?? null"/>
-
                             </div>
                             <div class="row">
                                 <div class="col-md-12 mb-3">
@@ -126,6 +125,7 @@
                                         OLD Salary
                                     </x-adminkit.html.alert>
                                     <div class="row">
+                                        <x-forms.select label="Salary Scale" name="salary_scale" :options="\App\Swep\Helpers\Arrays::salaryTableScales()" cols="8" :value="$nosa['old']['salary_scale'] ?? null"/>
                                         <x-forms.select label="Salary Type" name="salary_type" :options="\App\Swep\Helpers\Arrays::salaryTypes()" cols="4" :value="$nosa['old']['salary_type'] ?? null"/>
                                         <x-forms.input label="Grade" name="salary_grade" type="number" id="cur_sg" cols="4" class="currents" :value="$nosa['old']['grade'] ?? null"/>
                                         <x-forms.input label="Step Inc" name="step_inc" type="number" id="cur_si" cols="4" class="currents" :value="$nosa['old']['step'] ?? null"/>

@@ -224,7 +224,7 @@ class PayrollPreparationController
                 $this->yebService->recompute($payMaster->slug);
                 break;
             case  'DIFF':
-                $this->differentialService->recompute($payMaster->slug);
+                return $payMaster->only('slug');
                 break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);
