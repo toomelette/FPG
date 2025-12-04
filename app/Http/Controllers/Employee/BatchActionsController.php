@@ -67,7 +67,7 @@ class BatchActionsController
             $newRequest->signatory_name = $request->signatory_name;
             $newRequest->signatory_position = $request->signatory_position;
             $newRequest->new_position = $latest->position;
-            $newRequest->new_item_no = $latest->new_item_no;
+            $newRequest->new_item_no = $latest->item_no;
             $srs[] = [
                 'request' => $newRequest,
                 'employee' => $serviceRecord->employee,
