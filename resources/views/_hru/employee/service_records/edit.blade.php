@@ -1,6 +1,8 @@
 @php
     /** @var \App\Models\EmployeeServiceRecord $sr **/
     $rand = Str::random(5);
+    $salaryTableScales = \App\Swep\Helpers\Arrays::salaryTableScales();
+    $salaryScale = json_encode(\App\Swep\Helpers\Arrays::salaryTable());
 @endphp
 @extends('adminkit.modal',[
     'id' => 'edit-sr-form-'.$rand,
@@ -45,13 +47,14 @@
                 <x-forms.select label="Appointment Status" name="appointment_status" cols="4" :options="\App\Swep\Helpers\Arrays::appointmentStatus()" :value="$sr"/>
             </div>
             <div class="row mb-2">
-                <x-forms.select label="Salary Type" name="salary_type" cols="4" :options="\App\Swep\Helpers\Arrays::salaryTypes()" :value="$sr ?? null"/>
-                <x-forms.input label="SG/JG/PG" name="grade" cols="4" type="number" :value="$sr ?? null"/>
-                <x-forms.select label="Step" name="step" cols="4" :options="\App\Swep\Helpers\Arrays::stepIncements()" :value="$sr ?? null"/>
+                <x-forms.select class="change-scale-{{$rand}}"  label="Salary Scale" name="salary_scale" cols="3" type="date" :options="$salaryTableScales" />
+                <x-forms.select label="Salary Type"  name="salary_type" cols="3" :options="\App\Swep\Helpers\Arrays::salaryTypes()" :value="$sr ?? null"/>
+                <x-forms.input label="SG/JG/PG" class="change-scale-{{$rand}}" name="grade" cols="3" type="number" :value="$sr ?? null"/>
+                <x-forms.select label="Step" class="change-scale-{{$rand}}" name="step" cols="3" :options="\App\Swep\Helpers\Arrays::stepIncements()" :value="$sr ?? null"/>
             </div>
             <div class="row mb-2">
-                <x-forms.input label="Monthly Basic Salary" name="monthly_basic" cols="6" target="#annual-salary-{{$rand}}" class="autonum-{{$rand}} monthly_basic"  :value="$sr ?? null"/>
-                <x-forms.select label="Due to" name="due_to" cols="6" target="#annual-salary-{{$rand}}" :options="\App\Swep\Helpers\Arrays::serviceRecordDueTo()" :value="$sr ?? null"/>
+                <x-forms.input label="Monthly Basic Salary" name="monthly_basic" cols="6" target="#annual-salary-{{$rand}}" id="monthly-basic-{{$rand}}" class="monthly_basic targeted-autonum"  :value="$sr ?? null"/>
+                <x-forms.select label="Due to" name="due_to" cols="6" target="#annual-salary-{{$rand}}" id="annual-basic-{{$rand}}" :options="\App\Swep\Helpers\Arrays::serviceRecordDueTo()" :value="$sr ?? null"/>
             </div>
             <div class="row mb-2">
                 <x-forms.input label="Salary (Annual)" name="salary" id="annual-salary-{{$rand}}" cols="6" class="autonum-{{$rand}}" :value="$sr"/>
@@ -185,7 +188,30 @@
             $('#item_no_{{$rand}}').val({{$sr->item_no}}).change();
         @endif
 
+        let ssl{{$rand}} = {!! $salaryScale !!};
 
+        $("body").on("change keyup",".change-scale-{{$rand}}",function (){
+            let form = $(this).parents('form');
+            let grade = form.find('input[name="grade"]').val();
+            let step = form.find('select[name="step"]').val();
+            let scale = form.find('select[name="salary_scale"]').val();
+            let mbs = 0;
+            if(grade !== '' && step != "" && scale != ""){
+                mbs = ssl{{$rand}}[scale][grade][step];
+            }else{
+                mbs = 0;
+            }
+
+            AutoNumeric.getAutoNumericElement('#monthly-basic-{{$rand}}').set(mbs);
+            $("#monthly-basic-{{$rand}}").trigger('change');
+            //form.find('#monthly-basic-{{$rand}}').val(mbs);
+        })
+
+
+        AutoNumeric.multiple('.targeted-autonum', {
+            decimalPlaces: 2,
+            digitGroupSeparator: ','
+        });
     </script>
 @endsection
 
