@@ -826,12 +826,15 @@ Route::get('updateSalaries',function (){
     $employees = \App\Models\Employee::query()
         ->active()
         ->permanent()
+        ->where('locations','=','LUZON/MINDANAO')
         ->whereIn('employee_no',$empsInNewSal)
         ->get();
+
 
     $ssl = \App\Swep\Helpers\Arrays::salaryTable('CPCS 2 - CAT 1');
 
     foreach ($employees as $employee){
+
         $empInNewSal = $newSal->where('emp_no','=',$employee->employee_no)->first();
         $employee->monthly_basic = $ssl[$empInNewSal->new_grade][$empInNewSal->new_step];
         $employee->salary_grade = $empInNewSal->new_grade;
