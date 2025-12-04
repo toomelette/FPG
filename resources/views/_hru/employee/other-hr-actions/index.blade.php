@@ -124,26 +124,30 @@
                                     <x-adminkit.html.alert type="info mb-1" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
                                         OLD Salary
                                     </x-adminkit.html.alert>
-                                    <div class="row">
-                                        <x-forms.select label="Salary Scale" name="salary_scale" :options="\App\Swep\Helpers\Arrays::salaryTableScales()" cols="8" :value="$nosa['old']['salary_scale'] ?? null"/>
-                                        <x-forms.select label="Salary Type" name="salary_type" :options="\App\Swep\Helpers\Arrays::salaryTypes()" cols="4" :value="$nosa['old']['salary_type'] ?? null"/>
-                                        <x-forms.input label="Grade" name="salary_grade" type="number" id="cur_sg" cols="4" class="currents" :value="$nosa['old']['grade'] ?? null"/>
-                                        <x-forms.input label="Step Inc" name="step_inc" type="number" id="cur_si" cols="4" class="currents" :value="$nosa['old']['step'] ?? null"/>
-                                        <x-forms.input label="Monthly Salary" name="monthly_basic" id="cur_monthly_salary" tabindex="-1" reqiured="required" cols="6" class="currents" :value="Helper::toNumber(Helper::sanitizeAutonum($nosa['old']['monthly_basic'] ?? null),2)"/>
-                                    </div>
+                                    <fieldset>
+                                        <div class="row">
+                                            <x-forms.select label="Salary Scale"  name="salary_scale" class="change-scale salary_scale" :options="\App\Swep\Helpers\Arrays::salaryTableScales()" cols="8" :value="$nosa['old']['salary_scale'] ?? null"/>
+                                            <x-forms.select label="Salary Type" name="salary_type" :options="\App\Swep\Helpers\Arrays::salaryTypes()" cols="4" :value="$nosa['old']['salary_type'] ?? null"/>
+                                            <x-forms.input label="Grade"  name="salary_grade" type="number" id="cur_sg" cols="4" class="change-scale grade" :value="$nosa['old']['grade'] ?? null"/>
+                                            <x-forms.select  label="Step Inc" for="step" name="step_inc"  :options="\App\Swep\Helpers\Arrays::stepIncements()" cols="4" class="change-scale step" :value="$nosa['old']['step'] ?? null"/>
+                                            <x-forms.input label="Monthly Salary"  name="monthly_basic" id="cur_monthly_salary" tabindex="-1" reqiured="required" cols="6" class="monthly_basic autonum-simple" :value="Helper::toNumber(Helper::sanitizeAutonum($nosa['old']['monthly_basic'] ?? null),2)"/>
+                                        </div>
+                                    </fieldset>
                                 </div>
 
                                 <div class="col-md-12">
                                     <x-adminkit.html.alert type="success mb-1" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
                                         NEW Salary
                                     </x-adminkit.html.alert>
-                                    <div class="row">
-                                        <x-forms.select label="Salary Type" name="new_salary_type" :options="\App\Swep\Helpers\Arrays::salaryTypes()" cols="4" :value="$nosa['new']['salary_type'] ?? null"/>
-
-                                        <x-forms.input label="Job Grade" name="new_salary_grade" cols="4" class="news" id="new_sg" type="number" required="required" :value="$nosa['new']['grade'] ?? null"/>
-                                        <x-forms.input label="Step Inc" name="new_step_inc" cols="4" class="news" id="new_si" type="number" required="required" :value="$nosa['new']['step'] ?? null"/>
-                                        <x-forms.input label="Monthly Sal." name="new_monthly_salary" cols="6" class="news" tabindex="-1" id="new_monthly_salary"  required="required" :value="Helper::toNumber(Helper::sanitizeAutonum($nosa['new']['monthly_basic'] ?? null),2)"/>
-                                    </div>
+                                    <fieldset>
+                                        <div class="row">
+                                            <x-forms.select label="Salary Scale"  name="salary_scale" class="change-scale salary_scale" :options="\App\Swep\Helpers\Arrays::salaryTableScales()" cols="8" :value="$nosa['old']['salary_scale'] ?? null"/>
+                                            <x-forms.select label="Salary Type" name="new_salary_type" :options="\App\Swep\Helpers\Arrays::salaryTypes()" cols="4" :value="$nosa['new']['salary_type'] ?? null"/>
+                                            <x-forms.input label="Job Grade" name="new_salary_grade" cols="4" class="change-scale grade" id="new_sg" type="number" required="required" :value="$nosa['new']['grade'] ?? null"/>
+                                            <x-forms.input label="Step Inc" name="new_step_inc" cols="4" class="change-scale step" id="new_si" type="number" required="required" :value="$nosa['new']['step'] ?? null"/>
+                                            <x-forms.input label="Monthly Sal." name="new_monthly_salary" cols="6" class="monthly_basic autonum-simple" tabindex="-1" id="new_monthly_salary"  required="required" :value="Helper::toNumber(Helper::sanitizeAutonum($nosa['new']['monthly_basic'] ?? null),2)"/>
+                                        </div>
+                                    </fieldset>
                                 </div>
 
                             </div>
@@ -233,12 +237,16 @@
                                     <x-adminkit.html.alert type="info mb-1" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
                                         OLD Salary
                                     </x-adminkit.html.alert>
-                                    <div class="row">
-                                        <x-forms.select label="Salary Type" name="salary_type" :options="\App\Swep\Helpers\Arrays::salaryTypes()" cols="4" :value="$nosi['old']['salary_type'] ?? null"/>
-                                        <x-forms.input label="Grade" name="salary_grade" type="number" id="cur_sg" cols="4" class="currents" :value="$nosi['old']['grade'] ?? null"/>
-                                        <x-forms.input label="Step Inc" name="step_inc" type="number" id="cur_si" cols="4" class="currents" :value="$nosi['old']['step'] ?? null"/>
-                                        <x-forms.input label="Monthly Salary" name="monthly_basic" id="cur_monthly_salary" tabindex="-1" reqiured="required" cols="6" class="currents" :value="Helper::toNumber(Helper::sanitizeAutonum($nosi['old']['monthly_basic'] ?? null),2)"/>
-                                    </div>
+                                    <fieldset>
+                                        <div class="row">
+                                            <x-forms.select label="Salary Scale"  name="salary_scale" class="change-scale salary_scale" :options="\App\Swep\Helpers\Arrays::salaryTableScales()" cols="8" :value="$nosa['old']['salary_scale'] ?? null"/>
+
+                                            <x-forms.select label="Salary Type" name="salary_type" :options="\App\Swep\Helpers\Arrays::salaryTypes()" cols="4" :value="$nosi['old']['salary_type'] ?? null"/>
+                                            <x-forms.input label="Grade" name="salary_grade" type="number" id="cur_sg" cols="4" class="currents" :value="$nosi['old']['grade'] ?? null"/>
+                                            <x-forms.input label="Step Inc" name="step_inc" type="number" id="cur_si" cols="4" class="currents" :value="$nosi['old']['step'] ?? null"/>
+                                            <x-forms.input label="Monthly Salary" name="monthly_basic" id="cur_monthly_salary" tabindex="-1" reqiured="required" cols="6" class="currents" :value="Helper::toNumber(Helper::sanitizeAutonum($nosi['old']['monthly_basic'] ?? null),2)"/>
+                                        </div>
+                                    </fieldset>
                                 </div>
 
                                 <div class="col-md-12">
@@ -333,7 +341,10 @@ Administration and Finance' }}
 @section('modals')
 
 @endsection
-
+@php
+    $salaryTableScales = \App\Swep\Helpers\Arrays::salaryTableScales();
+    $salaryScale = json_encode(\App\Swep\Helpers\Arrays::salaryTable());
+@endphp
 @section('scripts')
     <script type="text/javascript">
         var data = {!! \App\Swep\Helpers\Arrays::payPlantillasWithItemNumberAndDetails() !!};
@@ -370,7 +381,7 @@ Administration and Finance' }}
             $(this).parent('.iframe-container').find('iframe').get(0).contentWindow.print();
         })
 
-
+        /*
         $(".currents").change(function () {
             let cur_sg = $("#cur_sg").val();
             let cur_si = $("#cur_si").val();
@@ -390,6 +401,8 @@ Administration and Finance' }}
                 }
             })
         })
+
+
         $(".news").change(function () {
             let new_sg = $("#new_sg").val();
             let new_si = $("#new_si").val();
@@ -410,13 +423,33 @@ Administration and Finance' }}
                 }
             })
         })
-
+        */
         $(document).ready(function (){
             $(".currents").trigger('change');
             @if(request()->has('tab') && request('tab') != '')
                 $(".nav-link[href='#{{request('tab')}}']")[0].click();
                 $("#{{request('tab')}} form").submit();
             @endif
+        })
+
+        let ssl = {!! $salaryScale !!};
+
+        $("body").on("change keyup",".change-scale",function (){
+            let fieldset = $(this).parents('fieldset');
+            let grade = fieldset.find('.grade').val();
+            let step = fieldset.find('.step').val();
+            let scale = fieldset.find('select.salary_scale').val();
+            let mbs = 0;
+            console.log(scale);
+            if(grade !== '' && step != "" && scale != ""){
+                mbs = ssl[scale][grade][step];
+            }else{
+                mbs = 0;
+            }
+            let mbsElement = fieldset.find('input.monthly_basic')[0];
+            AutoNumeric.getAutoNumericElement(mbsElement).set(mbs);
+
+            //form.find('#monthly-basic').val(mbs);
         })
 
 
