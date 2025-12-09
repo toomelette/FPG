@@ -826,11 +826,11 @@ Route::get('updateSalaries',function (){
     $employees = \App\Models\Employee::query()
         ->active()
         ->permanent()
-        ->where('locations','=','LUZON/MINDANAO')
+        ->where('locations','=','VISAYAS')
         ->whereIn('employee_no',$empsInNewSal)
         ->get();
 
-
+    dd($employees);
     $ssl = \App\Swep\Helpers\Arrays::salaryTable('CPCS 2 - CAT 1');
 
     foreach ($employees as $employee){
