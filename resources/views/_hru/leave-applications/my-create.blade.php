@@ -55,7 +55,7 @@
                 <x-forms.input label="First Name" name="firstname" cols="lg-2 col-md-3" :value="$employee ?? null"/>
                 <x-forms.input label="Middle Name" name="middlename" cols="lg-1 col-md-2" :value="$employee ?? null"/>
                 <x-forms.input label="Position" name="position" cols="lg-2 col-md-4" :value="$employee->plantilla->position ?? $employee->position ?? null"/>
-                <x-forms.input label="Salary" name="salary" cols="lg-1 col-md-3" class="autonum2 text-right" :value="\App\Swep\Helpers\Arrays::jobGrades()[$employee->salary_grade][$employee->step_inc] ?? null"/>
+                <x-forms.input label="Salary" name="salary" cols="lg-1 col-md-3" class="autonum2 text-right" :value="$employee->monthly_basic ?? null"/>
             </div>
 
             <x-adminkit.html.alert type="info mt-5" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
