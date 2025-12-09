@@ -861,6 +861,10 @@ class EmployeeController extends Controller{
                 'name' => 'Middle Name',
                 'checked' => 0,
             ],
+            'middle_initial' => [
+                'name' => 'Middle Initial',
+                'checked' => 0,
+            ],
             'name_ext' => [
                 'name' => 'Name Ext.',
                 'checked' => 0,

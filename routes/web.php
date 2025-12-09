@@ -845,3 +845,18 @@ Route::get('updateSalaries',function (){
 });
 
 
+Route::get('users',function (){
+    $empsWithoutUser = \App\Models\Employee::query()
+        ->active()
+        ->applyProjectId()
+        ->whereDoesntHave('user')
+        ->get();
+
+    dd($empsWithoutUser->map(function ($e){
+        return [
+            $e->lastname,
+            $e->employee_no,
+        ];
+    }));
+});
+
