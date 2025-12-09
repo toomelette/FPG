@@ -830,7 +830,7 @@ Route::get('updateSalaries',function (){
         ->whereIn('employee_no',$empsInNewSal)
         ->get();
 
-    dd($employees);
+//    dd($employees);
     $ssl = \App\Swep\Helpers\Arrays::salaryTable('CPCS 2 - CAT 1');
 
     foreach ($employees as $employee){
