@@ -181,7 +181,8 @@ class PayrollPreparationController
                     'employee_slug' => $employee,
                     'incentive_code' => 'MONTHLY',
                     'priority' => 1,
-                    'amount' => $jobGrades[$employeesBySlug[$employee]->salary_grade ?? 0][$employeesBySlug[$employee]->step_inc ?? 0] ?? null,
+//                    'amount' => $jobGrades[$employeesBySlug[$employee]->salary_grade ?? 0][$employeesBySlug[$employee]->step_inc ?? 0] ?? null,
+                    'amount' => $employeesBySlug[$employee]->monthly_basic ?? 0,
                 ];
 
                 $upsertTemplateMonthlyBasic[] = [

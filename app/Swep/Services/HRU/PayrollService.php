@@ -46,7 +46,8 @@ class PayrollService
                 'item_no' => $payrollMasterEmployee->employee->item_no,
                 'salary_grade' => $payrollMasterEmployee->employee->salary_grade,
                 'step_inc' => $payrollMasterEmployee->employee->step_inc,
-                'monthly_basic' => $jobGrades[$payrollMasterEmployee->employee->salary_grade][$payrollMasterEmployee->employee->step_inc] ?? null,
+//                'monthly_basic' => $jobGrades[$payrollMasterEmployee->employee->salary_grade][$payrollMasterEmployee->employee->step_inc] ?? null,
+                'monthly_basic' => $payrollMasterEmployee->employee->monthly_basic,
                 'resp_center' => $payrollMasterEmployee->employee->resp_center,
                 'department' => $payrollMasterEmployee->employee->responsibilityCenter->description->name ?? '',
             ];

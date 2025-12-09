@@ -66,7 +66,7 @@
                 </td>
                 <td>{{$employee->salary_grade}}</td>
                 <td>{{$employee->step_inc}}</td>
-                <td class="text-end">{{Helper::toNumber($employee->templateMonthlyBasic->amount ?? null,2)}}</td>
+                <td class="text-end">{{Helper::toNumber($employee->monthly_basic ?? null,2)}}</td>
             </tr>
         @empty
         @endforelse
