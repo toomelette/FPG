@@ -248,18 +248,29 @@ class PayrollService
                 },
                 'hmtDetails.chartOfAccount',
             ])
-            ->orderBy('date','desc')
+            ->orderBy('date')
             ->whereIn('slug',$request->payrolls)
             ->get();
 
         $usedCodes = [];
+
         foreach ($payrollMasters as $payrollMaster){
-            foreach ($payrollMaster->hmtDetails->groupBy('code')->keys() as $key){
+            $keys = $payrollMaster->hmtDetails
+                ->sortBy(function ($d){
+
+                    if($d->type == 'INCENTIVE'){
+                        return '1'.$d->priority;
+                    }else{
+                        return '2'.$d->priority;
+                    }
+                })
+                ->groupBy('code')
+                ->keys();
+            foreach ($keys as $key){
                 $usedCodes[] = $key;
             }
         }
         $usedCodes = array_unique($usedCodes);
-
         return view('printables.hru.payroll_preparation.DIFF.payroll-consolidated')->with([
             'payrollMasters' => $payrollMasters,
             'tree' => $tree,

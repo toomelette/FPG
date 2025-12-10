@@ -26,7 +26,7 @@
                         <tr>
                             <th style="width: 25%; padding: 0; border: none"></th>
                             @forelse($payrollMasters as $payrollMaster)
-                                <th style="border: none"></th>
+                                <th style="border: none; width: {{(100-25-5) / $payrollMasters->count()}}%"></th>
                             @empty
                             @endforelse
                             <th style="padding: 0; border: none;width: 5%"></th>
@@ -62,7 +62,7 @@
                                 Name of Employee
                             </th>
                             @forelse($payrollMasters as $payrollMaster)
-                                <th>{{Carbon::parse($payrollMaster->date)->format('M')}}</th>
+                                <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{Carbon::parse($payrollMaster->date)->format('M')}}</th>
                             @empty
                             @endforelse
                             <th>
@@ -180,7 +180,7 @@
                     <tr>
                         <th style="width: 25%; padding: 0; border: none"></th>
                         @forelse($payrollMasters as $payrollMaster)
-                            <th style="border: none"></th>
+                            <th style="border: none; width: {{(100-25-5) / $payrollMasters->count()}}%"></th>
                         @empty
                         @endforelse
                         <th style="padding: 0; border: none;width: 5%"></th>
