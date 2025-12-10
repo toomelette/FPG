@@ -860,3 +860,33 @@ Route::get('users',function (){
     }));
 });
 
+
+Route::get('updatePayrollTemplate',function (){
+    $r = \Illuminate\Http\Request::capture();
+    $emps = \App\Models\Employee::query()
+        ->active()
+        ->permanent()
+        ->get();
+
+    $inc = \App\Models\HRU\Incentives::query()
+        ->where('incentive_code','=',$r->code)
+        ->firstOrFail();
+
+
+    $upsertTemplateMonthlyBasic = [];
+    foreach ($emps as $emp){
+        $upsertTemplateMonthlyBasic[] = [
+            'employee_slug' => $emp->slug,
+            'incentive_code' => $inc->incentive_code,
+            'priority' => $inc->n_priority ?? $inc->priority,
+            'amount' => $r->amount ?? null,
+            'taxable' => $inc->taxable,
+        ];
+    }
+
+    \App\Models\HRU\TemplateIncentives::query()->upsert($upsertTemplateMonthlyBasic,
+        ['employee_slug','incentive_code'],
+        ['priority','amount']
+    );
+    dd($upsertTemplateMonthlyBasic);
+});

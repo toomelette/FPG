@@ -19,6 +19,7 @@ use App\Models\PPU\PPURespCodes;
 use App\Models\RCCodeTree;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
+use App\Swep\Services\HRU\CNAService;
 use App\Swep\Services\HRU\DifferentialService;
 use App\Swep\Services\HRU\HazardPrcService;
 use App\Swep\Services\HRU\MonthlyPayrollService;
@@ -48,6 +49,7 @@ class PayrollPreparationController
         public YebService $yebService,
         public PayrollService $payrollService,
         public DifferentialService $differentialService,
+        public CNAService $CNAService,
     )
     {
 
@@ -169,6 +171,7 @@ class PayrollPreparationController
 
         $lbpAccountCode = ChartOfAccounts::query()->where('payroll','=',\Auth::user()->project_id)->first();
         $payMaster->account_code = $lbpAccountCode->account_code;
+
         if(count($request->employees) > 0){
             foreach ($request->employees as $employee){
                 $employeeArr[] = [
@@ -206,6 +209,8 @@ class PayrollPreparationController
             ['employee_slug','incentive_code'],
             ['priority','amount']
         );
+
+
         $this->payrollService->updateEmployeesData($payMaster,null);
 
         switch ($request->type){
@@ -226,6 +231,8 @@ class PayrollPreparationController
                 break;
             case  'DIFF':
                 return $payMaster->only('slug');
+            case  'CNA':
+                $this->CNAService->recompute($payMaster->slug);
                 break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);
@@ -292,11 +299,8 @@ class PayrollPreparationController
 
         if($request->has('editDeduction')){
             switch ($payrollMaster->type){
-                case 'MONTHLY' :
-                case 'MYB':
-                case 'YEB':
+                default:
                     return  $this->payrollService->editDeduction($request);
-
             }
 
         }
@@ -398,6 +402,18 @@ class PayrollPreparationController
                     return $this->yebService->recompute($slug);
                 }
                 return view('_payroll.payroll-preparation.YEB.edit')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
+
+            case 'CNA':
+                //show employee offcanvas
+                if($request->has('employee')){
+                    return  $this->CNAService->showEmployee($slug,$request);
+                }
+                if($request->has('recompute') && $request->recompute == true){
+                    return $this->CNAService->recompute($slug);
+                }
+                return view('_payroll.payroll-preparation.CNA.edit')->with([
                     'payrollMaster' => $payrollMaster,
                 ]);
 
@@ -821,8 +837,9 @@ class PayrollPreparationController
                 return $this->mybService->update($request,$payrollMaster);
             case 'YEB' :
                 return $this->yebService->update($request,$payrollMaster);
+            case 'CNA' :
+                return $this->CNAService->update($request,$payrollMaster);
             case "DIFF" :
-
                 return $this->differentialService->update($request,$payrollMaster);
             default:
                 break;
@@ -950,10 +967,17 @@ class PayrollPreparationController
                 return $this->yebService->abstract($slug);
             case 'YEB-ALPHALIST':
                 return $this->yebService->alphalist($slug);
-
-
             case 'DIFF':
                 return $this->differentialService->printPayroll($slug);
+
+            case 'GLOBAL':
+                return $this->payrollService->printPayrollGlobal($slug);
+            case 'GLOBAL-DEDUCTION-REGISTER':
+                return $this->payrollService->printDeductionRegisterGlobal($slug);
+            case 'GLOBAL-ABSTRACT':
+                return $this->payrollService->printAbstractGlobal($slug);
+            case 'GLOBAL-ALPHALIST':
+                return $this->payrollService->printAlphalistGlobal($slug);
         }
         abort(503,'CHECK SWITCH CASE STATEMENT');
     }

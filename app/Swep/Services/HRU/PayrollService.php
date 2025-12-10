@@ -142,6 +142,273 @@ class PayrollService
         abort(503,'Error removing column.');
     }
 
+
+    public function printPayrollGlobal($payrollMasterSlug)
+    {
+        $request = Request::capture();
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
+                    }
+                },
+                'payrollMasterEmployees.employee.plantilla',
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $hmtDetails->intermediateGroup($request->payrollGroupsSelected);
+                    }
+
+                },
+                'hmtDetails.chartOfAccount',
+            ])
+            ->findOrFail($payrollMasterSlug);
+        if($payrollMaster->payrollMasterEmployees->count() < 1){
+            abort(504,'No employee found under the payroll group you have selected.');
+        }
+        $usedRc = [];
+        $employees = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+            return [
+                $data->employee->slug => $data,
+            ];
+        });
+        $rcsGroupedByRcCode = PPURespCodes::query()->get()->mapWithKeys(function ($data){return [$data->rc_code => $data];});
+        foreach ($employees as $employee){
+            $respCenter = $employee->saved_employee_data['resp_center'];
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.$rcsGroupedByRcCode[$respCenter]->sec] = $rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.$rcsGroupedByRcCode[$respCenter]->sec;
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.'0'] = $rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.'0';
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.'0'.'0'] = $rcsGroupedByRcCode[$respCenter]->rc.'0'.'0';
+        }
+
+        $tree = PayrollTree::query()
+            ->with('responsibilityCenter')
+            ->whereIn('resp_center',array_flatten($usedRc))
+            ->orderBy('sort','asc')
+            ->get()
+            ->groupBy(['group','resp_center']);
+
+        $t = $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
+            return $data->employee->resp_center;
+        })->toArray();
+        ksort($t);
+        $t = array_keys($t);
+        $dbRcs = collect($tree)->flatten()->mapWithKeys(function ($data){
+            return [
+                $data->resp_center => $data,
+            ];
+        })->toArray();
+        ksort($dbRcs);
+        $dbRcs = array_keys($dbRcs);
+        $diff = array_diff($t,$dbRcs);
+        if(count($diff) > 0){
+            abort(503,'There are some RCs not found on the hierarchy of RCs. Contact database administrator. ---------------------------- '.print_r($diff,true));
+        }
+        ksort($usedRc);
+
+
+
+        return Pdf::view('printables.hru.payroll_preparation.GLOBAL.payroll',[
+            'pdfPrint' => true,
+            'payrollMaster' => $payrollMaster,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+            'payrollEmployeesBySlug' => $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+        ])
+            ->paperSize('215.9','330.2')
+            ->landscape()
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Payroll Summary.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+
+        /*
+        return view('printables.hru.payroll_preparation.YEB.payroll')->with([
+            'payrollMaster' => $payrollMaster,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+            'payrollEmployeesBySlug' => $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+        ]);
+        */
+
+    }
+
+    public function printDeductionRegisterGlobal($payrollMasterSlug)
+    {
+        $request = Request::capture();
+
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
+                    }
+                },
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    if($request->has('payrollGroupsSelected') && $request->payrollGroupsSelected != ''){
+                        $hmtDetails->intermediateGroup($request->payrollGroupsSelected);
+                    }
+                },
+                'hmtDetails.chartOfAccount',
+                'hmtDetails.deduction',
+                'hmtDetails.employeePayroll'
+            ])
+            ->findOrFail($payrollMasterSlug);
+
+
+
+        return Pdf::view('printables.hru.payroll_preparation.GLOBAL.deduction-register',[
+            'payrollMaster' => $payrollMaster,
+            'pdfPrint' => true,
+        ])
+            ->format('a4')
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Deduction Register.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+
+        return view('printables.hru.payroll_preparation.GLOBAL.deduction-register')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
+    }
+
+
+    public function printAbstractGlobal($payrollMasterSlug)
+    {
+        $request = Request::capture();
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
+                    }
+                },
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    if($request->has('payrollGroupsSelected') && $request->payrollGroupsSelected != ''){
+                        $hmtDetails->intermediateGroup($request->payrollGroupsSelected);
+                    }
+
+                },
+                'hmtDetails.chartOfAccount',
+            ])
+            ->findOrFail($payrollMasterSlug);
+
+        $rataPayrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees',
+            ])
+            ->where('type','=','RATA')
+            ->where('date','=', $payrollMaster->date)
+            ->first();
+
+        $employeesWithRata = $rataPayrollMaster?->payrollMasterEmployees->mapWithKeys(function ($data){
+            return[
+                $data->employee_slug => $data,
+            ];
+        });
+
+        return view('printables.hru.payroll_preparation.GLOBAL.abstract')->with([
+            'payrollMaster' => $payrollMaster,
+            'employeesWithRata' => $employeesWithRata,
+        ]);
+    }
+
+    public function printAlphalistGlobal($payrollMasterSlug)
+    {
+        $request = Request::capture();
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        });
+                    }
+                },
+                'payrollMasterEmployees.employee.plantilla',
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $hmtDetails->intermediateGroup($request->payrollGroupsSelected);
+                    }
+
+                },
+                'hmtDetails.chartOfAccount',
+            ])
+            ->findOrFail($payrollMasterSlug);
+        if($payrollMaster->payrollMasterEmployees->count() < 1){
+            abort(504,'No employee found under the payroll group you have selected.');
+        }
+        return Pdf::view('printables.hru.payroll_preparation.GLOBAL.alphalist',[
+            'pdfPrint' => true,
+            'payrollMaster' => $payrollMaster,
+        ])
+            ->paperSize('215.9','330.2')
+            ->portrait()
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Payroll Summary.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+
+        return view('printables.hru.payroll_preparation.GLOBAL.alphalist')->with([
+            'payrollMaster' => $payrollMaster,
+        ]);
+
+    }
     public function reports(Request $request)
     {
         if($request->has('generate')){

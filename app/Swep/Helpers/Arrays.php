@@ -910,7 +910,16 @@ class Arrays
             'MYB' => 'MYB',
             'YEB' => 'YEB',
             'DIFF' => 'DIFFERENTIAL',
+            'CNA' => 'CNA',
         ];
+    }
+
+    public static function taxFree90k()
+    {
+        $inc = Incentives::query()
+            ->where('tax_free_90k','=',1)
+            ->get();
+        return $inc->pluck('incentive_code');
     }
 
     public static function jobGrades(){

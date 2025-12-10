@@ -23,7 +23,7 @@ class PayrollMasterEmployees extends Model
             'diff_other' => 'array',
         ];
     public function payrollMaster(){
-        return $this->belongsTo(PayrollMaster::class,'payroll_master_slug','slug');
+        return $this->belongsTo(PayrollMaster::class,'pay_master_slug','slug');
     }
     public function employeePayrollDetails(){
         return $this->hasMany(PayrollMasterDetails::class,'pay_master_employee_listing_slug','slug');
