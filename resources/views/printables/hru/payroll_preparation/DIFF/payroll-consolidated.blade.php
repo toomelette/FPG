@@ -65,7 +65,7 @@
                                 <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{Carbon::parse($payrollMaster->date)->format('M')}}</th>
                             @empty
                             @endforelse
-                            <th>
+                            <th class="text-strong text-center">
                                 TOTAL
                             </th>
                         </tr>
@@ -110,7 +110,7 @@
                                         @empty
                                         @endforelse
 
-                                        <td class="text-right text-top">
+                                        <td class="text-right text-top text-strong">
                                             {{
                                                 Helper::toNumber($payrollMasters->sum(function ($payrollMaster) use($payrollEmployee,$code){
                                                     return $payrollMaster->hmtDetails->where('code','=',$code)->where('employeePayroll.employee_slug','=',$payrollEmployee->employee_slug)->sum('amount');
@@ -123,14 +123,14 @@
 
                                 {{--TOTALS PER RC FOOTER--}}
                                 <tr>
-                                    <td class="indent b-top text-strong">TOTAL {{$rc->first()->responsibilityCenter->desc ?? ''}}</td>
+                                    <td class="indent b-top text-strong text-strong">TOTAL {{$rc->first()->responsibilityCenter->desc ?? ''}}</td>
                                     @forelse($payrollMasters as $payrollMaster)
                                         <td class="text-right b-top">
                                             {{ Helper::toNumber($payrollMaster->hmtDetails->where('code','=',$code)->where('employeePayroll.saved_employee_data.resp_center','=',$rc->first()->resp_center)->sum('amount') )  }}
                                         </td>
                                     @empty
                                     @endforelse
-                                    <td class="text-right text-top b-top">
+                                    <td class="text-right text-top b-top text-strong">
                                         {{
                                             Helper::toNumber($payrollMasters->sum(function ($payrollMaster) use($payrollEmployee,$rc,$code){
                                                 return $payrollMaster->hmtDetails->where('code','=',$code)->where('employeePayroll.saved_employee_data.resp_center','=',$rc->first()->resp_center)->sum('amount');
@@ -151,17 +151,17 @@
 
 
                             @forelse($payrollMasters as $payrollMaster)
-                                <td class="text-right b-top">
+                                <td class="text-right b-top text-strong">
                                     {{ Helper::toNumber($payrollMaster->hmtDetails->where('code','=',$code)->whereIn('employeePayroll.saved_employee_data.resp_center',$rcs->keys()->toArray())->sum('amount') )  }}
                                 </td>
                             @empty
                             @endforelse
 
-                            <td class="text-right text-top b-top">
+                            <td class="text-right text-top b-top text-strong">
                                 {{
                                     Helper::toNumber($payrollMasters->sum(function ($payrollMaster) use($payrollEmployee,$rcs,$code){
                                         return $payrollMaster->hmtDetails->where('code','=',$code)->whereIn('employeePayroll.saved_employee_data.resp_center',$rcs->keys()->toArray())->sum('amount');
-                                    }));
+                                    }))
                                 }}
                             </td>
 
@@ -213,10 +213,10 @@
                             Name of Employee
                         </th>
                         @forelse($payrollMasters as $payrollMaster)
-                            <th>{{Carbon::parse($payrollMaster->date)->format('M')}}</th>
+                            <th class="text-center">{{Carbon::parse($payrollMaster->date)->format('M')}}</th>
                         @empty
                         @endforelse
-                        <th>Total</th>
+                        <th class="text-strong text-center">Total</th>
                     </tr>
 
                     </thead>
