@@ -231,16 +231,16 @@
 
                         @forelse($payrollMasters as $payrollMaster)
                             <th class="text-right b-top">
-                                {{ $payrollMaster->hmtDetails->where('code','=',$code)->sum('amount')  }}
+                                {{ Helper::toNumber($payrollMaster->hmtDetails->where('code','=',$code)->sum('amount'))  }}
                             </th>
 
                         @empty
                         @endforelse
                         <td class="text-right text-top b-top">
                             {{
-                                $payrollMasters->sum(function ($payrollMaster) use($payrollEmployee,$rcs,$code){
+                                Helper::toNumber($payrollMasters->sum(function ($payrollMaster) use($payrollEmployee,$rcs,$code){
                                     return $payrollMaster->hmtDetails->where('code','=',$code)->sum('amount');
-                                })
+                                }))
                             }}
                         </td>
 
