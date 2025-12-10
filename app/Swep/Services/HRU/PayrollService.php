@@ -275,21 +275,6 @@ class PayrollService
             }
         }
         $usedCodes = array_unique($usedCodes);
-        return view('printables.hru.payroll_preparation.DIFF.payroll-consolidated')->with([
-            'payrollMasters' => $payrollMasters,
-            'tree' => $tree,
-            'payrollEmployeesGroupedByRespCenter' => $payrollMasterEmployeesGrouped->groupBy(function ($data){
-                return $data->employee->resp_center;
-            }),
-            'payrollEmployeesBySlug' => $payrollMasterEmployeesGrouped->mapWithKeys(function ($data){
-                return [
-                    $data->employee->slug => $data,
-                ];
-            }),
-            'usedRc' => $usedRc,
-            'payrollMasterEmployees' => $payrollMasterEmployees,
-            'usedCodes' => $usedCodes,
-        ]);
 
 
         return Pdf::view('printables.hru.payroll_preparation.DIFF.payroll-consolidated',[
