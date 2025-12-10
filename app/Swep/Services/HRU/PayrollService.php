@@ -164,6 +164,7 @@ class PayrollService
         */
 
         $payrollMasterEmployeesGrouped = PayrollMasterEmployees::query()
+            ->with(['employee'])
             ->whereIn('pay_master_slug',$request->payrolls)
             ->groupBy('employee_slug')
             ->get();
@@ -248,6 +249,7 @@ class PayrollService
                     }
 
                 },
+                'hmtDetails.employeePayroll',
                 'hmtDetails.chartOfAccount',
             ])
             ->orderBy('date')
@@ -273,6 +275,21 @@ class PayrollService
             }
         }
         $usedCodes = array_unique($usedCodes);
+        return view('printables.hru.payroll_preparation.DIFF.payroll-consolidated')->with([
+            'payrollMasters' => $payrollMasters,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMasterEmployeesGrouped->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+            'payrollEmployeesBySlug' => $payrollMasterEmployeesGrouped->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+            'payrollMasterEmployees' => $payrollMasterEmployees,
+            'usedCodes' => $usedCodes,
+        ]);
 
 
         return Pdf::view('printables.hru.payroll_preparation.DIFF.payroll-consolidated',[
