@@ -14,6 +14,8 @@ use App\Swep\Helpers\Arrays;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\Browsershot\Browsershot;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class PayrollService
 {
@@ -271,6 +273,37 @@ class PayrollService
             }
         }
         $usedCodes = array_unique($usedCodes);
+
+
+        return Pdf::view('printables.hru.payroll_preparation.DIFF.payroll-consolidated',[
+            'pdfPrint' => true,
+            'payrollMasters' => $payrollMasters,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMasterEmployeesGrouped->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+            'payrollEmployeesBySlug' => $payrollMasterEmployeesGrouped->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+            'payrollMasterEmployees' => $payrollMasterEmployees,
+            'usedCodes' => $usedCodes,
+        ])
+            ->paperSize('215.9','330.2')
+            ->landscape()
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Payroll Summary.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+        /*
         return view('printables.hru.payroll_preparation.DIFF.payroll-consolidated')->with([
             'payrollMasters' => $payrollMasters,
             'tree' => $tree,
@@ -286,8 +319,7 @@ class PayrollService
             'payrollMasterEmployees' => $payrollMasterEmployees,
             'usedCodes' => $usedCodes,
         ]);
-
-
+        */
 
 
     }
