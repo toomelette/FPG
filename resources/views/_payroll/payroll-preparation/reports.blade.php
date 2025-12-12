@@ -23,8 +23,9 @@
                         <form method="GET" target="_blank" >
                             @php
                                 $diffs = \App\Models\HRU\PayrollMaster::query()
-                                    ->where('type','DIFF')
+                                    ->where('type','like','DIFF%')
                                     ->orderBy('date')
+                                    ->orderBy('type')
                                     ->get();
                             @endphp
                             <label>
@@ -35,6 +36,7 @@
                                 <tr>
                                     <th style="width: 50px;"></th>
                                     <th>Month</th>
+                                    <th>Type</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -47,6 +49,9 @@
                                         </td>
                                         <td>
                                             {{Helper::dateFormat($diff->date,'Y F')}}
+                                        </td>
+                                        <td>
+                                            {{$diff->type}}
                                         </td>
                                     </tr>
                                 @empty

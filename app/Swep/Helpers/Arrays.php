@@ -910,6 +910,8 @@ class Arrays
             'MYB' => 'MYB',
             'YEB' => 'YEB',
             'DIFF' => 'DIFFERENTIAL',
+            'DIFF-MYB' => 'DIFFERENTIAL-MYB',
+            'DIFF-YEB' => 'DIFFERENTIAL-YEB',
             'CNA' => 'CNA',
         ];
     }

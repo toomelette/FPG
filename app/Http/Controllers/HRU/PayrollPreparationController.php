@@ -21,6 +21,8 @@ use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\HRU\CNAService;
 use App\Swep\Services\HRU\DifferentialService;
+use App\Swep\Services\HRU\DiffMybService;
+use App\Swep\Services\HRU\DiffYebService;
 use App\Swep\Services\HRU\HazardPrcService;
 use App\Swep\Services\HRU\MonthlyPayrollService;
 use App\Swep\Services\HRU\MybService;
@@ -50,6 +52,8 @@ class PayrollPreparationController
         public PayrollService $payrollService,
         public DifferentialService $differentialService,
         public CNAService $CNAService,
+        public DiffMybService $diffMybService,
+        public DiffYebService $diffYebService,
     )
     {
 
@@ -230,6 +234,10 @@ class PayrollPreparationController
                 $this->yebService->recompute($payMaster->slug);
                 break;
             case  'DIFF':
+                return $payMaster->only('slug');
+            case  'DIFF-MYB':
+                return $payMaster->only('slug');
+            case  'DIFF-YEB':
                 return $payMaster->only('slug');
             case  'CNA':
                 $this->CNAService->recompute($payMaster->slug);
@@ -433,6 +441,14 @@ class PayrollPreparationController
                 return view('_payroll.payroll-preparation.DIFF.edit')->with([
                     'payrollMaster' => $payrollMaster,
                 ]);
+
+            case 'DIFF-MYB':
+                //show employee offcanvas
+                return $this->diffMybService->edit($payrollMaster,$slug,$request);
+            case 'DIFF-YEB':
+                //show employee offcanvas
+                return $this->diffYebService->edit($payrollMaster,$slug,$request);
+
         }
         
     }
@@ -841,6 +857,10 @@ class PayrollPreparationController
                 return $this->CNAService->update($request,$payrollMaster);
             case "DIFF" :
                 return $this->differentialService->update($request,$payrollMaster);
+            case "DIFF-MYB" :
+                return $this->diffMybService->update($request,$payrollMaster);
+            case "DIFF-YEB" :
+                return $this->diffYebService->update($request,$payrollMaster);
             default:
                 break;
         }
@@ -969,6 +989,10 @@ class PayrollPreparationController
                 return $this->yebService->alphalist($slug);
             case 'DIFF':
                 return $this->differentialService->printPayroll($slug);
+            case 'DIFF-MYB':
+                return $this->diffMybService->printPayroll($slug);
+            case 'DIFF-YEB':
+                return $this->diffYebService->printPayroll($slug);
 
             case 'GLOBAL':
                 return $this->payrollService->printPayrollGlobal($slug);

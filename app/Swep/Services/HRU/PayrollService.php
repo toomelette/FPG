@@ -520,6 +520,7 @@ class PayrollService
                 'hmtDetails.chartOfAccount',
             ])
             ->orderBy('date')
+            ->orderBy('type')
             ->whereIn('slug',$request->payrolls)
             ->get();
 

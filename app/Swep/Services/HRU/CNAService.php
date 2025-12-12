@@ -106,7 +106,7 @@ class CNAService
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
             $hasBeedEdited = $payrollMasterEmployee->has_been_edited;
 
-            if(array_search('WTAX',$hasBeedEdited) != false){
+            if($hasBeedEdited && array_search('WTAX',$hasBeedEdited) != false ){
                 $prevIncentives = $detailsOfEmployee
                     ->where('employeePayroll.employee_slug','=',$payrollMasterEmployee->employee_slug)
                     ->where('type','=','INCENTIVE')
