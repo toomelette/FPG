@@ -1355,6 +1355,7 @@ class MonthlyPayrollService
 
     public function updateDeduction(Request $request)
     {
+
         $deductionMaster = Deductions::query()->where('deduction_code','=',$request->code)->first();
 
         $upsert  = [];

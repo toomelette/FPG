@@ -104,39 +104,43 @@ class CNAService
             ->get();
 
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
-            $prevIncentives = $detailsOfEmployee
-                ->where('employeePayroll.employee_slug','=',$payrollMasterEmployee->employee_slug)
-                ->where('type','=','INCENTIVE')
-                ->sum('amount');
-            $prevDeductions = $detailsOfEmployee
-                ->where('employeePayroll.employee_slug','=',$payrollMasterEmployee->employee_slug)
-                ->where('type','=','DEDUCTION')
-                ->sum('amount');
-            $netBonuses90k = $prevIncentives - $prevDeductions;
-            $taxable90kRem = 90000-$netBonuses90k;
-            if($taxable90kRem <= 0){
-                $taxable90kRem = 0;
-            }
-            $cnaGross = $payrollMasterEmployee->employeePayrollDetails->where('type','INCENTIVE')->where('taxable','=',1)->sum('amount');
-            $cnaTaxable =  $cnaGross - $this->deMinimisCeiling;
+            $hasBeedEdited = $payrollMasterEmployee->has_been_edited;
 
-            $taxable90kRem = $taxable90kRem - $cnaTaxable;
+            if(array_search('WTAX',$hasBeedEdited) != false){
+                $prevIncentives = $detailsOfEmployee
+                    ->where('employeePayroll.employee_slug','=',$payrollMasterEmployee->employee_slug)
+                    ->where('type','=','INCENTIVE')
+                    ->sum('amount');
+                $prevDeductions = $detailsOfEmployee
+                    ->where('employeePayroll.employee_slug','=',$payrollMasterEmployee->employee_slug)
+                    ->where('type','=','DEDUCTION')
+                    ->sum('amount');
+                $netBonuses90k = $prevIncentives - $prevDeductions;
+                $taxable90kRem = 90000-$netBonuses90k;
+                if($taxable90kRem <= 0){
+                    $taxable90kRem = 0;
+                }
+                $cnaGross = $payrollMasterEmployee->employeePayrollDetails->where('type','INCENTIVE')->where('taxable','=',1)->sum('amount');
+                $cnaTaxable =  $cnaGross - $this->deMinimisCeiling;
 
-            if($taxable90kRem <= 0){
-                $taxRate = Helper::taxRate($payrollMasterEmployee->employee->monthly_basic);
-                $taxableAmount = abs($taxable90kRem);
-                $tax = $taxableAmount * $taxRate;
-                $taxDeductionToInsert[] = [
-                    'employee_slug' => $payrollMasterEmployee->employee->slug,
-                    'pay_master_employee_listing_slug' => $payrollMasterEmployee->slug,
-                    'slug' => Str::random(),
-                    'type' => 'DEDUCTION',
-                    'code' => 'WTAX',
-                    'amount' => $tax,
-                    'original_amount' => $tax,
-                    'priority' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->n_priority,
-                    'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
-                ];
+                $taxable90kRem = $taxable90kRem - $cnaTaxable;
+
+                if($taxable90kRem <= 0){
+                    $taxRate = Helper::taxRate($payrollMasterEmployee->employee->monthly_basic);
+                    $taxableAmount = abs($taxable90kRem);
+                    $tax = $taxableAmount * $taxRate;
+                    $taxDeductionToInsert[] = [
+                        'employee_slug' => $payrollMasterEmployee->employee->slug,
+                        'pay_master_employee_listing_slug' => $payrollMasterEmployee->slug,
+                        'slug' => Str::random(),
+                        'type' => 'DEDUCTION',
+                        'code' => 'WTAX',
+                        'amount' => $tax,
+                        'original_amount' => $tax,
+                        'priority' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->n_priority,
+                        'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
+                    ];
+                }
             }
         }
 
@@ -318,13 +322,13 @@ class CNAService
         $payMasterEmployee = PayrollMasterEmployees::query()->find($request->pay_master_employee_listing_slug);
         $payMasterSlug = $payMasterEmployee->pay_master_slug;
 
+
         $hasBeenEdited = $payMasterEmployee->has_been_edited ?? [];
         if(array_search($request->code,$hasBeenEdited) === false){
             $hasBeenEdited[] = $request->code;
             $payMasterEmployee->has_been_edited = $hasBeenEdited;
             $payMasterEmployee->save();
         }
-
         return $this->recompute($payMasterSlug,$payMasterEmployee->slug);
 
     }

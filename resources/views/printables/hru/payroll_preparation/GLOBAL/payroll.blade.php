@@ -166,7 +166,7 @@
                                 @endforelse
 
                                 <td class="text-right text-top text-strong">
-                                    {{Helper::toNumber($payrollEmployee->pay15)}}
+                                    {{number_format($payrollEmployee->pay15,2)}}
 
                                 </td>
                                 <td class="text-left text-top">
