@@ -71,7 +71,7 @@
             <div class="col-md-3">
                 <div class="text-center">
                     @if(file_exists(public_path('symlink/employee_pics/uploaded_50/'.Auth::user()->employee->photo)))
-                        <img alt="Charles Hall" src="{{asset('symlink/employee_pics/uploaded_300/'.Auth::user()->employee->photo)}}" class="rounded img-responsive mt-2" width="250">
+                        <img alt="Charles Hall" src="{{asset('symlink/employee_pics/uploaded_300/'.Auth::user()->employee->photo)}}" class="rounded img-responsive mt-2" style="width: 100%;">
                     @else
                         <img  src="{{asset('images/avatar.jpeg')}}" class="rounded-circle img-responsive mt-2" style="width: 100%;">
                     @endif
