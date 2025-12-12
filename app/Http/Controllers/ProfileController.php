@@ -47,13 +47,14 @@ class ProfileController extends Controller{
 
     public function index()
     {
+
         $payrollsOfThisEmployee = PayrollMaster::query()
             ->whereHas('payrollMasterEmployees',function ($payrollMasterEmployees){
-                $payrollMasterEmployees->where('type','=','MONTHLY')
+                $payrollMasterEmployees
                     ->where('employee_slug','=',Auth::user()->employee->slug);
             })
+            ->where('type','=','MONTHLY')
             ->get();
-
         $sessions = Sessions::query()
             ->where('user_id','=',Auth::user()->id)
             ->orderBy('last_activity','desc')
