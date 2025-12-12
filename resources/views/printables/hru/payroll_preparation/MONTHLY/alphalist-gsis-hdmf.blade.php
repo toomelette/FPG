@@ -29,6 +29,7 @@
                     <tr>
                         <th style="width: 8px;"></th>
                         <th class="text-center">Employee</th>
+                        <th class="text-center">Monthly Basic</th>
                         <th class="text-center">Per. Share</th>
                         <th class="text-center">Govt. Share</th>
                         @if($code == 'GSIS')
@@ -42,6 +43,7 @@
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td>{{$payrollMasterEmployee->employeePayroll->saved_employee_data['full_name']}}</td>
+                            <td class="text-right">{{Helper::toNumber($payrollMasterEmployee->employeePayroll->saved_employee_data['monthly_basic'])}}</td>
                             <td class="text-right">{{Helper::toNumber($payrollMasterEmployee->amount)}}</td>
                             <td class="text-right">{{Helper::toNumber($payrollMasterEmployee->govt_share)}}</td>
                             @if($code == 'GSIS')
@@ -53,6 +55,12 @@
                     <tr>
                         <th style="width: 8px;"></th>
                         <th >TOTAL</th>
+                        <th class="text-right">
+                            {{
+                                Helper::toNumber($employees->sum(function ($payrollMasterEmployee){
+                                    return $payrollMasterEmployee->employeePayroll->saved_employee_data['monthly_basic'];
+                            }))}}
+                        </th>
                         <th class="text-right">{{Helper::toNumber($employees->sum('amount'))}}</th>
                         <th class="text-right">{{Helper::toNumber($employees->sum('govt_share'))}}</th>
                         @if($code == 'GSIS')
