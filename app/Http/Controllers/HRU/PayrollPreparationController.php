@@ -28,6 +28,7 @@ use App\Swep\Services\HRU\MonthlyPayrollService;
 use App\Swep\Services\HRU\MybService;
 use App\Swep\Services\HRU\PayrollService;
 use App\Swep\Services\HRU\RaTaService;
+use App\Swep\Services\HRU\SRIService;
 use App\Swep\Services\HRU\YebService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,6 +55,7 @@ class PayrollPreparationController
         public CNAService $CNAService,
         public DiffMybService $diffMybService,
         public DiffYebService $diffYebService,
+        public SRIService $SRIService,
     )
     {
 
@@ -242,6 +244,9 @@ class PayrollPreparationController
             case  'CNA':
                 $this->CNAService->recompute($payMaster->slug);
                 break;
+            case 'SRI':
+                $this->SRIService->recompute($payMaster->slug);
+                break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);
                 break;
@@ -422,6 +427,17 @@ class PayrollPreparationController
                     return $this->CNAService->recompute($slug);
                 }
                 return view('_payroll.payroll-preparation.CNA.edit')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
+            case 'SRI':
+                //show employee offcanvas
+                if($request->has('employee')){
+                    return  $this->SRIService->showEmployee($slug,$request);
+                }
+                if($request->has('recompute') && $request->recompute == true){
+                    return $this->SRIService->recompute($slug);
+                }
+                return view('_payroll.payroll-preparation.SRI.edit')->with([
                     'payrollMaster' => $payrollMaster,
                 ]);
 
@@ -855,6 +871,8 @@ class PayrollPreparationController
                 return $this->yebService->update($request,$payrollMaster);
             case 'CNA' :
                 return $this->CNAService->update($request,$payrollMaster);
+            case 'SRI' :
+                return $this->SRIService->update($request,$payrollMaster);
             case "DIFF" :
                 return $this->differentialService->update($request,$payrollMaster);
             case "DIFF-MYB" :
