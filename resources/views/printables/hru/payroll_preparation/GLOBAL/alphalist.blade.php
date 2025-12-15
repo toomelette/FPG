@@ -5,6 +5,10 @@
 @extends('printables.print_layouts.print_layout_main')
 
 @section('wrapper')
+    @php
+        $incentives = $payrollMaster->hmtDetails->where('type','INCENTIVE')->unique('code');
+        $deductions = $payrollMaster->hmtDetails->where('type','DEDUCTION')->where('code','WTAX')->unique('code');
+    @endphp
     <div style="font-family: Cambria, Caladea">
         <div style="break-after: page">
             <div class="clearfix">
@@ -22,7 +26,13 @@
                 <tr>
                     <th style="width: 8px;"></th>
                     <th class="text-center">Employee</th>
-                    <th class="text-center">{{$payrollMaster->type}}</th>
+                    @foreach($incentives as $incentive)
+                        <th class="text-center">{{$incentive->code}}</th>
+                    @endforeach
+                    @foreach($deductions as $deduction)
+                        <th class="text-center">{{$deduction->code}}</th>
+                    @endforeach
+                    <th class="text-center">NET</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -30,12 +40,36 @@
                     <tr>
                         <td>{{$loop->iteration}}</td>
                         <td>{{$payrollMasterEmployee->saved_employee_data['full_name']}}</td>
+                        @foreach($incentives as $incentive)
+                            <td class="text-right">
+                                {{Helper::toNumber($payrollMasterEmployee->employeePayrollDetails->where('code',$incentive->code)->sum('amount'))}}
+                            </td>
+                        @endforeach
+                        @foreach($deductions as $deduction)
+                            <td class="text-right">
+                                {{Helper::toNumber($payrollMasterEmployee->employeePayrollDetails->where('code',$deduction->code)->sum('amount'))}}
+                            </td>
+                        @endforeach
                         <td class="text-right">{{Helper::toNumber($payrollMasterEmployee->pay15)}}</td>
                     </tr>
                 @empty
                 @endforelse
                 <tr>
                     <th colspan="2">TOTAL</th>
+                    @foreach($incentives as $incentive)
+                        <td class="text-right">
+                            {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum(function ($payrollMasterEmployee) use($incentive){
+                                return $payrollMasterEmployee->employeePayrollDetails->where('code',$incentive->code)->sum('amount');
+                            }))}}
+                        </td>
+                    @endforeach
+                    @foreach($deductions as $deduction)
+                        <td class="text-right">
+                            {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum(function ($payrollMasterEmployee) use($deduction){
+                                return $payrollMasterEmployee->employeePayrollDetails->where('code',$deduction->code)->sum('amount');
+                            }))}}
+                        </td>
+                    @endforeach
                     <th class="text-right">{{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum('pay15'))}}</th>
                 </tr>
                 </tbody>
