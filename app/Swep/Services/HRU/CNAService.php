@@ -105,6 +105,7 @@ class CNAService
                     $computeTax = false;
                 }
             }
+
             if($computeTax){
                 $totalIncentives = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','INCENTIVE')->sum('amount');
                 $totalDeductions = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','DEDUCTION')->sum('amount');
@@ -119,16 +120,20 @@ class CNAService
                 }
 
 
-                $cnaGross = $payrollMasterEmployee->employeePayrollDetails->where('type','INCENTIVE')->where('taxable','=',1)->sum('amount');
+                $cnaGross = $payrollMasterEmployee->employeePayrollDetails
+                    ->where('type','INCENTIVE')
+                    ->where('taxable','=',1)
+                    ->sum('amount');
                 $cnaTaxable =  $cnaGross - $this->deMinimisCeiling;
 
                 $taxable90kRem = $taxable90kRem - $cnaTaxable;
 
+
+
                 if($taxable90kRem <= 0){
                     $taxRate = Helper::taxRate($payrollMasterEmployee->employee->monthly_basic);
-                    $taxableAmount = abs($taxable90kRem);
+                    $taxableAmount = $taxable90kRem * -1;
                     $tax = $taxableAmount * $taxRate;
-
                     $taxDeductionToInsert[] = [
                         'employee_slug' => $payrollMasterEmployee->employee->slug,
                         'pay_master_employee_listing_slug' => $payrollMasterEmployee->slug,
@@ -141,6 +146,7 @@ class CNAService
                         'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
                     ];
                 }
+
 
             }
         }
