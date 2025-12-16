@@ -215,11 +215,14 @@
                         <th>
                             Name of Employee
                         </th>
-                        @if($payrollMaster->type == 'DIFF')
-                            <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{strtoupper(Carbon::parse($payrollMaster->date)->format('M'))}}</th>
-                        @else
-                            <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{Str::of($payrollMaster->type)->replace('DIFF-','')}}</th>
-                        @endif
+                        @forelse($payrollMasters as $payrollMaster)
+                            @if($payrollMaster->type == 'DIFF')
+                                <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{strtoupper(Carbon::parse($payrollMaster->date)->format('M'))}}</th>
+                            @else
+                                <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{Str::of($payrollMaster->type)->replace('DIFF-','')}}</th>
+                            @endif
+                        @empty
+                        @endforelse
                         <th class="text-strong text-center">Total</th>
                     </tr>
 
@@ -453,11 +456,14 @@
                     <th>
                         Name of Employee
                     </th>
-                    @if($payrollMaster->type == 'DIFF')
-                        <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{strtoupper(Carbon::parse($payrollMaster->date)->format('M'))}}</th>
-                    @else
-                        <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{Str::of($payrollMaster->type)->replace('DIFF-','')}}</th>
-                    @endif
+                    @forelse($payrollMasters as $payrollMaster)
+                        @if($payrollMaster->type == 'DIFF')
+                            <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{strtoupper(Carbon::parse($payrollMaster->date)->format('M'))}}</th>
+                        @else
+                            <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{Str::of($payrollMaster->type)->replace('DIFF-','')}}</th>
+                        @endif
+                    @empty
+                    @endforelse
                     <th class="text-strong text-center">Total</th>
                 </tr>
 
