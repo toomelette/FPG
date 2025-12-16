@@ -89,6 +89,7 @@ class SRIService
         $taxDeductionToInsert = [];
 
         $details90k = PayrollMasterDetails::query()
+            ->with(['employeePayroll.payrollMaster'])
             ->whereHas('employeePayroll.payrollMaster',function ($payrollMaster) use ($taxFree90kCodes){
                 $payrollMaster->whereIn('type',$taxFree90kCodes);
             })
@@ -107,8 +108,14 @@ class SRIService
             }
 
             if($computeTax ) {
-                $totalIncentives = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','INCENTIVE')->sum('amount');
-                $totalDeductions = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','DEDUCTION')->sum('amount');
+                $totalIncentives = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)
+                    ->where('type','INCENTIVE')
+                    ->whereNotIn('employeePayroll.payrollMaster.type',$incentivesToInsert)
+                    ->sum('amount');
+                $totalDeductions = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)
+                    ->where('type','DEDUCTION')
+                    ->whereNotIn('employeePayroll.payrollMaster.type',$incentivesToInsert)
+                    ->sum('amount');
 
                 $totalCompensation = $totalIncentives - $totalDeductions;
                 if($totalCompensation < 90000){

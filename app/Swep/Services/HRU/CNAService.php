@@ -91,6 +91,7 @@ class CNAService
         $taxDeductionToInsert = [];
 
         $details90k = PayrollMasterDetails::query()
+            ->with(['employeePayroll.payrollMaster'])
             ->whereHas('employeePayroll.payrollMaster',function ($payrollMaster) use ($taxFree90kCodes){
                 $payrollMaster->whereIn('type',$taxFree90kCodes);
             })
@@ -107,8 +108,17 @@ class CNAService
             }
 
             if($computeTax){
-                $totalIncentives = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','INCENTIVE')->sum('amount');
-                $totalDeductions = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','DEDUCTION')->sum('amount');
+                //dd($details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','INCENTIVE')->mapWithKeys(function ($m){return [$m->code => $m->amount];}));
+                $totalIncentives = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)
+                    ->where('type','INCENTIVE')
+                    ->whereNotIn('employeePayroll.payrollMaster.type',$incentivesToInsert)
+                    ->sum('amount');
+
+                $totalDeductions = $details90k
+                    ->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)
+                    ->whereNotIn('employeePayroll.payrollMaster.type',$incentivesToInsert)
+                    ->where('type','DEDUCTION')
+                    ->sum('amount');
 
                 $totalCompensation = $totalIncentives - $totalDeductions;
 
@@ -129,7 +139,6 @@ class CNAService
                 $taxable90kRem = $taxable90kRem - $cnaTaxable;
 
 
-
                 if($taxable90kRem <= 0){
                     $taxRate = Helper::taxRate($payrollMasterEmployee->employee->monthly_basic);
                     $taxableAmount = $taxable90kRem * -1;
@@ -145,6 +154,7 @@ class CNAService
                         'priority' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->n_priority,
                         'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
                     ];
+
                 }
 
 
