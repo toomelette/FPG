@@ -62,7 +62,7 @@
                     class : 'text-end'
                 },
                 {
-                    targets : [1,2],
+                    targets : [2],
                     orderable : false,
                     searchable: false,
                     class : 'text-center'

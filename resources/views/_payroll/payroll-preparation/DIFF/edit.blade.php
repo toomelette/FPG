@@ -475,6 +475,8 @@
 
         $("#diff-form").submit(function (e){
             e.preventDefault();
+            let form = $(this);
+            loading_btn(form);
             let uri = '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}';
             let tbl = $("#payroll-employees-table");
             tbl.find('.animate__flash').each(function (){
@@ -512,9 +514,11 @@
                             });
                         })
                     }
+                    succeed(form,false,false);
                 },
                 error: function (res) {
                     populate_modal2_error(res);
+                    errored(form,res);
                 }
             })
         })
