@@ -101,7 +101,7 @@ class CNAService
             $hasBeedEdited = $payrollMasterEmployee->has_been_edited;
             $computeTax = true;
             if($hasBeedEdited != null){
-                if(array_search('WTAX',$hasBeedEdited) != false){
+                if(array_search('WTAX',$hasBeedEdited) !== false){
                     $computeTax = false;
                 }
             }

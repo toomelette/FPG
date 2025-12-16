@@ -96,13 +96,16 @@ class SRIService
             ->get();
 
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
+
             $hasBeedEdited = $payrollMasterEmployee->has_been_edited;
+
             $computeTax = true;
             if($hasBeedEdited != null){
-                if(array_search('WTAX',$hasBeedEdited) != false){
+                if(array_search('WTAX',$hasBeedEdited) !== false){
                     $computeTax = false;
                 }
             }
+
             if($computeTax ) {
                 $totalIncentives = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','INCENTIVE')->sum('amount');
                 $totalDeductions = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','DEDUCTION')->sum('amount');
