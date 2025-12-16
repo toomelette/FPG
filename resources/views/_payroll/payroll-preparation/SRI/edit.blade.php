@@ -2,7 +2,7 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>CNA</x-slot:title>
+        <x-slot:title>SRI - Service Recognition Incentive</x-slot:title>
         <x-slot:subtitle>Payroll</x-slot:subtitle>
         <x-slot:float-end></x-slot:float-end>
     </x-adminkit.html.page-title>
