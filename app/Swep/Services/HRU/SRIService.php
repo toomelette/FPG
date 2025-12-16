@@ -118,27 +118,30 @@ class SRIService
                     ->sum('amount');
 
                 $totalCompensation = $totalIncentives - $totalDeductions;
+
                 if($totalCompensation < 90000){
                     $remainingNonTax = 90000 - $totalCompensation ;
                 }else{
                     $remainingNonTax = 0;
                 }
 
-                $taxableAmount = $payrollMasterEmployee->employeePayrollDetails->where('type','INCENTIVE')->where('taxable','=',1)->sum('amount') - $remainingNonTax;
 
-                $taxRate = Helper::taxRate($payrollMasterEmployee->employee->monthly_basic);
-                $tax = $taxableAmount * $taxRate;
-                $taxDeductionToInsert[] = [
-                    'employee_slug' => $payrollMasterEmployee->employee->slug,
-                    'pay_master_employee_listing_slug' => $payrollMasterEmployee->slug,
-                    'slug' => Str::random(),
-                    'type' => 'DEDUCTION',
-                    'code' => 'WTAX',
-                    'amount' => $tax,
-                    'original_amount' => $tax,
-                    'priority' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->n_priority,
-                    'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
-                ];
+                if($remainingNonTax <= 0){
+                    $taxableAmount = $payrollMasterEmployee->employeePayrollDetails->where('type','INCENTIVE')->where('taxable','=',1)->sum('amount') - $remainingNonTax;
+                    $taxRate = Helper::taxRate($payrollMasterEmployee->employee->monthly_basic);
+                    $tax = $taxableAmount * $taxRate;
+                    $taxDeductionToInsert[] = [
+                        'employee_slug' => $payrollMasterEmployee->employee->slug,
+                        'pay_master_employee_listing_slug' => $payrollMasterEmployee->slug,
+                        'slug' => Str::random(),
+                        'type' => 'DEDUCTION',
+                        'code' => 'WTAX',
+                        'amount' => $tax,
+                        'original_amount' => $tax,
+                        'priority' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->n_priority,
+                        'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
+                    ];
+                }
             }
         }
 
