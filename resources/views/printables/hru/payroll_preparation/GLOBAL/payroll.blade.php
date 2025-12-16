@@ -47,7 +47,7 @@
                    ->flip()->values();
             $chunkedDeductions = $groupedDeductions->chunk($chunkBy);
 
-            $colspan = 3 + $chunkedIncentives->count() + $chunkedDeductions->count();
+            $colspan = 6 + $chunkedIncentives->count() + $chunkedDeductions->count();
             $sumGrand = [];
             $sumGrandSundry = [];
             $sumGrand['pay15'] = null;
@@ -104,6 +104,7 @@
                     <th>
                         Name of Employee
                     </th>
+                    <th class="text-center">MONTHLY BASIC</th>
                     @forelse($headerIncentives as $headerIncentive)
                         <th class="text-center">
                             {{$headerIncentive}}
@@ -152,6 +153,9 @@
                                 <td>
                                     <span >{{$payrollEmployee->saved_employee_data['full_name'] ?? ''}}</span> <br>
                                 </td>
+                                <td class="text-right">
+                                    <span >{{Helper::toNumber($payrollEmployee->saved_employee_data['monthly_basic'])}}</span> <br>
+                                </td>
                                 @forelse($headerIncentives as $headerIncentive)
                                     <td class="text-right">
                                         {{Helper::toNumber($payrollEmployee->employeePayrollDetails->where('code',$headerIncentive)?->first()->amount)}}
@@ -180,7 +184,7 @@
                         {{--TOTALS PER RC FOOTER--}}
                         <tr>
                             <td class="indent b-top text-strong">TOTAL {{$rc->first()->responsibilityCenter->desc ?? ''}}</td>
-
+                            <td class="b-top"></td>
                             @forelse($headerIncentives as $headerIncentive)
                                 <td class="text-right b-top">
                                     {{
@@ -228,7 +232,7 @@
                 {{-- TOTALS PER GROUP --}}
                 <tr class="text-strong">
                     <td class="b-top">TOTAL {{$group}}</td>
-
+                    <td class="b-top"></td>
                     @forelse($headerIncentives as $headerIncentive)
                         <td class="text-right b-top">
                            {{
@@ -320,6 +324,7 @@
                     <th>
                         Name of Employee
                     </th>
+                    <th class="text-center">MONTHLY BASIC</th>
                     @forelse($headerIncentives as $headerIncentive)
                         <th class="text-center">
                             {{$headerIncentive}}
@@ -346,7 +351,7 @@
                     <td>
                         GRAND TOTAL
                     </td>
-
+                    <td class="b-top"></td>
                     @forelse($headerIncentives as $headerIncentive)
                         <td class="text-right b-top">
                             {{

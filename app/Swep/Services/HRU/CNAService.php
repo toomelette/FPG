@@ -108,7 +108,7 @@ class CNAService
             }
 
             if($computeTax){
-                //dd($details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','INCENTIVE')->mapWithKeys(function ($m){return [$m->code => $m->amount];}));
+                //dd($details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','INCENTIVE')->whereNotIn('employeePayroll.payrollMaster.type',$incentivesToInsert)->mapWithKeys(function ($m){return [$m->code => $m->amount];}));
                 $totalIncentives = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)
                     ->where('type','INCENTIVE')
                     ->whereNotIn('employeePayroll.payrollMaster.type',$incentivesToInsert)
@@ -154,10 +154,7 @@ class CNAService
                         'priority' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->n_priority,
                         'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
                     ];
-
                 }
-
-
             }
         }
 

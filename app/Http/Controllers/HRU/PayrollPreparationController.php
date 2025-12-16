@@ -397,7 +397,7 @@ class PayrollPreparationController
             case 'MYB':
                 //show employee offcanvas
                 if($request->has('employee')){
-                    return  $this->mybService->showEmployee($slug,$request);
+                    return  $this->payrollService->showEmployee($slug,$request);
                 }
                 if($request->has('recompute') && $request->recompute == true){
                     return $this->mybService->recompute($slug);
@@ -409,7 +409,7 @@ class PayrollPreparationController
             case 'YEB':
                 //show employee offcanvas
                 if($request->has('employee')){
-                    return  $this->yebService->showEmployee($slug,$request);
+                    return  $this->payrollService->showEmployee($slug,$request);
                 }
                 if($request->has('recompute') && $request->recompute == true){
                     return $this->yebService->recompute($slug);
@@ -421,7 +421,7 @@ class PayrollPreparationController
             case 'CNA':
                 //show employee offcanvas
                 if($request->has('employee')){
-                    return  $this->CNAService->showEmployee($slug,$request);
+                    return  $this->payrollService->showEmployee($slug,$request);
                 }
                 if($request->has('recompute') && $request->recompute == true){
                     return $this->CNAService->recompute($slug);
@@ -432,7 +432,7 @@ class PayrollPreparationController
             case 'SRI':
                 //show employee offcanvas
                 if($request->has('employee')){
-                    return  $this->SRIService->showEmployee($slug,$request);
+                    return  $this->payrollService->showEmployee($slug,$request);
                 }
                 if($request->has('recompute') && $request->recompute == true){
                     return $this->SRIService->recompute($slug);
@@ -444,7 +444,7 @@ class PayrollPreparationController
             case 'DIFF':
                 //show employee offcanvas
                 if($request->has('employee')){
-                    return  $this->differentialService->showEmployee($slug,$request);
+                    return  $this->payrollService->showEmployee($slug,$request);
                 }
                 if($request->has('recompute') && $request->recompute == true){
                     return $this->differentialService->recompute($slug);
