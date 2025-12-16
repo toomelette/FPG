@@ -62,7 +62,11 @@
                                 Name of Employee
                             </th>
                             @forelse($payrollMasters as $payrollMaster)
-                                <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{Carbon::parse($payrollMaster->date)->format('M')}}</th>
+                                @if($payrollMaster->type == 'DIFF')
+                                    <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{strtoupper(Carbon::parse($payrollMaster->date)->format('M'))}}</th>
+                                @else
+                                    <th style="width: {{(100-25-5) / $payrollMasters->count()}}%" class="text-center">{{Str::of($payrollMaster->type)->replace('DIFF-','')}}</th>
+                                @endif
                             @empty
                             @endforelse
                             <th class="text-strong text-center">
