@@ -306,7 +306,7 @@ function load_offcanvas(btn){
 
 function populate_modal2(btn, response){
     target_modal = btn.attr('data-bs-target');
-    $(target_modal +" #modal_loader_placeholder").fadeOut(function() {
+    $(target_modal +" #modal_loader_placeholder").fadeOut(200,function() {
         $(target_modal +" .modal-content").html(response);
         $('.datepicker').each(function(){
             $(this).datepicker({
@@ -321,7 +321,7 @@ function populate_modal2(btn, response){
 
 function populate_offcanvas(btn, response){
     target_modal = btn.attr('data-bs-target');
-    $(target_modal +" #modal_loader_placeholder").fadeOut(function() {
+    $(target_modal +" #modal_loader_placeholder").fadeOut(200,function() {
         $(target_modal +" .offcanvas-body").html(response);
     });
 }

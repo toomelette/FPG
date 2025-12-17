@@ -312,6 +312,8 @@ class PayrollPreparationController
 
         if($request->has('editDeduction')){
             switch ($payrollMaster->type){
+                case 'DIFF':
+                    return  $this->differentialService->editDeduction($request);
                 default:
                     return  $this->payrollService->editDeduction($request);
             }

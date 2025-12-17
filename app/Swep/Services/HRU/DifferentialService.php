@@ -71,6 +71,10 @@ class DifferentialService
     public function update(Request $request,$payrollMaster)
     {
 
+        //IF UPDATE DEDUCTION
+        if ($request->has('updateDeduction')) {
+            return $this->updateDeduction($request);
+        }
 
         if($request->has('clone')){
             if($request->type == 'clone'){
@@ -106,6 +110,8 @@ class DifferentialService
         $hasBeenChanged = [];
 
 
+        $payrollMasterEmployees = PayrollMasterEmployees::query()->whereIn('slug',collect($request['data'])->keys())->get();
+
         if(count($request['data']) > 0){
             foreach ($request['data'] as $slug => $datum) {
                 if($datum['has_been_changed'] == 1){
@@ -123,8 +129,6 @@ class DifferentialService
                 $gsisGs = $salaryDifference  / $daysInAMonth * $daysCoveredInDiff * 0.12;
                 $tax = ( $diffGross - $gsisPs) * Helper::taxRate($oldMbs);
                 $diffNet = $diffGross - $gsisPs - $tax;
-
-
 
                 //to employee list
                 $upsert[] = [
@@ -153,17 +157,28 @@ class DifferentialService
 
                 //deductions
                 //TAX
-                $deductions[] = [
-                    'pay_master_employee_listing_slug' => $slug,
-                    'slug' => Str::random(),
-                    'type' => 'DEDUCTION',
-                    'code' => 'WTAX',
-                    'amount' => $tax,
-                    'original_amount' => $tax,
-                    'priority' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->n_priority,
-                    'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
-                    'govt_share' => null,
-                ];
+
+                $hasBeedEdited = $payrollMasterEmployees->where('slug','=',$slug)->first()->has_been_edited;
+
+                $computeTax = true;
+                if($hasBeedEdited != null){
+                    if(array_search('WTAX',$hasBeedEdited) !== false){
+                        $computeTax = false;
+                    }
+                }
+                if($computeTax){
+                    $deductions[] = [
+                        'pay_master_employee_listing_slug' => $slug,
+                        'slug' => Str::random(),
+                        'type' => 'DEDUCTION',
+                        'code' => 'WTAX',
+                        'amount' => $tax,
+                        'original_amount' => $tax,
+                        'priority' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->n_priority,
+                        'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
+                        'govt_share' => null,
+                    ];
+                }
                 //GSIS
                 $deductions[] = [
                     'pay_master_employee_listing_slug' => $slug,
@@ -478,6 +493,77 @@ class DifferentialService
             'usedRc' => $usedRc,
         ]);
         */
+
+    }
+
+    public function editDeduction(Request $request)
+    {
+
+        $payMasterDetail = PayrollMasterDetails::query()
+            ->find($request->slug);
+        $payMasterEmployee = PayrollMasterEmployees::query()
+            ->find($request->employeeListSlug);
+        return view('_payroll.payroll-preparation.DIFF.edit-deduction')->with([
+            'payMasterDetail' => $payMasterDetail,
+            'payMasterEmployee' => $payMasterEmployee,
+            'deductionCode' => $request->deductionCode,
+        ]);
+    }
+    public function updateDeduction(Request $request)
+    {
+        if($request->type == 'INCENTIVE'){
+            $incentiveMaster = Incentives::query()->where('incentive_code','=',$request->code)->first();
+            $priority = $incentiveMaster->priority;
+        }else{
+            $deductionMaster = Deductions::query()->where('deduction_code','=',$request->code)->first();
+            $priority = $deductionMaster->n_priority;
+        }
+
+        $deductionMaster = Deductions::query()->where('deduction_code','=',$request->code)->first();
+
+        $toUpsert[] = [
+            'pay_master_employee_listing_slug' => $request->pay_master_employee_listing_slug,
+            'employee_slug' => $request->employee_slug,
+            'slug' => Str::random(),
+            'type' => $request->type,
+            'code' => $request->code,
+            'amount' => Helper::sanitizeAutonum($request->amount),
+            'original_amount' => Helper::sanitizeAutonum($request->amount),
+            'priority' => $priority,
+        ];
+
+        PayrollMasterDetails::query()
+            ->upsert(
+                $toUpsert,
+                ['pay_master_employee_listing_slug','type','code'],
+                ['amount','original_amount']
+            );
+        $payMasterEmployee = PayrollMasterEmployees::query()->find($request->pay_master_employee_listing_slug);
+        $payMasterSlug = $payMasterEmployee->pay_master_slug;
+        $payMaster = PayrollMaster::findOrFail($payMasterSlug);
+
+        $hasBeenEdited = $payMasterEmployee->has_been_edited ?? [];
+        if(array_search($request->code,$hasBeenEdited) === false){
+            $hasBeenEdited[] = $request->code;
+            $payMasterEmployee->has_been_edited = $hasBeenEdited;
+            $payMasterEmployee->save();
+        }
+
+        $listing = PayrollMasterEmployees::query()->findOrFail($request->pay_master_employee_listing_slug);
+        $newRequest = new Request([
+            'data' => [
+                $request->pay_master_employee_listing_slug => [
+                    'diff_old_monthly_basic' => $listing->diff_old_monthly_basic,
+                    'diff_from' => $listing->diff_from,
+                    'diff_to' => $listing->diff_to,
+                    'diff_days' => $listing->diff_days,
+                    'diff_new_monthly_basic' => $listing->diff_new_monthly_basic,
+                    'has_been_changed' => 1,
+                ]
+            ]
+        ]);
+
+        return $this->update($newRequest,$payMaster);
 
     }
 }

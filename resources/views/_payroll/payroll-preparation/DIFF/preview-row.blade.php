@@ -27,13 +27,13 @@
     <x-forms.input label="Basic Pay" class="text-end hide-this" name="data[{{$employee->slug}}][has_been_changed]" for="has_been_changed" cols="12" :input-only="true" :value="0"/>
 </td>
 @forelse($incentives as $incentive)
-    <td class="text-end" data-bs-toggle="modal" data-bs-target="#edit-deduction-modal" deduction-code="{{$deduction ?? ''}}" data="{{$employee->employeePayrollDetails->where('code',$incentive)->first()?->slug}}">
+    <td class="text-end"  deduction-code="{{$deduction ?? ''}}" data="{{$employee->employeePayrollDetails->where('code',$incentive)->first()?->slug}}">
         {{Helper::toNumber($employee->employeePayrollDetails->where('code',$incentive)->first()->amount ?? null,2)}}
     </td>
 @empty
 @endforelse
 @forelse($deductions as $deduction)
-    <td class="text-end" data-bs-toggle="modal" data-bs-target="#edit-deduction-modal" deduction-code="{{$deduction ?? ''}}" data="{{$employee->employeePayrollDetails->where('code',$deduction)->first()?->slug}}">
+    <td class="text-end edit-deduction editable-dtr" data-bs-toggle="modal" data-bs-target="#edit-deduction-modal" deduction-code="{{$deduction ?? ''}}" data="{{$employee->employeePayrollDetails->where('code',$deduction)->first()?->slug}}">
         {{Helper::toNumber($employee->employeePayrollDetails->where('code',$deduction)->first()->amount ?? null,2)}}
     </td>
 @empty
