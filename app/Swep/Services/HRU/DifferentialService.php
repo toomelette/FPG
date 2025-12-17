@@ -117,9 +117,10 @@ class DifferentialService
                 $daysCoveredInDiff = Carbon::parse($datum['diff_from'])->diffInDays(Carbon::parse($datum['diff_to'])) + 1;
                 $oldMbs = Helper::sanitizeAutonum($datum['diff_old_monthly_basic']) * 1;
                 $newMbs = Helper::sanitizeAutonum($datum['diff_new_monthly_basic']) * 1;
-                $diffGross = ($newMbs - $oldMbs) * $workingDaysCoveredInDiff / $workingDaysInAMonth;
-                $gsisPs = $diffGross  / $daysInAMonth * $daysCoveredInDiff * 0.09;
-                $gsisGs = $diffGross  / $daysInAMonth * $daysCoveredInDiff * 0.12;
+                $salaryDifference = $newMbs - $oldMbs;
+                $diffGross = ($salaryDifference) * $workingDaysCoveredInDiff / $workingDaysInAMonth;
+                $gsisPs = $salaryDifference  / $daysInAMonth * $daysCoveredInDiff * 0.09;
+                $gsisGs = $salaryDifference  / $daysInAMonth * $daysCoveredInDiff * 0.12;
                 $tax = ( $diffGross - $gsisPs) * Helper::taxRate($oldMbs);
                 $diffNet = $diffGross - $gsisPs - $tax;
 
