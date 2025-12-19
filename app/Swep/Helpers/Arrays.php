@@ -914,6 +914,7 @@ class Arrays
             'DIFF-YEB' => 'DIFFERENTIAL-YEB',
             'CNA' => 'CNA',
             'SRI' => 'Service Recognition Incentive',
+            'PEI' => 'Performance Enhancement Incentive',
         ];
     }
 

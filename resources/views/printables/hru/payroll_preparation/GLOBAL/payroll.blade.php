@@ -47,7 +47,8 @@
                    ->flip()->values();
             $chunkedDeductions = $groupedDeductions->chunk($chunkBy);
 
-            $colspan = 6 + $chunkedIncentives->count() + $chunkedDeductions->count();
+            $totalDynamicCols = $chunkedIncentives->count() + $chunkedDeductions->count();
+            $colspan =  4 + $totalDynamicCols;
             $sumGrand = [];
             $sumGrandSundry = [];
             $sumGrand['pay15'] = null;
@@ -67,13 +68,14 @@
 
                 <tr>
                     <th style="width: 25%; padding: 0; border: none"></th>
+                    <th style="width: 8%;  border: none"></th>
                     @foreach($chunkedIncentives as $grp)
-                        <th style="padding: 0; border: none"></th>
+                        <th style="padding: 0;  border: none; width: {{54/$totalDynamicCols}}%"></th>
                     @endforeach
                     @foreach($chunkedDeductions as $grp)
-                        <th style="padding: 0; border: none"></th>
+                        <th style="padding: 0; border: none; width: {{54/$totalDynamicCols}}%"></th>
                     @endforeach
-                    <th style="padding: 0; border: none;width: 4%"></th>
+                    <th style="padding: 0; border: none;width: 8%"></th>
                     <th style="padding: 0; border: none;width: 5%"></th>
                 </tr>
 
@@ -104,7 +106,7 @@
                     <th>
                         Name of Employee
                     </th>
-                    <th class="text-center">MONTHLY BASIC</th>
+                    <th class="text-center" style="width: 100px">MONTHLY BASIC</th>
                     @forelse($headerIncentives as $headerIncentive)
                         <th class="text-center">
                             {{$headerIncentive}}
@@ -119,7 +121,7 @@
                     @empty
                     @endforelse
                     <th class="text-center">NET AMOUNT RECEIVED</th>
-                    <th class="text-center">Signature</th>
+                    <th class="text-center" style="width: 100px">Signature</th>
                 </tr>
 
                 </thead>
@@ -223,7 +225,6 @@
                                 @endphp
                             </td>
                             <td class=""></td>
-                            <td class=""></td>
                         </tr>
                     @endif
                 @empty
@@ -271,7 +272,7 @@
                             $sumGrand['pay15'] = $sumGrand['pay15'] + $group15;
                         @endphp
                     </td>
-                    <td></td>
+
                     <td style="break-after: page"></td>
                 </tr>
                 {{-- END TOTALS PER GROUP--}}
@@ -285,16 +286,14 @@
                 <thead>
                 <tr>
                     <th style="width: 25%; padding: 0; border: none"></th>
+                    <th style="width: 8%;  border: none"></th>
                     @foreach($chunkedIncentives as $grp)
-                        <th style="padding: 0; border: none"></th>
+                        <th style="padding: 0;  border: none; width: {{54/$totalDynamicCols}}%"></th>
                     @endforeach
                     @foreach($chunkedDeductions as $grp)
-                        <th style="padding: 0; border: none"></th>
+                        <th style="padding: 0; border: none; width: {{54/$totalDynamicCols}}%"></th>
                     @endforeach
-                    <th style="padding: 0; border: none;width: 7%"></th>
-                    <th style="padding: 0; border: none;width: 7%"></th>
                     <th style="padding: 0; border: none;width: 8%"></th>
-                    <th style="padding: 0; border: none;width: 4%"></th>
                     <th style="padding: 0; border: none;width: 5%"></th>
                 </tr>
                 <tr>

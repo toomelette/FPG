@@ -13,16 +13,8 @@ use App\Swep\Helpers\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-class CNAService
+class PEIService
 {
-    private int $deMinimisCeiling;
-
-    public function __construct(
-        public PayrollService $payrollService,
-    )
-    {
-        $this->deMinimisCeiling = 10000;
-    }
     public function recompute($payrollMasterSlug,$payMasterEmployeeSlug = null,$avoid = [])
     {
         $payrollMaster = PayrollMaster::query()
@@ -43,7 +35,7 @@ class CNAService
         //$this->payrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
 
         //Insert incentives to payroll master details:
-        $incentivesToInsert = ['CNA'];
+        $incentivesToInsert = ['PEI'];
         $incentiveArray = [];
         $incentivesFromDb = Incentives::query()->whereIn('incentive_code',$incentivesToInsert)->get();
 
@@ -82,10 +74,10 @@ class CNAService
             'payrollMasterEmployees.employee.templateIncentives',
             'payrollMasterEmployees.employeePayrollDetails',
         ]);
-
-        //Compute tax:
         $taxFree90kCodes = Arrays::taxFree90k();
         $taxFree90kCodes[] = 'WTAX';
+        $taxCode = ['WTAX'];
+
         //Compute tax:
         $deductionsFromDb = Deductions::query()->get();
         $taxDeductionToInsert = [];
@@ -99,7 +91,9 @@ class CNAService
             ->get();
 
         foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
+
             $hasBeedEdited = $payrollMasterEmployee->has_been_edited;
+
             $computeTax = true;
             if($hasBeedEdited != null){
                 if(array_search('WTAX',$hasBeedEdited) !== false){
@@ -107,41 +101,28 @@ class CNAService
                 }
             }
 
-            if($computeTax){
-                //dd($details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)->where('type','INCENTIVE')->whereNotIn('employeePayroll.payrollMaster.type',$incentivesToInsert)->mapWithKeys(function ($m){return [$m->code => $m->amount];}));
+            if($computeTax ) {
                 $totalIncentives = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)
                     ->where('type','INCENTIVE')
                     ->whereNotIn('employeePayroll.payrollMaster.type',$incentivesToInsert)
                     ->sum('amount');
-
-                $totalDeductions = $details90k
-                    ->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)
-                    ->whereNotIn('employeePayroll.payrollMaster.type',$incentivesToInsert)
+                $totalDeductions = $details90k->where('employeePayroll.employee_slug',$payrollMasterEmployee->employee_slug)
                     ->where('type','DEDUCTION')
+                    ->whereNotIn('employeePayroll.payrollMaster.type',$incentivesToInsert)
                     ->sum('amount');
 
                 $totalCompensation = $totalIncentives - $totalDeductions;
 
-                $netBonuses90k = $totalCompensation;
-                $taxable90kRem = 90000-$netBonuses90k;
-
-                if($taxable90kRem <= 0){
-                    $taxable90kRem = 0;
+                if($totalCompensation < 90000){
+                    $remainingNonTax = 90000 - $totalCompensation ;
+                }else{
+                    $remainingNonTax = 0;
                 }
 
 
-                $cnaGross = $payrollMasterEmployee->employeePayrollDetails
-                    ->where('type','INCENTIVE')
-                    ->where('taxable','=',1)
-                    ->sum('amount');
-                $cnaTaxable =  $cnaGross - $this->deMinimisCeiling;
-
-                $taxable90kRem = $taxable90kRem - $cnaTaxable;
-
-
-                if($taxable90kRem <= 0){
+                if($remainingNonTax <= 0){
+                    $taxableAmount = $payrollMasterEmployee->employeePayrollDetails->where('type','INCENTIVE')->where('taxable','=',1)->sum('amount') - $remainingNonTax;
                     $taxRate = Helper::taxRate($payrollMasterEmployee->employee->monthly_basic);
-                    $taxableAmount = $taxable90kRem * -1;
                     $tax = $taxableAmount * $taxRate;
                     $taxDeductionToInsert[] = [
                         'employee_slug' => $payrollMasterEmployee->employee->slug,
@@ -164,8 +145,6 @@ class CNAService
                 ['pay_master_employee_listing_slug','type','code'],
                 ['amount','original_amount','priority','account_code']
             );
-
-
 
         //refresh again
         $payrollMaster->refresh()->load([
@@ -268,11 +247,10 @@ class CNAService
                 'incentives' => $incentives,
             ]);
         }
-
-        return view('_payroll.payroll-preparation.CNA.preview')->with([
+        return view('_payroll.payroll-preparation.PEI.preview')->with([
             'payrollMaster' => $payrollMaster,
         ]);
-        return 1;
+
     }
 
     public function update(PayrollUpdateFormRequest $request,PayrollMaster $payrollMaster)
@@ -303,7 +281,6 @@ class CNAService
             }
         }
     }
-
 
     public function updateDeduction(Request $request)
     {
@@ -344,5 +321,6 @@ class CNAService
             $payMasterEmployee->save();
         }
         return $this->recompute($payMasterSlug,$payMasterEmployee->slug);
+
     }
 }

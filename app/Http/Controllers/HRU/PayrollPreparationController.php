@@ -27,6 +27,7 @@ use App\Swep\Services\HRU\HazardPrcService;
 use App\Swep\Services\HRU\MonthlyPayrollService;
 use App\Swep\Services\HRU\MybService;
 use App\Swep\Services\HRU\PayrollService;
+use App\Swep\Services\HRU\PEIService;
 use App\Swep\Services\HRU\RaTaService;
 use App\Swep\Services\HRU\SRIService;
 use App\Swep\Services\HRU\YebService;
@@ -56,6 +57,7 @@ class PayrollPreparationController
         public DiffMybService $diffMybService,
         public DiffYebService $diffYebService,
         public SRIService $SRIService,
+        public PEIService $PEIService,
     )
     {
 
@@ -246,6 +248,9 @@ class PayrollPreparationController
                 break;
             case 'SRI':
                 $this->SRIService->recompute($payMaster->slug);
+                break;
+            case 'PEI':
+                $this->PEIService->recompute($payMaster->slug);
                 break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);
@@ -440,6 +445,18 @@ class PayrollPreparationController
                     return $this->SRIService->recompute($slug);
                 }
                 return view('_payroll.payroll-preparation.SRI.edit')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
+
+            case 'PEI':
+                //show employee offcanvas
+                if($request->has('employee')){
+                    return  $this->payrollService->showEmployee($slug,$request);
+                }
+                if($request->has('recompute') && $request->recompute == true){
+                    return $this->PEIService->recompute($slug);
+                }
+                return view('_payroll.payroll-preparation.PEI.edit')->with([
                     'payrollMaster' => $payrollMaster,
                 ]);
 
@@ -875,6 +892,8 @@ class PayrollPreparationController
                 return $this->CNAService->update($request,$payrollMaster);
             case 'SRI' :
                 return $this->SRIService->update($request,$payrollMaster);
+            case 'PEI' :
+                return $this->PEIService->update($request,$payrollMaster);
             case "DIFF" :
                 return $this->differentialService->update($request,$payrollMaster);
             case "DIFF-MYB" :
