@@ -849,6 +849,10 @@ class PayrollPreparationController
     }
     public function update(PayrollUpdateFormRequest $request,$payrollMasterSlug){
 
+        if($request->has('uploadTax')){
+            return  $this->payrollService->uploadTax($request);
+        }
+
         $payrollMaster = PayrollMaster::findOrFail($payrollMasterSlug);
 
         if($request->has('saveAs')){

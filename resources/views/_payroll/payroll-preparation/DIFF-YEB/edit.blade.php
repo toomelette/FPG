@@ -15,7 +15,7 @@
 
     @endphp
     <x-adminkit.html.page-title>
-        <x-slot:title>Differential - Mid-Year Bonus</x-slot:title>
+        <x-slot:title>Differential - Year End Bonus</x-slot:title>
         <x-slot:subtitle>Payroll</x-slot:subtitle>
         <x-slot:float-end></x-slot:float-end>
     </x-adminkit.html.page-title>

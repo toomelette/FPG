@@ -99,7 +99,7 @@ class DiffYebService
         //$this->payrollService->updateEmployeesData($payrollMaster,$payMasterEmployeeSlug);
 
         //Insert incentives to payroll master details:
-        $incentiveToInsert = 'DIFFL';
+        $incentiveToInsert = 'DIFFLYEB';
         $incentiveArray = [];
         $incentiveFromDb = Incentives::query()->where('incentive_code','=',$incentiveToInsert)->first();
 

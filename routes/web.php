@@ -890,3 +890,14 @@ Route::get('updatePayrollTemplate',function (){
     );
     dd($upsertTemplateMonthlyBasic);
 });
+
+Route::get('deleteOldIncentiveCode',function (\Illuminate\Http\Request $request){
+    $slug = $request->slug;
+    $paymaster = \App\Models\HRU\PayrollMaster::query()->with([
+        'hmtDetails'
+    ])
+        ->findOrFail($slug);
+
+    $diffl = $paymaster->hmtDetails()->where('code','=','DIFFL');
+    dd($diffl->delete());
+});

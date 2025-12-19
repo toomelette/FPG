@@ -31,6 +31,9 @@
                             <label>
                                 <input name="generate" style="display: none">
                             </label>
+                            <label>
+                                <input name="type" style="display: none" value="per_month">
+                            </label>
                             <table class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
@@ -58,7 +61,17 @@
                                 @endforelse
                                 </tbody>
                             </table>
-                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-print"></i> Generate</button>
+
+                            <div class="row">
+                                <x-forms.checkbox type="checkbox" label="Payroll Group" name="payrollGroupsSelected" cols="12" :options="\App\Swep\Helpers\Arrays::payrollGroups()" required="required"/>
+                            </div>
+
+                            <div class="row">
+                                <x-forms.select label="Report Type" name="type" cols="12" :options="['per_month' => 'CONSOLIDATED', 'main' => 'MAIN PAYROLL']" required="required"/>
+                            </div>
+
+
+                            <button type="submit" class="btn btn-sm btn-primary mt-2"><i class="fa fa-print"></i> Generate</button>
                         </form>
                     </div>
                 </div>

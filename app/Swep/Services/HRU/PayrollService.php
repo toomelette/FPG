@@ -3,6 +3,7 @@
 namespace App\Swep\Services\HRU;
 
 use App\Imports\GSISImport;
+use App\Models\Employee;
 use App\Models\HRU\Deductions;
 use App\Models\HRU\PayrollMaster;
 use App\Models\HRU\PayrollMasterDetails;
@@ -417,19 +418,9 @@ class PayrollService
         return view('_payroll.payroll-preparation.reports');
     }
 
-    public function reportGenerate(Request $request)
+    public function consolidatedMonthly(Request $request)
     {
-
         $usedRc = [];
-
-        /*
-        $employees = $payrollMaster->payrollMasterEmployees->mapWithKeys(function ($data){
-            return [
-                $data->employee->slug => $data,
-            ];
-        });
-        */
-
         $payrollMasterEmployeesGrouped = PayrollMasterEmployees::query()
             ->with(['employee'])
             ->whereIn('pay_master_slug',$request->payrolls)
@@ -591,7 +582,198 @@ class PayrollService
         ]);
         */
 
+    }
 
+    public function consolidatedMain(Request $request)
+    {
+        $usedRc = [];
+        $payrollMasterEmployeesGrouped = PayrollMasterEmployees::query()
+            ->with(['employee'])
+            ->whereIn('pay_master_slug',$request->payrolls)
+            ->groupBy('employee_slug')
+            ->get();
+        $employees = PayrollMasterEmployees::query()
+            ->whereIn('pay_master_slug',$request->payrolls)
+            ->groupBy('employee_slug')
+            ->get()
+            ->mapWithKeys(function ($data){
+                return [
+                    $data->employee_slug => $data,
+                ];
+            });
+
+        $payrollMasterEmployees = PayrollMasterEmployees::query()
+            ->with(['employeePayrollDetails'])
+            ->whereIn('pay_master_slug',$request->payrolls)
+            ->get();
+
+
+
+        $rcsGroupedByRcCode = PPURespCodes::query()->get()->mapWithKeys(function ($data){return [$data->rc_code => $data];});
+
+
+
+        foreach ($employees as $employee){
+            $respCenter = $employee->saved_employee_data['resp_center'];
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.$rcsGroupedByRcCode[$respCenter]->sec] = $rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.$rcsGroupedByRcCode[$respCenter]->sec;
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.'0'] = $rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.'0';
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.'0'.'0'] = $rcsGroupedByRcCode[$respCenter]->rc.'0'.'0';
+        }
+
+        $tree = PayrollTree::query()
+            ->with('responsibilityCenter')
+            ->whereIn('resp_center',array_flatten($usedRc))
+            ->orderBy('sort','asc')
+            ->get()
+            ->groupBy(['group','resp_center']);
+
+        /*
+        $t = $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
+            return $data->employee->resp_center;
+        })->toArray();
+        */
+        $t = $payrollMasterEmployeesGrouped->groupBy(function ($data){
+            return $data->employee->resp_center;
+        })->toArray();
+        ksort($t);
+        $t = array_keys($t);
+        $dbRcs = collect($tree)->flatten()->mapWithKeys(function ($data){
+            return [
+                $data->resp_center => $data,
+            ];
+        })->toArray();
+        ksort($dbRcs);
+        $dbRcs = array_keys($dbRcs);
+        $diff = array_diff($t,$dbRcs);
+        if(count($diff) > 0){
+            abort(503,'There are some RCs not found on the hierarchy of RCs. Contact database administrator. ---------------------------- '.print_r($diff,true));
+        }
+        ksort($usedRc);
+
+
+        $payrollMasters = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        })
+                            ->orderBy('saved_employee_data->full_name');
+                    }
+                },
+                'payrollMasterEmployees.employee.plantilla',
+                'payrollMasterEmployees.employeePayrollDetails',
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $hmtDetails->intermediateGroup($request->payrollGroupsSelected);
+                    }
+
+                },
+                'hmtDetails.employeePayroll',
+                'hmtDetails.chartOfAccount',
+            ])
+            ->orderBy('date')
+            ->orderBy('type')
+            ->whereIn('slug',$request->payrolls)
+            ->get();
+
+        $usedCodes = [];
+
+        foreach ($payrollMasters as $payrollMaster){
+            $keys = $payrollMaster->hmtDetails
+                ->sortBy(function ($d){
+
+                    if($d->type == 'INCENTIVE'){
+                        return '1'.$d->priority;
+                    }else{
+                        return '2'.$d->priority;
+                    }
+                })
+                ->groupBy('code')
+                ->keys();
+            foreach ($keys as $key){
+                $usedCodes[] = $key;
+            }
+        }
+        $usedCodes = array_unique($usedCodes);
+        $flattenedDetails = $payrollMasters->flatMap->hmtDetails;
+        $types = $payrollMasters->pluck('type')->unique();
+        $flattenedDetailsArray = [];
+        foreach ($types as $type){
+            $flattenedDetailsArray[$type] = $flattenedDetails->where('employeePayroll.payrollMaster.type','=',$type);
+        }
+
+
+
+
+
+        return Pdf::view('printables.hru.payroll_preparation.DIFF.payroll-main-consolidated',[
+            'pdfPrint' => true,
+            'payrollMasters' => $payrollMasters,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMasterEmployeesGrouped->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+            'payrollEmployeesBySlug' => $payrollMasterEmployeesGrouped->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+            'payrollMasterEmployees' => $payrollMasterEmployees,
+            'usedCodes' => $usedCodes,
+            'flattenedDetails' => $flattenedDetails,
+            'flattenedDetailsArray' => $flattenedDetailsArray,
+            'flattenedEmployees' => $payrollMasters->flatMap->payrollMasterEmployees,
+        ])
+            ->paperSize('215.9','330.2')
+            ->landscape()
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Payroll Summary.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+        /*
+         return view('printables.hru.payroll_preparation.DIFF.payroll-main-consolidated')->with([
+            'payrollMasters' => $payrollMasters,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMasterEmployeesGrouped->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+            'payrollEmployeesBySlug' => $payrollMasterEmployeesGrouped->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+            'payrollMasterEmployees' => $payrollMasterEmployees,
+            'usedCodes' => $usedCodes,
+            'flattenedDetails' => $flattenedDetails,
+            'flattenedDetailsArray' => $flattenedDetailsArray,
+            'flattenedEmployees' => $payrollMasters->flatMap->payrollMasterEmployees,
+        ]);
+
+        */
+
+    }
+
+    public function reportGenerate(Request $request)
+    {
+        if($request->has('type') && $request->type == 'per_month'){
+            return $this->consolidatedMonthly($request);
+        }
+        if($request->has('type') && $request->type == 'main'){
+            return $this->consolidatedMain($request);
+        }
     }
 
     public function showEmployee($payMasterSlug,Request $request)
@@ -610,5 +792,107 @@ class PayrollService
         ]);
     }
 
+    public function uploadTax(Request $request)
+    {
+        $excel = Excel::toArray(new GSISImport(),$request->file('file'));
+        $data = $excel[0];
 
+        $headers = $data[0];
+        //remove null values
+        $headers = array_filter($headers,function ($value){ return !is_null($value) && $value != ''; });
+        $taxHeaderIndex = array_search('WTAX',$headers);
+
+
+        $headersFlipped = collect($headers)->flip();
+
+        array_forget($data,0);
+
+        $rowsExceptHeaders = $data;
+        $deductionsToBeInserted = [];
+        $deductions = Arrays::deductionsExcelHeader($request->type);
+
+
+        $excelCollection = collect($rowsExceptHeaders);
+        $employeeNos = $excelCollection->pluck(0);
+        $employees = Employee::query()
+            ->whereIn('employee_no',$employeeNos)
+            ->get();
+        if($employeeNos->count() !== $employees->count()){
+            abort(503,'Errorrrrrr');
+        }
+
+        $employeeSlugToTax = [];
+
+        foreach ($excelCollection as $excelRow){
+            $employeeSlug = $employees->where('employee_no','=',$excelRow[0])->first()->slug;
+            $employeeSlugToTax[$employeeSlug] = $excelRow[$taxHeaderIndex] / count($request->payrolls);
+        }
+
+
+
+        $payrollSlugs = $request->payrolls;
+
+        $details = PayrollMasterDetails::query()
+            ->with(['employeePayroll'])
+            ->whereHas('employeePayroll.payrollMaster',function ($payrollMaster) use ($payrollSlugs){
+                $payrollMaster->whereIn('slug',$payrollSlugs);
+            })
+            ->where('code','WTAX')
+            ->get();
+        $deductionsFromDb = Deductions::query()
+            ->get();
+        $deductions = [];
+        $upsertEmployees = [];
+        $usedListingSlug = [];
+        foreach ($details as $detail){
+            $listing = $detail->employeePayroll;
+            $usedListingSlug[] = $listing->slug;
+            $newAmount = round( $employeeSlugToTax[$listing->employee_slug],2);
+
+            $deductions[] = [
+                'pay_master_employee_listing_slug' => $listing->slug,
+                'slug' => Str::random(),
+                'type' => 'DEDUCTION',
+                'code' => 'WTAX',
+                'amount' => $newAmount,
+                'priority' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->n_priority,
+                'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
+                'govt_share' => null,
+            ];
+
+
+            $hasBeenEdited = $listing->has_been_edited ?? [];
+            if(array_search('WTAX',$hasBeenEdited) === false){
+                $hasBeenEdited[] = 'WTAX';
+            }
+            $upsertEmployees[] = [
+                'slug' => $listing->slug,
+                'has_been_edited' => json_encode($hasBeenEdited),
+            ];
+        }
+
+        $emp = PayrollMasterEmployees::query()->upsert(
+            $upsertEmployees,
+            ['slug'],
+            [
+                'has_been_edited',
+            ]);
+
+        PayrollMasterDetails::query()
+            ->upsert(
+                $deductions,
+                ['pay_master_employee_listing_slug','type','code'],
+                [
+                    'slug',
+                    'type',
+                    'code',
+                    'amount',
+                    'priority',
+                    'account_code',
+                    'govt_share',
+                ]
+            );
+
+        dd($request->all());
+    }
 }
