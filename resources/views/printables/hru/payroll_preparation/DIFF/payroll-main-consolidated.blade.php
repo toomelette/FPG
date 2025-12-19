@@ -59,6 +59,7 @@
 
         @endphp
         <div style="break-after: page">
+
             @foreach($tree as $group => $rcs)
 
                 <table style="width: 100%; break-after: page" class=" tbl-padded">
@@ -213,6 +214,15 @@
                                 {{
                                     Helper::toNumber($flattenedDetails->whereIn('employeePayroll.saved_employee_data.resp_center',$rcs->keys())
                                     ->where('code','=',$incentive)
+                                    ->sum('amount'))
+                                }}
+                            </td>
+                        @endforeach
+                        @foreach($groupedDeductions as $deduction)
+                            <td style="padding: 0;" class="b-top text-right text-strong">
+                                {{
+                                    Helper::toNumber($flattenedDetails->whereIn('employeePayroll.saved_employee_data.resp_center',$rcs->keys())
+                                    ->where('code','=',$deduction)
                                     ->sum('amount'))
                                 }}
                             </td>
@@ -385,11 +395,16 @@
 
                     @foreach($tree as $group => $rcs)
                         @foreach($groupedIncentives as $incentive)
+
                             <tr>
                                 <td>{{$group}}</td>
                                 <td>{{$acctCode = $codeToAccountCode[$incentive]->account_code ?? ''}}</td>
                                 <td>{{$acctCode = $codeToAccountCode[$incentive]->chartOfAccount->account_title ?? ''}}</td>
-                                <td class="text-right">{{Helper::toNumber($debit = $recap[$group][$incentive] ?? null)}}</td>
+                                <td class="text-right">
+                                    {{Helper::toNumber($debit = $flattenedDetails->whereIn('employeePayroll.saved_employee_data.resp_center',$rcs->keys())
+                                                             ->where('code','=',$incentive)
+                                                             ->sum('amount'))}}
+                                </td>
                                 <td></td>
                                 @php
                                     $recap['debit'] = $recap['debit'] + $debit;
