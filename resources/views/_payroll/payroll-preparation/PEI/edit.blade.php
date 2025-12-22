@@ -193,7 +193,7 @@
             let newId = 'tempId'+makeId(6);
             Swal.fire({
                 title: "Select payroll group",
-                html: $("#payroll-group-containerpayroll-group-container").html().replaceAll('replaceMe',newId),
+                html: $("#payroll-group-container").html().replaceAll('replaceMe',newId),
                 showCancelButton: true,
                 confirmButtonText: "<i class='fa fa-print'></i> Print",
                 showLoaderOnConfirm: true,
