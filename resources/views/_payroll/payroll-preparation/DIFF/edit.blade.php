@@ -592,8 +592,9 @@
                 },
                 success: function (res) {
                     $.each(res,function (employeeSlug,oldMbs){
+
                         if(oldMbs !== null){
-                            $("tr[data-emp='"+employeeSlug+"']").each(function (){
+                            $("tr[data='"+employeeSlug+"']").each(function (){
                                 let slug = $(this).attr('data');
                                 AutoNumeric.getAutoNumericElement('#an-'+type+'-mbs-'+slug).set(oldMbs);
                             })

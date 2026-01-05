@@ -14,6 +14,8 @@
         @php
             $code = 'DIFFL';
             $colspan = $payrollMasters->count() + 2;
+
+
         @endphp
 
         @foreach($usedCodes as $code)

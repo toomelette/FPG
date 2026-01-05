@@ -13,6 +13,7 @@ use App\Models\PPU\PPURespCodes;
 use App\Swep\Helpers\Helper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -353,6 +354,17 @@ class DifferentialService
 
     public function fetchMbs($payrollMaster)
     {
+        $request = Request::capture();
+        $payrollMaster->load('payrollMasterEmployees');
+        $employeeNos = $payrollMaster->payrollMasterEmployees->pluck('saved_employee_data.employee_no');
+        $tempSsl = DB::table('temp_new_salary')->get();
+
+        $salaries = [];
+        foreach ($payrollMaster->payrollMasterEmployees as $payrollMasterEmployee){
+            $salaries[$payrollMasterEmployee->slug] =  ( $tempSsl->where('emp_no',$payrollMasterEmployee->saved_employee_data['employee_no'])->first()?->{$request->type.'_mbs'} * 1 ) ?? null ;
+        }
+        return $salaries;
+        /*
         $employees = $payrollMaster->payrollMasterEmployees->pluck('employee_slug');
         $employeesWithOldMbs = [];
         $employeesFromDb = Employee::query()
@@ -376,6 +388,7 @@ class DifferentialService
             $employeesWithOldMbs[$employeeFromDb->slug] = $amount == null ? null : $amount * 1;
         }
         return $employeesWithOldMbs;
+        */
     }
 
 
