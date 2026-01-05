@@ -424,10 +424,13 @@ class PayrollService
         $payrollMasterEmployeesGrouped = PayrollMasterEmployees::query()
             ->with(['employee'])
             ->whereIn('pay_master_slug',$request->payrolls)
+            ->whereIn('employee_payroll_type',$request->payrollGroupsSelected)
             ->groupBy('employee_slug')
             ->get();
         $employees = PayrollMasterEmployees::query()
             ->whereIn('pay_master_slug',$request->payrolls)
+            ->whereIn('employee_payroll_type',$request->payrollGroupsSelected)
+
             ->groupBy('employee_slug')
             ->get()
             ->mapWithKeys(function ($data){
@@ -439,6 +442,8 @@ class PayrollService
         $payrollMasterEmployees = PayrollMasterEmployees::query()
             ->with(['employeePayrollDetails'])
             ->whereIn('pay_master_slug',$request->payrolls)
+            ->whereIn('employee_payroll_type',$request->payrollGroupsSelected)
+
             ->get();
 
 
@@ -590,10 +595,13 @@ class PayrollService
         $payrollMasterEmployeesGrouped = PayrollMasterEmployees::query()
             ->with(['employee'])
             ->whereIn('pay_master_slug',$request->payrolls)
+            ->whereIn('employee_payroll_type',$request->payrollGroupsSelected)
+
             ->groupBy('employee_slug')
             ->get();
         $employees = PayrollMasterEmployees::query()
             ->whereIn('pay_master_slug',$request->payrolls)
+            ->whereIn('employee_payroll_type',$request->payrollGroupsSelected)
             ->groupBy('employee_slug')
             ->get()
             ->mapWithKeys(function ($data){
@@ -605,6 +613,7 @@ class PayrollService
         $payrollMasterEmployees = PayrollMasterEmployees::query()
             ->with(['employeePayrollDetails'])
             ->whereIn('pay_master_slug',$request->payrolls)
+            ->whereIn('employee_payroll_type',$request->payrollGroupsSelected)
             ->get();
 
 
