@@ -10,7 +10,7 @@ class HRRequestsService
 {
     public function newTrackingNo()
     {
-        $prefix = 'AFD-GAD-HRS-CERT-';
+        $prefix = 'AFD-GAD-HRS-CERT-'.Carbon::now()->format('y').'-';
         $hrRequests = HRRequests::query()
             ->where('created_at','like',Carbon::now()->format('Y-').'%')
             ->orderBy('tracking_no','desc')
