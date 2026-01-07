@@ -14,30 +14,46 @@
             <p class="text-strong">KNOW ALL MEN BY THESE PRESENTS:</p>
             <p>This Contract of Service is made and entered into by and between:</p>
             <p style="padding-left: 30px; padding-right: 20px">
-                <b>SUGAR REGULATORY ADMINISTRATION (SRA)</b> a Government Owned and Controlled Corporation (GOCC) created by Executive Order No. 18, series of 1986, as amended, with principal office address	 at Sugar Center Building, North Avenue, Diliman, Quezon City, by virtue of Administrative Order No. 1, Series of 2025 dated April 4, 2025 herein represented by Deputy Administrator for Administrative and Finance Department <b>ATTY. BRANDO D. NOROÑA</b>, and hereinafter referred to as the <b>"FIRST PARTY"</b>
+                <b>SUGAR REGULATORY ADMINISTRATION (SRA)</b> a Government Owned and Controlled Corporation (GOCC) created by
+                Executive Order No. 18, series of 1986, as amended, with principal office address
+                at Sugar Center Building, North Avenue, Diliman, Quezon City, by virtue of Administrative Order No. 1, Series of 2025
+                dated April 4, 2025 herein represented by Deputy Administrator for Administrative and Finance Department <b>ATTY. BRANDO D. NOROÑA</b>,
+                and hereinafter referred to as the <b>"FIRST PARTY"</b>
             </p>
             <p class="text-center">- and -</p>
             <p style="padding-left: 30px; padding-right: 20px">
 
-                <b>{{$cosEmp->employee->full['FMiLE']}}</b>, of legal age, Filipino, {{Str::lower($cosEmp->other_data['civil_status'])}} and a resident of {{Str::of($cosEmp->other_data['address'])}}, now and hereinafter referred to as the <b>“SECOND PARTY”</b>.
+                <b>{{$cosEmp->employee->full['FMiLE']}}</b>, of legal age, Filipino, {{Str::lower($cosEmp->other_data['civil_status'])}} and
+                a resident of {{Str::of($cosEmp->other_data['address'])}}, now and hereinafter referred to as the <b>“SECOND PARTY”</b>.
             </p>
 
             <p class="text-strong text-center">WITNESSETH:</p>
             <p style="text-indent: 30px;">
-                <b>WHEREAS</b>, the SRA, as a government-owned and controlled corporation, is mandated to promote the growth and development of the sugarcane industry in partnership with the private sector, to ensure economic viability of cane and sugar production and maintain a stable, sufficient supply of quality cane and sugar in the country;
+                <b>WHEREAS</b>, the SRA, as a government-owned and controlled corporation,
+                is mandated to promote the growth and development of the sugarcane industry in partnership with the private sector,
+                to ensure economic viability of cane and sugar production and maintain a stable, sufficient supply of quality cane and sugar in the country;
             </p>
             <p style="text-indent: 30px;">
                 <b>WHEREAS</b>, SRA awaits for the full Implementation of SRA Organizational Strengthening;
             </p>
             <p style="text-indent: 30px;">
-                <b>WHEREAS</b>, there is a need to hire the services of various Contract of Service personnel in different SRA Departments to assist, support, reinforce, and augment the existing manpower in order to effectively deliver prompt services to the sugarcane industry and SRA Clienteles;
-            </p>
-            <p style="text-indent: 30px;">
-                <b>WHEREAS</b>, through {{$cosEmp->cos->memo_code ?? null}} dated {{Helper::dateFormat($cosEmp->cos->memo_date ?? null,'F d, Y')}}, Deputy Administrator Atty. Brando D. Noroña approved the request of the <b>{{$cosEmp->department ?? ''}}</b> for the renewal of the SECOND PARTY for a period of six ({{Carbon::parse($cosEmp->cos->date_from)->diffInMonths(Carbon::parse($cosEmp->cos->date_to)) + 1 }}) months from {{Carbon::parse($cosEmp->cos->date_from)->format('F d, Y')}} July 1, 2025 to {{Carbon::parse($cosEmp->cos->date_to)->format('F d, Y')}}.
+                <b>WHEREAS</b>,
+                there is a need to hire the services of various Contract of Service personnel in different SRA Departments to assist, support, reinforce,
+                and augment the existing manpower in order to effectively deliver prompt services to the sugarcane industry and SRA Clienteles;
             </p>
 
             <p style="text-indent: 30px;">
-                <b>NOW THEREFORE</b>, for and in consideration of the above premises, the <b>SECOND PARTY</b> is hereby contracted as <b>{{Str::of($hrRequest->document_fields['position'] ?? null)}} - Contract of Service (COS)</b> under the following terms and conditions, to wit:
+                <b>WHEREAS</b>, on {{Helper::dateFormat($cosEmp->cos->memo_date ?? null,'F d, Y')}} through {{$cosEmp->cos->memo_code ?? null}},
+                Administrator Pablo Luis S. Azcona approved the request of the <b>{{$cosEmp->department ?? ''}}</b>
+                for the renewal of the SECOND PARTY for a period of six ({{Carbon::parse($cosEmp->cos->date_from)->diffInMonths(Carbon::parse($cosEmp->cos->date_to)) + 1 }}) months
+                from {{Carbon::parse($cosEmp->cos->date_from)->format('F d, Y')}} to {{Carbon::parse($cosEmp->cos->date_to)->format('F d, Y')}}.
+            </p>
+
+
+            <p style="text-indent: 30px;">
+                <b>NOW THEREFORE</b>, for and in consideration of the above premises, the <b>SECOND PARTY</b>
+                is hereby contracted as <b>{{Str::of($hrRequest->document_fields['position'] ?? null)}} - Contract of Service (COS)</b>
+                under the following terms and conditions, to wit:
             </p>
 
             <ol>
@@ -46,11 +62,9 @@
 
                     That the <b>SECOND PARTY</b> shall receive a monthly salary of
                     <b>Pesos:
-
-
                         {{ucwords(\NumberToWords\NumberToWords::transformNumber('en',$sal = intval(Helper::sanitizeAutonum((int) $cosEmp->employee->monthly_basic * 1))))}}
                     </b>
-                    <b>(Php {{Helper::toNumber($sal)}})</b> to be paid on a quincenas basis, rates under SSL4, Tranche 4, Step 1 of SSL 4 inclusive of a premium of 20% of such salary or wage. Provided however, that if he/she is required to render services outside of his/her official workstation, he/she may be allowed to collect <b>Actual Travelling Expenses</b> subject to pertinent guidelines duly issued by the <b>FIRST PARTY</b>. Provided, further, that he/she will be allowed to claim overtime pay for services rendered beyond government office hours in accordance with the duly established rules on government accounting.
+                    <b>(Php {{Helper::toNumber($sal)}})</b> to be paid on a quincenas basis, rates under SSL5, Tranche 1, Step 1 of SSL inclusive of a premium of 20% of such salary or wage. <i>Provided however</i>, that if he/she is required to render services outside of his/her official workstation, he/she may be allowed to collect <b>Actual Travelling Expenses</b> subject to pertinent guidelines duly issued by the <b>FIRST PARTY</b>. <i>Provided, further</i>, that he/she will be allowed to claim overtime pay for services rendered beyond government office hours in accordance with the duly established rules on government accounting.
                 </li>
                 <li>
                     That as contract of service personnel, the <b>SECOND PARTY</b> shall be assigned to the <b>{{$cosEmp->other_data['assignment'] ?? null}}</b> and is obliged to perform the duties and responsibilities of the position, hereto attached as <b>Annex “A”</b>.

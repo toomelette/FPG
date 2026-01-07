@@ -912,6 +912,7 @@ class Arrays
             'DIFF' => 'DIFFERENTIAL',
             'DIFF-MYB' => 'DIFFERENTIAL-MYB',
             'DIFF-YEB' => 'DIFFERENTIAL-YEB',
+            'DIFF-MON' => 'DIFFERENTIAL-MONETIZATION',
             'CNA' => 'CNA',
             'SRI' => 'Service Recognition Incentive',
             'PEI' => 'Performance Enhancement Incentive',
