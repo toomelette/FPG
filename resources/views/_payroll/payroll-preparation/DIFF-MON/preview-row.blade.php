@@ -22,7 +22,7 @@
 </td>
 
 <td>
-    <x-forms.input label="Working Days" class="detect-change" name="data[{{$employee->slug}}][diff_days]" type="number" max="22" min="0" for="diff_days" cols="12" :input-only="true" :value="$employee->diff_days"/>
+    <x-forms.input label="Working Days" class="detect-change" name="data[{{$employee->slug}}][diff_days]" type="number" min="0" for="diff_days" cols="12" :input-only="true" :value="$employee->diff_days"/>
 </td>
 
 @forelse($incentives as $incentive)
