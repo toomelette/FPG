@@ -140,7 +140,7 @@ class DiffMonetizationService
                 $oldMbs = Helper::sanitizeAutonum($datum['diff_old_monthly_basic']) * 1;
                 $newMbs = Helper::sanitizeAutonum($datum['diff_new_monthly_basic']) * 1;
                 $diffGross =  $newMbs - $oldMbs ;
-                $diffMonNet = $diffGross * $this->factor * $datum['diff_days'];
+                $diffMonNet = $diffGross * $this->factor * floatval($datum['diff_days']);
 
                 //to employee list
                 $upsert[] = [
