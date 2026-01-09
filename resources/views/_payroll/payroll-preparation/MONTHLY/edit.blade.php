@@ -26,6 +26,7 @@
     <x-adminkit.html.card body-class="pt-0">
         <x-slot:title>
             <div class="btn-group">
+
                 <button type="button" class="btn btn-outline-secondary btn-sm edit-signatories-btn" data-bs-toggle="modal" data-bs-target="#edit-signatories-modal"> <i class="fa fa-edit"></i> Edit Signatories </button>
                 <button class="btn btn-success btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#print-offcanvas" aria-controls="offcanvasRight"><i class="fa fa-print"></i> Print</button>
                 <button type="button" id="update-employees-data-btn" class="btn btn-outline-secondary btn-sm visually-hidden" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-refresh"></i> Recapture Employees Data </button>
@@ -34,6 +35,8 @@
 
             </div>
             <div class="btn-group float-end">
+                <button type="button" id="ad-employee-btn" data-bs-target="#add-employee-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-plus"></i> Add Employee </button>
+
                 <a type="button" href="{{route('dashboard.payroll_refund.index',$payrollMaster->slug)}}"  class="btn btn-outline-secondary btn-sm"> <i class="fa fa-money-bill-transfer"></i> Refunds </a>
                 <button type="button" data-bs-target="#other-actions-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-gear"></i> Other Actions </button>
                 <button type="button" id="upload-btn" data-bs-target="#upload-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-folder-open"></i> Upload Excel File </button>
@@ -89,7 +92,22 @@
         </div>
     </div>
 @endsection
-
+@php
+    $nonExistingEmployees = \App\Models\Employee::query()
+        ->permanent()
+        ->applyProjectId()
+        ->whereHas('responsibilityCenter')
+        ->whereHas('plantilla')
+        ->whereNotIn('slug',$payrollMaster->payrollMasterEmployees->pluck('employee_slug'))
+        ->orderBy('lastname')
+        ->get()
+        ->map(function ($data){
+            return [
+                'id' => $data->slug,
+                'text' => $data->full['LFEMi']
+            ];
+        });
+@endphp
 
 @section('modals')
     <x-adminkit.html.modal id="edit-signatories-modal"/>
@@ -182,6 +200,27 @@
         <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'ALPHALIST-GSIS-HDMF'])}}" target="_blank" class="btn btn-outline-secondary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Alphalist (GSIS,HDMF)</a>
 
     </x-adminkit.html.offcanvas>
+
+    <x-adminkit.html.modal-template id="add-employee-modal" size="sm" form-id="add-employee-form">
+        <x-slot:title>
+            Add Employee
+        </x-slot:title>
+        <div class="alert alert-warning" role="alert">
+            <div class="alert-message">
+                Page will reload after adding an employee.
+            </div>
+        </div>
+        <div class="row mb-2">
+            <x-forms.select label="Employee" name="employee_slug" id="non-existing-employee-select" cols="12" :options="[]"/>
+        </div>
+        <div class="row mb-2">
+            <x-forms.select label="Payroll Group" name="payroll_group" cols="12" :options="\App\Swep\Helpers\Arrays::payrollGroups()"/>
+        </div>
+        <x-slot:footer>
+            <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Save</button>
+        </x-slot:footer>
+    </x-adminkit.html.modal-template>
+
 @endsection
 
 @section('scripts')
@@ -505,5 +544,36 @@
             });
         });
 
+        $("#add-employee-form").submit(function (e) {
+            e.preventDefault();
+            let form = $(this);
+            var formData = new FormData(this);
+            let uri = '{{route("dashboard.payroll_preparation.update",$payrollMaster->slug)}}?addEmployee=true';
+            loading_btn(form);
+            $.ajax({
+                url : uri,
+                data: formData,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                cache: false,
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    succeed(form,false,false);
+                    toast('info','Employee successfully added. Please wait.','Updated');
+                    location.reload();
+                },
+                error: function (res) {
+                    errored(form,res);
+                }
+            })
+        })
+
+        $("#non-existing-employee-select").select2({
+            data : {!! $nonExistingEmployees->toJson() !!},
+            dropdownParent : $("#add-employee-modal"),
+        })
     </script>
 @endsection

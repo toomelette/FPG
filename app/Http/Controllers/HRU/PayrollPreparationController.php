@@ -345,6 +345,10 @@ class PayrollPreparationController
                 }
                 $payrollMaster = PayrollMaster::query()
                     ->with([
+                        'payrollMasterEmployees'  => function ($q) {
+                            $q->orderBy('saved_employee_data->lastname')
+                                ->orderBy('id');
+                        },
                         'payrollMasterEmployees.employee',
                         'payrollMasterEmployees.employeePayrollDetails',
                     ])
