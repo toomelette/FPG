@@ -67,7 +67,7 @@
                             </div>
 
                             <div class="row">
-                                <x-forms.select label="Report Type" name="type" cols="12" :options="['per_month' => 'CONSOLIDATED', 'main' => 'MAIN PAYROLL']" required="required"/>
+                                <x-forms.select label="Report Type" name="type" cols="12" :options="['per_month' => 'CONSOLIDATED', 'main' => 'MAIN PAYROLL','gsis' => 'GSIS Contribution']" required="required"/>
                             </div>
 
 

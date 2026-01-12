@@ -589,6 +589,212 @@ class PayrollService
 
     }
 
+    public function consolidatedGsis(Request $request)
+    {
+        $usedRc = [];
+        $payrollMasterEmployeesGrouped = PayrollMasterEmployees::query()
+            ->with(['employee'])
+            ->whereIn('pay_master_slug',$request->payrolls)
+            ->whereIn('employee_payroll_type',$request->payrollGroupsSelected)
+            ->groupBy('employee_slug')
+            ->get();
+        $employees = PayrollMasterEmployees::query()
+            ->whereIn('pay_master_slug',$request->payrolls)
+            ->whereIn('employee_payroll_type',$request->payrollGroupsSelected)
+            ->groupBy('employee_slug')
+            ->get()
+            ->mapWithKeys(function ($data){
+                return [
+                    $data->employee_slug => $data,
+                ];
+            });
+
+        $payrollMasterEmployees = PayrollMasterEmployees::query()
+            ->with([
+                'employeePayrollDetails' => function ($employeePayrollDetails) {
+                    $employeePayrollDetails->where('code','=','GSIS');
+                }
+            ])
+            ->whereIn('pay_master_slug',$request->payrolls)
+            ->whereIn('employee_payroll_type',$request->payrollGroupsSelected)
+            ->get();
+
+
+
+        $rcsGroupedByRcCode = PPURespCodes::query()->get()->mapWithKeys(function ($data){return [$data->rc_code => $data];});
+
+
+
+        foreach ($employees as $employee){
+            $respCenter = $employee->saved_employee_data['resp_center'];
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.$rcsGroupedByRcCode[$respCenter]->sec] = $rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.$rcsGroupedByRcCode[$respCenter]->sec;
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.'0'] = $rcsGroupedByRcCode[$respCenter]->rc.$rcsGroupedByRcCode[$respCenter]->div.'0';
+            $usedRc[$rcsGroupedByRcCode[$respCenter]->rc.'0'.'0'] = $rcsGroupedByRcCode[$respCenter]->rc.'0'.'0';
+        }
+
+        $tree = PayrollTree::query()
+            ->with('responsibilityCenter')
+            ->whereIn('resp_center',array_flatten($usedRc))
+            ->orderBy('sort','asc')
+            ->get()
+            ->groupBy(['group','resp_center']);
+
+        /*
+        $t = $payrollMaster->payrollMasterEmployees->groupBy(function ($data){
+            return $data->employee->resp_center;
+        })->toArray();
+        */
+        $t = $payrollMasterEmployeesGrouped->groupBy(function ($data){
+            return $data->employee->resp_center;
+        })->toArray();
+        ksort($t);
+        $t = array_keys($t);
+        $dbRcs = collect($tree)->flatten()->mapWithKeys(function ($data){
+            return [
+                $data->resp_center => $data,
+            ];
+        })->toArray();
+        ksort($dbRcs);
+        $dbRcs = array_keys($dbRcs);
+        $diff = array_diff($t,$dbRcs);
+        if(count($diff) > 0){
+            abort(503,'There are some RCs not found on the hierarchy of RCs. Contact database administrator. ---------------------------- '.print_r($diff,true));
+        }
+        ksort($usedRc);
+
+
+        $payrollMasters = PayrollMaster::query()
+            ->with([
+                'payrollMasterEmployees' => function ($payrollMasterEmployees) use($request) {
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $payrollMasterEmployees->where(function ($filter) use ($request){
+                            foreach ($request->payrollGroupsSelected as $payrollGroupSelected){
+                                $filter->orWhere('employee_payroll_type',$payrollGroupSelected);
+                            }
+                        })
+                            ->orderBy('saved_employee_data->full_name');
+                    }
+                },
+                'payrollMasterEmployees.employee.plantilla',
+                'payrollMasterEmployees.employeePayrollDetails' => function ($employeePayrollDetails) {
+                    $employeePayrollDetails->where('code','=','GSIS');
+                },
+                'hmtDetails' => function ($hmtDetails) use($request){
+                    $hmtDetails->where('code','=','GSIS');
+                    //Payroll Groups
+                    if($request->has('payrollGroupsSelected') && count($request->payrollGroupsSelected) > 0){
+                        $hmtDetails->intermediateGroup($request->payrollGroupsSelected);
+                    }
+
+                },
+                'hmtDetails.employeePayroll',
+                'hmtDetails.chartOfAccount',
+            ])
+            ->orderBy('date')
+            ->orderBy('type')
+            ->whereIn('slug',$request->payrolls)
+            ->get();
+
+        $usedCodes = [];
+
+        foreach ($payrollMasters as $payrollMaster){
+            $keys = $payrollMaster->hmtDetails
+                ->sortBy(function ($d){
+
+                    if($d->type == 'INCENTIVE'){
+                        return '1'.$d->priority;
+                    }else{
+                        return '2'.$d->priority;
+                    }
+                })
+                ->groupBy('code')
+                ->keys();
+            foreach ($keys as $key){
+                $usedCodes[] = $key;
+            }
+        }
+        $usedCodes = array_unique($usedCodes);
+        $flattenedDetails = $payrollMasters->flatMap->hmtDetails;
+        $types = $payrollMasters->pluck('type')->unique();
+        $flattenedDetailsArray = [];
+        foreach ($types as $type){
+            $flattenedDetailsArray[$type] = $flattenedDetails->where('employeePayroll.payrollMaster.type','=',$type);
+        }
+
+        return view('printables.hru.payroll_preparation.DIFF.payroll-gsis-consolidated')->with([
+            'payrollMasters' => $payrollMasters,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMasterEmployeesGrouped->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+            'payrollEmployeesBySlug' => $payrollMasterEmployeesGrouped->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+            'payrollMasterEmployees' => $payrollMasterEmployees,
+            'usedCodes' => $usedCodes,
+            'flattenedDetails' => $flattenedDetails,
+            'flattenedDetailsArray' => $flattenedDetailsArray,
+            'flattenedEmployees' => $payrollMasters->flatMap->payrollMasterEmployees,
+        ]);
+        return Pdf::view('printables.hru.payroll_preparation.DIFF.payroll-gsis-consolidated',[
+            'pdfPrint' => true,
+            'payrollMasters' => $payrollMasters,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMasterEmployeesGrouped->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+            'payrollEmployeesBySlug' => $payrollMasterEmployeesGrouped->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+            'payrollMasterEmployees' => $payrollMasterEmployees,
+            'usedCodes' => $usedCodes,
+            'flattenedDetails' => $flattenedDetails,
+            'flattenedDetailsArray' => $flattenedDetailsArray,
+            'flattenedEmployees' => $payrollMasters->flatMap->payrollMasterEmployees,
+        ])
+            ->paperSize('215.9','330.2')
+            ->landscape()
+            ->margins(8,8, 15, 8)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.payroll_preparation.footer-view')
+            ->name('Payroll Summary.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+        /*
+         return view('printables.hru.payroll_preparation.DIFF.payroll-main-consolidated')->with([
+            'payrollMasters' => $payrollMasters,
+            'tree' => $tree,
+            'payrollEmployeesGroupedByRespCenter' => $payrollMasterEmployeesGrouped->groupBy(function ($data){
+                return $data->employee->resp_center;
+            }),
+            'payrollEmployeesBySlug' => $payrollMasterEmployeesGrouped->mapWithKeys(function ($data){
+                return [
+                    $data->employee->slug => $data,
+                ];
+            }),
+            'usedRc' => $usedRc,
+            'payrollMasterEmployees' => $payrollMasterEmployees,
+            'usedCodes' => $usedCodes,
+            'flattenedDetails' => $flattenedDetails,
+            'flattenedDetailsArray' => $flattenedDetailsArray,
+            'flattenedEmployees' => $payrollMasters->flatMap->payrollMasterEmployees,
+        ]);
+
+        */
+
+    }
+
     public function consolidatedMain(Request $request)
     {
         $usedRc = [];
@@ -782,6 +988,9 @@ class PayrollService
         }
         if($request->has('type') && $request->type == 'main'){
             return $this->consolidatedMain($request);
+        }
+        if($request->has('type') && $request->type == 'gsis'){
+            return $this->consolidatedGsis($request);
         }
     }
 
