@@ -30,6 +30,7 @@
                 <th class="text-center" style="width: 60px;">Emp. No</th>
                 <th class="text-center">Name / Position / JG</th>
                 <th class="text-center" style="width: 80px">Monthly</th>
+                <th class="text-center" style="width: 80px">PERA</th>
                 <th class="text-center" style="width: 80px">Total Deductions</th>
                 <th class="text-center" style="width: 80px">Mid Month</th>
                 <th class="text-center" style="width: 80px">Salary for the period</th>
@@ -41,10 +42,13 @@
                     <td class="text-top">{{$payrollEmployee->saved_employee_data['employee_no'] ?? ''}}</td>
                     <td>
                         <span class="text-strong">{{$payrollEmployee->saved_employee_data['full_name'] ?? ''}}</span> <br>
-                        {{$payrollEmployee->saved_employee_data['position'] ?? ''}} ({{$payrollEmployee->saved_employee_data['salary_grade'] ?? ''}} , {{$payrollEmployee->saved_employee_data['step_inc'] ?? ''}})
+                        <small>{{$payrollEmployee->saved_employee_data['position'] ?? ''}} ({{$payrollEmployee->saved_employee_data['salary_grade'] ?? ''}} , {{$payrollEmployee->saved_employee_data['step_inc'] ?? ''}})</small>
                     </td>
                     <td class="text-right text-top">
                         {{Helper::toNumber($payrollEmployee->employeePayrollDetails->firstWhere('code','MONTHLY')->amount ?? null)}}
+                    </td>
+                    <td class="text-right text-top">
+                        {{Helper::toNumber($payrollEmployee->employeePayrollDetails->firstWhere('code','PERA')->amount ?? null)}}
                     </td>
                     <td class="text-right text-top">
                         {{Helper::toNumber($payrollEmployee->employeePayrollDetails->where('type','DEDUCTION')->sum('amount'))}}
@@ -64,6 +68,11 @@
                 <th class="text-right b-top">
                     {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum(function ($payrollEmployee){
                         return $payrollEmployee->employeePayrollDetails->where('code','MONTHLY')->sum('amount');
+                    }))}}
+                </th>
+                <th class="text-right b-top">
+                    {{Helper::toNumber($payrollMaster->payrollMasterEmployees->sum(function ($payrollEmployee){
+                        return $payrollEmployee->employeePayrollDetails->where('code','PERA')->sum('amount');
                     }))}}
                 </th>
                 <th class="text-right b-top">
