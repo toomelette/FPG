@@ -916,6 +916,7 @@ class Arrays
             'CNA' => 'CNA',
             'SRI' => 'Service Recognition Incentive',
             'PEI' => 'Performance Enhancement Incentive',
+            'MEDICAL' => 'Medical Allowance',
         ];
     }
 

@@ -25,6 +25,7 @@ use App\Swep\Services\HRU\DiffMonetizationService;
 use App\Swep\Services\HRU\DiffMybService;
 use App\Swep\Services\HRU\DiffYebService;
 use App\Swep\Services\HRU\HazardPrcService;
+use App\Swep\Services\HRU\MedicalService;
 use App\Swep\Services\HRU\MonthlyPayrollService;
 use App\Swep\Services\HRU\MybService;
 use App\Swep\Services\HRU\PayrollService;
@@ -60,6 +61,7 @@ class PayrollPreparationController
         public DiffMonetizationService $diffMonetizationService,
         public SRIService $SRIService,
         public PEIService $PEIService,
+        public MedicalService $medicalService,
     )
     {
 
@@ -252,6 +254,9 @@ class PayrollPreparationController
                 break;
             case 'PEI':
                 $this->PEIService->recompute($payMaster->slug);
+                break;
+            case 'MEDICAL':
+                $this->medicalService->recompute($payMaster->slug);
                 break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);
@@ -488,6 +493,18 @@ class PayrollPreparationController
                 return $this->diffYebService->edit($payrollMaster,$slug,$request);
             case 'DIFF-MON':
                 return $this->diffMonetizationService->edit($payrollMaster,$slug,$request);
+
+            case 'MEDICAL':
+                //show employee offcanvas
+                if($request->has('employee')){
+                    return  $this->payrollService->showEmployee($slug,$request);
+                }
+                if($request->has('recompute') && $request->recompute == true){
+                    return $this->medicalService->recompute($slug);
+                }
+                return view('_payroll.payroll-preparation.MEDICAL.edit')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
 
         }
         
@@ -911,6 +928,8 @@ class PayrollPreparationController
                 return $this->diffYebService->update($request,$payrollMaster);
             case "DIFF-MON" :
                 return $this->diffMonetizationService->update($request,$payrollMaster);
+            case 'MEDICAL' :
+                return $this->medicalService->update($request,$payrollMaster);
             default:
                 break;
         }

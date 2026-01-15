@@ -29,8 +29,8 @@ class Values
             ];
         }else{
             return [
-                'a_name' => 'NARCISO R. CABALQUINTO JR',
-                'a_position' => 'OIC, General Admin. Division',
+                'a_name' => 'CONCEPCION C. RUBY',
+                'a_position' => 'Chief Administrative Officer',
                 'b_name' => 'RESTY D. REAÑO',
                 'b_position' => 'Chief Accountant',
                 'c_name' => 'ATTY. BRANDO D. NOROÑA',

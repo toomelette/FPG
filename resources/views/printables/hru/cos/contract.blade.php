@@ -66,11 +66,12 @@
                     </b>
                     <b>(Php {{Helper::toNumber($sal)}})</b> to be paid on a quincenas basis, rates under SSL5, Tranche 1, Step 1 of SSL inclusive of a premium of 20% of such salary or wage. Provided, however, that if he/she is required to render services outside of his/her official workstation, he/she may be allowed to collect <b>Actual Travelling Expenses</b> subject to pertinent guidelines duly issued by the <b>FIRST PARTY</b>. Provided, further, that he/she will be allowed to claim overtime pay for services rendered beyond government office hours in accordance with the duly established rules on government accounting.
                 </li>
+
                 <li>
-                    That as contract of service personnel, the <b>SECOND PARTY</b> shall be assigned to the <b>{{$cosEmp->other_data['assignment'] ?? null}}</b> and is obliged to perform the duties and responsibilities of the position, hereto attached as <b>Annex “A”</b>.
+                    That as contract of service personnel, the <b>SECOND PARTY</b> shall be assigned to the <b>{{$cosEmp->employee->responsibilityCenter->desc ?? null}}</b> and is obliged to perform the duties and responsibilities of the position, hereto attached as <b>Annex “A”</b>.
                 </li>
                 <li>
-                    That the <b> SECOND PARTY</b> shall report on site, at the <b>{{$cosEmp->other_data['assignment'] ?? null}}</b> from Monday to Friday, and shall work a minimum of eight (8) hours a day.
+                    That the <b> SECOND PARTY</b> shall report on site, at the <b>{{$cosEmp->cos_assignment ?? null}}</b> from Monday to Friday, and shall work a minimum of eight (8) hours a day.
                 </li>
                 <li>
                     Either party may terminate this Contract of Service, but only for legal and justifiable causes or grounds by notifying the other party in writing, at least thirty (30) days before its intended termination. This Contract of Service may also be immediately terminated for serious violations of any of the conditions set forth herein.
@@ -91,7 +92,7 @@
                     The services rendered hereunder are not considered and will not be credited as government service and that the <b>SECOND PARTY</b> is not entitled to the benefits of a regular employee of the <b>FIRST PARTY</b>.
                 </li>
                 <li>
-                    11.	That in case the <b>SECOND PARTY</b> commits a violation of this Contract or any act or offense punishable by law against the <b>, the latter may proceed against the former through any judicial or quasi-judicial recourse/s available, and before any proper office, including regular courts.
+                    11.	That in case the <b>SECOND PARTY</b> commits a violation of this Contract or any act or offense punishable by law against the <b>FIRST PARTY</b>, the latter may proceed against the former through any judicial or quasi-judicial recourse/s available, and before any proper office, including regular courts.
                 </li>
                 <li>
                     Any dispute, claim, controversy, or disagreement arising out of or in connection with this Contract of Service shall be notified in writing by one party to the other and the Parties hereto shall endeavor to settle such dispute amicably within thirty (30) calendar days after receipt of the written notification. In case of failure to come to an amicable settlement, such dispute, claim, controversy, or disagreement shall be tried exclusively in a competent court in Bacolod City.

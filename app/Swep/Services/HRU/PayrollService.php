@@ -1113,4 +1113,14 @@ class PayrollService
 
         dd($request->all());
     }
+
+    public function deleteEmployee(Request $request, $payrollMaster)
+    {
+        $pme = $payrollMaster->payrollMasterEmployees()->firstWhere('slug',$request->data);
+        if($pme->delete()){
+            $pme->employeePayrollDetails()->delete();
+            return $pme->slug;
+        }
+        abort(503,'Error deleting item.');
+    }
 }

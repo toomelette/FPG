@@ -20,7 +20,7 @@ class DiffMonetizationService
 {
     private $factor;
     public function __construct(
-
+        public PayrollService $payrollService
     )
     {
         $this->factor =  0.0481927;
@@ -66,7 +66,7 @@ class DiffMonetizationService
                 return  $this->clone($request,$payrollMaster);
             }
             if($request->type == 'delete'){
-                return  $this->deleteEmployee($request,$payrollMaster);
+                return  $this->payrollService->deleteEmployee($request,$payrollMaster);
             }
         }
 
