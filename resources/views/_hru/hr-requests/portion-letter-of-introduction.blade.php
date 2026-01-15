@@ -11,7 +11,7 @@
                 $notedBy = $employeeSignatories->where('item_no',$signatories->json_value['noted_by'])->first();
                 $hrRepresentative = $employeeSignatories->where('item_no',$signatories->json_value['hr_representative'])->first();
 
-                $addressTo = '<b>JOCELYN L. AMODIA</b><br>AVP/Head, Bacolod Branch<br>Landbank of the Philippines<br>Bacolod Gatuslao Branch <br><br> Dear Ms. Amodia,';
+                $addressTo = '<b>DULCE JOY J. GAYAT</b><br>AVP/Head, Bacolod Branch<br>Landbank of the Philippines<br>Bacolod Gatuslao Branch <br><br> Dear Ms. Amodia,';
                 if(!$isPermanent){
                     $firstParagraph = 'In line with the approval of the Memorandum of Agreement between Landbank of the
                                         Philippines and the Sugar Regulatory Administration, may we request the issuance of an
