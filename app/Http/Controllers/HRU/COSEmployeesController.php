@@ -35,6 +35,9 @@ class COSEmployeesController extends Controller
         if($request->has('printMultiple')){
             return $this->printMultiple($slug);
         }
+        if($request->has('printSummary')){
+            return $this->printSummary($slug);
+        }
         if($request->ajax() && $request->has('draw')){
 
             $cosEmps = COSEmployees::query()
@@ -374,6 +377,34 @@ class COSEmployeesController extends Controller
         abort(503,'Error updating data.');
     }
 
+    public function printSummary($slug)
+    {
+        $request = Request::capture();
+
+        $cosEmps = COSEmployees::query()
+            ->with(['cos','employee.responsibilityCenter'])
+            ->where('cos_slug','=',$slug)
+            ->get();
+
+        $folder = Str::random(6);
+
+        //summary
+        return Pdf::view('printables.hru.cos.summary',[
+            'pdfPrint' => true,
+            'cosEmps' => $cosEmps,
+        ])
+            ->paperSize(215.9,330.2)
+            ->margins(20,20, 20, 20)
+            ->headers(['title' => 'aaaaa'])
+            ->landscape()
+            ->name('Contract of Service.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+    }
     public function printMultiple($slug)
     {
         $request = Request::capture();
@@ -381,6 +412,7 @@ class COSEmployeesController extends Controller
         $cosEmps = COSEmployees::query()
             ->with(['cos','employee.responsibilityCenter'])
             ->whereIn('resp_center',$request->rcs)
+            >where('cos_slug','=',$slug)
             ->get();
 
         $folder = Str::random(6);

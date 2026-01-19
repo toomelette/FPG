@@ -10,6 +10,8 @@
                 <div class="col-md-6">
                     <div class="btn-group">
                         <button class="btn btn-sm btn-success "  data-bs-target="#print-multiple-modal" data-bs-toggle="modal"><i class="fa fa-print"></i> Print multiple</button>
+                        <a class="btn btn-sm btn-default" href="{{route("dashboard.cos_employees.index",$cos->slug)}}?printSummary" target="_blank"><i class="fa fa-print"></i> Print Summary</a>
+
                     </div>
                 </div>
                 <div class="col-md-6">

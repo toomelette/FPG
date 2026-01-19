@@ -45,7 +45,7 @@
 
                 <p style="text-indent: 30px;">
                     <b>WHEREAS</b>, on {{Helper::dateFormat($cosEmp->cos->memo_date ?? null,'F d, Y')}} through <b>{{$cosEmp->cos->memo_code ?? null}}</b>,
-                    Administrator Pablo Luis S. Azcona approved the request of the <b>{{$cosEmp->department ?? ''}}</b>
+                    Administrator Pablo Luis S. Azcona approved the request of the <b>{{$cosEmp->employee->responsibilityCenter->department_full ?? ''}}</b>
                     for the renewal of the SECOND PARTY for a period of six ({{Carbon::parse($cosEmp->cos->date_from)->diffInMonths(Carbon::parse($cosEmp->cos->date_to)) + 1 }}) months
                     from {{Carbon::parse($cosEmp->cos->date_from)->format('F d, Y')}} to {{Carbon::parse($cosEmp->cos->date_to)->format('F d, Y')}}.
                 </p>
