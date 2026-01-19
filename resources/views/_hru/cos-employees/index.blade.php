@@ -6,10 +6,19 @@
     </x-adminkit.html.page-title>
     <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
         <x-slot:title>
-            <div class="btn-group float-end">
-                <button class="btn btn-sm btn-outline-secondary upload-excel-btn"  data-bs-target="#upload-excel-modal" data-bs-toggle="modal"><i class="fa fa-file-excel"></i> Upload Excel</button>
-                <button class="btn btn-sm btn-outline-secondary add-multiple-employee-btn"  data-bs-target="#add-multiple-employee-modal" data-bs-toggle="modal"><i class="fa fa-plus"></i> Add Multiple</button>
-                <button class="btn btn-sm btn-primary "  data-bs-target="#add-employee-modal" data-bs-toggle="modal"><i class="fa fa-plus"></i> Add Employee</button>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-success "  data-bs-target="#print-multiple-modal" data-bs-toggle="modal"><i class="fa fa-print"></i> Print multiple</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group float-end">
+                        <button class="btn btn-sm btn-outline-secondary upload-excel-btn"  data-bs-target="#upload-excel-modal" data-bs-toggle="modal"><i class="fa fa-file-excel"></i> Upload Excel</button>
+                        <button class="btn btn-sm btn-outline-secondary add-multiple-employee-btn"  data-bs-target="#add-multiple-employee-modal" data-bs-toggle="modal"><i class="fa fa-plus"></i> Add Multiple</button>
+                        <button class="btn btn-sm btn-primary "  data-bs-target="#add-employee-modal" data-bs-toggle="modal"><i class="fa fa-plus"></i> Add Employee</button>
+                    </div>
+                </div>
             </div>
         </x-slot:title>
 
@@ -31,7 +40,10 @@
         </table>
     </x-adminkit.html.card>
 @endsection
-
+@php
+    $usedRcs = $cos->employees->pluck('resp_center')->unique();
+    $usedRcs = \App\Models\PPU\PPURespCodes::query()->whereIn('rc_code',$usedRcs)->get();
+@endphp
 
 @section('modals')
     <x-adminkit.html.modal id="add-multiple-employee-modal" size="85"/>
@@ -45,9 +57,29 @@
             <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i> Save</button>
         </x-slot:footer>
     </x-adminkit.html.modal-template>
+    <x-adminkit.html.modal-template id="print-multiple-modal" form-id="print-multiple-form" form-target="_blank" size="sm">
+        <x-slot:title>Print Multiple</x-slot:title>
+        <div class="row">
+            <input name="printMultiple" value="true" hidden="">
+            @forelse($usedRcs as $usedRc)
+                <div class="col-md-12">
+                    <label class="form-check">
+                        <input class="form-check-input" name="rcs[]" type="checkbox" value="{{$usedRc->rc_code}}">
+                        <span class="form-check-label">
+                            {{$usedRc->desc}}
+                        </span>
+                    </label>
+                </div>
+            @empty
+            @endforelse
+        </div>
+        <x-slot:footer>
+            <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-print"></i> Print</button>
+        </x-slot:footer>
+    </x-adminkit.html.modal-template>
 
     <x-adminkit.html.modal-template id="upload-excel-modal" form-id="upload-excel-form" size="sm">
-        <x-slot:title>Add Employee</x-slot:title>
+        <x-slot:title>Upload Excel</x-slot:title>
         <div class="row">
             <x-forms.input label="Employee" type="file" name="file" cols="12"/>
         </div>

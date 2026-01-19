@@ -31,6 +31,9 @@ class COSEmployeesController extends Controller
         if($request->has('printContract')){
             return $this->printContract($slug);
         }
+        if($request->has('printMultiple')){
+            return $this->printMultiple($slug);
+        }
         if($request->ajax() && $request->has('draw')){
 
             $cosEmps = COSEmployees::query()
@@ -370,6 +373,31 @@ class COSEmployeesController extends Controller
         abort(503,'Error updating data.');
     }
 
+    public function printMultiple($slug)
+    {
+        $request = Request::capture();
+
+        $cosEmps = COSEmployees::query()
+            ->with(['cos','employee'])
+            ->whereIn('resp_center',$request->rcs)
+            ->get();
+
+        return Pdf::view('printables.hru.cos.contract',[
+            'pdfPrint' => true,
+            'cosEmps' => $cosEmps,
+        ])
+            ->paperSize(215.9,330.2)
+            ->margins(20,20, 20, 20)
+            ->headers(['title' => 'aaaaa'])
+            ->footerView('printables.hru.hr-requests.contract-of-service-footer')
+            ->name('Contract of Service.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot){
+                if(app()->environment('production')){
+                    $browsershot->setNodeBinary(env('NODE_BINARY'))
+                        ->setNpmBinary(env('NODE_BINARY'));
+                }
+            });
+    }
     public function printContract($slug)
     {
         $cosEmp = COSEmployees::query()
@@ -382,7 +410,7 @@ class COSEmployeesController extends Controller
 
         return Pdf::view('printables.hru.cos.contract',[
             'pdfPrint' => true,
-            'cosEmp' => $cosEmp,
+            'cosEmps' => [$cosEmp],
         ])
             ->paperSize(215.9,330.2)
             ->margins(20,20, 20, 20)
