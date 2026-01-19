@@ -412,7 +412,7 @@ class COSEmployeesController extends Controller
         $cosEmps = COSEmployees::query()
             ->with(['cos','employee.responsibilityCenter'])
             ->whereIn('resp_center',$request->rcs)
-            >where('cos_slug','=',$slug)
+            ->where('cos_slug','=',$slug)
             ->get();
 
         $folder = Str::random(6);
