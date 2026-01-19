@@ -92,7 +92,7 @@
                     The services rendered hereunder are not considered and will not be credited as government service and that the <b>SECOND PARTY</b> is not entitled to the benefits of a regular employee of the <b>FIRST PARTY</b>.
                 </li>
                 <li>
-                    11.	That in case the <b>SECOND PARTY</b> commits a violation of this Contract or any act or offense punishable by law against the <b>FIRST PARTY</b>, the latter may proceed against the former through any judicial or quasi-judicial recourse/s available, and before any proper office, including regular courts.
+                    That in case the <b>SECOND PARTY</b> commits a violation of this Contract or any act or offense punishable by law against the <b>FIRST PARTY</b>, the latter may proceed against the former through any judicial or quasi-judicial recourse/s available, and before any proper office, including regular courts.
                 </li>
                 <li>
                     Any dispute, claim, controversy, or disagreement arising out of or in connection with this Contract of Service shall be notified in writing by one party to the other and the Parties hereto shall endeavor to settle such dispute amicably within thirty (30) calendar days after receipt of the written notification. In case of failure to come to an amicable settlement, such dispute, claim, controversy, or disagreement shall be tried exclusively in a competent court in Bacolod City.
