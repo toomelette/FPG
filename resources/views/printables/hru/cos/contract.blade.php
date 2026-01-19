@@ -24,8 +24,8 @@
                 </p>
                 <p class="text-center">- and -</p>
                 <p style="padding-left: 30px; padding-right: 20px">
-                    <b>{{$cosEmp->employee->full['FMiLE']}}</b>, of legal age, Filipino, {{Str::lower($cosEmp->other_data['civil_status'] ?? null)}} and
-                    a resident of {{Str::of($cosEmp->other_data['address'] ?? null)}}, now and hereinafter referred to as the <b>“SECOND PARTY”</b>.
+                    <b>{{$cosEmp->employee->full['FMiLE']}}</b>, of legal age, Filipino, <b>{{Str::lower($cosEmp->other_data['civil_status'] ?? null)}}</b>, and
+                    a resident of <b>{{Str::of($cosEmp->other_data['address'] ?? null)->upper()}}</b>, now and hereinafter referred to as the <b>“SECOND PARTY”</b>.
                 </p>
 
                 <p class="text-strong text-center">WITNESSETH:</p>
