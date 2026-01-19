@@ -16,6 +16,9 @@ class COSEmployeesFormRequest extends FormRequest
         if($this->has('multiple')){
             return [];
         }
+        if($this->has('import')){
+            return [];
+        }
         return [
             'employee_slug' => [
                 'required',

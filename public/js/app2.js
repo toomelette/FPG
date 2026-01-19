@@ -172,6 +172,8 @@ function errored(target_form, response){
         toast('error',response.responseJSON.message,'Error');
     }else if(response.status == 413){
         notify('File too large.','danger');
+    }else if(response.status == 515){
+
     }else{
         alert(response.responseJSON.message);
     }

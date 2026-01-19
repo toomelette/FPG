@@ -4,6 +4,7 @@ namespace App\Http\Controllers\HRU;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hru\COSEmployeesFormRequest;
+use App\Imports\GSISImport;
 use App\Models\Employee;
 use App\Models\HRU\COS;
 use App\Models\HRU\COSEmployees;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Yajra\DataTables\Facades\DataTables;
@@ -66,10 +68,104 @@ class COSEmployeesController extends Controller
         ]);
     }
 
+    public function import($request, $slug)
+    {
+        $excel = Excel::toArray(new GSISImport(),$request->file('file'));
+        $requiredHeaders = [
+            'employee_no', 'name', 'position','cos_assignment','salary','type','resp_center',
+        ];
+        $excelHeaders = $excel[0][0];
+        $differences = array_diff($requiredHeaders,$excelHeaders);
+        $excelData = $excel[0];
+        $empNoKey = array_search('employee_no',$excelHeaders);
+        $nameKey = array_search('name',$excelHeaders);
+        unset($excelData[0]);
+        $toUpsert = [];
+        $batchCode = Str::random(6);
+        if(empty($differences)){
+
+            $empNosFromExcel = array_column($excelData,$empNoKey);
+            //check database of employees
+            $empsFromDb = Employee::query()
+                ->whereIn('employee_no',$empNosFromExcel)
+                ->active()
+                ->cos()
+                ->get();
+            $empNosFromDb =  $empsFromDb->pluck('employee_no');
+            $checkDifferences = array_diff($empNosFromExcel,$empNosFromDb->toArray());
+
+
+            foreach ($excelData as $excelDatum){
+                $emp = [];
+                foreach ($excelDatum as $key => $item){
+                   if(array_search($excelHeaders[$key],$requiredHeaders) !== false){
+                       $emp[$excelHeaders[$key]] = $item;
+                   }
+                }
+                if(!empty($emp)){
+                    $emp['hr_cos_employees_slug'] = Str::random();
+                    $emp['cos_slug'] = $slug;
+                    $emp['batch_code'] = $batchCode;
+                    $emp['employee_slug'] = $empsFromDb->where('employee_no','=',$excelDatum[$empNoKey])->first()->slug ?? abort(503,'Employee error');
+                    $emp['employee_fullname'] = $empsFromDb->where('employee_no','=',$excelDatum[$empNoKey])->first()->full['FMiLE'] ?? abort(503,'Employee error');
+
+                }
+                $toUpsert[] = $emp;
+            }
+
+
+
+            if(empty($checkDifferences)){
+                //continue insert
+                $filteredToInsert = [];
+                $except = ['employee_no','name','position','salary'];
+                foreach ($toUpsert as $value){
+                    $filteredToInsert[] = collect($value)->except($except)->toArray();
+                }
+                COSEmployees::query()->insert($filteredToInsert);
+
+                //update employee data first
+                if ($request->has('update')){
+                    foreach ($toUpsert as $value){
+                        $empFromDb = $empsFromDb->where('slug','=',$value['employee_slug'])->first();
+                        $empFromDb->resp_center = $value['resp_center'];
+                        $empFromDb->monthly_basic = $value['salary'];
+                        $empFromDb->position = Str::upper($value['position']);
+                        $empFromDb->save();
+                    }
+                }
+
+
+
+                return 1;
+                //
+            }else{
+                //alert user to check the excel file
+                $nonExistingEmployees = [];
+                foreach ($checkDifferences as $checkDifference){
+
+//                    dd($excelData[array_search($checkDifference,$empNosFromExcel)]);
+                    $targetNonExistentEmp = $excelData[array_search($checkDifference,$empNosFromExcel)+1];
+                    $nonExistingEmployees[$targetNonExistentEmp[$empNoKey]] = $targetNonExistentEmp[$nameKey];
+                }
+
+                $error = [
+                    'message' => 'Some employees in your excel file do not exist in the master list of COS Employees. :',
+                    'dataArray' => $nonExistingEmployees,
+                ];
+                abort(515,json_encode($error));
+            }
+        }else{
+            abort(503,'Some required headers are not present in your uploaded excel file: '.implode(',',$differences));
+        }
+    }
     public function store(COSEmployeesFormRequest $request,$slug)
     {
         if ($request->has('multiple')){
             return $this->storeMultiple($request,$slug);
+        }
+        if ($request->has('import')){
+            return $this->import($request,$slug);
         }
         $cosEmp = new COSEmployees();
         $cosEmp->hr_cos_employees_slug = Str::random();

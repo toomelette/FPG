@@ -7,6 +7,7 @@
     <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
         <x-slot:title>
             <div class="btn-group float-end">
+                <button class="btn btn-sm btn-outline-secondary upload-excel-btn"  data-bs-target="#upload-excel-modal" data-bs-toggle="modal"><i class="fa fa-file-excel"></i> Upload Excel</button>
                 <button class="btn btn-sm btn-outline-secondary add-multiple-employee-btn"  data-bs-target="#add-multiple-employee-modal" data-bs-toggle="modal"><i class="fa fa-plus"></i> Add Multiple</button>
                 <button class="btn btn-sm btn-primary "  data-bs-target="#add-employee-modal" data-bs-toggle="modal"><i class="fa fa-plus"></i> Add Employee</button>
             </div>
@@ -43,6 +44,37 @@
         <x-slot:footer>
             <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i> Save</button>
         </x-slot:footer>
+    </x-adminkit.html.modal-template>
+
+    <x-adminkit.html.modal-template id="upload-excel-modal" form-id="upload-excel-form" size="sm">
+        <x-slot:title>Add Employee</x-slot:title>
+        <div class="row">
+            <x-forms.input label="Employee" type="file" name="file" cols="12"/>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <label class="form-check">
+                    <input class="form-check-input" name="update" type="checkbox" value="">
+                    <span class="form-check-label">
+                    Auto update employees database.
+                </span>
+                </label>
+            </div>
+        </div>
+        <div id="error-cont" style="display: none" class="mt-3">
+            <div class="alert alert-danger" role="alert">
+                <div class="alert-message">
+                    <span class="message"><strong>Hello there!</strong></span>
+                    <div id="more-text">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <x-slot:footer>
+            <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i> Save</button>
+        </x-slot:footer>
+
     </x-adminkit.html.modal-template>
 @endsection
 
@@ -201,6 +233,46 @@
                 },
                 error: function (res) {
                     populate_modal2_error(res);
+                }
+            })
+        })
+
+        $("#upload-excel-form").submit(function (e) {
+            e.preventDefault();
+            let form = $(this);
+            var formData = new FormData(this);
+            let uri = '{{route("dashboard.cos_employees.store",$cos->slug)}}?import=true';
+            loading_btn(form);
+            $("#error-cont").hide();
+            $.ajax({
+                url : uri,
+                data: formData,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                cache: false,
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    succeed(form,true,true);
+                    toast('info','Excel data successfully imported','Updated');
+                    employeesTbl.draw(false);
+                },
+                error: function (res) {
+                    errored(form,res);
+                    if(res.status === 515){
+                        let msg = JSON.parse(res.responseJSON.message);
+                        console.log(msg);
+                        $("#error-cont .message strong").html(msg.message);
+                        let list  = '<ul>';
+                        $.each(msg.dataArray,function (i,v){
+                            list = list + '<li>'+i+' - '+v+'</li>';
+                        })
+                        list = list + '</ul>'
+                        $("#more-text").html(list);
+                        $("#error-cont").show();
+                    }
                 }
             })
         })
