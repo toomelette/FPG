@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Yajra\DataTables\Facades\DataTables;
@@ -378,25 +379,76 @@ class COSEmployeesController extends Controller
         $request = Request::capture();
 
         $cosEmps = COSEmployees::query()
-            ->with(['cos','employee'])
+            ->with(['cos','employee.responsibilityCenter'])
             ->whereIn('resp_center',$request->rcs)
             ->get();
 
-        return Pdf::view('printables.hru.cos.contract',[
+        $folder = Str::random(6);
+
+        //summary
+         Pdf::view('printables.hru.cos.summary',[
             'pdfPrint' => true,
             'cosEmps' => $cosEmps,
         ])
-            ->paperSize(215.9,330.2)
-            ->margins(20,20, 20, 20)
-            ->headers(['title' => 'aaaaa'])
-            ->footerView('printables.hru.hr-requests.contract-of-service-footer')
-            ->name('Contract of Service.pdf')
-            ->withBrowsershot(function (Browsershot $browsershot){
-                if(app()->environment('production')){
-                    $browsershot->setNodeBinary(env('NODE_BINARY'))
-                        ->setNpmBinary(env('NODE_BINARY'));
-                }
-            });
+        ->paperSize(215.9,330.2)
+        ->margins(20,20, 20, 20)
+        ->headers(['title' => 'aaaaa'])
+        ->landscape()
+        ->name('Contract of Service.pdf')
+        ->withBrowsershot(function (Browsershot $browsershot){
+            if(app()->environment('production')){
+                $browsershot->setNodeBinary(env('NODE_BINARY'))
+                    ->setNpmBinary(env('NODE_BINARY'));
+            }
+        })
+        ->disk('contracts_temp')
+        ->save('/'.$folder.'/11111AAAAA.pdf');
+
+        foreach ($cosEmps as $cosEmp){
+            Pdf::view('printables.hru.cos.contract',[
+                'pdfPrint' => true,
+                'cosEmps' => [$cosEmp],
+            ])
+                ->paperSize(215.9,330.2)
+                ->margins(20,20, 20, 20)
+                ->headers(['title' => 'aaaaa'])
+                ->footerView('printables.hru.hr-requests.contract-of-service-footer',['totalCount' => $cosEmps->count()])
+                ->name('Contract of Service.pdf')
+                ->withBrowsershot(function (Browsershot $browsershot){
+                    if(app()->environment('production')){
+                        $browsershot->setNodeBinary(env('NODE_BINARY'))
+                            ->setNpmBinary(env('NODE_BINARY'));
+                    }
+                })
+                ->disk('contracts_temp')
+                ->save('/'.$folder.'/'.$cosEmp->hr_cos_employees_slug.'.pdf');
+        }
+
+
+        $pdfFiles = [];
+        $filesInsideFolder = Storage::disk('contracts_temp')->files($folder);
+        $pdfPaths = array_map(fn($file) => Storage::disk('contracts_temp')->path($file), $filesInsideFolder);
+
+
+        $pdf = new \setasign\Fpdi\Fpdi();
+
+        foreach ($pdfPaths as $file) {
+            $pageCount = $pdf->setSourceFile($file);
+            for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                $templateId = $pdf->importPage($pageNo);
+                $size = $pdf->getTemplateSize($templateId);
+
+                $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+                $pdf->useTemplate($templateId);
+            }
+        }
+//        $outputPath = Storage::disk('contracts_temp')->path('/'.$folder.'.pdf');
+        Storage::disk('contracts_temp')->deleteDirectory($folder);
+        return response($pdf->Output('S'), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="merged.pdf"');
+
+
     }
     public function printContract($slug)
     {

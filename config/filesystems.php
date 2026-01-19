@@ -71,7 +71,10 @@ return [
             'driver' => 'local',
             'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/').'news',
         ],
-
+        'contracts_temp' => [
+            'driver' => 'local',
+            'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/').'HR/ContractsTemp',
+        ],
 
 
 

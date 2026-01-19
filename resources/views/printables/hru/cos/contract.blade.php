@@ -7,6 +7,7 @@
         }
     </style>
 
+
     @forelse($cosEmps as $cosEmp)
         <div style="font-family: Cambria; text-align: justify; font-size: 16px; break-after: page">
             <div style="break-after: page">
@@ -214,6 +215,9 @@
         </div>
     @empty
     @endforelse
+
+
+
 @endsection
 
 @section('scripts')
