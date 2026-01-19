@@ -43,7 +43,7 @@
             </p>
 
             <p style="text-indent: 30px;">
-                <b>WHEREAS</b>, on {{Helper::dateFormat($cosEmp->cos->memo_date ?? null,'F d, Y')}} through {{$cosEmp->cos->memo_code ?? null}},
+                <b>WHEREAS</b>, on {{Helper::dateFormat($cosEmp->cos->memo_date ?? null,'F d, Y')}} through <b>{{$cosEmp->cos->memo_code ?? null}}</b>,
                 Administrator Pablo Luis S. Azcona approved the request of the <b>{{$cosEmp->department ?? ''}}</b>
                 for the renewal of the SECOND PARTY for a period of six ({{Carbon::parse($cosEmp->cos->date_from)->diffInMonths(Carbon::parse($cosEmp->cos->date_to)) + 1 }}) months
                 from {{Carbon::parse($cosEmp->cos->date_from)->format('F d, Y')}} to {{Carbon::parse($cosEmp->cos->date_to)->format('F d, Y')}}.
@@ -68,7 +68,7 @@
                 </li>
 
                 <li>
-                    That as contract of service personnel, the <b>SECOND PARTY</b> shall be assigned to the <b>{{$cosEmp->employee->responsibilityCenter->desc ?? null}}</b> and is obliged to perform the duties and responsibilities of the position, hereto attached as <b>Annex “A”</b>.
+                    That as contract of service personnel, the <b>SECOND PARTY</b> shall be assigned to the <b>{{$cosEmp->employee->responsibilityCenter->long_name ?? null}}</b> and is obliged to perform the duties and responsibilities of the position, hereto attached as <b>Annex “A”</b>.
                 </li>
                 <li>
                     That the <b> SECOND PARTY</b> shall report on site, at the <b>{{$cosEmp->cos_assignment ?? null}}</b> from Monday to Friday, and shall work a minimum of eight (8) hours a day.
