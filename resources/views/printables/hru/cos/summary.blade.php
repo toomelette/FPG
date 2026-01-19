@@ -3,7 +3,7 @@
 @section('wrapper')
     @if($cosEmps->count() > 1)
         <div style="break-after: page; font-family: Cambria;">
-            The following Contract of Service is attached herewith:
+            <b>Summary of Contracts attached:</b>
             <table style="width: 100%;" class="tbl tbl-padded tbl-bordered-grey">
                 <thead>
                 <tr>
