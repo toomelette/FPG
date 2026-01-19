@@ -106,8 +106,12 @@ class COSEmployeesController extends Controller
                     $emp['hr_cos_employees_slug'] = Str::random();
                     $emp['cos_slug'] = $slug;
                     $emp['batch_code'] = $batchCode;
-                    $emp['employee_slug'] = $empsFromDb->where('employee_no','=',$excelDatum[$empNoKey])->first()->slug;
-                    $emp['employee_fullname'] = $empsFromDb->where('employee_no','=',$excelDatum[$empNoKey])->first()->full['FMiLE'];
+                    $empFromDtb = $empsFromDb->where('employee_no','=',$excelDatum[$empNoKey])->first();
+                    if(!empty($empFromDtb)){
+                        $emp['employee_slug'] = $empFromDtb->slug;
+                        $emp['employee_fullname'] = $empFromDtb->full['FMiLE'];
+
+                    }
 
                 }
                 $toUpsert[] = $emp;
