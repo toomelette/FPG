@@ -44,9 +44,9 @@
                 </p>
 
                 <p style="text-indent: 30px;">
-                    <b>WHEREAS</b>, on {{Helper::dateFormat($cosEmp->cos->memo_date ?? null,'F d, Y')}} through <b>{{$cosEmp->cos->memo_code ?? null}}</b>,
+                    <b>WHEREAS</b>, on <b>{{Helper::dateFormat($cosEmp->cos->memo_date ?? null,'F d, Y')}}</b> through <b>{{$cosEmp->cos->memo_code ?? null}}</b>,
                     Administrator Pablo Luis S. Azcona approved the request of the <b>{{$cosEmp->employee->responsibilityCenter->department_full ?? ''}}</b>
-                    for the renewal of the SECOND PARTY for a period of six ({{Carbon::parse($cosEmp->cos->date_from)->diffInMonths(Carbon::parse($cosEmp->cos->date_to)) + 1 }}) months
+                    for the renewal of the <b>SECOND PARTY</b> for a period of six ({{Carbon::parse($cosEmp->cos->date_from)->diffInMonths(Carbon::parse($cosEmp->cos->date_to)) + 1 }}) months
                     from {{Carbon::parse($cosEmp->cos->date_from)->format('F d, Y')}} to {{Carbon::parse($cosEmp->cos->date_to)->format('F d, Y')}}.
                 </p>
 
@@ -58,21 +58,21 @@
                 </p>
 
                 <ol>
-                    <li>That the <b>SECOND PARTY</b> will be hired by the <b>FIRST PARTY</b> on a contractual basis  for a period of six ({{Carbon::parse($cosEmp->cos->date_from)->diffInMonths(Carbon::parse($cosEmp->cos->date_to)) + 1 }}) months from {{Carbon::parse($cosEmp->cos->date_from)->format('F d, Y')}} July 1, 2025 to {{Carbon::parse($cosEmp->cos->date_to)->format('F d, Y')}}.</li>
+                    <li>That the <b>SECOND PARTY</b> will be renewed by the <b>FIRST PARTY</b> on a contractual basis  for a period of six ({{Carbon::parse($cosEmp->cos->date_from)->diffInMonths(Carbon::parse($cosEmp->cos->date_to)) + 1 }}) months from {{Carbon::parse($cosEmp->cos->date_from)->format('F d, Y')}} July 1, 2025 to {{Carbon::parse($cosEmp->cos->date_to)->format('F d, Y')}}.</li>
                     <li>
 
                         That the <b>SECOND PARTY</b> shall receive a monthly salary of
                         <b>Pesos:
                             {{ucwords(\NumberToWords\NumberToWords::transformNumber('en',$sal = intval(Helper::sanitizeAutonum((int) $cosEmp->employee->monthly_basic * 1))))}}
                         </b>
-                        <b>(Php {{Helper::toNumber($sal)}})</b> to be paid on a quincenas basis, rates under SSL5, Tranche 1, Step 1 of SSL inclusive of a premium of 20% of such salary or wage. Provided, however, that if he/she is required to render services outside of his/her official workstation, he/she may be allowed to collect <b>Actual Travelling Expenses</b> subject to pertinent guidelines duly issued by the <b>FIRST PARTY</b>. Provided, further, that he/she will be allowed to claim overtime pay for services rendered beyond government office hours in accordance with the duly established rules on government accounting.
+                        <b>(Php {{Helper::toNumber($sal)}})</b> to be paid on a quincenas basis, rates under SSL5, Tranche 1, Step 1 of SSL inclusive of a premium of 20% of such salary or wage. <i>Provided, however,</i> that if he/she is required to render services outside of his/her official workstation, he/she may be allowed to collect <b>Actual Travelling Expenses</b> subject to pertinent guidelines duly issued by the <b>FIRST PARTY</b>. <i>Provided, further,</i> that he/she will be allowed to claim overtime pay for services rendered beyond government office hours in accordance with the duly established rules on government accounting.
                     </li>
 
                     <li>
                         That as contract of service personnel, the <b>SECOND PARTY</b> shall be assigned to the <b>{{$cosEmp->employee->responsibilityCenter->long_name ?? null}}</b> and is obliged to perform the duties and responsibilities of the position, hereto attached as <b>Annex “A”</b>.
                     </li>
                     <li>
-                        That the <b> SECOND PARTY</b> shall report on site, at the <b>{{$cosEmp->cos_assignment ?? null}}</b> from Monday to Friday, and shall work a minimum of eight (8) hours a day.
+                        That the <b> SECOND PARTY</b> shall report on site, at the <b>{{$cosEmp->employee->responsibilityCenter->long_name ?? null}}, {{$cosEmp->cos_assignment ?? null}}</b> from Monday to Friday, and shall work a minimum of eight (8) hours a day.
                     </li>
                     <li>
                         Either party may terminate this Contract of Service, but only for legal and justifiable causes or grounds by notifying the other party in writing, at least thirty (30) days before its intended termination. This Contract of Service may also be immediately terminated for serious violations of any of the conditions set forth herein.
