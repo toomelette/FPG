@@ -53,7 +53,7 @@
 
                 <p style="text-indent: 30px;">
                     <b>NOW THEREFORE</b>, for and in consideration of the above premises, the <b>SECOND PARTY</b>
-                    is hereby contracted as <b>{{Str::of($hrRequest->document_fields['position'] ?? null)}} - Contract of Service (COS)</b>
+                    is hereby contracted as <b>{{Str::of($cosEmp->employee->position ?? null)}} - Contract of Service (COS)</b>
                     under the following terms and conditions, to wit:
                 </p>
 
