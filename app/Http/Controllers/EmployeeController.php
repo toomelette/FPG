@@ -926,6 +926,10 @@ class EmployeeController extends Controller{
                 'name' => 'First Day in Government',
                 'checked' => 0,
             ],
+            'firstday_sra' => [
+                'name' => 'First Day in SRA',
+                'checked' => 0,
+            ],
             'appointment_date' => [
                 'name' => 'Appointment Date',
                 'checked' => 0,

@@ -38,8 +38,9 @@
                                 <td>{{\Illuminate\Support\Carbon::parse($employee->date_of_birth)->format('F d, Y')}}</td>
                                 @break
                             @case('firstday_gov')
+                            @case('firstday_sra')
                                 <td>
-                                    {{($employee->firstday_gov != '') ? \Illuminate\Support\Carbon::parse($employee->firstday_gov)->format('F d, Y') : ''}}
+                                    {{($employee->$s_cols != '') ? \Illuminate\Support\Carbon::parse($employee->$s_cols)->format('m/d/Y') : ''}}
                                 </td>
                                 @break
                             @case('appointment_date')
