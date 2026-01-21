@@ -35,22 +35,22 @@
                                 <td class="text-right">{{Helper::toNumber($employee->monthly_basic)}}</td>
                                 @break
                             @case('date_of_birth')
-                                <td>{{\Illuminate\Support\Carbon::parse($employee->date_of_birth)->format('m/d/Y')}}</td>
+                                <td>{{\Illuminate\Support\Carbon::parse($employee->date_of_birth)->format('Y-m-d')}}</td>
                                 @break
                             @case('firstday_gov')
                             @case('firstday_sra')
                                 <td>
-                                    {{($employee->$s_cols != '') ? \Illuminate\Support\Carbon::parse($employee->$s_cols)->format('m/d/Y') : ''}}
+                                    {{($employee->$s_cols != '') ? \Illuminate\Support\Carbon::parse($employee->$s_cols)->format('Y-m-d') : ''}}
                                 </td>
                                 @break
                             @case('appointment_date')
                                 <td>
-                                    {{($employee->appointment_date != '') ? \Illuminate\Support\Carbon::parse($employee->appointment_date)->format('m/d/Y') : ''}}
+                                    {{($employee->appointment_date != '') ? \Illuminate\Support\Carbon::parse($employee->appointment_date)->format('Y-m-d') : ''}}
                                 </td>
                                 @break
                             @case('adjustment_date')
                                 <td>
-                                    {{($employee->adjustment_date != '') ? \Illuminate\Support\Carbon::parse($employee->adjustment_date)->format('m/d/Y') : ''}}
+                                    {{($employee->adjustment_date != '') ? \Illuminate\Support\Carbon::parse($employee->adjustment_date)->format('Y-m-d') : ''}}
                                 </td>
                                 @break
                             @case('cs_eligibility_level')

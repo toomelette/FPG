@@ -65,7 +65,7 @@
                         <b>Pesos:
                             {{ucwords(\NumberToWords\NumberToWords::transformNumber('en',$sal = intval(Helper::sanitizeAutonum((int) $cosEmp->employee->monthly_basic * 1))))}}
                         </b>
-                        <b>(Php {{Helper::toNumber($sal)}})</b> to be paid on a quincenas basis, rates under SSL5, Tranche 1, Step 1 of SSL inclusive of a premium of 20% of such salary or wage. <i>Provided, however,</i> that if he/she is required to render services outside of his/her official workstation, he/she may be allowed to collect <b>Actual Travelling Expenses</b> subject to pertinent guidelines duly issued by the <b>FIRST PARTY</b>. <i>Provided, further,</i> that he/she will be allowed to claim overtime pay for services rendered beyond government office hours in accordance with the duly established rules on government accounting.
+                        <b>(Php {{Helper::toNumber($sal)}})</b> to be paid on a quincenas basis, rates under SSL5, Tranche 1, Step 1 of SSL 5 inclusive of a premium of 20% of such salary or wage. <i>Provided, however,</i> that if he/she is required to render services outside of his/her official workstation, he/she may be allowed to collect <b>Actual Travelling Expenses</b> subject to pertinent guidelines duly issued by the <b>FIRST PARTY</b>. <i>Provided, further,</i> that he/she will be allowed to claim overtime pay for services rendered beyond government office hours in accordance with the duly established rules on government accounting.
                     </li>
 
                     <li>
