@@ -232,7 +232,7 @@
                             <x-forms.select label="Item No" name="item_no" id="item-no" cols="3" :value="$employee ?? null" :options="[]"/>
                             <x-forms.input label="Position" name="position" cols="3" :value="$employee ?? null"/>
                             <x-forms.select label="Appt. Status" name="appointment_status" cols="2" :value="$employee ?? null" :options="\App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeApptStatus(),'option','value')"/>
-                            <x-forms.select label="JG" name="salary_grade" class="sgXsi" cols="1" :value="$employee ?? null" :options="\App\Swep\Helpers\Arrays::jobGradeLevels()"/>
+                            <x-forms.select label="PG" name="salary_grade" class="sgXsi" cols="1" :value="$employee ?? null" :options="\App\Swep\Helpers\Arrays::jobGradeLevels()"/>
                             <x-forms.select label="SI" name="step_inc" class="sgXsi" cols="1" :value="$employee ?? null" :options="\App\Swep\Helpers\Arrays::stepIncements()"/>
                         </div>
 

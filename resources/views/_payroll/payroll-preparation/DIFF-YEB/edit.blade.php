@@ -191,6 +191,7 @@
         </x-slot:title>
         <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'DIFF-YEB'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Payroll Summary</a>
         <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'DIFF-DEDUCTION-REGISTER'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Deduction Register</a>
+        <a href="{{route('dashboard.payroll_preparation.print',[$payrollMaster->slug,'GLOBAL-ABSTRACT'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 require-dialog"> <i class="fa fa-print"></i> Abstract</a>
 
     </x-adminkit.html.offcanvas>
 @endsection

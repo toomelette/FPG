@@ -929,7 +929,7 @@ class Arrays
     }
 
     public static function jobGrades(){
-        $ssls = SSL::query()->where('date_implemented','=','2022')
+        $ssls = SSL::query()->where('date_implemented','=','2025')
             ->orderBy('salary_grade','asc')
             ->get();
         return $ssls->mapWithKeys(function ($data){
