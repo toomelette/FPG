@@ -487,10 +487,11 @@ class COSEmployeesController extends Controller
         $cosEmp = COSEmployees::query()
             ->with(['cos','employee'])
             ->findOrFail($slug);
-
+        /*
         if($cosEmp->cos->is_active != 1){
             abort(503,'Contract of service not active.');
         }
+        */
 
         return Pdf::view('printables.hru.cos.contract',[
             'pdfPrint' => true,
