@@ -612,6 +612,8 @@
             dropdownParent : $("#add-employee-modal"),
         })
 
+
+
     </script>
 
 @endsection

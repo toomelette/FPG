@@ -20,6 +20,12 @@ use Spatie\LaravelPdf\Facades\Pdf;
 
 class DiffYebService
 {
+    public function __construct(
+        protected PayrollService $payrollService
+    )
+    {
+
+    }
     public function edit($payrollMaster,$slug,$request)
     {
         if($request->has('employee')){
@@ -62,6 +68,17 @@ class DiffYebService
         }
         if($request->has('removeColumn')){
             return $this->payrollService->removeColumn($request,$payrollMaster);
+        }
+
+        if($request->has('clone')){
+            /*
+                if($request->type == 'clone'){
+                    return  $this->clone($request,$payrollMaster);
+                }
+            */
+            if($request->type == 'delete'){
+                return  $this->payrollService->deleteEmployee($request,$payrollMaster);
+            }
         }
         //IF IMPORT EXCEL
         if ($request->has('import') && $request->import == true) {
