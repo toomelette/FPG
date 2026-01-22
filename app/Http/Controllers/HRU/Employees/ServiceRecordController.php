@@ -155,7 +155,9 @@ class ServiceRecordController extends Controller
                 'step' => $selectedSr->step,
                 'monthly_basic' => $selectedSr->monthly_basic,
             ],
-            'body' => 'Pursuant to CPCS Implementing Guidelines No. 2021-1 dated January 12, 2022, implementing Executive Order No. 150 s 2021, and Sugar Regulatory Administration Board Resolution No. 2023-157 dated September 26, 2023 duly approved by GCG on March 25, 2024, your salary is hereby adjusted effective '.Carbon::parse($selectedSr->from_date)->format('F d, Y').' as follows:',
+//            'body' => 'Pursuant to CPCS Implementing Guidelines No. 2021-1 dated January 12, 2022, implementing Executive Order No. 150 s 2021, and Sugar Regulatory Administration Board Resolution No. 2023-157 dated September 26, 2023 duly approved by GCG on March 25, 2024, your salary is hereby adjusted effective '.Carbon::parse($selectedSr->from_date)->format('F d, Y').' as follows:',
+            'body' => 'Pursuant to CPCS Implementing Guidelines No. 2025-01 dated October 22, 2025, implementing Executive Order No. 95 s. 2025, your salary is hereby adjusted effective  '.Carbon::parse($selectedSr->from_date)->format('F d, Y').' as follows:',
+
             'date_of_effectivity' => $selectedSr->from_date,
             'item_no' => $selectedSr->item_no,
             'position' => $selectedSr->position,

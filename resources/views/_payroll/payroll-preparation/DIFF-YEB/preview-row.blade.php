@@ -23,8 +23,11 @@
 @empty
 @endforelse
 @forelse($deductions as $deduction)
-    <td class="text-end" data-bs-toggle="modal" data-bs-target="#edit-deduction-modal" deduction-code="{{$deduction ?? ''}}" data="{{$employee->employeePayrollDetails->where('code',$deduction)->first()?->slug}}">
-        {{Helper::toNumber($employee->employeePayrollDetails->where('code',$deduction)->first()->amount ?? null,2)}}
+{{--    <td class="text-end" data-bs-toggle="modal" data-bs-target="#edit-deduction-modal" deduction-code="{{$deduction ?? ''}}" data="{{$employee->employeePayrollDetails->where('code',$deduction)->first()?->slug}}">--}}
+{{--        {{Helper::toNumber($employee->employeePayrollDetails->where('code',$deduction)->first()->amount ?? null,2)}}--}}
+{{--    </td>--}}
+    <td>
+        <x-forms.input label="{{$deduction ?? ''}}" id="an-new-mbs-{{Str::random(5)}}" class="text-end detect-change autonum-simple" name="data[{{$employee->slug}}][details][{{$deduction}}]" cols="12" :input-only="true" :value="$employee->employeePayrollDetails->where('code',$deduction)->first()->amount ?? null"/>
     </td>
 @empty
 @endforelse

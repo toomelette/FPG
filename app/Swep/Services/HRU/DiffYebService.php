@@ -3,6 +3,7 @@
 namespace App\Swep\Services\HRU;
 
 use App\Http\Requests\Hru\PayrollUpdateFormRequest;
+use App\Models\HRU\Deductions;
 use App\Models\HRU\Incentives;
 use App\Models\HRU\PayrollMaster;
 use App\Models\HRU\PayrollMasterDetails;
@@ -103,6 +104,12 @@ class DiffYebService
         $incentiveArray = [];
         $incentiveFromDb = Incentives::query()->where('incentive_code','=',$incentiveToInsert)->first();
 
+        $deductionsFromDb = null;
+        if(isset($request['data'][array_key_first($request['data'])]['details'])){
+            $dedsUsed = array_keys($request['data'][array_key_first($request['data'])]['details']);
+            $deductionsFromDb = Deductions::query()->whereIn('deduction_code',$dedsUsed)->get();
+        }
+
         $upsert = [];
         $hasBeenChanged = [];
         $deductions = [];
@@ -110,48 +117,51 @@ class DiffYebService
             foreach ($request['data'] as $slug => $datum) {
                 if($datum['has_been_changed'] == 1){
                     $hasBeenChanged[] = $slug;
-                }
-                $oldMbs = Helper::sanitizeAutonum($datum['diff_old_monthly_basic']) * 1;
-                $newMbs = Helper::sanitizeAutonum($datum['diff_new_monthly_basic']) * 1;
-                $diffGross =  $newMbs - $oldMbs ;
+                    $oldMbs = Helper::sanitizeAutonum($datum['diff_old_monthly_basic']) * 1;
+                    $newMbs = Helper::sanitizeAutonum($datum['diff_new_monthly_basic']) * 1;
+                    $diffGross =  $newMbs - $oldMbs ;
 
-
-
-                //to employee list
-                $upsert[] = [
-                    'slug' => $slug,
-                    'diff_old_monthly_basic' => $oldMbs,
-                    'diff_new_monthly_basic' => $newMbs,
-                    'pay15' => $diffGross,
-                ];
-
-                //incentives
-                $deductions[] = [
-                    'pay_master_employee_listing_slug' => $slug,
-                    'slug' => Str::random(),
-                    'type' => 'INCENTIVE',
-                    'code' => $incentiveFromDb?->incentive_code,
-                    'amount' => $diffGross,
-                    'original_amount' => $diffGross,
-                    'priority' => $incentiveFromDb?->priority,
-                    'account_code' => $incentiveFromDb?->account_code,
-                ];
-
-                //deductions
-                //TAX
-                /*
-                     $deductions[] = [
+                    //incentives
+                    $deductions[] = [
                         'pay_master_employee_listing_slug' => $slug,
                         'slug' => Str::random(),
-                        'type' => 'DEDUCTION',
-                        'code' => 'WTAX',
-                        'amount' => $tax,
-                        'original_amount' => $tax,
-                        'priority' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->n_priority,
-                        'account_code' => $deductionsFromDb->where('deduction_code','WTAX')?->first()?->account_code,
-                        'govt_share' => null,
+                        'type' => 'INCENTIVE',
+                        'code' => $incentiveFromDb?->incentive_code,
+                        'amount' => $diffGross,
+                        'original_amount' => $diffGross,
+                        'priority' => $incentiveFromDb?->priority,
+                        'account_code' => $incentiveFromDb?->account_code,
                     ];
-                */
+
+                    //deductions
+                    $totalDeds = 0;
+                    if(count($datum['details']) > 0){
+                        foreach ($datum['details'] as $dedCode => $dedAmount){
+                            $dedAmount = Helper::sanitizeAutonum($dedAmount) * 1;
+                            $totalDeds = $totalDeds + $dedAmount;
+                            if($dedAmount !== 0){
+                                $deductions[] = [
+                                    'pay_master_employee_listing_slug' => $slug,
+                                    'slug' => Str::random(),
+                                    'type' => 'DEDUCTION',
+                                    'code' => $dedCode,
+                                    'amount' =>  $dedAmount,
+                                    'original_amount' => $dedAmount,
+                                    'priority' => $deductionsFromDb?->where('deduction_code',$dedCode)?->first()?->n_priority,
+                                    'account_code' => $deductionsFromDb?->where('deduction_code',$dedCode)?->first()?->account_code,
+                                ];
+                            }
+
+                        }
+                    }
+                    //to employee list
+                    $upsert[] = [
+                        'slug' => $slug,
+                        'diff_old_monthly_basic' => $oldMbs,
+                        'diff_new_monthly_basic' => $newMbs,
+                        'pay15' => $diffGross - $totalDeds,
+                    ];
+                }
 
             }
 

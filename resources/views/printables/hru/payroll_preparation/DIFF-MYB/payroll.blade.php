@@ -179,7 +179,7 @@
                                 <td class="text-right text-top">{{Helper::toNumber($payrollEmployee->diff_new_monthly_basic)}}</td>
                                 @forelse($headerIncentives as $headerIncentive)
                                     <td class="text-right text-top">
-                                        {{Helper::toNumber($payrollEmployee->employeePayrollDetails->where('code',$headerIncentive)?->first()->amount)}}
+                                        {{Helper::toNumber($payrollEmployee->employeePayrollDetails->where('code',$headerIncentive)?->first()?->amount)}}
                                     </td>
                                 @empty
                                 @endforelse
