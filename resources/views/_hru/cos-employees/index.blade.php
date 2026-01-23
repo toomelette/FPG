@@ -34,6 +34,7 @@
                 <th>Salary</th>
                 <th>Evaluation Form</th>
                 <th>Print Contract</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -136,6 +137,7 @@
                 },
                 { data : "evaluation_path" , name: 'evaluation_path' },
                 { data : "print_contract"},
+                { data : "status"},
                 { data : "actions"},
             ],
             buttons : [
@@ -307,6 +309,31 @@
                         $("#more-text").html(list);
                         $("#error-cont").show();
                     }
+                }
+            })
+        })
+
+        $("body").on("change",".status",function (){
+            let t = $(this);
+            let checked = t.prop('checked');
+            let data = t.attr('data');
+            let uri = '{{route("dashboard.cos_employees.update","slug")}}?updateStatus';
+            uri = uri.replace('slug',data);
+            $.ajax({
+                url : uri,
+                data : {
+                    hr_cos_employees_slug : data,
+                    checked : checked,
+                },
+                type: 'PATCH',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    toast('info','Employee successfully updated.','Success');
+                },
+                error: function (res) {
+                    errored(form,res);
                 }
             })
         })

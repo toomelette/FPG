@@ -68,6 +68,11 @@ class COSEmployeesController extends Controller
                         ]);
                     }
                 })
+                ->editColumn('status',function ($data){
+                    return view('_hru.cos-employees.dtStatus')->with([
+                        'data' => $data,
+                    ]);
+                })
                 ->escapeColumns([])
                 ->setRowId('hr_cos_employees_slug')
                 ->toJson();
@@ -245,6 +250,9 @@ class COSEmployeesController extends Controller
         if($request->has('allowPrint')){
             return $this->allowPrint($request,$slug);
         }
+        if($request->has('updateStatus')){
+            return $this->updateStatus($request,$slug);
+        }
         $request->validate([
             'resp_center' => 'required',
             'cos_assignment' => 'required',
@@ -255,6 +263,25 @@ class COSEmployeesController extends Controller
         $cosEmp->cos_assignment = $request->cos_assignment;
         if($cosEmp->update()){
             return $cosEmp->only('hr_cos_employees_slug');
+        }
+        abort(503,'Error updating employee.');
+    }
+
+    public function updateStatus(Request $request,$slug)
+    {
+
+        $cosEmp = COSEmployees::query()->findOrFail($slug);
+
+        $checked = filter_var($request->checked,258);
+
+
+        if($checked){
+            $cosEmp->status = 1;
+        }else{
+            $cosEmp->status = null;
+        }
+        if($cosEmp->update()){
+            return $request->only($slug);
         }
         abort(503,'Error updating employee.');
     }
