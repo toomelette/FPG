@@ -505,11 +505,11 @@ class COSEmployeesController extends Controller
             ->then(function ($batch) use ($folder){
             })
             ->catch(function ($batch, $e) {
-                dd('Failed:',$batch,$e);
+//                dd('Failed:',$batch,$e);
                 // ❌ One or more jobs failed
             })
             ->finally(function ($batch) {
-                dd('else');
+//                dd('else');
                 // 🧹 Always runs (success or fail)
             })
             ->name('Generate COS Contracts')
