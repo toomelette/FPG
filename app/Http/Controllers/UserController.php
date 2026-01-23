@@ -331,6 +331,7 @@ class UserController extends Controller{
         $user->employee_no = $employee->employee_no;
         $user->project_id = $request->project_id;
         $user->password = Hash::make(Carbon::parse($employee->date_of_birth)->format('mdy'));
+        $user->is_activated = 1;
         if($user->save()){
             return $user->only('slug');
         }
