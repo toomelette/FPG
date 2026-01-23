@@ -11,7 +11,7 @@
     @forelse($cosEmps as $cosEmp)
         <div style="font-family: Cambria; text-align: justify; font-size: 16px; break-after: page">
             <div style="break-after: page">
-                <p class="text-strong text-center">CONTRACT OF SERVICE</p>
+                <p class="text-strong text-center" style="font-size: 20px">CONTRACT OF SERVICE</p>
                 <br>
                 <p class="text-strong">KNOW ALL MEN BY THESE PRESENTS:</p>
                 <p>This Contract of Service is made and entered into by and between:</p>
