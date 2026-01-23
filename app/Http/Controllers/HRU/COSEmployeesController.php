@@ -5,6 +5,8 @@ namespace App\Http\Controllers\HRU;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hru\COSEmployeesFormRequest;
 use App\Imports\GSISImport;
+use App\Jobs\GenerateCosContractPdf;
+use App\Jobs\MergeCosPdfJob;
 use App\Models\Employee;
 use App\Models\HRU\COS;
 use App\Models\HRU\COSEmployees;
@@ -16,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use setasign\Fpdi\Tcpdf\Fpdi;
+use Spatie\Async\Pool;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Yajra\DataTables\Facades\DataTables;
@@ -407,6 +410,7 @@ class COSEmployeesController extends Controller
     }
     public function printMultiple($slug)
     {
+        $pool = Pool::create();
         $request = Request::capture();
 
         $cosEmps = COSEmployees::query()
@@ -435,34 +439,126 @@ class COSEmployeesController extends Controller
         })
         ->disk('contracts_temp')
         ->save('/'.$folder.'/11111AAAAA.pdf');
+        $totalCount = $cosEmps->count();
+        /*
+       foreach ($cosEmps as $cosEmp){
+           GenerateCosContractPdf::dispatch(
+               $cosEmp->id,
+               $cosEmp->hr_cos_employees_slug,
+               $folder,
+               $totalCount
+           )->onQueue('pdfs');
 
-        foreach ($cosEmps as $cosEmp){
-            Pdf::view('printables.hru.cos.contract',[
-                'pdfPrint' => true,
-                'cosEmps' => [$cosEmp],
-            ])
-                ->paperSize(215.9,330.2)
-                ->margins(20,20, 20, 20)
-                ->headers(['title' => 'aaaaa'])
-                ->footerView('printables.hru.hr-requests.contract-of-service-footer',['totalCount' => $cosEmps->count()])
-                ->name('Contract of Service.pdf')
-                ->withBrowsershot(function (Browsershot $browsershot){
-                    if(app()->environment('production')){
-                        $browsershot->setNodeBinary(env('NODE_BINARY'))
-                            ->setNpmBinary(env('NODE_BINARY'));
-                    }
-                })
-                ->disk('contracts_temp')
-                ->save('/'.$folder.'/'.$cosEmp->hr_cos_employees_slug.'.pdf');
+
+            $pool->add(function () use ($cosEmp,$folder,$cosEmps){
+               Pdf::view('printables.hru.cos.contract',[
+                   'pdfPrint' => true,
+                   'cosEmps' => [$cosEmp],
+               ])
+                   ->paperSize(215.9,330.2)
+                   ->margins(20,20, 20, 20)
+                   ->headers(['title' => 'aaaaa'])
+                   ->footerView('printables.hru.hr-requests.contract-of-service-footer',['totalCount' => $cosEmps->count()])
+                   ->name('Contract of Service.pdf')
+                   ->withBrowsershot(function (Browsershot $browsershot){
+                       if(app()->environment('production')){
+                           $browsershot->setNodeBinary(env('NODE_BINARY'))
+                               ->setNpmBinary(env('NODE_BINARY'));
+                       }
+                   })
+                   ->disk('contracts_temp')
+                   ->save('/'.$folder.'/'.$cosEmp->hr_cos_employees_slug.'.pdf');
+           });
+
+
+           Pdf::view('printables.hru.cos.contract',[
+               'pdfPrint' => true,
+               'cosEmps' => [$cosEmp],
+           ])
+               ->paperSize(215.9,330.2)
+               ->margins(20,20, 20, 20)
+               ->headers(['title' => 'aaaaa'])
+               ->footerView('printables.hru.hr-requests.contract-of-service-footer',['totalCount' => $cosEmps->count()])
+               ->name('Contract of Service.pdf')
+               ->withBrowsershot(function (Browsershot $browsershot){
+                   if(app()->environment('production')){
+                       $browsershot->setNodeBinary(env('NODE_BINARY'))
+                           ->setNpmBinary(env('NODE_BINARY'));
+                   }
+               })
+               ->disk('contracts_temp')
+               ->save('/'.$folder.'/'.$cosEmp->hr_cos_employees_slug.'.pdf');
+
+        }
+*/
+
+        $batch = \Bus::batch(
+                $cosEmps->map(fn ($cosEmp) =>
+                    new GenerateCosContractPdf(
+                        $cosEmp->id,
+                        $cosEmp->hr_cos_employees_slug,
+                        $folder,
+                        $totalCount
+                    )
+                )
+            )
+            ->then(function ($batch) use ($folder){
+            })
+            ->catch(function ($batch, $e) {
+                dd('Failed:',$batch,$e);
+                // ❌ One or more jobs failed
+            })
+            ->finally(function ($batch) {
+                dd('else');
+                // 🧹 Always runs (success or fail)
+            })
+            ->name('Generate COS Contracts')
+            ->onQueue('pdfs')
+            ->dispatch();
+
+        $totalJobs = $batch->totalJobs;
+        switch ($batch->totalJobs){
+            case $totalJobs < 10:
+                $sleep = 5;
+                break;
+            case $totalJobs < 20:
+                $sleep = 7;
+                break;
+            case $totalJobs < 30:
+                $sleep = 8;
+                break;
+            case $totalJobs < 40:
+                $sleep = 9;
+                break;
+            case $totalJobs < 50:
+                $sleep = 10;
+                break;
+            case $totalJobs < 75:
+                $sleep = 15;
+                break;
+            case $totalJobs < 100:
+                $sleep = 18;
+                break;
+            case $totalJobs < 150:
+                $sleep = 21;
+                break;
+            case $totalJobs < 200:
+                $sleep = 25;
+                break;
+            default:
+                $sleep = 30;
+                break;
         }
 
+
+        sleep($totalJobs/2.5);
 
         $pdfFiles = [];
         $filesInsideFolder = Storage::disk('contracts_temp')->files($folder);
         $pdfPaths = array_map(fn($file) => Storage::disk('contracts_temp')->path($file), $filesInsideFolder);
 
-
         $pdf = new \setasign\Fpdi\Fpdi();
+
 
         foreach ($pdfPaths as $file) {
             $pageCount = $pdf->setSourceFile($file);
@@ -474,11 +570,16 @@ class COSEmployeesController extends Controller
                 $pdf->useTemplate($templateId);
             }
         }
-//        $outputPath = Storage::disk('contracts_temp')->path('/'.$folder.'.pdf');
+        //        $outputPath = Storage::disk('contracts_temp')->path('/'.$folder.'.pdf');
+        $pdfContent = $pdf->Output('S');
+        $path = $folder.'/AAA.pdf';
+        //Storage::disk('contracts_temp')->put($path,$pdfContent);
         Storage::disk('contracts_temp')->deleteDirectory($folder);
         return response($pdf->Output('S'), 200)
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'inline; filename="merged.pdf"');
+        dd(2);
+        $pool->wait();
 
 
     }

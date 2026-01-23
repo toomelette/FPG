@@ -40,6 +40,7 @@
         "setasign/fpdf": "1.8.*",
         "setasign/fpdi": "^2.0",
         "simplesoftwareio/simple-qrcode": "~4",
+        "spatie/async": "^1.6",
         "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-html": "^3.2",
         "spatie/laravel-ignition": "^2.0",

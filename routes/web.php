@@ -901,3 +901,14 @@ Route::get('deleteOldIncentiveCode',function (\Illuminate\Http\Request $request)
     $diffl = $paymaster->hmtDetails()->where('code','=','DIFFL');
     dd($diffl->delete());
 });
+
+Route::get('cosemps',function (\Illuminate\Http\Request $request){
+    $tempCos = DB::table('hr_cos_employees_temp')->get();
+    $cosEmps = \App\Models\HRU\COSEmployees::query()->get();
+    foreach ($cosEmps as $cosEmp){
+        $temp = $tempCos->where('slug','=',$cosEmp->hr_cos_employees_slug)->first();
+        $cosEmp->cos_assignment = $temp->place_of_assignment;
+        $cosEmp->update();
+    }
+    dd(1);
+});
