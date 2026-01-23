@@ -503,6 +503,32 @@ class COSEmployeesController extends Controller
                 )
             )
             ->then(function ($batch) use ($folder){
+                sleep(3);
+                $pdfFiles = [];
+                $filesInsideFolder = Storage::disk('contracts_temp')->files($folder);
+                $pdfPaths = array_map(fn($file) => Storage::disk('contracts_temp')->path($file), $filesInsideFolder);
+
+                $pdf = new \setasign\Fpdi\Fpdi();
+
+
+                foreach ($pdfPaths as $file) {
+                    $pageCount = $pdf->setSourceFile($file);
+                    for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                        $templateId = $pdf->importPage($pageNo);
+                        $size = $pdf->getTemplateSize($templateId);
+
+                        $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+                        $pdf->useTemplate($templateId);
+                    }
+                }
+                //        $outputPath = Storage::disk('contracts_temp')->path('/'.$folder.'.pdf');
+                $pdfContent = $pdf->Output('S');
+                $path = $folder.'/AAA.pdf';
+                //Storage::disk('contracts_temp')->put($path,$pdfContent);
+                Storage::disk('contracts_temp')->deleteDirectory($folder);
+                return response($pdf->Output('S'), 200)
+                    ->header('Content-Type', 'application/pdf')
+                    ->header('Content-Disposition', 'inline; filename="merged.pdf"');
             })
             ->catch(function ($batch, $e) {
 //                dd('Failed:',$batch,$e);
@@ -517,67 +543,11 @@ class COSEmployeesController extends Controller
             ->dispatch();
 
         $totalJobs = $batch->totalJobs;
-        switch ($batch->totalJobs){
-            case $totalJobs < 10:
-                $sleep = 5;
-                break;
-            case $totalJobs < 20:
-                $sleep = 7;
-                break;
-            case $totalJobs < 30:
-                $sleep = 8;
-                break;
-            case $totalJobs < 40:
-                $sleep = 9;
-                break;
-            case $totalJobs < 50:
-                $sleep = 10;
-                break;
-            case $totalJobs < 75:
-                $sleep = 15;
-                break;
-            case $totalJobs < 100:
-                $sleep = 18;
-                break;
-            case $totalJobs < 150:
-                $sleep = 21;
-                break;
-            case $totalJobs < 200:
-                $sleep = 25;
-                break;
-            default:
-                $sleep = 30;
-                break;
-        }
 
 
         sleep($totalJobs/2.5);
 
-        $pdfFiles = [];
-        $filesInsideFolder = Storage::disk('contracts_temp')->files($folder);
-        $pdfPaths = array_map(fn($file) => Storage::disk('contracts_temp')->path($file), $filesInsideFolder);
 
-        $pdf = new \setasign\Fpdi\Fpdi();
-
-
-        foreach ($pdfPaths as $file) {
-            $pageCount = $pdf->setSourceFile($file);
-            for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                $templateId = $pdf->importPage($pageNo);
-                $size = $pdf->getTemplateSize($templateId);
-
-                $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
-                $pdf->useTemplate($templateId);
-            }
-        }
-        //        $outputPath = Storage::disk('contracts_temp')->path('/'.$folder.'.pdf');
-        $pdfContent = $pdf->Output('S');
-        $path = $folder.'/AAA.pdf';
-        //Storage::disk('contracts_temp')->put($path,$pdfContent);
-        Storage::disk('contracts_temp')->deleteDirectory($folder);
-        return response($pdf->Output('S'), 200)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="merged.pdf"');
         dd(2);
         $pool->wait();
 
