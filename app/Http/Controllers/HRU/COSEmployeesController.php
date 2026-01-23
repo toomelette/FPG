@@ -440,7 +440,7 @@ class COSEmployeesController extends Controller
         ->disk('contracts_temp')
         ->save('/'.$folder.'/11111AAAAA.pdf');
         $totalCount = $cosEmps->count();
-        /*
+
        foreach ($cosEmps as $cosEmp){
            GenerateCosContractPdf::dispatch(
                $cosEmp->id,
@@ -470,7 +470,7 @@ class COSEmployeesController extends Controller
                    ->save('/'.$folder.'/'.$cosEmp->hr_cos_employees_slug.'.pdf');
            });
 
-
+            /*
            Pdf::view('printables.hru.cos.contract',[
                'pdfPrint' => true,
                'cosEmps' => [$cosEmp],
@@ -488,68 +488,37 @@ class COSEmployeesController extends Controller
                })
                ->disk('contracts_temp')
                ->save('/'.$folder.'/'.$cosEmp->hr_cos_employees_slug.'.pdf');
-
+            */
         }
-*/
-
-        $batch = \Bus::batch(
-                $cosEmps->map(fn ($cosEmp) =>
-                    new GenerateCosContractPdf(
-                        $cosEmp->id,
-                        $cosEmp->hr_cos_employees_slug,
-                        $folder,
-                        $totalCount
-                    )
-                )
-            )
-            ->then(function ($batch) use ($folder){
-                sleep(3);
-                $pdfFiles = [];
-                $filesInsideFolder = Storage::disk('contracts_temp')->files($folder);
-                $pdfPaths = array_map(fn($file) => Storage::disk('contracts_temp')->path($file), $filesInsideFolder);
-
-                $pdf = new \setasign\Fpdi\Fpdi();
-
-
-                foreach ($pdfPaths as $file) {
-                    $pageCount = $pdf->setSourceFile($file);
-                    for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                        $templateId = $pdf->importPage($pageNo);
-                        $size = $pdf->getTemplateSize($templateId);
-
-                        $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
-                        $pdf->useTemplate($templateId);
-                    }
-                }
-                //        $outputPath = Storage::disk('contracts_temp')->path('/'.$folder.'.pdf');
-                $pdfContent = $pdf->Output('S');
-                $path = $folder.'/AAA.pdf';
-                //Storage::disk('contracts_temp')->put($path,$pdfContent);
-                Storage::disk('contracts_temp')->deleteDirectory($folder);
-                return response($pdf->Output('S'), 200)
-                    ->header('Content-Type', 'application/pdf')
-                    ->header('Content-Disposition', 'inline; filename="merged.pdf"');
-            })
-            ->catch(function ($batch, $e) {
-//                dd('Failed:',$batch,$e);
-                // ❌ One or more jobs failed
-            })
-            ->finally(function ($batch) {
-//                dd('else');
-                // 🧹 Always runs (success or fail)
-            })
-            ->name('Generate COS Contracts')
-            ->onQueue('pdfs')
-            ->dispatch();
-
-        $totalJobs = $batch->totalJobs;
-
-
-        sleep($totalJobs/2.5);
-
-
-        dd(2);
         $pool->wait();
+
+        $pdfFiles = [];
+        $filesInsideFolder = Storage::disk('contracts_temp')->files($folder);
+        $pdfPaths = array_map(fn($file) => Storage::disk('contracts_temp')->path($file), $filesInsideFolder);
+
+        $pdf = new \setasign\Fpdi\Fpdi();
+
+
+        foreach ($pdfPaths as $file) {
+            $pageCount = $pdf->setSourceFile($file);
+            for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                $templateId = $pdf->importPage($pageNo);
+                $size = $pdf->getTemplateSize($templateId);
+
+                $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+                $pdf->useTemplate($templateId);
+            }
+        }
+        //        $outputPath = Storage::disk('contracts_temp')->path('/'.$folder.'.pdf');
+        $pdfContent = $pdf->Output('S');
+        $path = $folder.'/AAA.pdf';
+        //Storage::disk('contracts_temp')->put($path,$pdfContent);
+        Storage::disk('contracts_temp')->deleteDirectory($folder);
+        return response($pdf->Output('S'), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="merged.pdf"');
+        dd(2);
+
 
 
     }
