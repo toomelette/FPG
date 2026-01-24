@@ -11,6 +11,7 @@ use App\Models\SuSettings;
 use Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use NumberToWords\NumberToWords;
 
 class Helper
 {
@@ -921,5 +922,22 @@ class Helper
         $base64 = base64_encode($imageContents);
 
         return "data:{$mimeType};base64,{$base64}";
+    }
+
+    public static function numberToWords($amount)
+    {
+        $numberToWords = new NumberToWords();
+        $numberTransformer = $numberToWords->getNumberTransformer('en');
+
+
+        [$whole, $decimal] = explode('.', number_format($amount, 2, '.', ''));
+
+        $words = $numberTransformer->toWords((int)$whole);
+
+        if ((int)$decimal > 0) {
+            $words .= ' and ' . $numberTransformer->toWords((int)$decimal) . ' cents';
+        }
+
+        return $words;
     }
 }
