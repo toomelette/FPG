@@ -620,7 +620,7 @@ class DocumentService extends BaseService{
         //SENDING EMAIL
         try {
 
-            $this->mail->queue(new DocumentDisseminationMail($path, $request->subject, $document->filename, $to_be_emailed, $content));
+            $this->mail->send(new DocumentDisseminationMail($path, $request->subject, $document->filename, $to_be_emailed, $content));
             $status = "SENT";
         } catch (\Exception $e) {
             $status = "FAILED";
