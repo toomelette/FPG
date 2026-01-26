@@ -37,7 +37,7 @@
             <x-forms.select label="Witness" name="witness_2" cols="6" class="select-employee" required="required" :options="[]"/>
         </div>
         <div class="row mb-2">
-            <x-forms.input label="Valid ID" name="valid_id" cols="6" required="required"/>
+            <x-forms.input label="Valid ID & ID #" name="valid_id" cols="6" required="required"/>
             <x-forms.input label="Issued at" name="valid_id_issued_at" cols="6" required="required"/>
         </div>
         <x-slot:footer>
