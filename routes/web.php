@@ -924,7 +924,6 @@ Route::get('delDup',function (){
     $json = json_decode($json,true);
     $chunked = array_chunk( $json,  500,  $preserve_keys = false);
 
-    dd($json);
 
     foreach ($json as $j){
 
