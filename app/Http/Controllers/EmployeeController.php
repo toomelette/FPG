@@ -978,6 +978,10 @@ class EmployeeController extends Controller{
                 'name' => 'Educational Background',
                 'checked' => 0,
             ],
+            'highest_educational_attainment' => [
+                'name' => 'Highest Educational Attainment',
+                'checked' => 0,
+            ],
             'no_children' => [
                 'name' => '# of children',
                 'checked' => 0,

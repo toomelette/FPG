@@ -629,6 +629,16 @@ class Arrays
         ];
     }
 
+    public static function educationalLevelsPriority(){
+        return [
+            'ELEMENTARY' => 10,
+            'SECONDARY' => 20,
+            'VOCATIONAL/TRADE COURSE' => 30,
+            'COLLEGE' => 40,
+            'GRADUATE STUDIES' => 50,
+        ];
+    }
+
     public static function acctgFundSources(){
         return [
             'LBP - ACEF, Current' => 'LBP - ACEF, Current',

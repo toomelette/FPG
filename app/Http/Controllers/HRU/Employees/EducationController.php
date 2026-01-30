@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EducBGFormRequest;
 use App\Models\Employee;
 use App\Models\EmployeeEducationalBackground;
+use App\Swep\Helpers\Arrays;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
@@ -50,6 +51,7 @@ class EducationController extends Controller
         $eb->slug = Str::random();
         $eb->employee_slug = $slug;
         $eb->level = $request->level;
+        $eb->priority = Arrays::educationalLevelsPriority()[$request->level] ?? null;
         $eb->school_name = $request->school_name;
         $eb->course = $request->course;
         $eb->date_from = $request->date_from;
@@ -69,6 +71,7 @@ class EducationController extends Controller
         $eb = EmployeeEducationalBackground::query()->findOrFail($slug);
 
         $eb->level = $request->level;
+        $eb->priority = Arrays::educationalLevelsPriority()[$request->level] ?? null;
         $eb->school_name = $request->school_name;
         $eb->course = $request->course;
         $eb->date_from = $request->date_from;

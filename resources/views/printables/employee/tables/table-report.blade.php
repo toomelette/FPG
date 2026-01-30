@@ -130,10 +130,20 @@
                                         <ul>
                                             @foreach($employee->employeeEducationalBackground as $educ)
                                                 @if($educ->level != null)
-                                                    <li>{{$educ->level}} - {{$educ->school_name}} </li>
+                                                    <li>{{$educ->level}} - {{$educ->course}} - {{$educ->school_name}} </li>
                                                 @endif
                                             @endforeach
                                         </ul>
+                                    @endif
+                                </td>
+                                @break
+                            @case('highest_educational_attainment')
+                                <td>
+                                    @if(!empty($employee->employeeEducationalBackground))
+                                        @php($highest = $employee->employeeEducationalBackground->sortByDesc('priority')->first())
+                                        @if(!empty($highest))
+                                            {{$highest->course}} - {{$highest->school_name}} - {{$highest->level}}
+                                        @endif
                                     @endif
                                 </td>
                                 @break
