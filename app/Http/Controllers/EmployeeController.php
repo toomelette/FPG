@@ -672,6 +672,9 @@ class EmployeeController extends Controller{
         if($cols->search('address_perm') || $cols->search('address_res')){
             $employees->load('employeeAddress');
         }
+        if($cols->search('special_skills')){
+            $employees->load('employeeSpecialSkill');
+        }
         foreach ($employees as $employee){
 
             $t = $employee->$type;
@@ -984,6 +987,10 @@ class EmployeeController extends Controller{
             ],
             'no_children' => [
                 'name' => '# of children',
+                'checked' => 0,
+            ],
+            'special_skills' => [
+                'name' => 'Special Skills/Hobbies',
                 'checked' => 0,
             ],
             'ra' => [

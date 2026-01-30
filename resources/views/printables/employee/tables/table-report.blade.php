@@ -154,7 +154,19 @@
                                     @endif
                                 </td>
                                 @break
+                            @case('special_skills')
+                                <td>
+                                    @if(!empty($employee->employeeSpecialSkill))
+                                        <ul>
+                                            @foreach($employee->employeeSpecialSkill as $skill)
 
+                                                <li>{{$skill->description}} </li>
+
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </td>
+                                @break
                             @case('dept_name')
                                 <td>
                                     {{$employee->responsibilityCenter->department ?? ''}}
