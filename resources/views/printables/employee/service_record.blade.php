@@ -112,7 +112,7 @@
                 </tbody>
             </table>
             <p style="font-size: 9px">This is to certify that the employee hereinabove actually rendered services in this Office as shown by the service record below, each line of which is supported by appointment and other papers actually issued by this office.</p>
-            <table style="width: 100%; font-size: 10px" cellspacing="0" cellpadding="0">
+            <table style="width: 100%; font-size: 10px" cellspacing="0" cellpadding="0" class="tbl-padded">
                 <thead>
                 <tr>
                     <th colspan="2" class="b-top b-left b-bottom">SERVICE</th>
@@ -168,68 +168,43 @@
 
                 <br>
 
-                <table style="width: 100%;font-size: 14px">
+                <table style="width: 100%;font-size: 13px">
                     <tbody>
                         <tr>
-                            <td style="width: 15%; font-size: 13px">PREPARED BY:</td>
-                            <td style="width: 35%"></td>
-                            <td style="width: 15%; font-size: 13px">CERTIFIED CORRECT:</td>
-                            <td style="width: 33%"></td>
+                            <td style="width: 13%; font-size: 13px"></td>
+                            <td style="width: 20.33%"></td>
+                            <td style="width: 13%; font-size: 13px"></td>
+                            <td style="width: 20.33%"></td>
+                            <td style="width: 13%; font-size: 13px"></td>
+                            <td style="width: 20.33%"></td>
                         </tr>
                         <tr>
+                            <td colspan="2">PREPARED BY:</td>
+                            <td colspan="2">CERTIFIED CORRECT:</td>
+                            <td colspan="2">APPROVED BY:</td>
                             <td></td>
-                            <td class="b-bottom text-center text-strong" style="font-size: 15px"><br>{{\Illuminate\Support\Facades\Request::get('pn')}}</td>
-                            <td></td>
-                            <td class="b-bottom text-center text-strong" style="font-size: 15px"><br>{{\Illuminate\Support\Facades\Request::get('cn')}}</td>
                         </tr>
                         <tr>
-                            <td colspan="3"></td>
-                            <td class="text-center">(Chief or Head of Office)</td>
+                            <td colspan="2" class="text-center text-strong" style="font-size: 13px"><br><u>{{\Illuminate\Support\Facades\Request::get('pn')}}</u></td>
+                            <td colspan="2" class="text-center text-strong" style="font-size: 13px"><br><u>{{\Illuminate\Support\Facades\Request::get('cn')}}</u></td>
+                            <td colspan="2" class="text-center text-strong" style="font-size: 13px"><br><u>{{\Illuminate\Support\Facades\Request::get('an')}}</u></td>
                         </tr>
                         <tr>
-                            <td></td>
-                            <td class="b-bottom text-center"><br>{{\Illuminate\Support\Facades\Request::get('pp')}}</td>
-                            <td></td>
-                            <td class="b-bottom text-center"><br>{{\Illuminate\Support\Facades\Request::get('cp')}}</td>
+                            <td colspan="2" class="text-center">{{\Illuminate\Support\Facades\Request::get('pp')}}</td>
+                            <td colspan="2" class="text-center">{{\Illuminate\Support\Facades\Request::get('cp')}}</td>
+                            <td colspan="2" class="text-center">{{\Illuminate\Support\Facades\Request::get('ap')}}</td>
                         </tr>
-                        <tr>
-                            <td></td>
-                            <td class="text-center">(Designation)</td>
-                            <td></td>
-                            <td class="text-center">(Designation)<td>
-                        </tr>
+
                     </tbody>
                 </table>
-                <table style="width: 100%;font-size: 14px">
+                <table style="width: 100%;font-size: 13px">
                     <tbody>
-                        @if(\Illuminate\Support\Facades\Request::get('an') != '')
-                            <tr>
-                                <td></td>
-                                <td class="text-center">APPROVED BY:</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td class="b-bottom text-center text-strong" style="font-size: 15px">
-                                    <br><br>
-                                    {{\Illuminate\Support\Facades\Request::get('an')}}
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td class="text-center">
-                                    {{\Illuminate\Support\Facades\Request::get('ap')}}
-                                </td>
-                                <td></td>
-                            </tr>
-                        @endif
 
                         <tr>
                             <td  style="width: 30%"></td>
-                            <td class="b-bottom text-center text-strong" style="font-size: 15px">
+                            <td class="text-center text-strong" style="font-size: 13px">
                                 <br>
-                                {{\Illuminate\Support\Carbon::now()->format('F d, Y')}}
+                                <u>{{\Illuminate\Support\Carbon::now()->format('F d, Y')}}</u>
                             </td>
                             <td  style="width: 30%"></td>
                         </tr>
