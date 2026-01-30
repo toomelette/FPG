@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Rats\Zkteco\Lib\ZKTeco;
+use function Spatie\LaravelPdf\Support\pdf;
 
 class DTRService extends BaseService
 {
@@ -161,7 +162,65 @@ class DTRService extends BaseService
         }
     }
 
-    public  function reconstruct(){
+    public function reconstruct()
+    {
+        $dtrs_raw = DTR::query()->where('processed','=',null)
+            ->orWhere('processed','=',0)
+//            ->limit(100)
+            ->get();
+        $values = $this->biometric_values();
+        $usedIds = $dtrs_raw->pluck('user')->unique()->values();
+        $employees = Employee::query()->whereIn('biometric_user_id',$usedIds)->get();
+
+        $dtrsToProcess = $dtrs_raw->whereIn('user',$employees->pluck('biometric_user_id')->unique()->toArray());
+        $dtrsNotProcessed = $dtrs_raw->whereNotIn('user',$employees->pluck('biometric_user_id')->unique()->toArray());
+        $upserts = [];
+        foreach ($values as $value){
+            $upserts[$value] = [];
+        }
+        foreach ($dtrsToProcess as $dtrToProcess){
+            $employee = $employees->where('biometric_user_id','=',$dtrToProcess->user)->first();
+            $key = Carbon::parse($dtrToProcess->timestamp)->format('Y-m-d').'-'.$employee->employee_no;
+
+            $defaultData = [
+                'slug' => Str::random(),
+                'date' => Carbon::parse($dtrToProcess->timestamp)->format('Y-m-d'),
+                'employee_slug' => $employee->slug,
+                'employee_no' => $employee->employee_no,
+                'biometric_user_id' => $dtrToProcess->user,
+                'biometric_uid' => $dtrToProcess->uid,
+                'calculated' => null,
+                'late' => null,
+                'undertime' => null,
+                'updated_at' => Carbon::now(),
+            ];
+            if(isset($values[$dtrToProcess->type])){
+                $defaultData[$values[$dtrToProcess->type]] = Carbon::parse($dtrToProcess->timestamp)->format('H:i');
+                $upserts[$values[$dtrToProcess->type]][] = $defaultData;
+            }
+        }
+        foreach ($upserts as $key => $upsert){
+            DailyTimeRecord::query()->upsert(
+                $upsert,
+                ['date', 'employee_no'],
+                ['employee_slug', 'biometric_user_id', 'biometric_uid',$key,'late','undertime', 'calculated', 'updated_at']
+            );
+        }
+        DTR::query()->whereIn('id',$dtrsToProcess->pluck('id')->toArray())->update([
+            'processed' => 2
+        ]);
+        $ext = ' | '.$dtrsNotProcessed->count().' data not processed.';
+
+
+        $cl = new CronLogs;
+        $cl->log = 'Reconstructed '.$dtrsToProcess->count().' raw DTR data'. $ext;
+        $cl->type = 1;
+        $cl->save();
+
+
+    }
+
+    public  function reconstructOld(){
         $dtrs_raw = DTR::query()->where('processed','=',null)
             ->orWhere('processed','=',0)
 //            ->limit(100)
@@ -239,10 +298,36 @@ class DTRService extends BaseService
         $cl->save();
     }
 
+    public function calculateLateAndUndertime(
+        string $scheduledIn,
+        string $scheduledOut,
+        string $actualIn,
+        string $actualOut
+    ): array {
+        $schedIn  = Carbon::parse($scheduledIn);
+        $schedOut = Carbon::parse($scheduledOut);
+        $actualInTime  = Carbon::parse($actualIn);
+        $actualOutTime = Carbon::parse($actualOut);
+
+        $late = 0;
+        if ($actualInTime->gt($schedIn)) {
+            $late = $actualInTime->diffInMinutes($schedIn);
+        }
+
+        $undertime = 0;
+        if ($actualOutTime->lt($schedOut)) {
+            $undertime = $schedOut->diffInMinutes($actualOutTime);
+        }
+
+        return [
+            'late_minutes' => $late,
+            'undertime_minutes' => $undertime,
+        ];
+    }
+
     public function compute(){
         $perm_latest_time_in = SuSettings::query()->where('setting','=','permanent_latest_time_in')->first()->time_value;
         $perm_earliest_time_out = SuSettings::query()->where('setting','=','permanent_earliest_time_out')->first()->time_value;
-
 
         $jo_latest_time_in = SuSettings::query()->where('setting','=','jo_latest_time_in')->first()->time_value;
         $jo_earliest_time_out = SuSettings::query()->where('setting','=','jo_earliest_time_out')->first()->time_value;
@@ -250,30 +335,108 @@ class DTRService extends BaseService
         $dtrs = DailyTimeRecord::query()->where('calculated','=',null)
             ->orWhere('calculated' , '=' ,0)
             ->get();
+
+        $employees = Employee::query()
+            ->whereIn('employee_no',$dtrs->pluck('employee_no')->unique()->values()->toArray())
+            ->get();
+
+        $dtrsToProcess = $dtrs->whereIn('employee_no',$employees->pluck('employee_no')->unique()->values()->toArray());
+
+        $upsert = [];
+        if(!empty($dtrsToProcess)){
+            foreach ($dtrsToProcess as $dtrToProcess) {
+                $employee = $employees->where('employee_no','=',$dtrToProcess->employee_no)->first();
+                $isPermanent = Helper::isPermanent($employee);
+                if($isPermanent){
+                    $latestTimeIn = $perm_latest_time_in;
+                    $earliestTimeOut = $perm_earliest_time_out;
+                }else{
+                    $latestTimeIn = $jo_latest_time_in;
+                    $earliestTimeOut = $jo_earliest_time_out;
+                }
+                /*
+                $dtrToProcess->am_in = null;
+                $dtrToProcess->pm_in = '13:00';
+                $dtrToProcess->am_out = '13:30';
+                $dtrToProcess->pm_out = null;
+                */
+                $amIn = $dtrToProcess->am_in;
+                $pmOut = $dtrToProcess->pm_out;
+
+                if(empty($dtrToProcess->am_in)){
+                    if(Carbon::parse($dtrToProcess->pm_in)->lt(Carbon::parse('13:00')) && Carbon::parse($dtrToProcess->pm_in)->gt(Carbon::parse('12:00')) ){
+                        $amIn = Carbon::parse('13:00');
+                    }else{
+                        $amIn = Carbon::parse($dtrToProcess->pm_in);
+                    }
+                }
+
+                if(empty($dtrToProcess->pm_out)){
+                    if(Carbon::parse($dtrToProcess->am_out)->gt(Carbon::parse('12:00')) && Carbon::parse($dtrToProcess->am_out)->lt(Carbon::parse('13:00'))){
+                        $pmOut = Carbon::parse('12:00');
+                    }else{
+                        $pmOut = Carbon::parse($dtrToProcess->am_out);
+                    }
+                }
+
+                $scheduledIn = Carbon::parse($amIn);
+                $lt = 0;
+                $ut = 0;
+                if($scheduledIn->gt(Carbon::parse($latestTimeIn))){
+                    $lt = Carbon::parse($latestTimeIn)->diffInMinutes($scheduledIn);
+                    $scheduledIn = Carbon::parse($latestTimeIn);
+                }
+                $scheduledOut = $scheduledIn->copy()->addHours(9);
+                if($scheduledOut->lt(Carbon::parse($earliestTimeOut))){
+                    $ut = Carbon::parse($earliestTimeOut)->diffInMinutes($scheduledOut);
+                    $scheduledOut = Carbon::parse($earliestTimeOut);
+                }
+                /*
+                $calculations = $this->calculateLateAndUndertime($scheduledIn,$scheduledOut,$amIn,$pmOut);
+                $dtrToProcess->late = $calculations['late_minutes'];
+                $dtrToProcess->undertime = $calculations['undertime_minutes'];
+                $dtrToProcess->save();
+                */
+                $calculations = $this->calculateLateAndUndertime($scheduledIn,$scheduledOut,$amIn,$pmOut);
+                $upsert[] = [
+                    'id' => $dtrToProcess->id,
+                    'late' => $calculations['late_minutes'],
+                    'undertime' => $calculations['undertime_minutes'],
+                    'calculated' => 1,
+                ];
+
+
+            }
+        }
+        DailyTimeRecord::query()->upsert(
+            $upsert,
+            ['id'],
+            ['late','undertime','calculated']
+        );
+
+        $no_of_computed = count($upsert);
+
+        if($no_of_computed > 0){
+            $cl = new CronLogs;
+            $cl->log = 'NEW CODE: Computed '.$no_of_computed.' DTR Data';
+            $cl->type = 3;
+            $cl->save();
+            return 1;
+        }
+        /*
         $no_of_computed = 0;
         if(!empty($dtrs)){
             foreach ($dtrs as $dtr){
                 $late = 0;
                 $undertime = 0;
                 $no_of_computed++;
-//                $p_employee = Employee::query()->select('lastname','firstname',DB::raw('"PERM" as type'))->where('employee_no', '=' ,$dtr->employee_no);
-//                $jo_employee = JoEmployees::query()->select('lastname','firstname',DB::raw('"JO" as type'))->where('employee_no', '=' ,$dtr->employee_no);
-//                $all_employees = $p_employee->union($jo_employee);
-//                $employee = $all_employees->first();
-////              $employee->type = 'PERM';
-//                if($employee->type == 'JO'){
-//                    $latest_time_in = $jo_latest_time_in;
-//                    $earliest_time_out = $jo_earliest_time_out;
-//                }
-//
-//                if($employee->type == 'PERM'){
-//                    $latest_time_in = $perm_latest_time_in;
-//                    if($dtr->am_in == null || $dtr->am_in == '' || $dtr->am_in > $latest_time_in){
-//                        $earliest_time_out = '18:00';
-//                    }else{
-//                        $earliest_time_out = Carbon::parse($dtr->am_in)->addHours(9)->format('H:i');
-//                    }
-//                }
+                $employee = $employees->where('employee_no','=',$dtr->employee_no)->first();
+                dd($employees->where('employee_no','=',$dtr->employee_no));
+                dd($dtr->employee_no);
+                if(!empty($employee)){
+                    dd($employee);
+                }
+                dd($employee);
 
                 $employee = Employee::query()->select('lastname','firstname','locations')->where('employee_no', '=' ,$dtr->employee_no)->first();
                 if(!empty($employee)){
@@ -324,19 +487,10 @@ class DTRService extends BaseService
                     $dtr->undertime = $undertime;
                     $dtr->save();
                 }
-
-
-
-
             }
-            if($no_of_computed > 0){
-                $cl = new CronLogs;
-                $cl->log = 'Computed '.$no_of_computed.' DTR Data';
-                $cl->type = 3;
-                $cl->save();
-                return 1;
-            }
+
         }
+        */
         return 0;
     }
 

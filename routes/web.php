@@ -912,3 +912,31 @@ Route::get('cosemps',function (\Illuminate\Http\Request $request){
     }
     dd(1);
 });
+
+Route::get('delDup',function (){
+    $file = public_path('duplicate.json');
+    $json = File::get($file);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        abort(500, "JSON decode error: " . json_last_error_msg());
+    }
+    $toDel = [];
+    $json = json_decode($json,true);
+    $chunked = array_chunk( $json,  500,  $preserve_keys = false);
+
+    dd($json);
+
+    foreach ($json as $j){
+
+        $dtr = \App\Models\DailyTimeRecord::query()->where('date','=',$j['date_str'])
+            ->where('employee_no','=',$j['employee_no'])
+            ->first();
+        if(!empty($dtr)){
+            $toDel[] = $dtr->id;
+        }
+
+
+    }
+    \App\Models\DailyTimeRecord::query()->whereIn('id',$toDel)->delete();
+    dd(1);
+});
