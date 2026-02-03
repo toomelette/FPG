@@ -1072,10 +1072,16 @@ class Arrays
     public static function serviceRecordDueTo()
     {
         return [
-            'APPOINTMENT' => 'APPOINTMENT',
-            'NOSA' => 'NOSA',
-            'NOSI' => 'NOSI',
-            'PROMOTION' => 'PROMOTION',
+            'DEMOTION'        => 'DEMOTION',
+            'NOSA'            => 'NOSA',
+            'NOSI'            => 'NOSI',
+            'ORIGINAL'        => 'ORIGINAL',
+            'PROMOTION'       => 'PROMOTION',
+            'REAPPOINTMENT'   => 'REAPPOINTMENT',
+            'RECLASSIFICATION'=> 'RECLASSIFICATION',
+            'REEMPLOYMENT'    => 'REEMPLOYMENT',
+            'REINSTATEMENT'   => 'REINSTATEMENT',
+            'TRANSFER'        => 'TRANSFER',
         ];
     }
     public static function appointmentStatus(){
