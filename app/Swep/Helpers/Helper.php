@@ -932,10 +932,10 @@ class Helper
 
         [$whole, $decimal] = explode('.', number_format($amount, 2, '.', ''));
 
-        $words = $numberTransformer->toWords((int)$whole);
+        $words = $numberTransformer->toWords((int)$whole).' pesos';
 
         if ((int)$decimal > 0) {
-            $words .= ' and ' . $numberTransformer->toWords((int)$decimal) . ' cents';
+            $words .= ' and ' . $numberTransformer->toWords((int)$decimal) . ' centavos';
         }
 
         return $words;
