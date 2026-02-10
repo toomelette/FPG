@@ -19,6 +19,7 @@ use App\Models\PPU\PPURespCodes;
 use App\Models\RCCodeTree;
 use App\Swep\Helpers\Arrays;
 use App\Swep\Helpers\Helper;
+use App\Swep\Services\HRU\ClothingService;
 use App\Swep\Services\HRU\CNAService;
 use App\Swep\Services\HRU\DifferentialService;
 use App\Swep\Services\HRU\DiffMonetizationService;
@@ -62,6 +63,7 @@ class PayrollPreparationController
         public SRIService $SRIService,
         public PEIService $PEIService,
         public MedicalService $medicalService,
+        public ClothingService $clothingService,
     )
     {
 
@@ -257,6 +259,9 @@ class PayrollPreparationController
                 break;
             case 'MEDICAL':
                 $this->medicalService->recompute($payMaster->slug);
+                break;
+            case 'CLOTHING':
+                $this->clothingService->recompute($payMaster->slug);
                 break;
             default:
                 $this->{'recompute'.$request->type}($payMaster->slug);
@@ -503,6 +508,17 @@ class PayrollPreparationController
                     return $this->medicalService->recompute($slug);
                 }
                 return view('_payroll.payroll-preparation.MEDICAL.edit')->with([
+                    'payrollMaster' => $payrollMaster,
+                ]);
+            case 'CLOTHING':
+                //show employee offcanvas
+                if($request->has('employee')){
+                    return  $this->payrollService->showEmployee($slug,$request);
+                }
+                if($request->has('recompute') && $request->recompute == true){
+                    return $this->clothingService->recompute($slug);
+                }
+                return view('_payroll.payroll-preparation.CLOTHING.edit')->with([
                     'payrollMaster' => $payrollMaster,
                 ]);
 

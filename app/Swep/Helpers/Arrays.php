@@ -927,6 +927,7 @@ class Arrays
             'SRI' => 'Service Recognition Incentive',
             'PEI' => 'Performance Enhancement Incentive',
             'MEDICAL' => 'Medical Allowance',
+            'CLOTHING' => 'Clothing Allowance',
         ];
     }
 
@@ -1334,5 +1335,18 @@ class Arrays
             }
         }
         return $array;
+    }
+
+    public static function months()
+    {
+        return [
+            '01','02','03','04','05','06','07','08','09','10','11','12'
+        ];
+    }
+    public static function monthsAbbv()
+    {
+        return [
+            'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec',
+        ];
     }
 }

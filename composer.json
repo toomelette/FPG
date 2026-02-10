@@ -38,7 +38,8 @@
         "rats/zkteco": "^002.0",
         "rmunate/spell-number": "^4.3",
         "setasign/fpdf": "1.8.*",
-        "setasign/fpdi": "^2.0",
+        "setasign/fpdi": "^2.6",
+        "setasign/fpdi-tcpdf": "^2.3",
         "simplesoftwareio/simple-qrcode": "~4",
         "spatie/async": "^1.6",
         "spatie/laravel-activitylog": "^4.8",
@@ -50,6 +51,7 @@
         "spatie/pdf-to-text": "^1.53",
         "staudenmeir/eloquent-json-relations": "^1.1",
         "staudenmeir/laravel-adjacency-list": "^1.0",
+        "tecnickcom/tcpdf": "^6.10",
         "thiagoalessio/tesseract_ocr": "^2.13",
         "yajra/laravel-datatables": "^10",
         "yajra/laravel-datatables-html": "^10"
