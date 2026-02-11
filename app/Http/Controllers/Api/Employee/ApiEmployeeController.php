@@ -32,6 +32,9 @@ class ApiEmployeeController extends Controller
         if($request->has('active')){
             $employees->active();
         }
+        if($request->has('inactive')){
+            $employees->inactive();
+        }
         if($request->has('permanent')){
             $employees->permanent();
         }

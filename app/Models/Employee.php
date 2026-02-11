@@ -557,6 +557,9 @@ class Employee extends Model{
     public function scopeActive(Builder $query){
         $query->where('is_active','=','ACTIVE');
     }
+    public function scopeInactive(Builder $query){
+        $query->where('is_active','=','INACTIVE');
+    }
 
 
 
