@@ -2,6 +2,7 @@
 
 namespace App\Swep\Services\HRU;
 
+use App\Exports\MonthlyPayrollExporter;
 use App\Http\Requests\Hru\PayrollUpdateFormRequest;
 use App\Imports\GSISImport;
 use App\Models\HRU\Deductions;
@@ -817,9 +818,7 @@ class MonthlyPayrollService
         }
         ksort($usedRc);
 
-
-
-        return Pdf::view('printables.hru.payroll_preparation.MONTHLY.monthly_payroll',[
+        $data = [
             'pdfPrint' => true,
             'payrollMaster' => $payrollMaster,
             'tree' => $tree,
@@ -834,7 +833,17 @@ class MonthlyPayrollService
             }),
             'usedRc' => $usedRc,
 
-        ])
+        ];
+        if($request->has('excel')){
+            //return view('printables.hru.payroll_preparation.MONTHLY.excel.tbl-monthly')->with($data);
+            return Excel::download(
+                new MonthlyPayrollExporter($data),
+                'AA.xlsx'
+            );
+        }
+
+
+        return Pdf::view('printables.hru.payroll_preparation.MONTHLY.monthly_payroll',$data)
             ->paperSize('215.9','330.2')
             ->landscape()
             ->margins(8,8, 15, 8)

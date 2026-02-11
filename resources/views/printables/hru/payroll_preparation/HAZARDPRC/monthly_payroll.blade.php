@@ -139,11 +139,6 @@
             </table>
 
 
-
-
-
-
-
             <div style="break-before: page">
                 <table style="width: 100%;">
                     <tr>
