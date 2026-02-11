@@ -62,7 +62,7 @@
             </div>
             <div class="row mb-2">
                 <x-forms.input label="Station" name="station" cols="4" :value="$sr"/>
-                <x-forms.input label="Government Serve" name="gov_serve" cols="4" :value="$sr"/>
+                <x-forms.select label="Government Serve" name="gov_serve" cols="4" :value="$sr" :options="['YES' => 'YES', 'NO' => 'NO' ]"/>
                 <x-forms.input label="PSC Serve" name="psc_serve" cols="4" :value="$sr"/>
 
             </div>

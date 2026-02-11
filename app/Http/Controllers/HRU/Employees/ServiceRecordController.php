@@ -105,9 +105,13 @@ class ServiceRecordController extends Controller
         if($request->doc == 'NOSI'){
             return $this->printNosi($employeeSlug,$request);
         }
+
         $employee =  Employee::query()
             ->with([
                 'employeeServiceRecord' => function ($q) use($request) {
+                    if($request->has('gov_serve') && $request->gov_serve != ''){
+                        $q->where('gov_serve','=',$request->gov_serve);
+                    }
                     if($request->has('sort_by') && $request->sort_by != ''){
                         $q->orderBy('sequence_no',$request->sort_by);
                     }

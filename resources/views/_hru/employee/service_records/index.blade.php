@@ -83,7 +83,7 @@
         </div>
         <div class="row mb-2">
             <x-forms.input label="Station" name="station" cols="4" />
-            <x-forms.input label="Government Serve" name="gov_serve" cols="4" />
+            <x-forms.select label="Government Serve" name="gov_serve" cols="4" :options="['YES' => 'YES', 'NO' => 'NO' ]"/>
             <x-forms.input label="PSC Serve" name="psc_serve" cols="4" />
         </div>
         <div class="row mb-2">
@@ -119,8 +119,10 @@
         </div>
         <div class="row mb-2">
             <x-forms.input label="Items per page:" name="no_of_items" :value="35" cols="6" type="number"/>
-            <x-forms.select label="Sorting" name="sort_by" value="asc" :options="['asc'=>'Ascending','desc' => 'Descending']" cols="6" />
+            <x-forms.select label="Sorting" name="sort_by" value="asc" :options="['asc'=>'Ascending','desc' => 'Descending']" cols="3" />
+            <x-forms.select label="Gov Serv." name="gov_serve" value="YES" :options="['YES' => 'YES', 'NO' => 'NO' ]" cols="3" />
         </div>
+
         <x-slot:footer>
             <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-print"></i> Print</button>
         </x-slot:footer>
