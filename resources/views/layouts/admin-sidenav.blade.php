@@ -31,19 +31,7 @@
                 {!! strtoupper(Helper::getUserName()['firstname']) !!}
             </p>
         @endif
-            @if(!empty(\Illuminate\Support\Facades\Auth::user()->employee))
-                @if(Auth::user()->employee->biometric_user_id != 0 || Auth::user()->employee->biometric_user_id != '' || Auth::user()->employee->biometric_user_id != null)
-                    @php
-                        $last_dtr = \App\Models\DTR::query()->where('timestamp','like','%'.\Illuminate\Support\Carbon::now()->format('Y-m-d').'%')
-                        ->where('user',Auth::user()->employee->biometric_user_id)
-                        ->where('type',10)
-                        ->first();
-                    @endphp
-                    @if(!empty($last_dtr))
-                        <small>AM IN: </small><small class="label bg-green">{{\Illuminate\Support\Carbon::parse($last_dtr->timestamp)->format('h:i A')}}</small>
-                    @endif
-                @endif
-            @endif
+
       </div>
     </div>
     <style>

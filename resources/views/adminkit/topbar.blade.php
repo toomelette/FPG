@@ -4,8 +4,8 @@
     </a>
     <ul class="navbar-nav d-none d-lg-flex">
         <div class="nav-item px-2">
-            <img src="{{asset('images/sra.png')}}" class="me-2" style="width: 40px">
-           <a>SUGAR REGULATORY ADMINISTRATION</a>
+            <img src="{{asset('images/brand.png')}}" class="me-2" style="width: 40px">
+           <a>FILPOWERGROUP & MARKETING CORPORATION</a>
         </div>
 
 

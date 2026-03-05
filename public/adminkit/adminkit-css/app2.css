@@ -751,3 +751,8 @@ tr.color-change td {
 .v-top{
     vertical-align: top;
 }
+.select2-selection__clear{
+    margin-right: 0 !important;
+    font-size: larger !important;
+    color: #dc3545 !important;
+}

@@ -30,6 +30,9 @@ class Select extends Component
         public $selectOnly = false,
         public $autoClass = false,
         public $inputGroup = false,
+        public $s2Url = null,
+        public $s2Id = null,
+        public $s2Text = null,
         public $inputGroupText = '',
         public $inputGroupClass = '',
     )
@@ -46,6 +49,7 @@ class Select extends Component
      */
     public function render()
     {
+
         return view('components.forms.select');
     }
 }

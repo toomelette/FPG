@@ -1,7 +1,7 @@
 <nav id="sidebar" class="sidebar js-sidebar">
     <div class="sidebar-content js-simplebar">
         <a class="sidebar-brand" href="index.html">
-            <span class="align-middle">HRRS</span>
+            <span class="align-middle">FilpowerGroup</span>
         </a>
         <div class="sidebar-user">
             <div class="d-flex justify-content-center">
@@ -27,9 +27,7 @@
 
 
                     <div class="sidebar-user-subtitle"><small>{{ Auth::user()->employee->platilla->position ?? Auth::user()->employee->position ?? 'N/A' }}</small></div>
-                    @if(!empty(Auth::user()->employee->amInToday))
-                        <span class="badge bg-info"><i class="fa fa-clock"></i> IN: {{Auth::user()->employee->amInToday->timestamp->format('h:i A')}}</span>
-                    @endif
+
                 </div>
             </div>
         </div>
@@ -66,8 +64,8 @@
                 @endif
 
 
-                <li class="@if('dashboard.home' == Route::currentRouteName() ) sidebar-item active @endif" id="home-nav" >
-                    <a class="sidebar-link" href="{{route('dashboard.home')}}">
+                <li class="@if('home' == Route::currentRouteName() ) sidebar-item active @endif" id="home-nav" >
+                    <a class="sidebar-link" href="{{route('home')}}">
                         <i class="align-middle fa fa-tachometer-alt" ></i> <span class="">Dashboard</span>
                     </a>
                 </li>
@@ -124,33 +122,6 @@
             <li class="sidebar-item" id="home-nav">
                 <a class="sidebar-link" href="http://budget.sra.gov.ph/dashboard/home" target="_blank">
                     <i class="align-middle fa fa-external-link"></i> <span class="">budget.sra.gov.ph</span>
-                </a>
-            </li>
-            @if(Auth::user()->project_id == 2)
-                <li class="sidebar-item" id="home-nav">
-                    <a class="sidebar-link" href="http://ppbtms.sra.gov.ph/dashboard/home">
-                        <i class="align-middle fa fa-external-link"></i> <span class="">ppbtms.sra.gov.ph</span>
-                    </a>
-                </li>
-            @endif
-
-            @if(Auth::user()->project_id == 1)
-                <li class="sidebar-item" id="home-nav">
-                    <a class="sidebar-link" href="http://acctg.sra.gov.ph/dashboard/home">
-                        <i class="align-middle fa fa-external-link"></i> <span class="">acctg.sra.gov.ph</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item" id="home-nav">
-                    <a class="sidebar-link" href="http://119.92.162.174/dashboard/home" target="_blank">
-                        <i class="align-middle fa fa-external-link"></i> <span class="">PPBMTS PORTAL</span>
-                    </a>
-                </li>
-            @endif
-
-            <li class="sidebar-item" id="home-nav">
-                <a class="sidebar-link" href="http://sms.sra.gov.ph/dashboard/home">
-                    <i class="align-middle fa fa-external-link"></i> <span class="">sms.sra.gov.ph</span>
                 </a>
             </li>
             <li class="sidebar-item" id="home-nav">

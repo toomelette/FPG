@@ -515,6 +515,7 @@ class Arrays
     }
 
     public static function departmentList(){
+        return [];
         $depts = RCDesc::query()->get();
         $arr = [];
         if(count($depts) > 0){
@@ -1287,6 +1288,22 @@ class Arrays
         }
         ksort($arr);
         return $arr;
+    }
+
+    public static function uoms()
+    {
+        $units = [
+            'PCS'     => 'PCS',
+            'UNIT'    => 'UNIT',
+            'BOTS'    => 'BOTS',
+            'PAIL'    => 'PAIL',
+            'INCHES'  => 'INCHES',
+            'PACK'    => 'PACK',
+            'LITER'   => 'LITER',
+            'BOT'     => 'BOT',
+        ];
+        ksort($units);
+        return $units;
     }
 
     public static function db($for,$restrictionLike = null)

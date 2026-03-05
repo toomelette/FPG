@@ -10,6 +10,11 @@ use App\Models\Budget\ChartOfAccounts;
 use App\Models\Course;
 use App\Models\Document;
 use App\Models\Employee;
+use App\Models\FG\Clients;
+use App\Models\FG\ProjectExpenseLiquidation;
+use App\Models\FG\ProjectExpenseLiquidationDetails;
+use App\Models\FG\Projects;
+use App\Models\FG\Stocks;
 use App\Models\HRPayPlanitilla;
 use App\Models\PPU\Pap;
 use App\Models\SSL;
@@ -37,6 +42,20 @@ class AjaxController extends Controller
     }
 
     public function get($for, ORSService $ORSService, Request $r){
+
+        //FG
+        if($for == 'clients'){
+            return $this->clients($r);
+        }
+        if($for == 'projects-grouped-by-clients'){
+            return $this->projectsGroupedByClients($r);
+        }
+        if($for == 'project-expense-liquidation-description'){
+            return $this->projectExpenseLiquadationDescription($r);
+        }
+        if($for == 'stocks'){
+            return $this->stocks($r);
+        }
 
         if($for == 'compute_monthly_salary'){
             return $this->compute_monthly_salary();
@@ -95,6 +114,8 @@ class AjaxController extends Controller
         if($for == 'new-user-from-employee'){
             return $this->newUserFromEmployee($r);
         }
+
+
 
         if($for == 'new-employee-for-cos'){
             return $this->newEmployeeForCos($r);
@@ -357,6 +378,173 @@ class AjaxController extends Controller
 
         $request->add_null = true;
         return Helper::wrapForSelect2($arr,true,$request);
+    }
+
+    private function clients(Request $request){
+        $arr = [];
+        $clients = Clients::query()
+            ->orderBy('name');
+        if($request->get('q') != ''){
+            $clients = $clients
+                ->where(function ($q) use ($request){
+                    $q->where('name','like','%'.$request->get('q').'%')
+                        ->orWhere('account_no','like','%'.$request->get('q').'%');
+                });
+        }
+        $clients = $clients->paginate(10);
+        if($clients->count() > 0){
+            foreach ($clients as $client){
+                array_push($arr,['id'=>$client->uuid,'text' => $client->name.' - '.$client->account_no]);
+            }
+        }else{
+            return  [];
+        }
+        $request->add_null = true;
+        return Helper::wrapForSelect2($arr,$clients->hasMorePages(),$request);
+    }
+
+    private function projectsGroupedByClients(Request $request)
+    {
+
+        $arr = [];
+        $projects = Projects::query()
+            ->with(['client'])
+            ->orderBy('project_name');
+        if($request->get('q') != ''){
+            $projects = $projects
+                ->where(function ($q) use ($request){
+                    $q->where('project_code','like','%'.$request->get('q').'%')
+                        ->orWhere('project_name','like','%'.$request->get('q').'%');
+                });
+        }
+//        if($request->has('page')){
+//            $projects = $projects->offset((($request->page) - 1) * 20);
+//        }
+//        $projects = $projects->limit(20)
+//            ->get();
+        $projects = $projects->paginate(20);
+        $groupedByClient = $projects->groupBy('client.name');
+        if($groupedByClient->count() > 0){
+            foreach ($groupedByClient as $clientName => $projects){
+                $children = [];
+                foreach ($projects as $project){
+                    $children[] = ['id'=>$project->uuid,'text' => $project->project_name.' - '.$project->project_code];
+                }
+                $arr[] = [
+                    'text' => $clientName,
+                    'children' => $children,
+                ];
+            }
+
+        }else{
+            return  [];
+        }
+
+//        $request->add_null = true;
+        return Helper::wrapForSelect2($arr,true,$request);
+    }
+
+    private function projectExpenseLiquadationDescription(Request $request){
+
+        $data = null;
+        $cv = ProjectExpenseLiquidationDetails::query()
+            ->select('description')
+            ->groupBy('description')
+            ->orderBy('description','asc');
+        if($request->has('q') && $request->q != ''){
+            $cv = $cv->where(function ($q) use ($request){
+                $q->where('description','like','%'.$request->q.'%');
+            });
+        }
+
+        $cv = $cv->paginate(10);
+
+        if($cv->count() > 0){
+
+            $data = $cv->map(function ($data){
+                return [
+                    'id' => $data->description,
+                    'text' => $data->description,
+                ];
+            });
+
+            $array = $data->toArray();
+
+            $exists = 0;
+            foreach ($array as $arr){
+                if ($arr['id'] == $request->q){
+                    $exists = 1;
+                }
+            }
+            if($exists != 1){
+                array_unshift( $array, [
+                    'id' => $request->q,
+                    'text' => $request->q,
+                ] );
+            }
+
+        }else{
+            $array = [];
+            array_unshift( $array, [
+                'id' => $request->q,
+                'text' => $request->q,
+            ] );
+
+        }
+//        $request->add_null = true;
+        return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
+    }
+
+    private function stocks(Request $request){
+
+        $data = null;
+        $cv = Stocks::query()
+            ->select('uuid','name','uom')
+            ->orderBy('name','asc');
+        if($request->has('q') && $request->q != ''){
+            $cv = $cv->where(function ($q) use ($request){
+                $q->where('name','like','%'.$request->q.'%')
+                    ->orWhere('bar_code','like','%'.$request->q.'%');
+            });
+        }
+
+        $cv = $cv->paginate(10);
+
+        if($cv->count() > 0){
+
+            $data = $cv->map(function ($data){
+                return [
+                    'id' => $data->uuid,
+                    'text' => $data->name,
+                    'uom' => $data->uom,
+                ];
+            });
+
+            $array = $data->toArray();
+
+            $exists = 0;
+            foreach ($array as $arr){
+                if ($arr['id'] == $request->q){
+                    $exists = 1;
+                }
+            }
+            if($exists != 1){
+                array_unshift( $array, [
+                    'id' => $request->q,
+                    'text' => $request->q,
+                ] );
+            }
+
+        }else{
+            $array = [];
+            array_unshift( $array, [
+                'id' => $request->q,
+                'text' => $request->q,
+            ] );
+
+        }
+//        $request->add_null = true;
+        return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
     }
 
     private function newEmployeeForCos(Request $request){

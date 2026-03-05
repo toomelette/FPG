@@ -17,6 +17,15 @@
                         @if($multiple)
                             multiple="multiple"
                         @endif
+                        @if($s2Url != null)
+                            data-s2-url="{{$s2Url}}"
+                        @endif
+                        @if($s2Id != null)
+                            data-s2-id="{{$s2Id}}"
+                        @endif
+                        @if($s2Text != null)
+                            data-s2-text="{{$s2Text}}"
+                        @endif
                 >
                     @if($select2Preselected)
                         <option value="{{$value}}">{{$select2Preselected}}</option>

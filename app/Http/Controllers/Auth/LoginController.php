@@ -29,7 +29,7 @@ class LoginController extends Controller{
     protected $session;
     protected $__cache;
     protected $event;
-    protected $redirectTo = 'dashboard/home';
+    protected $redirectTo = 'home';
     protected $maxAttempts = 4;
     protected $decayMinutes = 2;
 
@@ -108,10 +108,12 @@ class LoginController extends Controller{
                     ->log('auth');
 
                 $this->clearLoginAttempts($request);
+                return redirect()->route('home');
                 if (isset(session('_previous')['url'])){
                     return redirect(session('_previous')['url']);
                 }else{
-                    return redirect()->route('dashboard.home');
+
+                    return redirect()->route('home');
                 }
 
             }

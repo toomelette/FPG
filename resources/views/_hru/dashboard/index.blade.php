@@ -186,33 +186,7 @@
 
 @endsection
 
-@php
-    $currentYear = Carbon::now()->format('Y');
-    $prevYear = $currentYear - 1;
-    $dataPs = [];
-    $dataPs[$prevYear] = [];
-    $dataPs[$currentYear] = [];
-    $months = \App\Swep\Helpers\Arrays::months();
-    $monthNames = \App\Swep\Helpers\Arrays::monthsAbbv();
-    foreach ($months as $month){
-        $dataPs[$prevYear][$prevYear.'-'.$month] = null;
-        $dataPs[$currentYear][$currentYear.'-'.$month] = null;
-    }
 
-    $ps = \App\Models\HRU\PS::query()
-        ->select(
-            DB::raw("DATE_FORMAT(date, '%Y') as year"),
-            DB::raw("DATE_FORMAT(date, '%Y-%m') as ym"),
-            DB::raw("COUNT(*) as total")
-        )
-        ->whereDate('date', '>=', $prevYear.'-01-01')
-        ->groupBy('ym')
-        ->get();
-    foreach ($ps as $p){
-        $dataPs[$p->year][$p->ym] = $p->total;
-    }
-
-@endphp
 @section('scripts')
     <script type="text/javascript">
         $(".nav_month_btn").click(function () {
@@ -305,56 +279,6 @@
             })
         })
 
-        $(document).ready(function (){
-            new Chart(document.getElementById("chartjs-bar"), {
-                type: "bar",
-                data: {
-                    labels: {!! json_encode($monthNames) !!},
-                    datasets: [{
-                        label: "Last year",
-                        backgroundColor: "#dee2e6",
-                        borderColor: "#dee2e6",
-                        hoverBackgroundColor: "#dee2e6",
-                        hoverBorderColor: "#dee2e6",
-                        data: {!! json_encode(array_values($dataPs[$prevYear])) !!},
-                        barPercentage: .75,
-                        categoryPercentage: .5
-                    },
-                        {
-                            label: "This year",
-                            backgroundColor: window.theme.primary,
-                            borderColor: window.theme.primary,
-                            hoverBackgroundColor: window.theme.primary,
-                            hoverBorderColor: window.theme.primary,
-                            data: {!! json_encode(array_values($dataPs[$currentYear])) !!},
-                            barPercentage: .75,
-                            categoryPercentage: .5
-                        }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    legend: {
-                        display: false
-                    },
-                    scales: {
-                        yAxes: [{
-                            gridLines: {
-                                display: false
-                            },
-                            stacked: false,
-                            ticks: {
-                                stepSize: 20
-                            }
-                        }],
-                        xAxes: [{
-                            stacked: false,
-                            gridLines: {
-                                color: "transparent"
-                            }
-                        }]
-                    }
-                }
-            });
-        })
+
     </script>
 @endsection

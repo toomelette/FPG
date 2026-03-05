@@ -23,7 +23,7 @@ $('select[multiple]').select2({
 
 
 var autonum_settings = {
-    currencySymbol : ' ₱',
+    currencySymbol : ' ',
     decimalCharacter : '.',
     digitGroupSeparator : ',',
     emptyInputBehavior : 'null',
@@ -633,7 +633,7 @@ function checkCookie() {
 function initializeAutonumByClass(className){
     className = className.replace('.','');
     $("."+className).each(function(){
-        new AutoNumeric(this, autonum_settings);
+        new AutoNumeric(this, autonum_settings_simple);
     });
 }
 
@@ -646,3 +646,25 @@ $("body").on("click",".print-btn-dialog",function (){
 
 
 
+$(".select2-ajax-auto-populate").each(function (){
+    let $select = $(this);
+    let url = $select.data('s2-url');
+    let id = $select.data('s2-id');
+    let text = $select.data('s2-text');
+
+    $select.select2({
+        ajax: {
+            url: url,
+            dataType: 'json',
+            delay: 250,
+        },
+
+        placeholder: "Select",
+        allowClear : true,
+    });
+
+    if (id && text) {
+        let option = new Option(text, id, true, true);
+        $select.append(option).trigger('change');
+    }
+})
