@@ -272,4 +272,21 @@ class PayrollPreparationController extends Controller
         }
         return view($this->folder.'index');
     }
+
+    public function destroy($uuid)
+    {
+        $payrollMaster = PayrollMaster::query()
+            ->findOrFail($uuid);
+
+        try {
+            DB::transaction(function () use ($payrollMaster){
+                $payrollMaster->delete();
+                $payrollMaster->payrollEmployees()->delete();
+                $payrollMaster->employeeAdjustments()->delete();
+            });
+        }catch (\Exception $e){
+            abort(503,$e->getMessage());
+        }
+        return 1;
+    }
 }
