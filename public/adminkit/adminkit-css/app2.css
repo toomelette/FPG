@@ -756,3 +756,10 @@ tr.color-change td {
     font-size: larger !important;
     color: #dc3545 !important;
 }
+.input-payroll{
+    width: 100%;
+    border: 1px solid #ccc
+}
+.input-payroll:hover {
+    border-color: #1d4ed8; /* change color on hover */
+}

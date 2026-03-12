@@ -8,4 +8,5 @@
         </th>
     @empty
     @endforelse
+    <th class="text-center" style="width: 150px;">Net Pay</th>
 </tr>

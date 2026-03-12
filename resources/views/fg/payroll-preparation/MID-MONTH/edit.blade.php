@@ -38,6 +38,7 @@
                 <button type="button" id="fetch-table-btn" class="btn btn-outline-secondary btn-sm"> Fetch </button>
 
                 <button type="button" id="ad-employee-btn" data-bs-target="#add-employee-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-plus"></i> Add Employee </button>
+                <button type="button" id="submit-form-btn" data-bs-target="#add-employee-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-check"></i> Submit </button>
 
 {{--                <a type="button" href="{{route('dashboard.payroll_refund.index',$payrollMaster->slug)}}"  class="btn btn-outline-secondary btn-sm"> <i class="fa fa-money-bill-transfer"></i> Refunds </a>--}}
 {{--                <button type="button" data-bs-target="#other-actions-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-gear"></i> Other Actions </button>--}}
@@ -61,18 +62,16 @@
             </div>
         </div>
         <div class="box-body">
-            <table id="payroll-table" class="table table-sm table-bordered table-striped">
-                <thead>
+            <form id="payroll-form">
+                <table id="payroll-table" class="table table-sm table-bordered table-striped">
+                    <thead>
 
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
 
-                </tbody>
-            </table>
-
-{{--            @include('_payroll.payroll-preparation.MONTHLY.preview',[--}}
-{{--                'payrollMaster' => $payrollMaster,--}}
-{{--            ])--}}
+                    </tbody>
+                </table>
+            </form>
         </div>
 
         <div class="text-center visually-hidden" style="padding: 8%" id="loading-placeholder">
@@ -100,11 +99,11 @@
     <script type="text/javascript">
         $(document).ready(function (){
             autonumGlobalInstances['payroll'] = [];
+            fetchTable();
         });
-        $("body").on("click","#fetch-table-btn",function () {
-            let btn = $(this);
+
+        function fetchTable(){
             let uri = '{{route("payroll-preparation.edit",$payrollMaster->uuid)}}?fetchTable';
-            uri = uri.replace('slug',btn.attr('data'));
             $.ajax({
                 url : uri,
                 type: 'GET',
@@ -147,6 +146,9 @@
 
                 }
             })
+        }
+        $("body").on("click","#fetch-table-btn",function () {
+            fetchTable();
         })
 
         $("body").on("click",".fetch-template-btn",function () {
@@ -175,6 +177,30 @@
             })
         })
 
+        $("#submit-form-btn").click(function(){
+            $("#payroll-form").submit();
+        });
+        $("#payroll-form").submit(function (e) {
+            e.preventDefault();
+            let form = $(this);
+            loading_btn(form);
+            $.ajax({
+                url : '{{route("payroll-preparation.update", $payrollMaster->uuid)}}',
+                data : form.serialize(),
+                type: 'PUT',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    succeed(form,true,true);
+                    toast('success','Payroll successfully saved.','Success');
+                    fetchTable();
+                },
+                error: function (res) {
+                    errored(form,res);
+                }
+            })
+        })
 
         $("#search").keyup(function (e){
             search();

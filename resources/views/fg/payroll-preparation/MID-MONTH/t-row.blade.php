@@ -7,7 +7,16 @@
 </td>
 @forelse($employeeAdjustments as $employeeAdjustment)
     <td class="text-center">
-        <input style="width: 100%" class="text-end payroll-autonum" id="a-{{Str::random(10)}}" data-code="{{$employeeAdjustment->code}}" />
+        <label for="a-{{Str::random(10)}}" class="hide-this"></label>
+        <input class="text-end payroll-autonum input-payroll"
+               id="a-{{Str::random(10)}}"
+               name="data[{{$payrollEmployee->id}}][{{$employeeAdjustment->code}}]"
+               data-code="{{$employeeAdjustment->code}}"
+               value="{{null_if_zero($payrollEmployee->employeeAdjustments->firstWhere('code','=',$employeeAdjustment->code)?->amount)}}"
+        />
     </td>
 @empty
 @endforelse
+<td class="text-end">
+    {{Helper::toNumber($payrollEmployee->net_pay,2,'0.00')}}
+</td>

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\FG;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Hru\PayrollPreparationFormRequest;
 use App\Models\Employee;
 use App\Models\FG\PayrollAdjustments;
 use App\Models\FG\PayrollEmployeeAdjustments;
+use App\Models\FG\PayrollEmployees;
 use App\Models\FG\PayrollMaster;
 use App\Models\FG\PayrollTemplate;
 use Illuminate\Http\Request;
@@ -174,5 +176,79 @@ class PayrollPreparationController extends Controller
             })
             ->toArray();
         return $template ?? [];
+    }
+
+    public function update(PayrollPreparationFormRequest $request,$uuid)
+    {
+        $requestPayrollEmployees = nested_collection($request->data);
+
+        $payrollEmployees = PayrollEmployees::query()
+            ->whereIn('id',$requestPayrollEmployees->keys()->toArray())
+            ->get();
+        $requestAdjustmentCodes = $requestPayrollEmployees
+            ->map(function ($data){
+                return $data->keys();
+            })
+            ->flatten()
+            ->unique()
+            ->values();
+
+        $adjustmentsDb = PayrollAdjustments::query()
+            ->whereIn('code',$requestAdjustmentCodes->toArray())
+            ->get();
+
+        $upsert = [];
+        foreach ($requestPayrollEmployees as $requestPayrollEmployeeId => $requestPayrollEmployee){
+            foreach ($requestPayrollEmployee as $adjustmentCode => $amount){
+                $adjustmentDb = $adjustmentsDb->firstWhere('code','=',$adjustmentCode);
+                $upsert[] = [
+                    'payroll_employee_id' => $requestPayrollEmployeeId,
+                    'employee_uuid' => $payrollEmployees->firstWhere('id','=',$requestPayrollEmployeeId)?->employee_uuid,
+                    'type' => $adjustmentDb->type,
+                    'code' => $adjustmentCode,
+                    'amount' => $amount,
+                    'priority' => $adjustmentDb->priority,
+                ];
+            }
+        }
+
+        try {
+            DB::transaction(function () use ($upsert){
+                PayrollEmployeeAdjustments::query()
+                    ->upsert(
+                        $upsert,
+                        ['payroll_employee_id','code'], //unique cols
+                        ['amount','priority','type'], //cols to update,
+                    );
+            });
+        }catch (\Exception $e){
+            abort(503,$e->getMessage());
+        }
+
+        //compute for net pay
+        $payrollEmployees = $payrollEmployees->load([
+            'employeeAdjustments',
+        ]);
+        $netPayUpsert = [];
+        foreach ($payrollEmployees as $payrollEmployee){
+            $employeeAdjustments = $payrollEmployee->employeeAdjustments;
+            $netPayUpsert[] = [
+                'id' => $payrollEmployee->id,
+                'net_pay' => $employeeAdjustments->where('type','INCENTIVE')->sum('amount') - $employeeAdjustments->where('type','DEDUCTION')->sum('amount'),
+            ];
+        }
+        try {
+            DB::transaction(function () use ($netPayUpsert){
+                PayrollEmployees::query()
+                    ->upsert(
+                        $netPayUpsert,
+                        ['id'], //unique cols
+                        ['net_pay'], //cols to update,
+                    );
+            });
+        }catch (\Exception $e){
+            abort(503,$e->getMessage());
+        }
+        return response()->noContent();
     }
 }

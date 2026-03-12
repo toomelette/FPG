@@ -20,7 +20,7 @@
                     <table>
                         <tr>
                             <td style="padding-right: 10px"><small>Monthly Basic:</small></td>
-                            <td><h4 class="no-margin">{{number_format($employee->jg_monthly_basic,2)}}</h4></td>
+                            <td><h4 class="no-margin">{{number_format($employee->monthly_basic,2)}}</h4></td>
                         </tr>
                     </table>
                 </div>
