@@ -98,12 +98,14 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function (){
-            autonumGlobalInstances['payroll'] = [];
+            autonumGlobalInstances['payroll'] = autonumGlobalInstances['payroll'] || {};
             fetchTable();
         });
 
         function fetchTable(){
             let uri = '{{route("payroll-preparation.edit",$payrollMaster->uuid)}}?fetchTable';
+            let $table = $("#payroll-table");
+
             $.ajax({
                 url : uri,
                 type: 'GET',
@@ -111,13 +113,15 @@
                     {!! __html::token_header() !!}
                 },
                 success: function (res) {
-                    let $table = $("#payroll-table");
+
                     $table.find("thead").html(res.header);
                     $.each(res.body,function (i,value){
                         let key = value.payroll_employee_id;
-                        autonumGlobalInstances['payroll'] = {
-                            [value.employee_uuid] : 'A',
+                        // add employee if not existing
+                        if (!autonumGlobalInstances['payroll'][value.employee_uuid]) {
+                            autonumGlobalInstances['payroll'][value.employee_uuid] = {};
                         }
+
                         let $tr = $table.find('tbody tr#'+key);
                         if ($tr.length) {
                             $tr.html(value.view);
@@ -127,6 +131,7 @@
                         }
 
                     })
+
 
                     $(".payroll-autonum").each(function (){
                         let $e = $(this);
@@ -141,6 +146,8 @@
                         // Add or update the code
                         autonumGlobalInstances['payroll'][employeeUUID][code] = new AutoNumeric('#'+id,autonum_settings_simple);
                     })
+
+
                 },
                 error: function (res) {
 
@@ -167,7 +174,10 @@
                     $.each(res,function (employeeUUID,amount){
                         console.log(employeeUUID);
                         console.log(code);
-                        autonumGlobalInstances['payroll'][employeeUUID][code].set(sanitizeAutonum(amount));
+                        if(typeof autonumGlobalInstances['payroll'][employeeUUID][code] !== 'undefined'){
+                            autonumGlobalInstances['payroll'][employeeUUID][code].set(sanitizeAutonum(amount));
+                        }
+
                     })
 
                 },
