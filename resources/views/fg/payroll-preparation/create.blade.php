@@ -15,7 +15,7 @@
                 <x-forms.input label="Date From" container-class="special-fields"  name="date_from" cols="2" type="date"/>
                 <x-forms.input label="Date To" container-class="special-fields" name="date_to" cols="2" type="date"/>
             </div>
-            <div class="row mb-3">
+            <div class="row mb-3 hide-this" >
                 <div class="col-3">
                     <x-adminkit.html.alert type="primary mb-1" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
                         BOX A (CERTIFIED)
