@@ -15,7 +15,7 @@ class RedirectIfAuthenticated{
             $user = User::query()->where('user_id','=',Auth::user()->user_id)->first();
             $user->portal = $portal;
             $user->update();
-            return redirect('dashboard/home');
+            return redirect('home');
         }
 
         return $next($request);

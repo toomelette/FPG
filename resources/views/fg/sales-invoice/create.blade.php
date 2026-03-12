@@ -117,6 +117,10 @@
         $("body").on("change keyup",'.compute',function(){
             compute($(this).closest('tr'));
         });
+        $("body").on("click",".remove_row_btn",function (){
+            computeTable($("#details-table"));
+        })
+
         $("body").on("click",".add-btn",function (){
             let btn = $(this);
             let table = btn.parents('table');

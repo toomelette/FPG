@@ -103,4 +103,19 @@ class SalesInvoiceController extends Controller
             abort(503, $e->getMessage());
         }
     }
+
+    public function destroy($uuid)
+    {
+        $si = SalesInvoice::query()
+            ->findOrFail($uuid);
+        try {
+            DB::transaction(function ($q) use ($si){
+                $si->delete();
+                $si->details()->delete();
+            });
+            return 1;
+        }catch (\Exception $e){
+            abort(503);
+        }
+    }
 }

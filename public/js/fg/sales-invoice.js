@@ -7,12 +7,16 @@ function compute($tr){
     qty = sanitizeAutonum(qty);
     unitCost = sanitizeAutonum(unitCost);
     $tr.find('input[name*="amount"]').val($.number(qty*unitCost,2));
-    let $form = $tr.closest('form');
     let $table = $tr.closest('table');
+    computeTable($table);
+}
+
+function computeTable($table){
+
     let grandTotal = 0;
     $table.find('input[name*="amount"]').each(function (){
         let totalCost = sanitizeAutonum($(this).val());
         grandTotal = grandTotal + totalCost;
-    })
+    });
     autonums['totalAmountDue'].set(grandTotal);
 }

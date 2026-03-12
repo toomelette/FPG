@@ -118,6 +118,7 @@ class Arrays
 
     public static function knownSubmenus(){
         return [
+            'index' => 'Index',
             'create' => 'Create',
             'store' => 'Store',
             'edit' => 'Edit',
@@ -915,20 +916,7 @@ class Arrays
 
     public static function payrollTypes(){
         return [
-            'MONTHLY' => 'MONTHLY',
-            'HAZARDPRC' => 'HAZARDPRC',
-            'RATA' => 'RATA',
-            'MYB' => 'MYB',
-            'YEB' => 'YEB',
-            'DIFF' => 'DIFFERENTIAL',
-            'DIFF-MYB' => 'DIFFERENTIAL-MYB',
-            'DIFF-YEB' => 'DIFFERENTIAL-YEB',
-            'DIFF-MON' => 'DIFFERENTIAL-MONETIZATION',
-            'CNA' => 'CNA',
-            'SRI' => 'Service Recognition Incentive',
-            'PEI' => 'Performance Enhancement Incentive',
-            'MEDICAL' => 'Medical Allowance',
-            'CLOTHING' => 'Clothing Allowance',
+            'MID-MONTH' => 'MID-MONTH',
         ];
     }
 
@@ -1301,6 +1289,26 @@ class Arrays
             'PACK'    => 'PACK',
             'LITER'   => 'LITER',
             'BOT'     => 'BOT',
+        ];
+        ksort($units);
+        return $units;
+    }
+
+    public static function paymentTypes()
+    {
+        $units = [
+            'PAYMENT1'     => 'PAYMENT1',
+            'PAYMENT2'    => 'PAYMENT2',
+        ];
+        ksort($units);
+        return $units;
+    }
+
+    public static function invoiceTypes()
+    {
+        $units = [
+            'INVOICE1'     => 'INVOICE1',
+            'INVOICE2'    => 'INVOICE2',
         ];
         ksort($units);
         return $units;

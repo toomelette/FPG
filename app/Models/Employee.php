@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\FG\PayrollTemplate;
 use App\Models\HRU\COSEmployees;
 use App\Models\HRU\HrOtherActions;
 use App\Models\HRU\LeaveApplicationDates;
@@ -253,6 +254,11 @@ class Employee extends Model{
         );
     }
 
+    /* RELATIONSHIPS */
+    public function payrollTemplates()
+    {
+        return $this->hasMany(PayrollTemplate::class,'employee_uuid','slug');
+    }
 
     protected function leaveBalances(): Attribute
     {

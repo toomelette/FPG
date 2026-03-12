@@ -27,6 +27,7 @@ class ProjectExpenseLiquidation extends Model
 
     protected $primaryKey = 'uuid';
     public $incrementing = false;
+    protected $keyType = 'string';
 
 
     /* Relationships */

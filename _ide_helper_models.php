@@ -1881,6 +1881,97 @@ namespace App\Models\FG{
 
 namespace App\Models\FG{
 /**
+ * App\Models\FG\CollectionChecks
+ *
+ * @property int $id
+ * @property string $collection_uuid
+ * @property string|null $bank
+ * @property string|null $check_no
+ * @property string|null $amount
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionChecks newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionChecks newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionChecks query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionChecks whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionChecks whereBank($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionChecks whereCheckNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionChecks whereCollectionUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionChecks whereId($value)
+ */
+	class CollectionChecks extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\CollectionDistributions
+ *
+ * @property int $id
+ * @property string $collection_uuid
+ * @property string|null $ref_invoice
+ * @property string|null $invoice_no
+ * @property string|null $amount
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereCollectionUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereInvoiceNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereRefInvoice($value)
+ */
+	class CollectionDistributions extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\Collections
+ *
+ * @property int $id
+ * @property string $uuid
+ * @property string|null $payment_type
+ * @property string|null $ref_no
+ * @property string|null $date
+ * @property string|null $payor
+ * @property string|null $address
+ * @property string|null $remarks
+ * @property string|null $total_check
+ * @property string|null $total_cash
+ * @property string|null $total_amount
+ * @property string|null $cwt
+ * @property string|null $total_paid
+ * @property string|null $user_created
+ * @property string|null $ip_created
+ * @property string|null $user_updated
+ * @property string|null $ip_updated
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereCwt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereIpCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereIpUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections wherePaymentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections wherePayor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereRefNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereTotalCash($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereTotalCheck($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereTotalPaid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereUserCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereUserUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereUuid($value)
+ */
+	class Collections extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
  * App\Models\FG\ProjectExpenseLiquidation
  *
  * @property int $id
@@ -2006,6 +2097,9 @@ namespace App\Models\FG{
  * @property string|null $ip_updated
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\SalesInvoiceDetails> $details
+ * @property-read int|null $details_count
+ * @property-read \App\Models\FG\Projects|null $project
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice query()
@@ -2028,6 +2122,34 @@ namespace App\Models\FG{
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereVat($value)
  */
 	class SalesInvoice extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\SalesInvoiceDetails
+ *
+ * @property int $id
+ * @property string $sales_invoice_uuid
+ * @property string|null $stock_uuid
+ * @property string|null $description
+ * @property float|null $qty
+ * @property string|null $uom
+ * @property string|null $unit_cost
+ * @property string|null $amount
+ * @property-read \App\Models\FG\SalesInvoice|null $salesInvoice
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoiceDetails newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoiceDetails newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoiceDetails query()
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoiceDetails whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoiceDetails whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoiceDetails whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoiceDetails whereQty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoiceDetails whereSalesInvoiceUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoiceDetails whereStockUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoiceDetails whereUnitCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoiceDetails whereUom($value)
+ */
+	class SalesInvoiceDetails extends \Eloquent {}
 }
 
 namespace App\Models\FG{

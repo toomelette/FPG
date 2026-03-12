@@ -5,7 +5,7 @@ namespace App\Models\FG;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Clients extends Model
+class Collections extends Model
 {
     use HasFactory;
 
@@ -24,9 +24,17 @@ class Clients extends Model
             $a->created_at = \Carbon::now();
         });
     }
-
     protected $primaryKey = 'uuid';
     public $incrementing = false;
     protected $keyType = 'string';
 
+    /* Relationships */
+    public function distributions()
+    {
+        return $this->hasMany(CollectionDistributions::class,'collection_uuid','uuid');
+    }
+    public function checks()
+    {
+        return $this->hasMany(CollectionChecks::class,'collection_uuid','uuid');
+    }
 }

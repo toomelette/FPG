@@ -11,6 +11,7 @@ use App\Models\Course;
 use App\Models\Document;
 use App\Models\Employee;
 use App\Models\FG\Clients;
+use App\Models\FG\CollectionChecks;
 use App\Models\FG\ProjectExpenseLiquidation;
 use App\Models\FG\ProjectExpenseLiquidationDetails;
 use App\Models\FG\Projects;
@@ -55,6 +56,10 @@ class AjaxController extends Controller
         }
         if($for == 'stocks'){
             return $this->stocks($r);
+        }
+
+        if($for == 'banks'){
+            return $this->banks($r);
         }
 
         if($for == 'compute_monthly_salary'){
@@ -391,7 +396,7 @@ class AjaxController extends Controller
                         ->orWhere('account_no','like','%'.$request->get('q').'%');
                 });
         }
-        $clients = $clients->paginate(10);
+        $clients = $clients->paginate(25);
         if($clients->count() > 0){
             foreach ($clients as $client){
                 array_push($arr,['id'=>$client->uuid,'text' => $client->name.' - '.$client->account_no]);
@@ -422,7 +427,7 @@ class AjaxController extends Controller
 //        }
 //        $projects = $projects->limit(20)
 //            ->get();
-        $projects = $projects->paginate(20);
+        $projects = $projects->paginate(25);
         $groupedByClient = $projects->groupBy('client.name');
         if($groupedByClient->count() > 0){
             foreach ($groupedByClient as $clientName => $projects){
@@ -457,7 +462,7 @@ class AjaxController extends Controller
             });
         }
 
-        $cv = $cv->paginate(10);
+        $cv = $cv->paginate(25);
 
         if($cv->count() > 0){
 
@@ -508,7 +513,7 @@ class AjaxController extends Controller
             });
         }
 
-        $cv = $cv->paginate(10);
+        $cv = $cv->paginate(25);
 
         if($cv->count() > 0){
 
@@ -546,6 +551,57 @@ class AjaxController extends Controller
 //        $request->add_null = true;
         return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
     }
+
+    private function banks(Request $request){
+
+        $data = null;
+        $cv = CollectionChecks::query()
+            ->select('bank')
+            ->orderBy('bank','asc');
+        if($request->has('q') && $request->q != ''){
+            $cv = $cv->where(function ($q) use ($request){
+                $q->where('bank','like','%'.$request->q.'%');
+            });
+        }
+
+        $cv = $cv->paginate(25);
+
+        if($cv->count() > 0){
+
+            $data = $cv->map(function ($data){
+                return [
+                    'id' => $data->bank,
+                    'text' => $data->bank,
+                ];
+            });
+
+            $array = $data->toArray();
+
+            $exists = 0;
+            foreach ($array as $arr){
+                if ($arr['id'] == $request->q){
+                    $exists = 1;
+                }
+            }
+            if($exists != 1){
+                array_unshift( $array, [
+                    'id' => $request->q,
+                    'text' => $request->q,
+                ] );
+            }
+
+        }else{
+            $array = [];
+            array_unshift( $array, [
+                'id' => $request->q,
+                'text' => $request->q,
+            ] );
+
+        }
+//        $request->add_null = true;
+        return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
+    }
+
 
     private function newEmployeeForCos(Request $request){
 

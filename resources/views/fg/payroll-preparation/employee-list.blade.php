@@ -1,0 +1,59 @@
+<div class="row">
+    <div class="col-md-9">
+        <p class="no-margin ">Use the checkbox to exclude or include an employee to this payroll | <span id="checked" class="text-strong"> {{$employees->count()}} </span> / <span id="total"> {{$employees->count()}}</span> selected </p>
+    </div>
+    <div class="col-md-3" style="margin-bottom: 10px">
+        <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">Search:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control input-sm" id="search" placeholder="Search employee" autocomplete="off">
+            </div>
+        </div>
+    </div>
+</div>
+<div style="overflow-y: scroll; height: calc(60vh - 3rem); border: 1px solid lightgrey">
+    <table class="table table-condensed table-striped table-hover" id="employees_table">
+        <thead>
+        <tr>
+            <th>
+                <label>
+                    <input id="overall-selector" type="checkbox" checked>
+                </label>
+            </th>
+            <th>Employee</th>
+            <th>Employee No.</th>
+            <th>Position</th>
+            <th>Monthly Basic</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        @forelse($employees as $employee)
+            <tr>
+                <td>
+                    <label>
+                        <input class="employee-selector" type="checkbox" checked name="employees[]" value="{{$employee->slug}}">
+                    </label>
+                </td>
+                <td>{{$employee->full_name}}</td>
+                <td>{{$employee->employee_no}}</td>
+                <td>{{$employee->plantilla->position ?? ''}}</td>
+                <td class="text-end">{{\App\Swep\Helpers\Helper::toNumber($employee->monthly_basic)}}</td>
+{{--                <td class="text-right">{{Helper::toNumber($employee->templateMonthlyBasic->amount ?? null,2)}}</td>--}}
+            </tr>
+        @empty
+        @endforelse
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $("#overall-selector").iCheck({
+        checkboxClass: 'icheckbox_flat-blue',
+        radioClass   : 'iradio_flat-green'
+    })
+    $('.employee-selector').iCheck({
+        checkboxClass: 'icheckbox_flat-blue checkbox-counter',
+        radioClass   : 'iradio_flat-green'
+    })
+</script>

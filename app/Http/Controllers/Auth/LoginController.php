@@ -64,7 +64,6 @@ class LoginController extends Controller{
 
     public function showLoginForm()
     {
-
         session(['link' => url()->previous()]);
 
         return view('auth.login');

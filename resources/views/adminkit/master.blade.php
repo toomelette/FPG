@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+{{--    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />--}}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -87,6 +87,20 @@
     @else
         var find = '';
     @endif
+    let autonumGlobalInstances = [];
+
+    $(document).ready(function (){
+        $(".autonum-auto-init-assoc").each(function (){
+            if ($(this).attr('data-autonum-key') !== undefined) {
+                let key = $(this).attr('data-autonum-key');
+                autonumGlobalInstances[key] = new AutoNumeric('input[data-autonum-key="'+key+'"]',autonum_settings_simple);
+            }else{
+                let key = $(this).attr('name');
+                autonumGlobalInstances[key] = new AutoNumeric('input[name="'+key+'"]',autonum_settings_simple);
+            }
+
+        })
+    })
 
     $("body").on("click",".print-btn-dialog",function (){
         let href = $(this).attr('href');

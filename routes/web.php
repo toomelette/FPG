@@ -194,11 +194,14 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 Route::group([
     'middleware' => ['check.user_status', 'check.user_route', 'last_activity','verify.email']
 ], function () {
-    Route::get('/', 'HomeController@index');
+    Route::get('/home', 'HomeController@index')->name('home');
     Route::resource('clients',\App\Http\Controllers\FG\ClientController::class);
     Route::resource('projects',\App\Http\Controllers\FG\ProjectsController::class);
     Route::resource('project-expense-liquidation',\App\Http\Controllers\FG\ProjectExpenseLiquidationController::class);
     Route::resource('sales-invoice',\App\Http\Controllers\FG\SalesInvoiceController::class);
+    Route::resource('collections',\App\Http\Controllers\FG\CollectionsController::class);
+    Route::resource('payroll-template',\App\Http\Controllers\FG\PayrollTemplateController::class);
+    Route::resource('payroll-preparation',\App\Http\Controllers\FG\PayrollPreparationController::class);
 });
 /** ADMIN LEVEL ROUTES REQUIRING PROJECT ID **/
 Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',

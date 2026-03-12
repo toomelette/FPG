@@ -7,9 +7,6 @@
     </x-adminkit.html.page-title>
 
     <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
-        <x-slot:title>
-            <button class="btn btn-sm btn-primary float-end" id="intro" data-intro='Click here.' data-bs-target="#add-applicant-modal" data-bs-toggle="modal"><i class="fa fa-plus"></i> New</button>
-        </x-slot:title>
         <table class="table table-bordered table-striped table-hover table-sm" id="project-expense-liquidation-table" style="width: 100% !important">
             <thead>
             <tr class="">

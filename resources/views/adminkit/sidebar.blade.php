@@ -120,13 +120,8 @@
                 RELATED LINKS
             </li>
             <li class="sidebar-item" id="home-nav">
-                <a class="sidebar-link" href="http://budget.sra.gov.ph/dashboard/home" target="_blank">
-                    <i class="align-middle fa fa-external-link"></i> <span class="">budget.sra.gov.ph</span>
-                </a>
-            </li>
-            <li class="sidebar-item" id="home-nav">
-                <a class="sidebar-link" href="http://gfps.sra.gov.ph/dashboard/home">
-                    <i class="align-middle fa fa-external-link"></i> <span class="">gfps.sra.gov.ph</span>
+                <a class="sidebar-link" href="https://filpowergroup.com.ph/" target="_blank">
+                    <i class="align-middle fa fa-external-link"></i> <span class="">filpowergroup.com.ph</span>
                 </a>
             </li>
         </ul>

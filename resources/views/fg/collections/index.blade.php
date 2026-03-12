@@ -2,21 +2,17 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>Sales Invoice</x-slot:title>
-        <x-slot:float-end></x-slot:float-end>
+        <x-slot:title>Collection Receipts</x-slot:title>
     </x-adminkit.html.page-title>
-
     <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
-        <x-slot:title>
-        </x-slot:title>
-        <table class="table table-bordered table-striped table-hover table-sm" id="sales-invoice-table" style="width: 100% !important">
+        <table class="table table-bordered table-striped table-hover table-sm" id="collections-table" style="width: 100% !important">
             <thead>
             <tr class="">
-                <th>Control No.</th>
-                <th>Date</th>
-                <th>Client</th>
-                <th>Project</th>
+                <th style="width: 110px;">Ref. No.</th>
+                <th style="width: 120px;">Date</th>
+                <th>Payor</th>
                 <th>Remarks</th>
+                <th style="width: 150px;">Total Amount Paid</th>
                 <th style="width: 80px;">Action</th>
             </tr>
             </thead>
@@ -34,24 +30,35 @@
 @section('scripts')
     <script type="text/javascript">
         let active = '';
-        projectExpenseLiquidationTbl = $("#sales-invoice-table").DataTable({
+        collectionsTbl = $("#collections-table").DataTable({
             dom : 'lBfrtip',
             processing : true,
             serverSide : true,
             ajax : '{{\Illuminate\Support\Facades\Request::getUri()}}',
             columns : [
-                { data : "invoice_no" },
-                { data : "date" },
+                { data : "ref_no" },
                 {
-                    data : "project.client.name",
-                    name : "project.client.name"
+                    data : "date",
+                    render: function (data) {
+                        if(!data){
+                            return  '';
+                        }
+                        return moment(data).format('MM/DD/YYYY');
+                    }
                 },
-                {
-                    data : "project.project_name",
-                    name : "project.project_name"
-                },
+                { data : "payor" },
                 { data : "remarks" },
+                {
+                    data : "total_paid",
+                    render: function (data) {
+                        if(!data){
+                            return  '';
+                        }
+                        return $.number(data,2);
+                    }
+                },
                 { data : "action" },
+
             ],
             buttons : [
                 {!! __js::dt_buttons() !!}
@@ -61,23 +68,15 @@
                     targets: '_all',
                     class : 'align-top'
                 },
-
                 {
-                    targets : 1,
-                    class : 'w-15p',
-                    render: function (data) {
-                        if(!data){
-                            return  '';
-                        }
-                        return moment(data).format('MM/DD/YYYY');
-                    }
+                    targets : 4,
+                    class : 'text-end',
                 },
                 {
                     targets : 5,
                     orderable : false,
                     class : ''
                 },
-
             ],
             order:[[0,'asc']],
             responsive : false,
@@ -87,7 +86,7 @@
                 $('#'+settings.sTableId+'_filter input').unbind();
                 $('#'+settings.sTableId+'_filter input').bind('keyup', function (e) {
                     if (e.keyCode == 13) {
-                        projectExpenseLiquidationTbl.search(this.value).draw();
+                        collectionsTbl.search(this.value).draw();
                     }
                 });
             },

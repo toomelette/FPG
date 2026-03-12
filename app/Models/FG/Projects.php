@@ -27,6 +27,7 @@ class Projects extends Model
 
     protected $primaryKey = 'uuid';
     public $incrementing = false;
+    protected $keyType = 'string';
 
     /*Relationships*/
     public function client()
