@@ -43,9 +43,6 @@ class ProjectExpenseLiquidationFormRequest extends FormRequest
             'date' => 'required|date_format:Y-m-d' ,
             'project_uuid' => 'required',
             'details' => 'required',
-            'details.*.qty' => 'required',
-            'details.*.uom' => 'required',
-            'details.*.unit_cost' => 'required',
             'total_amount_due' => 'required',
 
             'details.*.description' => 'required',
