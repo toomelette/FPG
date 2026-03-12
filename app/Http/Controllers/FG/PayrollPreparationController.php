@@ -13,6 +13,7 @@ use App\Models\FG\PayrollTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Yajra\DataTables\DataTables;
 
 class PayrollPreparationController extends Controller
 {
@@ -250,5 +251,25 @@ class PayrollPreparationController extends Controller
             abort(503,$e->getMessage());
         }
         return response()->noContent();
+    }
+
+    public function index(Request $request)
+    {
+        if($request->ajax() && $request->has('draw')){
+            $payrollMasters = PayrollMaster::query()
+                ->withCount(['payrollEmployees'])
+                ->withSum('payrollEmployees','net_pay')
+            ;
+            return DataTables::of($payrollMasters)
+                ->addColumn('action',function ($data){
+                    return view($this->folder.'dt-action')->with([
+                        'data' => $data
+                    ]);
+                })
+                ->escapeColumns([])
+                ->setRowId('uuid')
+                ->toJson();
+        }
+        return view($this->folder.'index');
     }
 }
