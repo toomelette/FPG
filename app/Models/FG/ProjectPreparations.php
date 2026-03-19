@@ -2,13 +2,14 @@
 
 namespace App\Models\FG;
 
-use App\Models\Scopes\FG\ProjectIdScope;
+use App\Models\ProjectPreparationDetails;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SalesInvoice extends Model
+class ProjectPreparations extends Model
 {
     use HasFactory;
+
     public static function boot()
     {
         parent::boot();
@@ -16,7 +17,6 @@ class SalesInvoice extends Model
             $a->user_updated = \Auth::user()->user_id ?? null;
             $a->ip_updated = request()->ip();
             $a->updated_at = \Carbon::now();
-            $a->project_id = \Auth::user()->project_id;
         });
 
         static::creating(function ($a){
@@ -26,35 +26,20 @@ class SalesInvoice extends Model
             $a->project_id = \Auth::user()->project_id;
         });
     }
-    protected $table = 'sales_invoices';
 
     protected $primaryKey = 'uuid';
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected static function booted()
-    {
-        static::addGlobalScope(new ProjectIdScope());
-    }
+    /* RELATIONSHIPS */
 
-    /*Relationships*/
     public function details()
     {
-        return $this->hasMany(SalesInvoiceDetails::class,'sales_invoice_uuid','uuid');
+        return $this->hasMany(ProjectPreparationDetails::class,'project_preparation_uuid','uuid');
     }
 
-    public function client()
+    public function invoice()
     {
-        return $this->belongsTo(Clients::class,'client_uuid','uuid');
-    }
-
-    public function liquidations()
-    {
-        return $this->hasMany(ProjectExpenseLiquidation::class,'invoice_uuid','uuid');
-    }
-
-    public function distributions()
-    {
-        return $this->hasMany(CollectionDistributions::class,'invoice_uuid','uuid');
+        return $this->belongsTo(SalesInvoice::class,'invoice_uuid','uuid');
     }
 }

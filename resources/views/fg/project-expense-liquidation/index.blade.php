@@ -42,12 +42,12 @@
                 { data : "control_no" },
                 { data : "date" },
                 {
-                    data : "project.client.name",
-                    name : "project.client.name"
+                    data : "invoice.client.name",
+                    name : "invoice.client.name"
                 },
                 {
-                    data : "project.project_name",
-                    name : "project.project_name"
+                    data : "invoice.remarks",
+                    name : "invoice.remarks"
                 },
                 { data : "remarks" },
                 { data : "details" },

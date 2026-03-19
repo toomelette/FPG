@@ -20,4 +20,9 @@ class CollectionDistributions extends Model
     {
         return $this->belongsTo(Collections::class,'collection_uuid','uuid');
     }
+
+    public function invoice()
+    {
+        return $this->belongsTo(SalesInvoice::class,'invoice_uuid','uuid');
+    }
 }

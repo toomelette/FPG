@@ -24,7 +24,7 @@ class ProjectExpenseLiquidationController extends Controller
         if($request->ajax() && $request->has('draw')){
             $projectExpenseLiquidations = ProjectExpenseLiquidation::query()
                 ->with([
-                    'project.client',
+                    'invoice.client',
                 ]);
             return DataTables::of($projectExpenseLiquidations)
                 ->addColumn('action',function ($data){
@@ -54,7 +54,7 @@ class ProjectExpenseLiquidationController extends Controller
         $projectExpenseLiquidation->uuid = Str::uuid();
         $projectExpenseLiquidation->control_no = $request->control_no;
         $projectExpenseLiquidation->date = $request->date;
-        $projectExpenseLiquidation->project_uuid = $request->project_uuid;
+        $projectExpenseLiquidation->invoice_uuid = $request->invoice_uuid;
         $details = collect($request->details)->values();
 
         $details = $details->map(function ($item) use ($projectExpenseLiquidation){
@@ -77,7 +77,7 @@ class ProjectExpenseLiquidationController extends Controller
     {
         $projectExpenseLiquidation = ProjectExpenseLiquidation::query()
             ->with([
-                'details','project'
+                'details','invoice'
             ])
             ->findOrFail($uuid);
         return view($this->folder.'edit')->with([
@@ -92,7 +92,7 @@ class ProjectExpenseLiquidationController extends Controller
             ->findOrFail($uuid);
         $projectExpenseLiquidation->control_no = $request->control_no;
         $projectExpenseLiquidation->date = $request->date;
-        $projectExpenseLiquidation->project_uuid = $request->project_uuid;
+        $projectExpenseLiquidation->invoice_uuid = $request->invoice_uuid;
         $details = collect($request->details)->values();
 
         $details = $details->map(function ($item) use ($projectExpenseLiquidation){

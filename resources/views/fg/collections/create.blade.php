@@ -28,9 +28,8 @@
                     <table class="table table-striped table-sm table-bordered" id="distribution-table">
                         <thead>
                         <tr>
-                            <th style="width: 200px">Ref Invoice</th>
-                            <th style="width: 200px">Invoice No</th>
-                            <th style="width: 200px">Amount</th>
+                            <th>Invoice</th>
+                            <th style="width: 150px">Amount</th>
                             <th style="width: 50px">
                                 <button type="button" class="btn btn-secondary btn-sm add-btn" template="#distribution-template">
                                     <i class="fa fa-plus"></i>

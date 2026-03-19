@@ -29,9 +29,8 @@
                     <table class="table table-striped table-sm table-bordered" id="distribution-table">
                         <thead>
                         <tr>
-                            <th style="width: 200px">Ref Invoice</th>
-                            <th style="width: 200px">Invoice No</th>
-                            <th style="width: 200px">Amount</th>
+                            <th>Ref Invoice</th>
+                            <th style="width: 150px">Amount</th>
                             <th style="width: 50px">
                                 <button type="button" class="btn btn-secondary btn-sm add-btn" template="#distribution-template">
                                     <i class="fa fa-plus"></i>
@@ -43,10 +42,7 @@
                         @forelse($collection->distributions as $distribution)
                             <tr id="distribution-{{$distribution->id}}" data-id="{{$distribution->id}}">
                                 <td class="align-top">
-                                    <x-forms.select :select-only="true" :auto-class="true" label="" name="distributions[{{$distribution->id}}][ref_invoice]" :options="\App\Swep\Helpers\Arrays::invoiceTypes()" cols="12" :value="$distribution->ref_invoice ?? null"/>
-                                </td>
-                                <td class="align-top">
-                                    <x-forms.input label="Invoice No." :auto-class="true" name="distributions[{{$distribution->id}}][invoice_no]" cols="12" :input-only="true" :value="$distribution->invoice_no ?? null"/>
+                                    <x-forms.select :select-only="true" :auto-class="true" label="" name="distributions[{{$distribution->id}}][invoice_uuid]"  class="select2-ajax-auto-populate" :options="\App\Swep\Helpers\Arrays::invoiceTypes()" cols="12" :s2-id="$distribution->invoice->uuid" :s2-text="$distribution?->invoice?->remarks .' - '.$distribution?->invoice->invoice_no" :s2-url="route('dashboard.ajax.get','invoices-grouped-by-clients')"/>
                                 </td>
                                 <td class="align-top">
                                     <x-forms.input :input-only="true" :auto-class="true"  label="Amount" data-autonum-key="{{$distribution->id}}" class="autonum-auto-init-assoc text-end compute" name="distributions[{{$distribution->id}}][amount]" cols="12" :value="$distribution->amount ?? null"/>

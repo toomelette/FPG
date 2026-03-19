@@ -1,8 +1,7 @@
 <div class="btn-group btn-group-sm">
-    <button type="button" class="btn btn-outline-secondary btn-sm view-sales-invoice-btn" data="{{$data->uuid}}"
-            data-toggle="modal" data-target="#show-sales-invoice-modal">
+    <a href="{{route('sales-invoice.show',$data->uuid)}}" type="button" class="btn btn-outline-secondary btn-sm view-sales-invoice-btn" data="{{$data->uuid}}">
         <i class="fa fa-file-text"></i>
-    </button>
+    </a>
     <a href="{{route('sales-invoice.edit',$data->uuid)}}" for="linkToEdit" type="button"
             class="btn btn-outline-secondary btn-sm ">
         <i class="fa fa-edit"></i>

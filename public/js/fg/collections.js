@@ -41,5 +41,17 @@ $("body").on("click",".add-btn",function (){
                 placeholder: "Select",
                 allowClear : true,
             });
+
+            $("#select2-invoices-"+rand).select2({
+                ajax: {
+                    url: '/dashboard/ajax/invoices-grouped-by-clients',
+                    dataType: 'json',
+                    delay : 250,
+
+                    // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+                },
+                placeholder: "Select",
+                allowClear : true,
+            });
         });
 })

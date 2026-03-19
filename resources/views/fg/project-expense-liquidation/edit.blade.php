@@ -17,7 +17,7 @@
                         <x-forms.input label="Date" name="date" cols="6" type="date" :value="$projectExpenseLiquidation ?? null"/>
                     </div>
                     <div class="row mt-2">
-                        <x-forms.select label="Project" name="project_uuid" cols="12" :options="[]" id="select2-project" :value="$projectExpenseLiquidation ?? null" select2-preselected="{{$projectExpenseLiquidation?->project?->project_name.' - '.$projectExpenseLiquidation?->project?->project_code}}"/>
+                        <x-forms.select label="Project" name="invoice_uuid" cols="12" :options="[]" id="select2-project" :value="$projectExpenseLiquidation ?? null" select2-preselected="{{$projectExpenseLiquidation?->invoice?->remarks.' - '.$projectExpenseLiquidation?->invoice?->invoice_no}}"/>
                     </div>
                     <div class="row mt-2">
                         <x-forms.textarea label="Remarks" name="remarks" cols="12" :value="$projectExpenseLiquidation ?? null"/>
@@ -95,7 +95,7 @@
     <script type="text/javascript">
         $("#select2-project").select2({
             ajax: {
-                url: '{{route("dashboard.ajax.get","projects-grouped-by-clients")}}',
+                url: '{{route("dashboard.ajax.get","invoices-grouped-by-clients")}}',
                 dataType: 'json',
                 delay : 250,
                 // Additional AJAX parameters go here; see the end of this chapter for the full code of this example

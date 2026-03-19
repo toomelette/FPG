@@ -29,4 +29,10 @@ class Clients extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
+
+    /* RELATIONSHIPS */
+    public function invoices()
+    {
+        return $this->hasMany(SalesInvoice::class,'client_uuid','uuid');
+    }
 }

@@ -27,8 +27,9 @@ class SalesInvoiceController extends Controller
     {
         $si = new SalesInvoice();
         $si->uuid = Str::uuid();
+        $si->invoice_no = $request->invoice_no;
         $si->date = $request->date;
-        $si->project_uuid = $request->project_uuid;
+        $si->client_uuid = $request->client_uuid;
         $si->terms = $request->terms;
         $si->remarks = $request->remarks;
         $si->tax_base = $request->tax_base;
@@ -50,7 +51,7 @@ class SalesInvoiceController extends Controller
         if($request->ajax() && $request->has('draw')){
             $salesInvoices = SalesInvoice::query()
                 ->with([
-                    'project.client',
+                    'client',
                     'details',
                 ]);
             return DataTables::of($salesInvoices)
@@ -71,7 +72,7 @@ class SalesInvoiceController extends Controller
     {
         $si = SalesInvoice::query()
             ->with([
-                'project',
+                'client',
                 'details'
             ])
             ->findOrFail($uuid);
@@ -84,8 +85,9 @@ class SalesInvoiceController extends Controller
     {
         $si = SalesInvoice::query()
             ->findOrFail($uuid);
+        $si->invoice_no = $request->invoice_no;
         $si->date = $request->date;
-        $si->project_uuid = $request->project_uuid;
+        $si->client_uuid = $request->client_uuid;
         $si->terms = $request->terms;
         $si->remarks = $request->remarks;
         $si->tax_base = $request->tax_base;
@@ -117,5 +119,47 @@ class SalesInvoiceController extends Controller
         }catch (\Exception $e){
             abort(503);
         }
+    }
+    public function show($uuid,Request $request)
+    {
+        $salesInvoice = SalesInvoice::query()
+            ->with([
+                'client'
+            ])
+            ->findOrFail($uuid);
+
+        if($request->ajax() && $request->has('liquidationsTable')){
+            $salesInvoice = $salesInvoice->load(['liquidations']);
+            return DataTables::of($salesInvoice->liquidations)
+                ->addColumn('action',function ($data){
+                    return view('fg.project-expense-liquidation.dt-actions')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->addColumn('details',function ($data){
+
+                })
+                ->escapeColumns([])
+                ->setRowId('uuid')
+                ->toJson();
+        }
+        if($request->ajax() && $request->has('collectionsTable')){
+            $salesInvoice = $salesInvoice->load(['distributions.collection']);
+            return DataTables::of($salesInvoice->distributions)
+                ->addColumn('action',function ($data){
+//                    return view('fg.collections.dt-actions')->with([
+//                        'data' => $data,
+//                    ]);
+                })
+                ->addColumn('details',function ($data){
+
+                })
+                ->escapeColumns([])
+                ->setRowId('uuid')
+                ->toJson();
+        }
+        return view($this->folder.'show')->with([
+            'salesInvoice' => $salesInvoice,
+        ]);
     }
 }

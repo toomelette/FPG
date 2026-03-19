@@ -70,7 +70,7 @@ class CollectionsController extends Controller
     {
         $collection = Collections::query()
             ->with([
-                'distributions',
+                'distributions.invoice',
                 'checks',
             ])
             ->findOrFail($uuid);

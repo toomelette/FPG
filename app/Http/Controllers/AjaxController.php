@@ -15,6 +15,7 @@ use App\Models\FG\CollectionChecks;
 use App\Models\FG\ProjectExpenseLiquidation;
 use App\Models\FG\ProjectExpenseLiquidationDetails;
 use App\Models\FG\Projects;
+use App\Models\FG\SalesInvoice;
 use App\Models\FG\Stocks;
 use App\Models\HRPayPlanitilla;
 use App\Models\PPU\Pap;
@@ -56,6 +57,10 @@ class AjaxController extends Controller
         }
         if($for == 'stocks'){
             return $this->stocks($r);
+        }
+
+        if($for == 'invoices-grouped-by-clients'){
+            return $this->invoicesGroupedByClients($r);
         }
 
         if($for == 'banks'){
@@ -434,6 +439,47 @@ class AjaxController extends Controller
                 $children = [];
                 foreach ($projects as $project){
                     $children[] = ['id'=>$project->uuid,'text' => $project->project_name.' - '.$project->project_code];
+                }
+                $arr[] = [
+                    'text' => $clientName,
+                    'children' => $children,
+                ];
+            }
+
+        }else{
+            return  [];
+        }
+
+//        $request->add_null = true;
+        return Helper::wrapForSelect2($arr,true,$request);
+    }
+
+    private function invoicesGroupedByClients(Request $request)
+    {
+
+        $arr = [];
+        $invoices = SalesInvoice::query()
+            ->with(['client'])
+            ->orderBy('remarks');
+        if($request->get('q') != ''){
+            $invoices = $invoices
+                ->where(function ($q) use ($request){
+                    $q->where('remarks','like','%'.$request->get('q').'%')
+                        ->orWhere('invoice_no','like','%'.$request->get('q').'%');
+                });
+        }
+//        if($request->has('page')){
+//            $invoices = $invoices->offset((($request->page) - 1) * 20);
+//        }
+//        $invoices = $invoices->limit(20)
+//            ->get();
+        $invoices = $invoices->paginate(25);
+        $groupedByClient = $invoices->groupBy('client.name');
+        if($groupedByClient->count() > 0){
+            foreach ($groupedByClient as $clientName => $invoices){
+                $children = [];
+                foreach ($invoices as $invoice){
+                    $children[] = ['id'=>$invoice->uuid,'text' => $invoice->remarks.' - '.$invoice->invoice_no];
                 }
                 $arr[] = [
                     'text' => $clientName,

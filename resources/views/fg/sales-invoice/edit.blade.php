@@ -11,9 +11,9 @@
                 <button class="btn btn-sm btn-primary float-end" type="submit" data-bs-toggle="modal"><i class="fa fa-check"></i> Save</button>
             </x-slot:title>
             <div class="row">
-                <x-forms.input label="Invoice No." name="control_no" cols="2" :value="$salesInvoice ?? null"/>
+                <x-forms.input label="Invoice No." name="invoice_no" cols="2" :value="$salesInvoice ?? null"/>
                 <x-forms.input label="Date" name="date" cols="2" type="date" :value="$salesInvoice ?? null"/>
-                <x-forms.select label="Project" name="project_uuid" cols="8" :options="[]" id="select2-project" :select2-preselected="$salesInvoice->project->project_name.' - '.$salesInvoice->project->project_code "  :value="$salesInvoice ?? null"/>
+                <x-forms.select label="Client" name="client_uuid" cols="8" :options="[]" id="select2-project" :select2-preselected="$salesInvoice->client->name.' - '.$salesInvoice->client->account_no "  :value="$salesInvoice ?? null"/>
             </div>
             <div class="row mt-2">
                 <x-forms.input label="Terms" name="terms" cols="2" :value="$salesInvoice ?? null" />

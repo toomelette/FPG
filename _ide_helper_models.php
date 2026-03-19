@@ -915,6 +915,8 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\HRU\PayrollMasterEmployees> $payrollEmployees
  * @property-read int|null $payroll_employees_count
  * @property-read \App\Models\HRU\PayrollEmployeeSettings|null $payrollSettings
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\PayrollTemplate> $payrollTemplates
+ * @property-read int|null $payroll_templates_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PermissionSlip> $permissionSlip
  * @property-read int|null $permission_slip_count
  * @property-read mixed $photo_path
@@ -1858,6 +1860,8 @@ namespace App\Models\FG{
  * @property string|null $ip_updated
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\SalesInvoice> $invoices
+ * @property-read int|null $invoices_count
  * @method static \Illuminate\Database\Eloquent\Builder|Clients newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Clients newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Clients query()
@@ -1888,6 +1892,7 @@ namespace App\Models\FG{
  * @property string|null $bank
  * @property string|null $check_no
  * @property string|null $amount
+ * @property-read \App\Models\FG\Collections|null $collection
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionChecks newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionChecks newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionChecks query()
@@ -1906,17 +1911,17 @@ namespace App\Models\FG{
  *
  * @property int $id
  * @property string $collection_uuid
- * @property string|null $ref_invoice
- * @property string|null $invoice_no
+ * @property string|null $invoice_uuid
  * @property string|null $amount
+ * @property-read \App\Models\FG\Collections|null $collection
+ * @property-read \App\Models\FG\SalesInvoice|null $invoice
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions query()
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereCollectionUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereInvoiceNo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereRefInvoice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereInvoiceUuid($value)
  */
 	class CollectionDistributions extends \Eloquent {}
 }
@@ -1944,6 +1949,11 @@ namespace App\Models\FG{
  * @property string|null $ip_updated
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $project_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\CollectionChecks> $checks
+ * @property-read int|null $checks_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\CollectionDistributions> $distributions
+ * @property-read int|null $distributions_count
  * @method static \Illuminate\Database\Eloquent\Builder|Collections newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Collections newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Collections query()
@@ -1956,6 +1966,7 @@ namespace App\Models\FG{
  * @method static \Illuminate\Database\Eloquent\Builder|Collections whereIpUpdated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collections wherePaymentType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collections wherePayor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collections whereProjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collections whereRefNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collections whereRemarks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collections whereTotalAmount($value)
@@ -1972,10 +1983,175 @@ namespace App\Models\FG{
 
 namespace App\Models\FG{
 /**
+ * App\Models\FG\PayrollAdjustments
+ *
+ * @property int $id
+ * @property string $code
+ * @property string $type
+ * @property string|null $description
+ * @property int|null $is_taxable
+ * @property int|null $is_statutory
+ * @property int|null $is_pre_tax_deduction
+ * @property int|null $priority
+ * @property float|null $factor
+ * @property string|null $account_no
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments whereAccountNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments whereFactor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments whereIsPreTaxDeduction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments whereIsStatutory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments whereIsTaxable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollAdjustments whereUpdatedAt($value)
+ */
+	class PayrollAdjustments extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\PayrollEmployeeAdjustments
+ *
+ * @property int $id
+ * @property int $payroll_employee_id
+ * @property string $employee_uuid
+ * @property string|null $type
+ * @property string|null $code
+ * @property string|null $amount
+ * @property string|null $employee_share
+ * @property int|null $priority
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\FG\PayrollEmployees|null $payrollEmployee
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments whereEmployeeShare($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments whereEmployeeUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments wherePayrollEmployeeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployeeAdjustments whereUpdatedAt($value)
+ */
+	class PayrollEmployeeAdjustments extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\PayrollEmployees
+ *
+ * @property int $id
+ * @property string $payroll_uuid
+ * @property string|null $employee_uuid
+ * @property string|null $net_pay
+ * @property array|null $saved_data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\PayrollEmployeeAdjustments> $employeeAdjustments
+ * @property-read int|null $employee_adjustments_count
+ * @property-read \App\Models\FG\PayrollMaster|null $payrollMaster
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployees newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployees newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployees query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployees whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployees whereEmployeeUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployees whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployees whereNetPay($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployees wherePayrollUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployees whereSavedData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollEmployees whereUpdatedAt($value)
+ */
+	class PayrollEmployees extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\PayrollMaster
+ *
+ * @property int $id
+ * @property string $uuid
+ * @property string|null $date
+ * @property string|null $type
+ * @property string|null $date_from
+ * @property string|null $date_to
+ * @property string|null $user_created
+ * @property string|null $ip_created
+ * @property string|null $user_updated
+ * @property string|null $ip_updated
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\PayrollEmployeeAdjustments> $employeeAdjustments
+ * @property-read int|null $employee_adjustments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\PayrollEmployees> $payrollEmployees
+ * @property-read int|null $payroll_employees_count
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereDateFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereDateTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereIpCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereIpUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereUserCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereUserUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollMaster whereUuid($value)
+ */
+	class PayrollMaster extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\PayrollTemplate
+ *
+ * @property int $id
+ * @property string $employee_uuid
+ * @property string|null $code
+ * @property string|null $type
+ * @property int|null $is_taxable
+ * @property int|null $priority
+ * @property string|null $amount
+ * @property string|null $taxable_amount
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate whereEmployeeUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate whereIsTaxable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate whereTaxableAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PayrollTemplate whereUpdatedAt($value)
+ */
+	class PayrollTemplate extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
  * App\Models\FG\ProjectExpenseLiquidation
  *
  * @property int $id
- * @property string $project_uuid
+ * @property string $invoice_uuid
  * @property string $uuid
  * @property string|null $control_no
  * @property string|null $date
@@ -1986,9 +2162,10 @@ namespace App\Models\FG{
  * @property string|null $ip_updated
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $project_id
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\ProjectExpenseLiquidationDetails> $details
  * @property-read int|null $details_count
- * @property-read \App\Models\FG\Projects|null $project
+ * @property-read \App\Models\FG\SalesInvoice|null $invoice
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation query()
@@ -1996,9 +2173,10 @@ namespace App\Models\FG{
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation whereDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation whereInvoiceUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation whereIpCreated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation whereIpUpdated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation whereProjectUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation whereProjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation whereRemarks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidation whereUserCreated($value)
@@ -2028,6 +2206,46 @@ namespace App\Models\FG{
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectExpenseLiquidationDetails whereProjectExpenseLiquidationUuid($value)
  */
 	class ProjectExpenseLiquidationDetails extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\ProjectPreparations
+ *
+ * @property int $id
+ * @property string $invoice_uuid
+ * @property string $uuid
+ * @property string|null $control_no
+ * @property string|null $date
+ * @property string|null $remarks
+ * @property string|null $user_created
+ * @property string|null $ip_created
+ * @property string|null $user_updated
+ * @property string|null $ip_updated
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $project_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectPreparationDetails> $details
+ * @property-read int|null $details_count
+ * @property-read \App\Models\FG\SalesInvoice|null $invoice
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereControlNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereInvoiceUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereIpCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereIpUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereProjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereUserCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereUserUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations whereUuid($value)
+ */
+	class ProjectPreparations extends \Eloquent {}
 }
 
 namespace App\Models\FG{
@@ -2081,7 +2299,7 @@ namespace App\Models\FG{
  * App\Models\FG\SalesInvoice
  *
  * @property int $id
- * @property string $project_uuid
+ * @property string $client_uuid
  * @property string $uuid
  * @property string|null $invoice_no
  * @property string|null $date
@@ -2097,19 +2315,25 @@ namespace App\Models\FG{
  * @property string|null $ip_updated
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $project_id
+ * @property-read \App\Models\FG\Clients|null $client
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\SalesInvoiceDetails> $details
  * @property-read int|null $details_count
- * @property-read \App\Models\FG\Projects|null $project
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\CollectionDistributions> $distributions
+ * @property-read int|null $distributions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\ProjectExpenseLiquidation> $liquidations
+ * @property-read int|null $liquidations_count
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice query()
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereClientUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereInvoiceNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereIpCreated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereIpUpdated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereProjectUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereProjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereRefBook($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereRemarks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice whereTaxBase($value)
@@ -4966,6 +5190,34 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\ProjectPreparationDetails
+ *
+ * @property int $id
+ * @property string $project_preparation_uuid
+ * @property string|null $stock_uuid
+ * @property string|null $description
+ * @property float|null $qty
+ * @property string|null $uom
+ * @property string|null $unit_cost
+ * @property string|null $amount
+ * @property-read \App\Models\FG\ProjectPreparations|null $preparation
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereProjectPreparationUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereQty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereStockUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereUnitCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereUom($value)
+ */
+	class ProjectPreparationDetails extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\QueryLogs
  *
  * @method static \Illuminate\Database\Eloquent\Builder|QueryLogs newModelQuery()
@@ -5534,7 +5786,8 @@ namespace App\Models{
  * @property string|null $portal
  * @property \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserAccess> $access
  * @property int|null $pms_allowed
- * @property int|null $project_id
+ * @property string|null $project_id
+ * @property array|null $project_access
  * @property-read int|null $access_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $actions
  * @property-read int|null $actions_count
@@ -5580,6 +5833,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePmsAllowed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePortal($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereProjectAccess($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereProjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereSidenav($value)

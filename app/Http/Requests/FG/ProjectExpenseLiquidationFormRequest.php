@@ -41,7 +41,7 @@ class ProjectExpenseLiquidationFormRequest extends FormRequest
         return [
             'control_no' => 'required',
             'date' => 'required|date_format:Y-m-d' ,
-            'project_uuid' => 'required',
+            'invoice_uuid' => 'required',
             'details' => 'required',
 
             'details.*.description' => 'required',

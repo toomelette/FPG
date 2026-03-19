@@ -75,4 +75,26 @@ class ClientController extends Controller
         }
         abort(503);
     }
+
+    public function show($uuid, Request $request)
+    {
+        $client = Clients::query()
+            ->findOrFail($uuid);
+
+        if($request->ajax() && $request->has('draw')){
+            $client = $client->load(['invoices']);
+            return DataTables::of($client->invoices)
+                ->addColumn('action',function ($data){
+                    return view('fg.sales-invoice.dt-actions')->with([
+                        'data' => $data,
+                    ]);
+                })
+                ->escapeColumns([])
+                ->setRowId('uuid')
+                ->toJson();
+        }
+        return view($this->folder.'show')->with([
+            'client' => $client,
+        ]);
+    }
 }

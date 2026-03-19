@@ -45,6 +45,10 @@ class User extends Authenticatable{
 
     protected $with = ['employee'];
 
+    protected $casts = [
+        'project_access' => 'array',
+    ];
+
     protected $attributes = [
 
         'slug' => '',

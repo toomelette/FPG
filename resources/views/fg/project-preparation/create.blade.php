@@ -2,36 +2,35 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>New Sales Invoice</x-slot:title>
-        <x-slot:float-end></x-slot:float-end>
+        <x-slot:title>Project Preparation</x-slot:title>
     </x-adminkit.html.page-title>
-    <form id="add-sales-invoice-form">
+    <form id="add-project-preparation-form">
         <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
             <x-slot:title>
-                <button class="btn btn-sm btn-primary float-end" type="submit" data-bs-toggle="modal"><i class="fa fa-check"></i> Save</button>
+                <button class="btn btn-sm btn-primary float-end" type="submit"><i class="fa fa-check"></i> Save</button>
             </x-slot:title>
-            <div class="row">
-                <x-forms.input label="Invoice No." name="invoice_no" cols="2"/>
-                <x-forms.input label="Date" name="date" cols="2" type="date"/>
-                <x-forms.select label="Client" name="client_uuid" cols="8" :options="[]" id="select2-project"/>
-            </div>
-            <div class="row mt-2">
-                <x-forms.input label="Terms" name="terms" cols="2" />
-                <x-forms.textarea label="Remarks" name="remarks" cols="4"/>
-            </div>
-            <div class="row mt-2">
-                <div class="col-md-10">
-                    <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1">
-                        Details
-                    </p>
+            <div class="row mb-2">
+                <div class="col-md-3">
+                    <div class="row mb-2">
+                        <x-forms.input label="Control No." name="control_no" cols="6"/>
+                        <x-forms.input label="Date" name="date" cols="6" type="date"/>
+                    </div>
+                    <div class="row mb-2">
+                        <x-forms.select label="Project" name="invoice_uuid" cols="12" :options="[]" id="select2-project"/>
+                    </div>
+                    <div class="row mb-2">
+                        <x-forms.textarea label="Remarks" name="remarks" cols="12" />
+                    </div>
+                </div>
+                <div class="col-md-9">
                     <table class="table table-striped table-sm table-bordered" id="details-table">
                         <thead>
                         <tr>
                             <th>Description</th>
-                            <th style="width: 200px">Qty</th>
-                            <th style="width: 200px">Unit of Meas.</th>
-                            <th style="width: 200px">Unit Cost</th>
-                            <th style="width: 200px">Total Cost</th>
+                            <th style="width: 100px">Qty</th>
+                            <th style="width: 170px">Unit of Meas.</th>
+                            <th style="width: 170px">Unit Cost</th>
+                            <th style="width: 170px">Total Cost</th>
                             <th style="width: 50px">
                                 <button type="button" class="btn btn-secondary btn-sm add-btn" template="#details-template">
                                     <i class="fa fa-plus"></i>
@@ -42,24 +41,18 @@
                         <tbody>
 
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="4"></td>
+                            <td class="align-top text-strong text-end">
+                                <span id="grandTotal">0.00</span>
+                            </td>
+                            <td></td>
+                        </tr>
+                        </tfoot>
                     </table>
                 </div>
-                <div class="col-md-2">
-                    <p class="page-header-sm text-info" style="border-bottom: 1px solid #cedbe1">
-                        Total Amount
-                    </p>
-                    <div class="row mt-2">
-                        <x-forms.input label="Tax Base" class="autonum text-end" name="tax_base" cols="12"/>
-                    </div>
-                    <div class="row mt-2">
-                        <x-forms.input label="VAT" class="autonum text-end" name="vat" cols="12"/>
-                    </div>
-                    <div class="row mt-2">
-                        <x-forms.input label="Total Amount Due" class="autonum-total-amount-due text-end" name="total_amount_due" cols="12"/>
-                    </div>
-                </div>
             </div>
-
         </x-adminkit.html.card>
     </form>
 
@@ -97,23 +90,21 @@
 @endsection
 
 @section('scripts')
-    <script src="{{asset('js/fg/sales-invoice.js')}}"></script>
-    <script type="text/javascript">
+    <script src="{{asset('js/fg/project-preparation.js')}}"></script>
 
-        $("#select2-project").select2({
-            ajax: {
-                url: '{{route("dashboard.ajax.get","clients")}}',
-                dataType: 'json',
-                delay : 250,
-                // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
-            },
-        });
+    <script type="text/javascript">
         $(document).ready(function (){
             $(".add-btn").trigger('click');
-            autonums['totalAmountDue'] = new AutoNumeric('.autonum-total-amount-due',autonum_settings_simple);
+            autonumGlobalInstances['totalAmountDue'] = 0;
+            $("#select2-project").select2({
+                ajax: {
+                    url: '{{route("dashboard.ajax.get","invoices-grouped-by-clients")}}',
+                    dataType: 'json',
+                    delay : 250,
+                    // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+                },
+            });
         })
-
-
         $("body").on("change keyup",'.compute',function(){
             compute($(this).closest('tr'));
         });
@@ -130,7 +121,7 @@
             table.find('tbody')
                 .append(template)
                 .ready(function (){
-                    autonums[rand] = new AutoNumeric('.autonum-'+rand, autonum_settings_simple);
+                    autonumGlobalInstances[rand] = new AutoNumeric('.autonum-'+rand, autonum_settings_simple);
                     $("#select2-details-"+rand).select2({
                         ajax: {
                             url: '{{route("dashboard.ajax.get","stocks")}}',
@@ -144,13 +135,13 @@
                     });
                 });
         })
-        
-        $("#add-sales-invoice-form").submit(function (e) {
+
+        $("#add-project-preparation-form").submit(function (e) {
             e.preventDefault();
             let form = $(this);
             loading_btn(form);
             $.ajax({
-                url : '{{route("sales-invoice.store")}}',
+                url : '{{route("project-preparation.store")}}',
                 data : form.serialize(),
                 type: 'POST',
                 headers: {
@@ -158,16 +149,14 @@
                 },
                 success: function (res) {
                     succeed(form,true,false);
-                    toast('success','Liquidation successfully saved.','Success');
-                    $("#details-table tbody").html('')
-                        .ready(function (){
-                            $("#details-table .add-btn").trigger('click');
-                        })
+                    toast('success','Project preparation successfully saved.','Success');
+                    $("#grandTotal").html('0.00');
                 },
                 error: function (res) {
                     errored(form,res);
                 }
             })
         })
+
     </script>
 @endsection
