@@ -35,6 +35,7 @@ class SalesInvoiceController extends Controller
         $si->tax_base = $request->tax_base;
         $si->vat = $request->vat;
         $si->total_amount_due = $request->total_amount_due;
+
         try {
             DB::transaction(function () use ($request, $si){
                 $si->save();
