@@ -5,10 +5,9 @@ namespace App\Models\FG;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectPreparations extends Model
+class DeliveryReceipts extends Model
 {
     use HasFactory;
-
     public static function boot()
     {
         parent::boot();
@@ -30,13 +29,13 @@ class ProjectPreparations extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    /* RELATIONSHIPS */
 
+
+    /* RELATIONSHIPS */
     public function details()
     {
-        return $this->hasMany(ProjectPreparationDetails::class,'project_preparation_uuid','uuid');
+        return $this->hasMany(DeliveryReceiptDetails::class,'delivery_receipt_uuid','uuid');
     }
-
     public function invoice()
     {
         return $this->belongsTo(SalesInvoice::class,'invoice_uuid','uuid');

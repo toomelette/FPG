@@ -1983,6 +1983,79 @@ namespace App\Models\FG{
 
 namespace App\Models\FG{
 /**
+ * App\Models\FG\DeliveryReceiptDetails
+ *
+ * @property int $id
+ * @property string $delivery_receipt_uuid
+ * @property string|null $stock_uuid
+ * @property string|null $description
+ * @property float|null $qty
+ * @property string|null $uom
+ * @property string|null $unit_cost
+ * @property string|null $amount
+ * @property-read \App\Models\FG\DeliveryReceipts|null $deliveryReceipt
+ * @property-read \App\Models\FG\DeliveryReceipts|null $stock
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceiptDetails newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceiptDetails newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceiptDetails query()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceiptDetails whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceiptDetails whereDeliveryReceiptUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceiptDetails whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceiptDetails whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceiptDetails whereQty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceiptDetails whereStockUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceiptDetails whereUnitCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceiptDetails whereUom($value)
+ */
+	class DeliveryReceiptDetails extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\DeliveryReceipts
+ *
+ * @property int $id
+ * @property string $invoice_uuid
+ * @property string $uuid
+ * @property string|null $type
+ * @property string|null $control_no
+ * @property string|null $date
+ * @property string|null $terms
+ * @property string|null $remarks
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $user_created
+ * @property string|null $ip_created
+ * @property string|null $user_updated
+ * @property string|null $ip_updated
+ * @property string $project_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\DeliveryReceiptDetails> $details
+ * @property-read int|null $details_count
+ * @property-read \App\Models\FG\SalesInvoice|null $invoice
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts query()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereControlNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereInvoiceUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereIpCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereIpUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereProjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereTerms($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereUserCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereUserUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereUuid($value)
+ */
+	class DeliveryReceipts extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
  * App\Models\FG\PayrollAdjustments
  *
  * @property int $id
@@ -2210,6 +2283,35 @@ namespace App\Models\FG{
 
 namespace App\Models\FG{
 /**
+ * App\Models\FG\ProjectPreparationDetails
+ *
+ * @property int $id
+ * @property string $project_preparation_uuid
+ * @property string|null $stock_uuid
+ * @property string|null $description
+ * @property float|null $qty
+ * @property string|null $uom
+ * @property string|null $unit_cost
+ * @property string|null $amount
+ * @property-read \App\Models\FG\ProjectPreparations|null $preparation
+ * @property-read \App\Models\FG\DeliveryReceipts|null $stock
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereProjectPreparationUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereQty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereStockUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereUnitCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereUom($value)
+ */
+	class ProjectPreparationDetails extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
  * App\Models\FG\ProjectPreparations
  *
  * @property int $id
@@ -2225,7 +2327,7 @@ namespace App\Models\FG{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string $project_id
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectPreparationDetails> $details
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\ProjectPreparationDetails> $details
  * @property-read int|null $details_count
  * @property-read \App\Models\FG\SalesInvoice|null $invoice
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparations newModelQuery()
@@ -5186,34 +5288,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ProjectCode whereUserUpdated($value)
  */
 	class ProjectCode extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * App\Models\ProjectPreparationDetails
- *
- * @property int $id
- * @property string $project_preparation_uuid
- * @property string|null $stock_uuid
- * @property string|null $description
- * @property float|null $qty
- * @property string|null $uom
- * @property string|null $unit_cost
- * @property string|null $amount
- * @property-read \App\Models\FG\ProjectPreparations|null $preparation
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails query()
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereProjectPreparationUuid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereQty($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereStockUuid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereUnitCost($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProjectPreparationDetails whereUom($value)
- */
-	class ProjectPreparationDetails extends \Eloquent {}
 }
 
 namespace App\Models{

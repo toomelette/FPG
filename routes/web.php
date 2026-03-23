@@ -201,6 +201,7 @@ Route::group([
     Route::resource('sales-invoice',\App\Http\Controllers\FG\SalesInvoiceController::class);
     Route::resource('collections',\App\Http\Controllers\FG\CollectionsController::class);
     Route::resource('project-preparation',\App\Http\Controllers\FG\ProjectPreparationController::class);
+    Route::resource('delivery-receipts',\App\Http\Controllers\FG\DeliveryReceiptsController::class);
 
 
     Route::resource('payroll-template',\App\Http\Controllers\FG\PayrollTemplateController::class);

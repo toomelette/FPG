@@ -1374,4 +1374,12 @@ class Arrays
             'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec',
         ];
     }
+
+    public static function deliveryTypes()
+    {
+        return [
+            'VAT' => 'VAT',
+            'NON-VAT' => 'NON-VAT',
+        ];
+    }
 }
