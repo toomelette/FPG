@@ -603,7 +603,8 @@ class AjaxController extends Controller
         $data = null;
         $cv = CollectionChecks::query()
             ->select('bank')
-            ->orderBy('bank','asc');
+            ->orderBy('bank','asc')
+            ->groupBy('bank');
         if($request->has('q') && $request->q != ''){
             $cv = $cv->where(function ($q) use ($request){
                 $q->where('bank','like','%'.$request->q.'%');

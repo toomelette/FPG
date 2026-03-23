@@ -158,6 +158,36 @@ class SalesInvoiceController extends Controller
                 ->setRowId('uuid')
                 ->toJson();
         }
+
+        if($request->ajax() && $request->has('preparationsTable')){
+            $salesInvoice = $salesInvoice->load(['preparations']);
+            return DataTables::of($salesInvoice->preparations)
+                ->addColumn('action',function ($data){
+
+                })
+                ->addColumn('details',function ($data){
+
+                })
+                ->escapeColumns([])
+                ->setRowId('uuid')
+                ->toJson();
+        }
+
+        if($request->ajax() && $request->has('deliveriesTable')){
+            $salesInvoice = $salesInvoice->load(['deliveries']);
+            return DataTables::of($salesInvoice->deliveries)
+                ->addColumn('action',function ($data){
+
+                })
+                ->addColumn('details',function ($data){
+
+                })
+                ->escapeColumns([])
+                ->setRowId('uuid')
+                ->toJson();
+        }
+
+
         return view($this->folder.'show')->with([
             'salesInvoice' => $salesInvoice,
         ]);

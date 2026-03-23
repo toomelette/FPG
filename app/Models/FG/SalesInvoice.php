@@ -57,4 +57,13 @@ class SalesInvoice extends Model
     {
         return $this->hasMany(CollectionDistributions::class,'invoice_uuid','uuid');
     }
+
+    public function preparations()
+    {
+        return $this->hasMany(ProjectPreparations::class,'invoice_uuid','uuid');
+    }
+    public function deliveries()
+    {
+        return $this->hasMany(DeliveryReceipts::class,'invoice_uuid','uuid');
+    }
 }

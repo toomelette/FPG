@@ -1297,8 +1297,8 @@ class Arrays
     public static function paymentTypes()
     {
         $units = [
-            'PAYMENT1'     => 'PAYMENT1',
-            'PAYMENT2'    => 'PAYMENT2',
+            'COLLECTION RECEIPT'     => 'COLLECTION RECEIPT',
+            'PROBATIONARY RECEIPT'    => 'PROBATIONARY RECEIPT',
         ];
         ksort($units);
         return $units;
