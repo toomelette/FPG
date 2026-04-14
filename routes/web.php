@@ -203,6 +203,9 @@ Route::group([
     Route::resource('project-preparation',\App\Http\Controllers\FG\ProjectPreparationController::class);
     Route::resource('delivery-receipts',\App\Http\Controllers\FG\DeliveryReceiptsController::class);
 
+    //ACCOUNTING
+    Route::resource('cash-disbursements',\App\Http\Controllers\FG\CashDisbursementsController::class);
+
 
     Route::resource('payroll-template',\App\Http\Controllers\FG\PayrollTemplateController::class);
     Route::resource('payroll-preparation',\App\Http\Controllers\FG\PayrollPreparationController::class);
