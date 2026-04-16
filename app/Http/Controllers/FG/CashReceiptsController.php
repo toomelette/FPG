@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\FG;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\FG\CashDisbursementsFormRequest;
+use App\Http\Requests\FG\CashReceiptsFormRequest;
 use App\Models\FG\Journals;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
-class CashDisbursementsController extends Controller
+class CashReceiptsController extends Controller
 {
     public function __construct(
-        private $folder = 'fg-accounting.cash-disbursements.',
-        private $book = 'CASH DISBURSEMENT',
+        private $folder = 'fg-accounting.cash-receipts.',
+        private $book = 'CASH RECEIPT',
     )
     {
     }
@@ -24,7 +24,7 @@ class CashDisbursementsController extends Controller
         return view($this->folder.'create');
     }
 
-    public function store(CashDisbursementsFormRequest $request)
+    public function store(CashReceiptsFormRequest $request)
     {
         $journal = new Journals();
         $journal->book = $this->book;
@@ -36,6 +36,7 @@ class CashDisbursementsController extends Controller
         $journal->bank = $request->bank;
         $journal->check_no = $request->check_no;
         $journal->check_amount = $request->check_amount;
+        $journal->cash_amount = $request->cash_amount;
 
         try {
             DB::transaction(function () use ($journal,$request){
@@ -52,7 +53,7 @@ class CashDisbursementsController extends Controller
     {
         if($request->ajax() && $request->has('draw')){
             $journals = Journals::query()
-                ->cashDisbursements();
+                ->cashReceipts();
             return DataTables::of($journals)
                 ->addColumn('action',fn($data) => view($this->folder.'dt-actions')->with(['data' => $data]))
                 ->escapeColumns([])
@@ -66,18 +67,18 @@ class CashDisbursementsController extends Controller
     {
         $journal = Journals::query()
             ->with(['entries.chartOfAccount'])
-            ->cashDisbursements()
+            ->cashReceipts()
             ->findOrFail($uuid);
         return view($this->folder.'edit')->with([
             'journal' => $journal,
         ]);
     }
 
-    public function update(CashDisbursementsFormRequest $request,$uuid)
+    public function update(CashReceiptsFormRequest $request,$uuid)
     {
 
         $journal = Journals::query()
-            ->cashDisbursements()
+            ->cashReceipts()
             ->findOrFail($uuid);
         $journal->control_no = $request->control_no;
         $journal->date = $request->date;
@@ -86,6 +87,8 @@ class CashDisbursementsController extends Controller
         $journal->bank = $request->bank;
         $journal->check_no = $request->check_no;
         $journal->check_amount = $request->check_amount;
+        $journal->cash_amount = $request->cash_amount;
+
 
         try {
             DB::transaction(function () use ($journal,$request){
@@ -101,7 +104,7 @@ class CashDisbursementsController extends Controller
     public function destroy($uuid)
     {
         $journal = Journals::query()
-            ->cashDisbursements()
+            ->cashReceipts()
             ->findOrFail($uuid);
 
         try {
@@ -113,19 +116,5 @@ class CashDisbursementsController extends Controller
         }catch(\Exception $e){
             abort(503,$e->getMessage());
         }
-    }
-
-    public function print($uuid)
-    {
-        $journal = Journals::query()
-            ->with([
-                'entries.chartOfAccount',
-            ])
-            ->cashDisbursements()
-            ->findOrFail($uuid);
-
-        return view($this->folder.'print-dv')->with([
-            'journal' => $journal,
-        ]);
     }
 }

@@ -12,6 +12,9 @@ class Journals extends Model
     protected $primaryKey = 'uuid';
     protected $keyType = 'string';
     public $incrementing = false;
+    protected $casts = [
+        'date' => 'date',
+    ];
 
     /*Relationships*/
     public function entries()
@@ -24,5 +27,15 @@ class Journals extends Model
     public function scopeCashDisbursements(Builder $builder)
     {
         $builder->where('book','=','CASH DISBURSEMENT');
+    }
+
+    public function scopeCashReceipts(Builder $builder)
+    {
+        $builder->where('book','=','CASH RECEIPT');
+    }
+
+    public function scopeGeneralJournals(Builder $builder)
+    {
+        $builder->where('book','=','GENERAL JOURNAL');
     }
 }

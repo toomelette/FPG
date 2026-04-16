@@ -1,4 +1,3 @@
-/* jshint esversion: 6 */
 function compute($tr){
     let id = $tr.data('id');
     let qty = $tr.find('input[name*="qty"]').val();

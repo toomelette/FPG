@@ -5,7 +5,7 @@ namespace App\Http\Requests\FG;
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CashDisbursementsFormRequest extends FormRequest
+class CashReceiptsFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

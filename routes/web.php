@@ -204,7 +204,10 @@ Route::group([
     Route::resource('delivery-receipts',\App\Http\Controllers\FG\DeliveryReceiptsController::class);
 
     //ACCOUNTING
+    Route::get('/cash-disbursements/{uuid}/print',[\App\Http\Controllers\FG\CashDisbursementsController::class,'print'])->name('cash-disbursements.print');
     Route::resource('cash-disbursements',\App\Http\Controllers\FG\CashDisbursementsController::class);
+    Route::resource('cash-receipts',\App\Http\Controllers\FG\CashReceiptsController::class);
+    Route::resource('general-journals',\App\Http\Controllers\FG\GeneralJournalsController::class);
 
 
     Route::resource('payroll-template',\App\Http\Controllers\FG\PayrollTemplateController::class);

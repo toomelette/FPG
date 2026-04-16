@@ -5,7 +5,7 @@ namespace App\Http\Requests\FG;
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CashDisbursementsFormRequest extends FormRequest
+class GeneralJournalsFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -40,7 +40,6 @@ class CashDisbursementsFormRequest extends FormRequest
         return [
             'control_no' => 'required',
             'date' => 'required|date_format:Y-m-d',
-            'counterparty' => 'required',
             'entries.*.account_code' => 'required',
         ];
     }

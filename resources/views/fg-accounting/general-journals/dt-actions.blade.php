@@ -3,17 +3,12 @@
             data-toggle="modal" data-target="#show-journal-modal">
         <i class="fa fa-file-text"></i>
     </button>
-    <a href="{{route('cash-disbursements.edit',$data->uuid)}}"
+    <a href="{{route('general-journals.edit',$data->uuid)}}"
             data="{{$data->uuid}}" class="btn btn-outline-secondary btn-sm edit-journal-btn">
         <i class="fa fa-edit"></i>
     </a>
-
-
-    <button href="{{route('cash-disbursements.print',$data->uuid)}}"  type="button"  class="btn btn-outline-secondary btn-sm print-btn-dialog"  >
-        <i class="fa fa-print"></i>
-    </button>
     <button type="button" data="{{$data->uuid}}"
-            onclick="delete_data('{{$data->uuid}}','{{route("cash-disbursements.destroy","slug")}}')"
+            onclick="delete_data('{{$data->uuid}}','{{route("general-journals.destroy","slug")}}')"
             class="btn btn-sm btn-danger" data-toggle="tooltip" title="Delete" data-placement="top">
         <i class="fa fa-trash"></i>
     </button>
