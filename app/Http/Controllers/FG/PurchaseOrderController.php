@@ -89,4 +89,18 @@ class PurchaseOrderController extends Controller
             abort(503,$exception->getMessage());
         }
     }
+
+    public function destroy($uuid)
+    {
+        $purchaseOrder = PurchaseOrders::query()->findOrFail($uuid);
+        try {
+            DB::transaction(function () use ($purchaseOrder){
+                $purchaseOrder->delete();
+                $purchaseOrder->details()->delete();
+            });
+        }catch (\Exception $exception){
+            abort(503,$exception->getMessage());
+        }
+        return 1;
+    }
 }
