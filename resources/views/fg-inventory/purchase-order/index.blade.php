@@ -2,18 +2,17 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>Inventory Transfer</x-slot:title>
+        <x-slot:title>Purhcase Orders</x-slot:title>
     </x-adminkit.html.page-title>
 
     <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
 
-        <table class="table table-bordered table-striped table-hover table-sm" id="inventory-transfers-table" style="width: 100% !important">
+        <table class="table table-bordered table-striped table-hover table-sm" id="purchase-order-table" style="width: 100% !important">
             <thead>
             <tr class="">
-                <th>Control No.</th>
-                <th>Date</th>
-                <th>Transfer From</th>
-                <th>Transfer To</th>
+                <th>PO No.</th>
+                <th>PO Date</th>
+                <th>Supplier</th>
                 <th>Remarks</th>
                 <th>Total Amount</th>
                 <th style="width: 80px;">Action</th>
@@ -33,7 +32,7 @@
 @section('scripts')
     <script type="text/javascript">
         let active = '';
-        inventoryTransfersTbl = $("#inventory-transfers-table").DataTable({
+        purchaseOrdersTbl = $("#purchase-order-table").DataTable({
             dom : 'lBfrtip',
             processing : true,
             serverSide : true,
@@ -49,8 +48,7 @@
                         return moment(data).format('MM/DD/YYYY');
                     }
                 },
-                { data : "transfer_from" },
-                { data : "transfer_to" },
+                { data : "supplier" },
                 { data : "remarks" },
                 {
                     data : "total_amount_due" ,
@@ -72,11 +70,11 @@
                     class : 'align-top'
                 },
                 {
-                    targets : 5,
+                    targets : 4,
                     class : 'text-end'
                 },
                 {
-                    targets : 6,
+                    targets : 5,
                     orderable : false,
                     class : ''
                 },
@@ -90,7 +88,7 @@
                 $('#'+settings.sTableId+'_filter input').unbind();
                 $('#'+settings.sTableId+'_filter input').bind('keyup', function (e) {
                     if (e.keyCode == 13) {
-                        inventoryTransfersTbl.search(this.value).draw();
+                        purchaseOrdersTbl.search(this.value).draw();
                     }
                 });
             },

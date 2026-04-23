@@ -2,11 +2,11 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>Edit Inventory Transfer</x-slot:title>
-        <x-slot:subtitle> {{$inventoryTransfer->control_no}}</x-slot:subtitle>
+        <x-slot:title>Edit Purchase Order</x-slot:title>
+        <x-slot:subtitle> {{$purchaseOrder->control_no}}</x-slot:subtitle>
     </x-adminkit.html.page-title>
 
-    <form id="edit-receiving-report-form">
+    <form id="edit-purchase-order-form">
         <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
             <x-slot:title>
                 <button class="btn btn-sm btn-primary float-end" type="submit"><i class="fa fa-check"></i> Save</button>
@@ -15,16 +15,20 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="row">
-                        <x-forms.input label="Ref No." name="control_no" cols="6" :value="$inventoryTransfer ?? null"/>
-                        <x-forms.input label="Ref Date." name="date" cols="6" type="date" :value="$inventoryTransfer ?? null"/>
+                        <x-forms.input label="PO No." name="control_no" cols="6" :value="$purchaseOrder ?? null"/>
+                        <x-forms.input label="PO Date." name="date" cols="6" type="date" :value="$purchaseOrder ?? null"/>
                     </div>
                     <div class="row mt-2">
-                        <x-forms.input label="Transfer From" name="transfer_from" cols="6" readonly="readonly" :value="Auth::user()->warehouse" :value="$inventoryTransfer ?? null"/>
-
-                        <x-forms.select label="Transfer To" name="transfer_to" cols="6" :options="\App\Swep\Helpers\Arrays::db('warehouses')" :value="$inventoryTransfer ?? null"/>
+                        <x-forms.input label="Terms" name="terms" cols="6" :value="$purchaseOrder ?? null"/>
                     </div>
                     <div class="row mt-2">
-                        <x-forms.textarea label="Remarks" name="remarks" cols="12" :value="$inventoryTransfer ?? null"/>
+                        <x-forms.input label="Supplier" name="supplier" cols="12" :value="$purchaseOrder ?? null"/>
+                    </div>
+                    <div class="row mt-2">
+                        <x-forms.input label="Acct No." name="account_no" cols="6" :value="$purchaseOrder ?? null"/>
+                    </div>
+                    <div class="row mt-2">
+                        <x-forms.textarea label="Remarks" name="remarks" cols="12" :value="$purchaseOrder ?? null"/>
                     </div>
 
                 </div>
@@ -45,7 +49,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @forelse($inventoryTransfer->details as $detail)
+                        @forelse($purchaseOrder->details as $detail)
                             <tr id="details-{{$detail->id}}" data-id="{{$detail->id}}">
 
                                 <td class="align-top">
@@ -62,7 +66,7 @@
                                     <x-forms.input :input-only="true"  :auto-class="true" label="" name="details[{{$detail->id}}][unit_cost]" class="text-end autonum-auto-init-assoc compute" cols="12" :value="$detail->unit_cost"/>
                                 </td>
                                 <td class="align-top">
-                                    <x-forms.input :input-only="true" :auto-class="true" label="" name="details[{{$detail->id}}][amount]" class="text-end" readonly="readonly" cols="12" :value="Helper::toNumber($detail->amount)"/>
+                                    <x-forms.input :input-only="true" :auto-class="true" label="" name="details[{{$detail->id}}][amount]" class="text-end " readonly="readonly" cols="12" :value="Helper::toNumber($detail->amount)"/>
                                 </td>
                                 <td class="align-top">
                                     <button type="button" class="btn btn-danger remove_row_btn btn-sm"><i class="fa fa-times"></i></button>
@@ -78,7 +82,7 @@
         </x-adminkit.html.card>
     </form>
 
-    @include('fg-inventory.inventory-transfer.t-details')
+    @include('fg-inventory.purchase-order.t-details')
 @endsection
 
 
@@ -87,7 +91,7 @@
 @endsection
 
 @section('scripts')
-    <script src="{{asset('js/fg/inventory-transfer.js')}}"></script>
+    <script src="{{asset('js/fg/purchase-orders.js')}}"></script>
     <script type="text/javascript">
         $("body").on("click",".add-btn",function (){
             let btn = $(this);
@@ -114,10 +118,10 @@
         })
 
 
-        $("#edit-receiving-report-form").submit(function (e) {
+        $("#edit-purchase-order-form").submit(function (e) {
             e.preventDefault();
             let form = $(this);
-            let uri = '{{route("inventory-transfers.update",$inventoryTransfer->uuid)}}';
+            let uri = '{{route("purchase-orders.update",$purchaseOrder->uuid)}}';
             loading_btn(form);
             $.ajax({
                 url : uri,

@@ -2,10 +2,10 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>New Inventory Transfer</x-slot:title>
+        <x-slot:title>New Purchase Order</x-slot:title>
     </x-adminkit.html.page-title>
 
-    <form id="add-inventory-transfer-form">
+    <form id="add-purchase-order-form">
         <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
             <x-slot:title>
                 <button class="btn btn-sm btn-primary float-end" type="submit"><i class="fa fa-check"></i> Save</button>
@@ -14,13 +14,17 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="row">
-                        <x-forms.input label="Ref No." name="control_no" cols="6"/>
-                        <x-forms.input label="Ref Date." name="date" cols="6" type="date"/>
+                        <x-forms.input label="PO No." name="control_no" cols="6"/>
+                        <x-forms.input label="PO Date." name="date" cols="6" type="date"/>
                     </div>
                     <div class="row mt-2">
-                        <x-forms.input label="Transfer From" name="transfer_from" cols="6" readonly="readonly" :value="Auth::user()->warehouse"/>
-
-                        <x-forms.select label="Transfer To" name="transfer_to" cols="6" :options="\App\Swep\Helpers\Arrays::db('warehouses')"/>
+                        <x-forms.input label="Terms" name="terms" cols="6"/>
+                    </div>
+                    <div class="row mt-2">
+                        <x-forms.input label="Supplier" name="supplier" cols="12"/>
+                    </div>
+                    <div class="row mt-2">
+                        <x-forms.input label="Acct No." name="account_no" cols="6"/>
                     </div>
                     <div class="row mt-2">
                         <x-forms.textarea label="Remarks" name="remarks" cols="12"/>
@@ -53,7 +57,7 @@
         </x-adminkit.html.card>
     </form>
 
-    @include('fg-inventory.inventory-transfer.t-details')
+    @include('fg-inventory.purchase-order.t-details')
 @endsection
 
 
@@ -62,7 +66,7 @@
 @endsection
 
 @section('scripts')
-    <script src="{{asset('js/fg/inventory-transfer.js')}}"></script>
+    <script src="{{asset('js/fg/purchase-orders.js')}}"></script>
     <script type="text/javascript">
 
         $(document).ready(function (){
@@ -93,12 +97,12 @@
         })
 
 
-        $("#add-inventory-transfer-form").submit(function (e) {
+        $("#add-purchase-order-form").submit(function (e) {
             e.preventDefault()
             let form = $(this);
             loading_btn(form);
             $.ajax({
-                url : '{{route("inventory-transfers.store")}}',
+                url : '{{route("purchase-orders.store")}}',
                 data : form.serialize(),
                 type: 'POST',
                 headers: {
@@ -108,7 +112,7 @@
                     $("#details-table tbody").html('');
                     $(".add-btn").trigger('click');
                     succeed(form,true,true);
-                    toast('success','Inventory Transfer successfully saved.','Success!');
+                    toast('success','Receiving Report successfully saved.','Success!');
                 },
                 error: function (res) {
                     errored(form,res);

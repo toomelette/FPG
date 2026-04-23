@@ -71,10 +71,10 @@
                                 </td>
 
                                 <td class="align-top">
-                                    <x-forms.input :input-only="true"  :auto-class="true" label="" name="details[{{$detail->id}}][unit_cost]" class="text-end autonum-auto-init-assoc" cols="12" :value="$detail->unit_cost"/>
+                                    <x-forms.input :input-only="true"  :auto-class="true" label="" name="details[{{$detail->id}}][unit_cost]" class="text-end autonum-auto-init-assoc compute" cols="12" :value="$detail->unit_cost"/>
                                 </td>
                                 <td class="align-top">
-                                    <x-forms.input :input-only="true" :auto-class="true" label="" name="details[{{$detail->id}}][amount]" class="text-end autonum-auto-init-assoc" readonly="readonly" cols="12" :value="$detail->amount"/>
+                                    <x-forms.input :input-only="true" :auto-class="true" label="" name="details[{{$detail->id}}][amount]" class="text-end" readonly="readonly" cols="12" :value="Helper::toNumber($detail->amount)"/>
                                 </td>
                                 <td class="align-top">
                                     <button type="button" class="btn btn-danger remove_row_btn btn-sm"><i class="fa fa-times"></i></button>
