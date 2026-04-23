@@ -2,7 +2,7 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>Edit Sales Invoice</x-slot:title>
+        <x-slot:title>Edit {{Str::of($salesInvoice->ref_book)->lower()->ucfirst()}} Sales Invoice</x-slot:title>
         <x-slot:float-end></x-slot:float-end>
     </x-adminkit.html.page-title>
     <form id="edit-sales-invoice-form">

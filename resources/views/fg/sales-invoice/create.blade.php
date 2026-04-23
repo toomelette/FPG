@@ -2,7 +2,7 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>New Sales Invoice</x-slot:title>
+        <x-slot:title>New {{Str::of($book)->lower()->ucfirst()}} @if($book != 'BILLING') Sales Invoice @endif</x-slot:title>
         <x-slot:float-end></x-slot:float-end>
     </x-adminkit.html.page-title>
     <form id="add-sales-invoice-form">
@@ -150,7 +150,7 @@
             let form = $(this);
             loading_btn(form);
             $.ajax({
-                url : '{{route("sales-invoice.store")}}',
+                url : '{{route("sales-invoice.store")}}?book={{$book}}',
                 data : form.serialize(),
                 type: 'POST',
                 headers: {

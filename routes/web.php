@@ -199,6 +199,9 @@ Route::group([
     Route::resource('projects',\App\Http\Controllers\FG\ProjectsController::class);
     Route::resource('project-expense-liquidation',\App\Http\Controllers\FG\ProjectExpenseLiquidationController::class);
     Route::resource('sales-invoice',\App\Http\Controllers\FG\SalesInvoiceController::class);
+    Route::resource('charge-sales-invoice',\App\Http\Controllers\FG\ChargeSalesInvoiceController::class);
+    Route::resource('billing',\App\Http\Controllers\FG\BillingController::class);
+
     Route::resource('collections',\App\Http\Controllers\FG\CollectionsController::class);
     Route::resource('project-preparation',\App\Http\Controllers\FG\ProjectPreparationController::class);
     Route::resource('delivery-receipts',\App\Http\Controllers\FG\DeliveryReceiptsController::class);
@@ -208,6 +211,10 @@ Route::group([
     Route::resource('cash-disbursements',\App\Http\Controllers\FG\CashDisbursementsController::class);
     Route::resource('cash-receipts',\App\Http\Controllers\FG\CashReceiptsController::class);
     Route::resource('general-journals',\App\Http\Controllers\FG\GeneralJournalsController::class);
+
+    //INVENTORY
+    Route::resource('receiving-report',\App\Http\Controllers\FG\ReceivingReportsController::class);
+    Route::resource('inventory-transfers',\App\Http\Controllers\FG\InventoryTransfersController::class);
 
 
     Route::resource('payroll-template',\App\Http\Controllers\FG\PayrollTemplateController::class);

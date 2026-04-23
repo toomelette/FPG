@@ -61,8 +61,8 @@
 
                                <div class="row">
                                    <x-forms.select label="Project ID" name="project_id" cols="3" :options="[
-                                           1 => 1,
-                                           2 => 2,
+                                           'BACOLOD' => 'BACOLOD',
+                                           'DUMAGUETE' => 'DUMAGUETE',
                                        ]"
                                         :value="$user->project_id ?? null"
                                    />

@@ -3,6 +3,7 @@
 namespace App\Models\FG;
 
 use App\Models\Scopes\FG\ProjectIdScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,11 +39,17 @@ class SalesInvoice extends Model
     }
 
     /*Relationships*/
+
     public function details()
     {
         return $this->hasMany(SalesInvoiceDetails::class,'sales_invoice_uuid','uuid');
     }
 
+    public function inventoryLedger()
+    {
+        return $this->hasMany(InventoryLedger::class,'reference_uuid','uuid')
+            ->where('reference_type','SALES INVOICE');
+    }
     public function client()
     {
         return $this->belongsTo(Clients::class,'client_uuid','uuid');
@@ -65,5 +72,20 @@ class SalesInvoice extends Model
     public function deliveries()
     {
         return $this->hasMany(DeliveryReceipts::class,'invoice_uuid','uuid');
+    }
+
+
+    /*Scopes*/
+    public function scopeCashInvoices(Builder $builder)
+    {
+        $builder->where('ref_book','=','CASH');
+    }
+    public function scopeChargeInvoices(Builder $builder)
+    {
+        $builder->where('ref_book','=','CHARGE');
+    }
+    public function scopeBillings(Builder $builder)
+    {
+        $builder->where('ref_book','=','BILLING');
     }
 }

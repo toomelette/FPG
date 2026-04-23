@@ -18,15 +18,18 @@ class SalesInvoiceController extends Controller
         $this->folder =  'fg.sales-invoice.';
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view($this->folder.'create');
+        return view($this->folder.'create')->with([
+            'book' => 'CASH'
+        ]);
     }
 
     public function store(SalesInvoiceRequest $request)
     {
         $si = new SalesInvoice();
         $si->uuid = Str::uuid();
+        $si->ref_book = $request->book;
         $si->invoice_no = $request->invoice_no;
         $si->date = $request->date;
         $si->client_uuid = $request->client_uuid;
@@ -40,6 +43,7 @@ class SalesInvoiceController extends Controller
             DB::transaction(function () use ($request, $si){
                 $si->save();
                 $si->details()->createMany(collect($request->details)->values()->toArray());
+                $si->inventoryLedger()->createMany(collect($request->inventory_ledger)->values()->toArray());
             });
             return $si->only('uuid');
         }catch (\Exception $e){
@@ -54,7 +58,8 @@ class SalesInvoiceController extends Controller
                 ->with([
                     'client',
                     'details',
-                ]);
+                ])
+                ->cashInvoices();
             return DataTables::of($salesInvoices)
                 ->addColumn('action',function ($data){
                     return view($this->folder.'dt-actions')->with([
@@ -66,7 +71,9 @@ class SalesInvoiceController extends Controller
                 ->toJson();
 
         }
-        return view($this->folder.'index');
+        return view($this->folder.'index')->with([
+            'book' => 'CASH'
+        ]);
     }
 
     public function edit($uuid)
@@ -95,11 +102,14 @@ class SalesInvoiceController extends Controller
         $si->vat = $request->vat;
         $si->total_amount_due = $request->total_amount_due;
 
+
         try {
             DB::transaction(function () use ($request, $si){
                 $si->save();
                 $si->details()->delete();
                 $si->details()->createMany(collect($request->details)->values()->toArray());
+                $si->inventoryLedger()->delete();
+                $si->inventoryLedger()->createMany(collect($request->inventory_ledger)->values()->toArray());
             });
             return $si->only('uuid');
         }catch (\Exception $e){
@@ -115,6 +125,7 @@ class SalesInvoiceController extends Controller
             DB::transaction(function ($q) use ($si){
                 $si->delete();
                 $si->details()->delete();
+                $si->inventoryLedger()->delete();
             });
             return 1;
         }catch (\Exception $e){

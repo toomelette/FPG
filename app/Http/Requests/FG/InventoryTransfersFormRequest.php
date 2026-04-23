@@ -7,7 +7,7 @@ use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class SalesInvoiceRequest extends FormRequest
+class InventoryTransfersFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,37 +24,50 @@ class SalesInvoiceRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+
         $stocks = Stocks::query()->whereIn('uuid',collect($this->details)->pluck('description')->toArray())
             ->get();
+
         $details = collect($this->details ?? [])
             ->map(function ($detail) use ($stocks){
                 $detail['unit_cost'] = isset($detail['unit_cost']) ? (Helper::sanitizeAutonum($detail['unit_cost']) * 1) : null;
-                $detail['amount'] = Helper::sanitizeAutonum($detail['unit_cost']) * $detail['qty'];
+                $detail['amount'] = $detail['unit_cost'] * $detail['qty'];
                 $detail['stock_uuid'] = $stocks?->firstWhere('uuid',$detail['description'])?->uuid ?? null;
                 $detail['description'] = $stocks?->firstWhere('uuid',$detail['description'])?->name ?? $detail['description'];
+
                 return $detail;
+
             })
             ->toArray();
-        $inventoryLedger = collect($this->details ?? [])
-            ->map(function ($detail) use ($stocks){
-                $detail['date'] = $this->date;
-                $detail['reference_type'] = 'SALES INVOICE';
-                $detail['movement_type'] = 'OUT';
-                $detail['direction'] = -1;
-                $detail['unit_cost'] = isset($detail['unit_cost']) ? (Helper::sanitizeAutonum($detail['unit_cost']) * 1) : null;
-                $detail['amount'] = Helper::sanitizeAutonum($detail['unit_cost']) * $detail['qty'];
-                $detail['stock_uuid'] = $stocks?->firstWhere('uuid',$detail['description'])?->uuid ?? null;
-                $detail['description'] = $stocks?->firstWhere('uuid',$detail['description'])?->name ?? $detail['description'];
-                $detail['warehouse']= Auth::user()->warehouse;
-                unset($detail['description']);
-                return $detail;
-            })
-            ->toArray();
+
+        $inventoryLedger = [];
+        $directions = [
+            -1 => Auth::user()->warehouse,
+            1 => $this->transfer_to,
+        ];
+
+        foreach ($this->details as $detail){
+            foreach ($directions as $direction => $warehouse) {
+                $inventoryLedger[] = [
+                    'reference_type'  => 'INVENTORY TRANSFER',
+                    'movement_type' =>'TRANSFER',
+                    'direction' =>$direction,
+                    'warehouse' =>$warehouse,
+                    'qty' => $detail['qty'],
+                    'date'  => $this->date,
+                    'unit_cost'  => isset($detail['unit_cost']) ? (Helper::sanitizeAutonum($detail['unit_cost']) * 1) : null,
+                    'amount'  => Helper::sanitizeAutonum($detail['unit_cost']) * $detail['qty'],
+                    'stock_uuid'  => $stocks?->firstWhere('uuid',$detail['description'])?->uuid ?? null,
+                    'description'  => $stocks?->firstWhere('uuid',$detail['description'])?->name ?? $detail['description'],
+                ];
+            }
+        }
+
         $this->merge([
             'details' => $details,
             'inventory_ledger' => $inventoryLedger,
-            'tax_base' => Helper::sanitizeAutonum($this->tax_base),
-            'vat' => Helper::sanitizeAutonum($this->vat),
+            'ewt' => Helper::sanitizeAutonum($this->tax_base),
+            'ap' => Helper::sanitizeAutonum($this->vat),
             'total_amount_due' => Helper::sanitizeAutonum($this->total_amount_due),
         ]);
     }
@@ -62,23 +75,17 @@ class SalesInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'invoice_no' => 'required',
-            'book' => 'required',
+            'control_no' => 'required',
             'date' => 'required|date_format:Y-m-d' ,
-            'client_uuid' => 'required|string',
+            'remarks' => 'required|string',
+            'transfer_from' => 'required|string',
+            'transfer_to' => 'required|string',
             'details' => 'required',
             'details.*.description' => 'required',
             'details.*.qty' => 'required',
             'details.*.uom' => 'required',
             'details.*.unit_cost' => 'required',
-            'total_amount_due' => 'required',
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'details.required' => 'At least one row in DETAILS is required',
+            //'details.*.warehouse' => 'required',
         ];
     }
 }

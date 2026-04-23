@@ -2,21 +2,20 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>{{Str::of($book)->lower()->ucfirst()}} @if($book != 'BILLING') Sales Invoice @endif</x-slot:title>
-        <x-slot:float-end></x-slot:float-end>
+        <x-slot:title>Receiving Reports</x-slot:title>
     </x-adminkit.html.page-title>
 
     <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
-        <x-slot:title>
-        </x-slot:title>
-        <table class="table table-bordered table-striped table-hover table-sm" id="sales-invoice-table" style="width: 100% !important">
+
+        <table class="table table-bordered table-striped table-hover table-sm" id="receiving-reports-table" style="width: 100% !important">
             <thead>
             <tr class="">
-                <th>Control No.</th>
+                <th>RR No.</th>
                 <th>Date</th>
-                <th>Client</th>
+                <th>PO No.</th>
+                <th>Supplier</th>
                 <th>Remarks</th>
-                <th>Amount</th>
+                <th>Total Amount</th>
                 <th style="width: 80px;">Action</th>
             </tr>
             </thead>
@@ -34,23 +33,34 @@
 @section('scripts')
     <script type="text/javascript">
         let active = '';
-        projectExpenseLiquidationTbl = $("#sales-invoice-table").DataTable({
+        receivingReportsTbl = $("#receiving-reports-table").DataTable({
             dom : 'lBfrtip',
             processing : true,
             serverSide : true,
             ajax : '{{\Illuminate\Support\Facades\Request::getUri()}}',
             columns : [
-                { data : "invoice_no" },
-                { data : "date" },
+                { data : "control_no" },
                 {
-                    data : "client.name",
-                    name : "client.name"
+                    data : "date",
+                    render: function (data) {
+                        if(!data){
+                            return  '';
+                        }
+                        return moment(data).format('MM/DD/YYYY');
+                    }
                 },
+                { data : "po_no" },
+                { data : "supplier" },
+                { data : "remarks" },
                 {
-                    data : "remarks",
-                    name : "remarks"
+                    data : "total_amount_due" ,
+                    render: function (data) {
+                        if(!data){
+                            return  '';
+                        }
+                        return $.number(data,2);
+                    }
                 },
-                { data : "total_amount_due" },
                 { data : "action" },
             ],
             buttons : [
@@ -61,31 +71,14 @@
                     targets: '_all',
                     class : 'align-top'
                 },
-
-                {
-                    targets : 1,
-                    class : 'w-15p',
-                    render: function (data) {
-                        if(!data){
-                            return  '';
-                        }
-                        return moment(data).format('MM/DD/YYYY');
-                    }
-                },
                 {
                     targets : 5,
-                    orderable : false,
-                    class : ''
+                    class : 'text-end'
                 },
                 {
-                    targets: 4,
-                    class : 'text-end',
-                    render: function (data) {
-                        if(!data){
-                            return  '';
-                        }
-                        return $.number(data,2);
-                    }
+                    targets : 6,
+                    orderable : false,
+                    class : ''
                 },
 
             ],
@@ -97,7 +90,7 @@
                 $('#'+settings.sTableId+'_filter input').unbind();
                 $('#'+settings.sTableId+'_filter input').bind('keyup', function (e) {
                     if (e.keyCode == 13) {
-                        projectExpenseLiquidationTbl.search(this.value).draw();
+                        receivingReportsTbl.search(this.value).draw();
                     }
                 });
             },

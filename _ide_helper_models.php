@@ -1844,6 +1844,47 @@ namespace App\Models{
 
 namespace App\Models\FG{
 /**
+ * App\Models\FG\ChartOfAccounts
+ *
+ * @property int $id
+ * @property string $account_code
+ * @property string $account_title
+ * @property int|null $nature_id
+ * @property int|null $is_header
+ * @property int|null $subsidiary
+ * @property int|null $bank_rec_item
+ * @property int|null $normal_balance
+ * @property string|null $user_created
+ * @property string|null $user_updated
+ * @property string|null $ip_created
+ * @property string|null $ip_updated
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $project_id
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereAccountCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereAccountTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereBankRecItem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereIpCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereIpUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereIsHeader($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereNatureId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereNormalBalance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereProjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereSubsidiary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereUserCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ChartOfAccounts whereUserUpdated($value)
+ */
+	class ChartOfAccounts extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
  * App\Models\FG\Clients
  *
  * @property int $id
@@ -1911,6 +1952,7 @@ namespace App\Models\FG{
  *
  * @property int $id
  * @property string $collection_uuid
+ * @property string|null $ref_invoice
  * @property string|null $invoice_uuid
  * @property string|null $amount
  * @property-read \App\Models\FG\Collections|null $collection
@@ -1922,6 +1964,7 @@ namespace App\Models\FG{
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereCollectionUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereInvoiceUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CollectionDistributions whereRefInvoice($value)
  */
 	class CollectionDistributions extends \Eloquent {}
 }
@@ -1949,7 +1992,6 @@ namespace App\Models\FG{
  * @property string|null $ip_updated
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $project_id
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\CollectionChecks> $checks
  * @property-read int|null $checks_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\CollectionDistributions> $distributions
@@ -1966,7 +2008,6 @@ namespace App\Models\FG{
  * @method static \Illuminate\Database\Eloquent\Builder|Collections whereIpUpdated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collections wherePaymentType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collections wherePayor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Collections whereProjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collections whereRefNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collections whereRemarks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collections whereTotalAmount($value)
@@ -2052,6 +2093,112 @@ namespace App\Models\FG{
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryReceipts whereUuid($value)
  */
 	class DeliveryReceipts extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\InventoryLedger
+ *
+ * @property int $id
+ * @property string $reference_uuid
+ * @property string $reference_type
+ * @property string $movement_type
+ * @property string $date
+ * @property string $stock_uuid
+ * @property string $qty
+ * @property string $unit_price
+ * @property string $total_amount
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger whereMovementType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger whereQty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger whereReferenceType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger whereReferenceUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger whereStockUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger whereUnitPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryLedger whereUpdatedAt($value)
+ */
+	class InventoryLedger extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\JournalEntries
+ *
+ * @property int $id
+ * @property string $journal_uuid
+ * @property string $account_code
+ * @property string|null $debit
+ * @property string|null $credit
+ * @property-read \App\Models\FG\ChartOfAccounts|null $chartOfAccount
+ * @property-read \App\Models\FG\Journals|null $journal
+ * @method static \Illuminate\Database\Eloquent\Builder|JournalEntries newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|JournalEntries newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|JournalEntries query()
+ * @method static \Illuminate\Database\Eloquent\Builder|JournalEntries whereAccountCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|JournalEntries whereCredit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|JournalEntries whereDebit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|JournalEntries whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|JournalEntries whereJournalUuid($value)
+ */
+	class JournalEntries extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
+ * App\Models\FG\Journals
+ *
+ * @property int $id
+ * @property string $uuid
+ * @property string $book
+ * @property string $control_no
+ * @property \Illuminate\Support\Carbon $date
+ * @property string|null $counterparty
+ * @property string|null $remarks
+ * @property string|null $bank
+ * @property string|null $check_no
+ * @property string|null $check_amount
+ * @property string|null $cash_amount
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $user_created
+ * @property string|null $ip_created
+ * @property string|null $user_updated
+ * @property string|null $ip_updated
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\JournalEntries> $entries
+ * @property-read int|null $entries_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals cashDisbursements()
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals cashReceipts()
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals generalJournals()
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereBank($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereBook($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereCashAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereCheckAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereCheckNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereControlNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereCounterparty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereIpCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereIpUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereUserCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereUserUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Journals whereUuid($value)
+ */
+	class Journals extends \Eloquent {}
 }
 
 namespace App\Models\FG{
@@ -2398,6 +2545,55 @@ namespace App\Models\FG{
 
 namespace App\Models\FG{
 /**
+ * App\Models\FG\ReceivingReports
+ *
+ * @property int $id
+ * @property string $uuid
+ * @property string $control_no
+ * @property string|null $date
+ * @property string|null $po_no
+ * @property string|null $terms
+ * @property string|null $supplier
+ * @property string|null $account_no
+ * @property string|null $inv_dr_no
+ * @property string|null $remarks
+ * @property string|null $total_amount_due
+ * @property string|null $ewt
+ * @property string|null $ap
+ * @property string|null $user_created
+ * @property string|null $user_updated
+ * @property string|null $ip_created
+ * @property string|null $ip_updated
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereAccountNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereAp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereControlNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereEwt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereInvDrNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereIpCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereIpUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports wherePoNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereSupplier($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereTerms($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereTotalAmountDue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereUserCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereUserUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReceivingReports whereUuid($value)
+ */
+	class ReceivingReports extends \Eloquent {}
+}
+
+namespace App\Models\FG{
+/**
  * App\Models\FG\SalesInvoice
  *
  * @property int $id
@@ -2417,14 +2613,18 @@ namespace App\Models\FG{
  * @property string|null $ip_updated
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $project_id
+ * @property string $project_id
  * @property-read \App\Models\FG\Clients|null $client
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\DeliveryReceipts> $deliveries
+ * @property-read int|null $deliveries_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\SalesInvoiceDetails> $details
  * @property-read int|null $details_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\CollectionDistributions> $distributions
  * @property-read int|null $distributions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\ProjectExpenseLiquidation> $liquidations
  * @property-read int|null $liquidations_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FG\ProjectPreparations> $preparations
+ * @property-read int|null $preparations_count
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SalesInvoice query()
@@ -5218,6 +5418,7 @@ namespace App\Models{
  * @property string|null $ip_updated
  * @property string|null $user_created
  * @property string|null $user_updated
+ * @property mixed|null $project_access
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @method static \Illuminate\Database\Eloquent\Builder|Project newModelQuery()
@@ -5229,6 +5430,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Project whereIpCreated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Project whereIpUpdated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Project whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Project whereProjectAccess($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Project whereProjectAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Project whereProjectDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Project whereProjectId($value)
@@ -5860,8 +6062,8 @@ namespace App\Models{
  * @property string|null $portal
  * @property \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserAccess> $access
  * @property int|null $pms_allowed
- * @property string|null $project_id
  * @property array|null $project_access
+ * @property string|null $project_id
  * @property-read int|null $access_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $actions
  * @property-read int|null $actions_count
