@@ -61,7 +61,7 @@ class SalesInvoiceRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'invoice_no' => 'required',
             'book' => 'required',
             'date' => 'required|date_format:Y-m-d' ,
@@ -73,6 +73,11 @@ class SalesInvoiceRequest extends FormRequest
             'details.*.unit_cost' => 'required',
             'total_amount_due' => 'required',
         ];
+
+        if($this->getMethod() == 'PATCH' || $this->getMethod() == 'PUT'){
+            unset($rules['book']);
+        }
+        return  $rules;
     }
 
     public function messages()

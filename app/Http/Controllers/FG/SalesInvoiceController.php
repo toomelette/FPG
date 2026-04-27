@@ -204,4 +204,17 @@ class SalesInvoiceController extends Controller
             'salesInvoice' => $salesInvoice,
         ]);
     }
+
+    public function print($uuid)
+    {
+        $si = SalesInvoice::query()
+            ->with([
+                'client',
+                'details'
+            ])
+            ->findOrFail($uuid);
+        return view($this->folder.'print-'.strtolower($si->ref_book))->with([
+            'salesInvoice' => $si,
+        ]);
+    }
 }

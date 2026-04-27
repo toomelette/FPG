@@ -2,6 +2,10 @@
     <a href="{{route('sales-invoice.show',$data->uuid)}}" type="button" class="btn btn-outline-secondary btn-sm view-sales-invoice-btn" data="{{$data->uuid}}">
         <i class="fa fa-file-text"></i>
     </a>
+    <button href="{{route('sales-invoice.print',$data->uuid)}}" for="linkToEdit" type="button"
+       class="btn btn-outline-secondary btn-sm print-btn-dialog">
+        <i class="fa fa-print"></i>
+    </button>
     <a href="{{route('sales-invoice.edit',$data->uuid)}}" for="linkToEdit" type="button"
             class="btn btn-outline-secondary btn-sm ">
         <i class="fa fa-edit"></i>

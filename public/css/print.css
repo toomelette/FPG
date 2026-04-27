@@ -396,3 +396,17 @@ table.tbl{
 .fillbox.active{
     background-color: black;
 }
+
+
+.b-all{
+    border: 1px solid black;
+}
+
+.b-horizontal{
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+.b-vertical{
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}

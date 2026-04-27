@@ -198,6 +198,8 @@ Route::group([
     Route::resource('clients',\App\Http\Controllers\FG\ClientController::class);
     Route::resource('projects',\App\Http\Controllers\FG\ProjectsController::class);
     Route::resource('project-expense-liquidation',\App\Http\Controllers\FG\ProjectExpenseLiquidationController::class);
+    Route::get('/sales-invoice/{uuid}/print',[\App\Http\Controllers\FG\SalesInvoiceController::class,'print'])->name('sales-invoice.print');
+
     Route::resource('sales-invoice',\App\Http\Controllers\FG\SalesInvoiceController::class);
     Route::resource('charge-sales-invoice',\App\Http\Controllers\FG\ChargeSalesInvoiceController::class);
     Route::resource('billing',\App\Http\Controllers\FG\BillingController::class);
