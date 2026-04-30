@@ -24,7 +24,7 @@ class ProjectExpenseLiquidationController extends Controller
         if($request->ajax() && $request->has('draw')){
             $projectExpenseLiquidations = ProjectExpenseLiquidation::query()
                 ->with([
-                    'invoice.client',
+                    'details', 'projects.salesInvoice.client'
                 ]);
             return DataTables::of($projectExpenseLiquidations)
                 ->addColumn('action',function ($data){
@@ -34,6 +34,11 @@ class ProjectExpenseLiquidationController extends Controller
                 })
                 ->addColumn('details',function ($data){
 
+                })
+                ->addColumn('projects_view',function ($data){
+                    return view($this->folder.'dt-projects-view')->with([
+                        'data' => $data
+                    ]);
                 })
                 ->escapeColumns([])
                 ->setRowId('uuid')
@@ -54,7 +59,7 @@ class ProjectExpenseLiquidationController extends Controller
         $projectExpenseLiquidation->uuid = Str::uuid();
         $projectExpenseLiquidation->control_no = $request->control_no;
         $projectExpenseLiquidation->date = $request->date;
-        $projectExpenseLiquidation->invoice_uuid = $request->invoice_uuid;
+        $projectExpenseLiquidation->remarks = $request->remarks;
         $details = collect($request->details)->values();
 
         $details = $details->map(function ($item) use ($projectExpenseLiquidation){
@@ -62,13 +67,14 @@ class ProjectExpenseLiquidationController extends Controller
         });
 
         try {
-            DB::transaction(function ($transaction) use ($projectExpenseLiquidation, $details){
+            DB::transaction(function ($transaction) use ($projectExpenseLiquidation, $details, $request){
                 $projectExpenseLiquidation->save();
                 $projectExpenseLiquidation->details()->createMany($details->toArray());
+                $projectExpenseLiquidation->projects()->createMany(collect($request->projects)->values()->toArray());
             });
             return $projectExpenseLiquidation->only('uuid');
         }catch (\Exception $exception){
-            abort(503);
+            abort(503,$exception->getMessage());
         }
 
     }
@@ -77,9 +83,10 @@ class ProjectExpenseLiquidationController extends Controller
     {
         $projectExpenseLiquidation = ProjectExpenseLiquidation::query()
             ->with([
-                'details','invoice'
+                'details','projects.salesInvoice.client'
             ])
             ->findOrFail($uuid);
+
         return view($this->folder.'edit')->with([
             'projectExpenseLiquidation' => $projectExpenseLiquidation
         ]);
@@ -92,17 +99,19 @@ class ProjectExpenseLiquidationController extends Controller
             ->findOrFail($uuid);
         $projectExpenseLiquidation->control_no = $request->control_no;
         $projectExpenseLiquidation->date = $request->date;
-        $projectExpenseLiquidation->invoice_uuid = $request->invoice_uuid;
+        $projectExpenseLiquidation->remarks = $request->remarks;
         $details = collect($request->details)->values();
 
         $details = $details->map(function ($item) use ($projectExpenseLiquidation){
             return $item;
         });
 
-        DB::transaction(function ($transaction) use ($projectExpenseLiquidation, $details){
+        DB::transaction(function ($transaction) use ($projectExpenseLiquidation, $details,$request){
             $projectExpenseLiquidation->save();
             $projectExpenseLiquidation->details()->delete();
             $projectExpenseLiquidation->details()->createMany($details->toArray());
+            $projectExpenseLiquidation->projects()->delete();
+            $projectExpenseLiquidation->projects()->createMany(collect($request->projects)->values()->toArray());
         });
         if($projectExpenseLiquidation->id){
             return $projectExpenseLiquidation->only('uuid');
@@ -118,6 +127,7 @@ class ProjectExpenseLiquidationController extends Controller
             DB::transaction(function ($q) use ($projectExpenseLiquidation){
                 $projectExpenseLiquidation->delete();
                 $projectExpenseLiquidation->details()->delete();
+                $projectExpenseLiquidation->projects()->delete();
             });
             return 1;
         }catch (\Exception $e){

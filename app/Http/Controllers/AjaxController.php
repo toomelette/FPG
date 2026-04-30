@@ -476,18 +476,30 @@ class AjaxController extends Controller
                         ->orWhere('invoice_no','like','%'.$request->get('q').'%');
                 });
         }
-//        if($request->has('page')){
-//            $invoices = $invoices->offset((($request->page) - 1) * 20);
-//        }
-//        $invoices = $invoices->limit(20)
-//            ->get();
-        $invoices = $invoices->paginate(25);
+
+        if($request->has('client') && $request->client != ''){
+            $invoices = $invoices->where('client_uuid','=',$request->client);
+        }
+
+        $paginator = $invoices->paginate(25);
+        $invoices = $paginator->getCollection();
         $groupedByClient = $invoices->groupBy('client.name');
+        $color = [
+            'CASH' => 'primary',
+            'CHARGE' => 'success',
+            'BILLING' => 'warning',
+        ];
         if($groupedByClient->count() > 0){
             foreach ($groupedByClient as $clientName => $invoices){
                 $children = [];
                 foreach ($invoices as $invoice){
-                    $children[] = ['id'=>$invoice->uuid,'text' => $invoice->remarks.' - '.$invoice->invoice_no];
+
+                    $html = '<span class="ms-3 float-end badge bg-'.($color[$invoice->ref_book] ?? 'secondary').'">'.$invoice->ref_book.'</span>';
+                    $children[] = [
+                        'id'=>$invoice->uuid,
+                        'text' => $invoice->remarks.' - '.$invoice->invoice_no,
+                        'html' => $html,
+                    ];
                 }
                 $arr[] = [
                     'text' => $clientName,
@@ -500,7 +512,7 @@ class AjaxController extends Controller
         }
 
 //        $request->add_null = true;
-        return Helper::wrapForSelect2($arr,true,$request);
+        return Helper::wrapForSelect2($arr,$paginator->hasMorePages(),$request);
     }
 
     private function projectExpenseLiquadationDescription(Request $request){

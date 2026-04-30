@@ -10,11 +10,10 @@
         <table class="table table-bordered table-striped table-hover table-sm" id="project-expense-liquidation-table" style="width: 100% !important">
             <thead>
             <tr class="">
-                <th>Control No.</th>
-                <th>Date</th>
-                <th>Client</th>
-                <th>Project</th>
+                <th style="width: 10%">Control No.</th>
+                <th style="width: 10%">Date</th>
                 <th>Remarks</th>
+                <th  style="width: 30%">Project</th>
                 <th>Details</th>
                 <th style="width: 80px;">Action</th>
             </tr>
@@ -41,15 +40,9 @@
             columns : [
                 { data : "control_no" },
                 { data : "date" },
-                {
-                    data : "invoice.client.name",
-                    name : "invoice.client.name"
-                },
-                {
-                    data : "invoice.remarks",
-                    name : "invoice.remarks"
-                },
                 { data : "remarks" },
+                { data : "projects_view" },
+
                 { data : "details" },
                 { data : "action" },
             ],
@@ -73,7 +66,7 @@
                     }
                 },
                 {
-                    targets : 6,
+                    targets : 5,
                     orderable : false,
                     class : ''
                 },

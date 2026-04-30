@@ -19,6 +19,7 @@ class ModalTemplate extends Component
         public $formMethod = null,
         public $formAction = null,
         public $formData = null,
+        public $static = false,
     )
     {
         //

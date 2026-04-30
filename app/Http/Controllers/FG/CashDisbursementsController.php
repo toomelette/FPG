@@ -4,6 +4,7 @@ namespace App\Http\Controllers\FG;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FG\CashDisbursementsFormRequest;
+use App\Models\FG\JournalEntriesSubsidiary;
 use App\Models\FG\Journals;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,7 @@ class CashDisbursementsController extends Controller
 
     public function store(CashDisbursementsFormRequest $request)
     {
+
         $journal = new Journals();
         $journal->book = $this->book;
         $journal->uuid = Str::uuid();
@@ -37,10 +39,33 @@ class CashDisbursementsController extends Controller
         $journal->check_no = $request->check_no;
         $journal->check_amount = $request->check_amount;
 
+        $journalEntries = [];
+        $subsidiaries = [];
+        foreach ($request->entries as $rowId => $entry){
+            $entryUuid = Str::uuid();
+            $journalEntries[] = [
+                "uuid" => $entryUuid,
+                "account_code" => $entry['account_code'],
+                "debit" => $entry['debit'],
+                "credit" => $entry['credit'],
+            ];
+            $journalSubsidiaries = $request->subsidiary_ledgers[$rowId] ?? [];
+            foreach ($journalSubsidiaries as $journalSubsidiary){
+                $subsidiaries[] = [
+                    "journal_entry_uuid" => $entryUuid,
+                    "account_code" => $journalSubsidiary->account_code,
+                    "debit" => $journalSubsidiary->debit,
+                    "credit" => $journalSubsidiary->credit,
+                ];
+            }
+        }
+
+
         try {
-            DB::transaction(function () use ($journal,$request){
+            DB::transaction(function () use ($journal,$journalEntries,$subsidiaries){
                 $journal->save();
-                $journal->entries()->createMany(collect($request->entries)->values()->toArray());
+                $journal->entries()->createMany($journalEntries);
+                JournalEntriesSubsidiary::query()->insert($subsidiaries);
             });
             return $journal->only('uuid');
         }catch(\Exception $e){
@@ -65,7 +90,10 @@ class CashDisbursementsController extends Controller
     public function edit($uuid)
     {
         $journal = Journals::query()
-            ->with(['entries.chartOfAccount'])
+            ->with([
+                'entries.chartOfAccount',
+                'entries.subsidiaries.chartOfAccount',
+            ])
             ->cashDisbursements()
             ->findOrFail($uuid);
         return view($this->folder.'edit')->with([
@@ -87,11 +115,35 @@ class CashDisbursementsController extends Controller
         $journal->check_no = $request->check_no;
         $journal->check_amount = $request->check_amount;
 
+        $journalEntries = [];
+        $subsidiaries = [];
+        foreach ($request->entries as $rowId => $entry){
+            $entryUuid = Str::uuid();
+            $journalEntries[] = [
+                "uuid" => $entryUuid,
+                "account_code" => $entry['account_code'],
+                "debit" => $entry['debit'],
+                "credit" => $entry['credit'],
+            ];
+            $journalSubsidiaries = $request->subsidiary_ledgers[$rowId] ?? [];
+            foreach ($journalSubsidiaries as $journalSubsidiary){
+                $subsidiaries[] = [
+                    "journal_entry_uuid" => $entryUuid,
+                    "account_code" => $journalSubsidiary->account_code,
+                    "debit" => $journalSubsidiary->debit,
+                    "credit" => $journalSubsidiary->credit,
+                ];
+            }
+        }
+
+
         try {
-            DB::transaction(function () use ($journal,$request){
+            DB::transaction(function () use ($journal,$journalEntries,$subsidiaries){
                 $journal->save();
                 $journal->entries()->delete();
-                $journal->entries()->createMany(collect($request->entries)->values()->toArray());
+                $journal->entries()->createMany($journalEntries);
+                $journal->entriesSubsidiaries()->delete();
+                JournalEntriesSubsidiary::query()->insert($subsidiaries);
             });
             return $journal->only('uuid');
         }catch(\Exception $e){

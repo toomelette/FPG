@@ -31,8 +31,16 @@ class ProjectExpenseLiquidationFormRequest extends FormRequest
                 return $detail;
             })
             ->toArray();
+        $projects = collect($this->projects ?? [])
+            ->map(function ($project){
+                unset($project['client']);
+                $project['amount'] = isset($project['amount']) ? Helper::sanitizeAutonum($project['amount']) : null;
+                return $project;
+            })
+            ->toArray();
         $this->merge([
             'details' => $details,
+            'projects' => $projects,
         ]);
     }
 
@@ -41,12 +49,16 @@ class ProjectExpenseLiquidationFormRequest extends FormRequest
         return [
             'control_no' => 'required',
             'date' => 'required|date_format:Y-m-d' ,
-            'invoice_uuid' => 'required',
+//            'invoice_uuid' => 'required',
             'details' => 'required',
 
             'details.*.description' => 'required',
             'details.*.debit' => 'required_without:details.*.credit',
             'details.*.credit' => 'required_without:details.*.debit',
+
+            'projects' => 'required',
+            'projects.*.sales_invoice_uuid' => 'required',
+            'projects.*.amount' => 'required',
         ];
     }
 

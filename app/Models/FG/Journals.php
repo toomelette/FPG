@@ -21,6 +21,17 @@ class Journals extends Model
     {
         return $this->hasMany(JournalEntries::class,'journal_uuid','uuid');
     }
+    public function entriesSubsidiaries()
+    {
+        return $this->hasManyThrough(
+            JournalEntriesSubsidiary::class, // Final model
+            JournalEntries::class,           // Intermediate model
+            'journal_uuid',                  // FK on JournalEntries (points to Journals.uuid)
+            'journal_entry_uuid',            // FK on Subsidiary (points to JournalEntries.uuid)
+            'uuid',                          // Local key on Journals
+            'uuid'                           // Local key on JournalEntries
+        );
+    }
 
 
     /*Scopes*/
@@ -38,4 +49,6 @@ class Journals extends Model
     {
         $builder->where('book','=','GENERAL JOURNAL');
     }
+
+
 }

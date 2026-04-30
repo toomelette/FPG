@@ -6,30 +6,28 @@
         <x-slot:float-end></x-slot:float-end>
     </x-adminkit.html.page-title>
     <form id="edit-project-expense-liquidation-form">
+
         <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
             <x-slot:title>
                 <button class="btn btn-sm btn-primary float-end" type="submit" data-bs-toggle="modal"><i class="fa fa-check"></i> Save</button>
             </x-slot:title>
+            <div class="row mb-3">
+                <x-forms.input label="Control No." name="control_no" cols="2" :value="$projectExpenseLiquidation ?? null"/>
+                <x-forms.input label="Date" name="date" cols="2" type="date" :value="$projectExpenseLiquidation ?? null"/>
+                <x-forms.textarea label="Remarks" name="remarks" cols="6" :value="$projectExpenseLiquidation ?? null"/>
+            </div>
+
+            <x-adminkit.html.alert type="success" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
+                Details
+            </x-adminkit.html.alert>
             <div class="row">
-                <div class="col-md-4">
-                    <div class="row">
-                        <x-forms.input label="Control No." name="control_no" cols="6" :value="$projectExpenseLiquidation ?? null"/>
-                        <x-forms.input label="Date" name="date" cols="6" type="date" :value="$projectExpenseLiquidation ?? null"/>
-                    </div>
-                    <div class="row mt-2">
-                        <x-forms.select label="Project" name="invoice_uuid" cols="12" :options="[]" id="select2-project" :value="$projectExpenseLiquidation ?? null" select2-preselected="{{$projectExpenseLiquidation?->invoice?->remarks.' - '.$projectExpenseLiquidation?->invoice?->invoice_no}}"/>
-                    </div>
-                    <div class="row mt-2">
-                        <x-forms.textarea label="Remarks" name="remarks" cols="12" :value="$projectExpenseLiquidation ?? null"/>
-                    </div>
-                </div>
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <table class="table table-striped table-sm table-bordered" id="details-table">
                         <thead>
                         <tr>
                             <th>Description</th>
-                            <th style="width: 200px">Debit</th>
-                            <th style="width: 200px">Credit</th>
+                            <th style="width: 20%">Debit</th>
+                            <th style="width: 20%">Credit</th>
                             <th style="width: 50px">
                                 <button type="button" class="btn btn-secondary btn-sm add-btn" template="#details-template">
                                     <i class="fa fa-plus"></i>
@@ -38,52 +36,97 @@
                         </tr>
                         </thead>
                         <tbody>
-
-                            @forelse($projectExpenseLiquidation->details as $detail)
-                                <tr id="details-{{$detail->id}}">
-                                    <td class="align-top">
-                                        <x-forms.select :select-only="true" :auto-class="true" class="select2-ajax-auto-populate" label="A" name="details[{{$detail->id}}][description]" cols="12" :s2-id="$detail->description" :s2-text="$detail->description" :s2-url="route('dashboard.ajax.get','project-expense-liquidation-description')" />
-                                    </td>
-                                    <td class="align-top">
-                                        <x-forms.input :input-only="true" :auto-class="true" label="" name="details[{{$detail->id}}][debit]" class="text-end autonum" cols="12" :value="$detail->debit ?? null"/>
-                                    </td>
-                                    <td class="align-top">
-                                        <x-forms.input :input-only="true" :auto-class="true" label="" name="details[{{$detail->id}}][credit]" class="text-end autonum" cols="12" :value="$detail->credit ?? null"/>
-                                    </td>
-                                    <td class="align-top">
-                                        <button type="button" class="btn btn-danger remove_row_btn btn-sm"><i class="fa fa-times"></i></button>
-                                    </td>
-                                </tr>
-                            @empty
-                            @endforelse
+                        @forelse($projectExpenseLiquidation->details as $detail)
+                            <tr id="details-{{$detail->id}}" data="{{$detail->id}}">
+                                <td class="align-top">
+                                    <x-forms.select :select-only="true" :auto-class="true" class="select2-ajax-auto-populate" label="A" name="details[{{$detail->id}}][description]" cols="12" :s2-id="$detail->description" :s2-text="$detail->description" :s2-url="route('dashboard.ajax.get','project-expense-liquidation-description')" />
+                                </td>
+                                <td class="align-top">
+                                    <x-forms.input :input-only="true" :auto-class="true" label="" name="details[{{$detail->id}}][debit]" class="text-end autonum autonum-" cols="12" :value="$detail->debit ?? null"/>
+                                </td>
+                                <td class="align-top">
+                                    <x-forms.input :input-only="true" :auto-class="true" label="" name="details[{{$detail->id}}][credit]" class="text-end autonum autonum-" cols="12" :value="$detail->credit ?? null"/>
+                                </td>
+                                <td class="align-top">
+                                    <button type="button" class="btn btn-danger remove_row_btn btn-sm"><i class="fa fa-times"></i></button>
+                                </td>
+                            </tr>
+                        @empty
+                        @endforelse
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Total</th>
+                            <th id="total-debit" class="text-end">{{number_format($projectExpenseLiquidation->details->sum('debit'),2)}}</th>
+                            <th id="total-credit" class="text-end">{{number_format($projectExpenseLiquidation->details->sum('credit'),2)}}</th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <x-adminkit.html.alert type="info" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
+                Projects
+            </x-adminkit.html.alert>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped table-sm table-bordered" id="projects-table">
+                        <thead>
+                        <tr>
+                            <th style="width: 30%;">Client</th>
+                            <th>Sales</th>
+                            <th style="width: 20%">Amount</th>
+                            <th style="width: 50px">
+                                <button type="button" class="btn btn-secondary btn-sm add-btn" template="#projects-template">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @forelse($projectExpenseLiquidation->projects as $project)
+
+                            <tr id="projects-{{$project->id}}" data="{{$project->id}}">
+                                <td class="align-top">
+                                    <x-forms.select :select-only="true" :auto-class="true" class="select2-ajax-auto-populate" id="select-client-{{$project->id}}" label="A" name="projects[{{$project->id}}][client_uuid]" cols="12" :s2-id="$project->salesInvoice->client_uuid ?? null" :s2-text="$project?->salesInvoice?->client?->name.' - '.$project?->salesInvoice?->client?->account_no" :s2-url="route('dashboard.ajax.get','clients')" />
+                                </td>
+                                <td class="align-top">
+                                    <x-forms.select :select-only="true" :auto-class="true" class="select2-ajax-auto-populate-pel" label="A" name="projects[{{$project->id}}][sales_invoice_uuid]" cols="12" :s2-id="$project?->salesInvoice?->uuid" :s2-text="$project?->salesInvoice?->remarks.' - '.$project?->salesInvoice?->invoice_no" :s2-url="route('dashboard.ajax.get','invoices-grouped-by-clients')" />
+                                </td>
+                                <td class="align-top">
+                                    <x-forms.input :input-only="true" :auto-class="true" label="" name="projects[{{$project->id}}][amount]" class="text-end autonum autonum-" cols="12" :value="$project->amount ?? null"/>
+                                </td>
+                                <td class="align-top">
+                                    <button type="button" class="btn btn-danger remove_row_btn btn-sm"><i class="fa fa-times"></i></button>
+                                </td>
+                            </tr>
+                        @empty
+                        @endforelse
+                        </tbody>
+
+                        <tfoot>
+                        <tr>
+                            <th colspan="2">Total</th>
+                            <th id="total-amount" class="text-end">{{number_format($projectExpenseLiquidation->projects->sum('amount'),2)}}</th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
 
 
         </x-adminkit.html.card>
+
+
+
     </form>
 
 
-    <table class="hide-this">
-        <tbody id="details-template">
-        <tr id="details-rand">
-            <td class="align-top">
-                <x-forms.select :select-only="true" :auto-class="true" id="select2-details-rand" label="A" name="details[rand][description]" cols="12"/>
-            </td>
-            <td class="align-top">
-                <x-forms.input :input-only="true" :auto-class="true" label="" name="details[rand][debit]" class="text-end autonum-rand" cols="12"/>
-            </td>
-            <td class="align-top">
-                <x-forms.input :input-only="true" :auto-class="true" label="" name="details[rand][credit]" class="text-end autonum-rand" cols="12"/>
-            </td>
-            <td class="align-top">
-                <button type="button" class="btn btn-danger remove_row_btn btn-sm"><i class="fa fa-times"></i></button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+
+
+    @include('fg.project-expense-liquidation.t-details')
+    @include('fg.project-expense-liquidation.t-projects')
 @endsection
 
 
@@ -92,6 +135,8 @@
 @endsection
 
 @section('scripts')
+    <script src="{{asset('js/fg/project-expense-liquidation.js')}}"></script>
+
     <script type="text/javascript">
         $("#select2-project").select2({
             ajax: {
@@ -101,30 +146,6 @@
                 // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
             },
         });
-
-        $("body").on("click",".add-btn",function (){
-            let btn = $(this);
-            let table = btn.parents('table');
-            let templateId = btn.attr('template');
-            let rand = makeId(5);
-            let template = $(templateId).html().replaceAll('rand',rand);
-            table.find('tbody')
-                .append(template)
-                .ready(function (){
-                    initializeAutonumByClass('.autonum-'+rand);
-                    $("#select2-details-"+rand).select2({
-                        ajax: {
-                            url: '{{route("dashboard.ajax.get","project-expense-liquidation-description")}}',
-                            dataType: 'json',
-                            delay : 250,
-
-                            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
-                        },
-                        placeholder: "Select",
-                        allowClear : true,
-                    });
-                });
-        })
 
 
         $("#edit-project-expense-liquidation-form").submit(function (e) {
@@ -146,6 +167,46 @@
                     errored(form,res);
                 }
             })
+        })
+
+        $(".select2-ajax-auto-populate-pel").each(function (){
+            let $select = $(this);
+            let url = $select.data('s2-url');
+            let id = $select.data('s2-id');
+            let text = $select.data('s2-text');
+            let trId = '#'+$select.closest('tr').attr('id');
+            let trData = $select.closest('tr').attr('data');
+
+            $select.select2({
+                ajax: {
+                    url: function (params){
+                        let client = $(trId+" #select-client-"+trData).val();
+                        return '{{route("dashboard.ajax.get","invoices-grouped-by-clients")}}?client='+client;
+
+                    },
+                    dataType: 'json',
+                    delay: 250,
+                },
+
+                placeholder: "Select",
+                allowClear : true,
+                templateResult: function (data) {
+                    return data.text + (typeof data.html !== 'undefined' ? data.html  : '');
+                },
+                /*
+                templateSelection: function (data) {
+                    return data.text + data.html;
+                },
+                */
+                escapeMarkup: function (markup) {
+                    return markup; // allow HTML
+                }
+            });
+
+            if (id && text) {
+                let option = new Option(text, id, true, true);
+                $select.append(option).trigger('change');
+            }
         })
 
     </script>

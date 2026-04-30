@@ -23,15 +23,19 @@ class CashDisbursementsFormRequest extends FormRequest
 
     protected function prepareForValidation()
     {
+
         $entries = collect($this->entries ?? [])
             ->map(function ($entry){
                 $entry['debit'] = isset($entry['debit']) ? (Helper::sanitizeAutonum($entry['debit']) * 1) : null;
                 $entry['credit'] = isset($entry['credit']) ? (Helper::sanitizeAutonum($entry['credit']) * 1) : null;
                 return $entry;
             });
+        $subsidiaryLedgers = nested_collection(json_decode($this->subsidiary_ledgers));
+
         $this->merge([
             'entries' => $entries->toArray(),
             'check_amount' => Helper::sanitizeAutonum($this->check_amount) * 1,
+            'subsidiary_ledgers' => $subsidiaryLedgers,
         ]);
     }
 

@@ -1,4 +1,4 @@
-<div class="modal fade" id="{{$id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+<div class="modal fade" id="{{$id}}" tabindex="-1" style="display: none;" aria-hidden="true" @if($static) data-bs-backdrop="static" data-bs-keyboard="false" @endif>
     <div class="modal-dialog {{!is_numeric($size) ? 'modal-'.$size : ''}}" style="{{is_numeric($size) ? '--bs-modal-width: '.$size.'%' : ''}}" role="document">
         <div class="modal-content">
             @if($formId != null)

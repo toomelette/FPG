@@ -42,10 +42,11 @@ class ProjectExpenseLiquidation extends Model
     {
         return $this->hasMany(ProjectExpenseLiquidationDetails::class,'project_expense_liquidation_uuid','uuid');
     }
-
-    public function invoice()
+    public function projects()
     {
-        return $this->belongsTo(SalesInvoice::class,'invoice_uuid','uuid');
+        return $this->hasMany(ProjectExpenseLiquidationProjects::class,'project_expense_liquidation_uuid','uuid');
     }
+
+
 
 }

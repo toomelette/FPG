@@ -668,3 +668,4 @@ $(".select2-ajax-auto-populate").each(function (){
         $select.append(option).trigger('change');
     }
 })
+
