@@ -11,7 +11,7 @@
     <meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="icon" href="{{asset('images/sra_only2_low.png')}}" type="image/icon type">
+    <link rel="icon" href="{{asset('favicon-rnd.ico')}}" type="image/icon type">
 
 
     <link rel="canonical" href="https://demo-basic.adminkit.io/" />

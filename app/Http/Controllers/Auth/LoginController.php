@@ -150,8 +150,8 @@ class LoginController extends Controller{
                 $logout_redirect_link = $logout_redirect->string_value;
             }
 
-            return redirect('http://'.$logout_redirect_link.'/');
-            return redirect('/?portal='.$request->portal);
+            return redirect('http://fpg-acctg.com/');
+
 
         }
         

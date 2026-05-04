@@ -3,16 +3,17 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Webpage</title>
+    <title>FILPOWER GROUP & MARKETING CORPORATION</title>
     <meta property="og:title" content="SRA Web Portal - HRRS"/>
     <meta property="og:image" content="{{asset('/images/og-image.png')}}"/>
     <meta property="og:image:type" content="image/png">
-    <meta property="og:description" content="Human Resource and Record System"/>
-    <meta property="og:url" content="https://hrrs.sra.gov.ph/"/>
+    <meta property="og:description" content="Filpower Group Accounting System"/>
+    <meta property="og:url" content="https://fpg-acctg.com/"/>
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="628" />
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" href="{{ asset('favicon-rnd.ico') }}">
 
     @include('layouts.css-plugins')
     <style>
@@ -492,7 +493,7 @@
                                     <div class="wrap-input100 validate-input m-b-16" data-validate="Password is required">
                                         <input class="input100" type="password" name="password" id="password" placeholder="Password">
                                         <span class="focus-input100"></span>
-                                            <span class="symbol-input100">
+                                        <span class="symbol-input100">
                                                 <span class="glyphicon glyphicon-lock"></span>
                                             </span>
                                     </div>
