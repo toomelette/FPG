@@ -18,6 +18,7 @@ use App\Swep\Interfaces\EmployeeInterface;
 use App\Swep\Repositories\EmployeeRepository;
 use Hash;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\DB;
 
 class UserService extends BaseService{
 
@@ -139,11 +140,7 @@ class UserService extends BaseService{
         $user->project_id = $request->project_id;
         $user->pms_allowed = $request->pms_allowed ?? null;
         $user->dash = $request->dash_type;
-        $user->update();
-        $user->userMenu()->delete();
-        $user->userSubmenu()->delete();
-        $user->access()->delete();
-        $user->rcAccess()->delete();
+
         $user_id = $user->user_id;
 
         if(!empty($request->submenus)){
@@ -164,8 +161,20 @@ class UserService extends BaseService{
                     ]);
                 }
             }
-            UserMenu::insert($data);
-            UserSubmenu::insert($submenu_data);
+
+            try {
+                DB::transaction(function () use ($user,$data, $submenu_data){
+                    $user->update();
+                    $user->userMenu()->delete();
+                    $user->userSubmenu()->delete();
+                    $user->access()->delete();
+                    UserMenu::insert($data);
+                    UserSubmenu::insert($submenu_data);
+                });
+            }catch (\Exception $e){
+                abort(503,$e->getMessage());
+            }
+
 
         }
         $access = [];
@@ -192,19 +201,6 @@ class UserService extends BaseService{
             UserAccess::insert($access);
         }
 
-        $rcAccess = [];
-        if(!empty($request->rcAccess)){
-            foreach ( $request->rcAccess as $access) {
-                $rcAccess[]  = [
-                    'user_id' => $user_id,
-                    'rc' => $access,
-                ];
-            }
-        }
-
-        if(count($rcAccess) > 0){
-            RCAccess::query()->insert($rcAccess);
-        }
         return $user->only('slug');
     }
 
