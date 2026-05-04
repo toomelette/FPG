@@ -67,7 +67,7 @@
             width: 100%;
             min-height: 185px;
             position: relative;
-            background: #91B3D1 url({{asset('swep/login/top.jpg')}}) no-repeat;
+            background: #91B3D1 url({{asset('images/brand.png')}}) no-repeat;
             background-size: auto;
             background-position: center
         }
@@ -475,7 +475,6 @@
                                 @endif
                                 <form class="login100-form validate-form" id="loginForm" action="{{ route('auth.login') }}?portal={{request('portal')}}" method="POST">
                                     @csrf
-                                    <span class="login100-form-title hidden">HRRS</span>
                                     <span class="login100-form-subtitle m-b-16"> Login </span>
                                     @if ($errors->has('username'))
                                         <span class="help-block" style="color: darkred"> {{ $errors->first('username') }}</span>
