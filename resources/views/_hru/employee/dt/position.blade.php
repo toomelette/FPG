@@ -14,7 +14,7 @@
 <div class="table-subdetail">
     <i>Department:</i> <br>
     <span class="text-info text-strong">
-        {{$data->responsibilityCenter->desc ?? '-'}}
+
     </span>
 </div>
 

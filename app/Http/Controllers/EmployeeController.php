@@ -97,9 +97,7 @@ class EmployeeController extends Controller{
     private function dataTable($request, $type = 'PERMANENT'){
         $sql_server_is_on = Helper::sqlServerIsOn();
         $cols = ['fullname','employee_no','position','email','biometric_user_id', 'date_of_birth','sex','civil_status','firstname','slug','name_ext','cell_no','photo'];
-        $employees = Employee::query()->with([
-            'responsibilityCenter',
-        ]);
+        $employees = Employee::query();
 
         if($type == 'PERMANENT'){
             $employees = $employees->permanent();
