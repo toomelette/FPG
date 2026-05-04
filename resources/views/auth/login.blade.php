@@ -58,7 +58,7 @@
             height: 100%;
             top: 0;
             left: 0;
-            background-color: rgba(0, 0, 0, 0.80)
+            background-color: rgba(0, 0, 0, 0.7)
         }
 
         .login_topimg {
@@ -430,7 +430,7 @@
     </header>
     <div class="content-wrapper">
         <div class="limiter" id="login">
-            <div class="container-login100" style="background-image:url({{asset('images/sugars.jpg')}})">
+            <div class="container-login100" style="background-image:url({{asset('images/concrete.jpg')}})">
                 <div class="container">
                     <div class="row">
 

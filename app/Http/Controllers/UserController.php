@@ -422,7 +422,6 @@ class UserController extends Controller{
             ->with([
                 'employee',
                 'userSubmenu',
-                'rcAccess',
             ])
             ->where('slug','=',$slug)
             ->firstOrFail();
