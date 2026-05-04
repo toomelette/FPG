@@ -463,7 +463,7 @@ class Arrays
 
 
     public static function groupedRespCodes($all = false){
-
+        return [];
         $rcs = PPURespCodes::query()->with(['description']);
         $userProjectId = Auth::user()->project_id ?? null;
         if($userProjectId != null){
