@@ -598,6 +598,7 @@ class Arrays
     }
 
     public static function employeeAssignments(){
+        return [];
         $mddc = MDDC::query()
             ->get();
         return [
