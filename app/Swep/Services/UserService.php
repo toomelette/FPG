@@ -135,7 +135,11 @@ class UserService extends BaseService{
 
     public function update($request, $slug){
 
-        $user = $this->user_repo->findBySlug($slug);
+        $user = \App\Models\User::query()
+            ->with([
+                'userMenu'
+            ])
+            ->where('slug','=',$slug)->firstOrFail();
 
         $user->project_id = $request->project_id;
         $user->pms_allowed = $request->pms_allowed ?? null;
@@ -146,8 +150,7 @@ class UserService extends BaseService{
         if(!empty($request->submenus)){
             $data = [];
             $submenu_data = [];
-            $user = User::where('slug',$slug)->first();
-            ;
+
             foreach ($request->submenus as $menu_id=>$submenus){
                 array_push($data,[
                     'menu_id' => $menu_id,
@@ -161,21 +164,6 @@ class UserService extends BaseService{
                     ]);
                 }
             }
-
-            try {
-                DB::transaction(function () use ($user,$data, $submenu_data){
-                    $user->update();
-                    $user->userMenu()->delete();
-                    $user->userSubmenu()->delete();
-                    $user->access()->delete();
-                    UserMenu::insert($data);
-                    UserSubmenu::insert($submenu_data);
-                });
-            }catch (\Exception $e){
-                abort(503,$e->getMessage());
-            }
-
-
         }
         $access = [];
         if(!empty($request->accessToEmployees)){
@@ -197,10 +185,21 @@ class UserService extends BaseService{
             ];
         }
 
-        if(count($access) > 0){
-            UserAccess::insert($access);
-        }
 
+
+        try {
+            DB::transaction(function () use ($user,$data, $submenu_data,$access){
+                $user->update();
+                $user->userMenu()->delete();
+                $user->userSubmenu()->delete();
+                $user->access()->delete();
+                UserMenu::insert($data);
+                UserSubmenu::insert($submenu_data);
+                UserAccess::insert($access);
+            });
+        }catch (\Exception $e){
+            abort(503,$e->getMessage());
+        }
         return $user->only('slug');
     }
 
