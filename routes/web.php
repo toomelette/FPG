@@ -37,7 +37,12 @@ Route::get('/dashboard/plantilla/print','PlantillaController@print')->name('plan
 
 //USER LEVEL ROUTES
 Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
-    'middleware' => ['check.user_status', 'last_activity','sidenav_mw', 'verify.email']
+    'middleware' => [
+        'check.user_status',
+        'last_activity',
+        'sidenav_mw',
+//        'verify.email'
+    ]
 ], function () {
 
     Route::get('/employee/{slug}/qr','EmployeeController@generateQr')->name('employee.generate_qr');
@@ -59,7 +64,12 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 //ADMIN LEVEL ROUTES
 /** Dashboard **/
 Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
-    'middleware' => ['check.user_status', 'check.user_route', 'last_activity','verify.email']
+    'middleware' => [
+        'check.user_status',
+        'check.user_route',
+        'last_activity',
+//        'verify.email'
+    ]
 ], function () {
 
 	/** USER **/
@@ -192,7 +202,12 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 });
 
 Route::group([
-    'middleware' => ['check.user_status', 'check.user_route', 'last_activity','verify.email']
+    'middleware' => [
+        'check.user_status',
+        'check.user_route',
+        'last_activity',
+//        'verify.email'
+    ]
 ], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::resource('clients',\App\Http\Controllers\FG\ClientController::class);
@@ -225,7 +240,13 @@ Route::group([
 });
 /** ADMIN LEVEL ROUTES REQUIRING PROJECT ID **/
 Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
-    'middleware' => ['check.user_status', 'check.user_route', 'last_activity','verify.email','ensureUserHasProjectId']
+    'middleware' => [
+        'check.user_status',
+        'check.user_route',
+        'last_activity',
+//        'verify.email',
+        'ensureUserHasProjectId'
+    ]
 ], function () {
 
 });
