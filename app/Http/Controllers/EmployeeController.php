@@ -100,9 +100,9 @@ class EmployeeController extends Controller{
         $employees = Employee::query();
 
         if($type == 'PERMANENT'){
-            $employees = $employees->permanent();
+            //$employees = $employees->permanent();
         }else{
-            $employees = $employees->cos();
+            //$employees = $employees->cos();
         }
         if($sql_server_is_on === true){
             $employees = $employees->with('empMaster');

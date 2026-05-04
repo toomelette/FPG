@@ -50,42 +50,7 @@ class EmployeeFormRequest extends FormRequest{
             'gov_id'=>'nullable|string|max:20',
             'license_passport_no'=>'nullable|string|max:20',
             'id_date_issue'=>'nullable|string|max:45',
-            'station'=>'required|string',
 
-            // Address
-            'res_address_block'=>'nullable|string|max:90',
-            'res_address_street'=>'nullable|string|max:90',
-            'res_address_village'=>'nullable|string|max:90',
-            'res_address_barangay'=>'nullable|string|max:90',
-            'res_address_city'=>'nullable|string|max:90',
-            'res_address_province'=>'nullable|string|max:90',
-            'res_address_zipcode'=>'nullable|string|max:20',
-            'perm_address_block'=>'nullable|string|max:90',
-            'perm_address_street'=>'nullable|string|max:90',
-            'perm_address_village'=>'nullable|string|max:90',
-            'perm_address_barangay'=>'nullable|string|max:90',
-            'perm_address_city'=>'nullable|string|max:90',
-            'perm_address_province'=>'nullable|string|max:90',
-            'perm_address_zipcode'=>'nullable|string|max:20',
-
-
-            // Family Info
-            'father_lastname'=>'nullable|string|max:90',
-            'father_firstname'=>'nullable|string|max:90',
-            'father_middlename'=>'nullable|string|max:90',
-            'father_name_ext'=>'nullable|string|max:11',
-            'mother_lastname'=>'nullable|string|max:90',
-            'mother_firstname'=>'nullable|string|max:90',
-            'mother_middlename'=>'nullable|string|max:90',
-            'mother_name_ext'=>'nullable|string|max:11',
-            'spouse_lastname'=>'nullable|string|max:90',
-            'spouse_firstname'=>'nullable|string|max:90',
-            'spouse_middlename'=>'nullable|string|max:90',
-            'spouse_name_ext'=>'nullable|string|max:11',
-            'spouse_occupation'=>'nullable|string|max:90',
-            'spouse_employer'=>'nullable|string|max:255',
-            'spouse_business_address'=>'nullable|string|max:255',
-            'spouse_tel_no'=>'nullable|string|max:45',
 
 
             // Personal ID's
@@ -106,33 +71,7 @@ class EmployeeFormRequest extends FormRequest{
             ],
             'position'=>'required|string|max:90',
 
-            'item_no'=>[
-                'max:10000',
-                function (string $attribute, mixed $value, \Closure $fail){
-                    $employee = Employee::query()
-                        ->where(function ($q) use ($value){
-                            return $q->where('is_active','=','ACTIVE')
-                                ->where('item_no','=',$value);
-                        })
-                        ->where('slug','!=',$this->route('employee')->slug ?? null)
-                        ->first();
-                    if($employee){
-                        if($value != null || $value != '') {
-                            $fail('This item is assigned to an ACTIVE employee: ' . $employee->lastname . ', ' . $employee->firstname);
-                        }
-                    }
-                    if($this->get('appointment_status') == 'COS'){
-                        if($value != null || $value != '') {
-                            $fail('Item number cannot be assigned if Appointment Status is COS');
-                        }
-                    }
-                    if($this->get('appointment_status') == 'Permanent'){
-                        if($value == null){
-                            $fail('This field is required.');
-                        }
-                    }
-                },
-            ],
+
 
             'appointment_status'=>'required|string|max:45',
             'salary_grade'=>'nullable|int',
@@ -151,9 +90,8 @@ class EmployeeFormRequest extends FormRequest{
             'adjustment_date' => 'nullable|date_format:"Y-m-d"',
             'project_id' => 'nullable|string|max:11',
             'is_active' => 'required|string|max:11',
-            'locations' => 'required|string',
-            'assignment' => 'required|string',
-            'resp_center' => 'required|string',
+
+
 
             // Questions
             'q_34_a'=>'nullable|string|max:11',
