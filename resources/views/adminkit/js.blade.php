@@ -88,6 +88,7 @@
 
 <script type="module">
 
+    /*
     import Echo from '{{ asset('node/ws/echo.js') }}'
 
     import {Pusher} from '{{asset('node/ws/pusher.js')}}'
@@ -189,5 +190,5 @@
     console.log("websockets in use");
 
 
-
+    */
 </script>
