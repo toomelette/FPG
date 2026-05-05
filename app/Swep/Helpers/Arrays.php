@@ -1383,4 +1383,15 @@ class Arrays
             'NON-VAT' => 'NON-VAT',
         ];
     }
+
+    public static function accountNatures()
+    {
+        return [
+            '1' => '1',
+            '2' => '2',
+            '3' => '3',
+            '4' => '4',
+            '5' => '5',
+        ];
+    }
 }

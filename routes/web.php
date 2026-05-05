@@ -228,6 +228,11 @@ Route::group([
     Route::resource('cash-disbursements',\App\Http\Controllers\FG\CashDisbursementsController::class);
     Route::resource('cash-receipts',\App\Http\Controllers\FG\CashReceiptsController::class);
     Route::resource('general-journals',\App\Http\Controllers\FG\GeneralJournalsController::class);
+    Route::resource('chart-of-accounts',\App\Http\Controllers\FG\ChartOfAccountsController::class);
+
+    Route::get('subsidiary-accounts/{id}/index',[\App\Http\Controllers\FG\SubsidiaryAccountsController::class,'index'])->name('subsidiary-accounts.index');
+    Route::post('subsidiary-accounts/{parentAccountCode}',[\App\Http\Controllers\FG\SubsidiaryAccountsController::class,'store'])->name('subsidiary-accounts.store');
+    Route::resource('subsidiary-accounts',\App\Http\Controllers\FG\SubsidiaryAccountsController::class)->except(['index','store']);
 
     //INVENTORY
     Route::resource('receiving-report',\App\Http\Controllers\FG\ReceivingReportsController::class);

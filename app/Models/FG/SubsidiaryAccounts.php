@@ -5,10 +5,9 @@ namespace App\Models\FG;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ChartOfAccounts extends Model
+class SubsidiaryAccounts extends Model
 {
     use HasFactory;
-
     public static function boot()
     {
         parent::boot();
@@ -26,8 +25,10 @@ class ChartOfAccounts extends Model
     }
 
     /*Relationships*/
-    public function subsidiaries()
+
+    public function account()
     {
-        return $this->hasMany(SubsidiaryAccounts::class,'parent_account_code','account_code');
+        return $this->belongsTo(ChartOfAccounts::class,'parent_account_code','account_code');
     }
+
 }
