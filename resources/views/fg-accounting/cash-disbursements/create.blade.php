@@ -118,10 +118,6 @@
     <script src="{{asset('js/fg/journals.js')}}?rand={{Str::random(3)}}"></script>
     <script type="text/javascript">
 
-        $("body").on("click",".add-sl-btn",function (){
-            alert();
-        });
-
         $(document).ready(function (){
             $(".add-btn").trigger('click');
         })
