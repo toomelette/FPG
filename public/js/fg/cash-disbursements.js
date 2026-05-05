@@ -73,6 +73,7 @@ $("body").on("click",".subsidiary-ledger-btn",function (e){
     subsidiaryLedgerModal.attr('data-account',id);
     subsidiaryLedgerTable.find('tbody').html('');
 
+
     let table = subsidiaryLedgerTable;
     compute(table);
     $.each(subsidiaryLedgers[id],function (i,row){
@@ -94,7 +95,10 @@ $("body").on("click",".subsidiary-ledger-btn",function (e){
 
                 $("#select2-accounts-"+rand).select2({
                     ajax: {
-                        url: '/dashboard/ajax/account-codes',
+                        url: function (){
+                            let parentAccountCode = select2AccountCode.val();
+                            return '/dashboard/ajax/subsidiary-account-codes?parent_account_code='+parentAccountCode;
+                        },
                         dataType: 'json',
                         delay : 250,
 
@@ -120,6 +124,9 @@ $("body").on("click",".add-sl-btn",function (){
     let templateId = btn.attr('template');
     let rand = makeId(5);
     let template = $(templateId).html().replaceAll('rand',rand);
+    let parentRowId = $(this).closest('.modal').attr('data-account');
+    let parentSelect = $("select[name='entries["+parentRowId+"][account_code]']");
+
     table.find('tbody')
         .append(template)
         .ready(function (){
@@ -128,7 +135,10 @@ $("body").on("click",".add-sl-btn",function (){
 
             $("#select2-accounts-"+rand).select2({
                 ajax: {
-                    url: '/dashboard/ajax/account-codes',
+                    url: function (){
+                        let parentAccountCode = parentSelect.val();
+                        return '/dashboard/ajax/subsidiary-account-codes?parent_account_code='+parentAccountCode;
+                    },
                     dataType: 'json',
                     delay : 250,
 

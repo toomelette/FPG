@@ -13,7 +13,7 @@ class Journals extends Model
     protected $keyType = 'string';
     public $incrementing = false;
     protected $casts = [
-        'date' => 'date',
+        //'date' => 'date',
     ];
 
     /*Relationships*/

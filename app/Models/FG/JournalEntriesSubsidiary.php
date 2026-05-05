@@ -13,9 +13,9 @@ class JournalEntriesSubsidiary extends Model
     public $timestamps = false;
 
 
-    public function chartOfAccount()
+    public function subsidiaryAccount()
     {
-        return $this->belongsTo(ChartOfAccounts::class,'account_code','account_code');
+        return $this->belongsTo(SubsidiaryAccounts::class,'account_code','account_code');
     }
 
     public function journalEntry()

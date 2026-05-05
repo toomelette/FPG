@@ -4,6 +4,7 @@ namespace App\Http\Controllers\FG;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FG\GeneralJournalsFormRequest;
+use App\Models\FG\JournalEntriesSubsidiary;
 use App\Models\FG\Journals;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,10 +34,33 @@ class GeneralJournalsController extends Controller
         $journal->date = $request->date;
         $journal->remarks = $request->remarks;
 
+        $journalEntries = [];
+        $subsidiaries = [];
+        foreach ($request->entries as $rowId => $entry){
+            $entryUuid = Str::uuid();
+            $journalEntries[] = [
+                "uuid" => $entryUuid,
+                "account_code" => $entry['account_code'],
+                "debit" => $entry['debit'],
+                "credit" => $entry['credit'],
+            ];
+            $journalSubsidiaries = $request->subsidiary_ledgers[$rowId] ?? [];
+            foreach ($journalSubsidiaries as $journalSubsidiary){
+                $subsidiaries[] = [
+                    "journal_entry_uuid" => $entryUuid,
+                    "account_code" => $journalSubsidiary->account_code,
+                    "debit" => $journalSubsidiary->debit == 0 ? null : $journalSubsidiary->debit,
+                    "credit" => $journalSubsidiary->credit == 0 ? null : $journalSubsidiary->credit,
+                ];
+            }
+        }
+
+
         try {
-            DB::transaction(function () use ($journal,$request){
+            DB::transaction(function () use ($journal,$journalEntries,$subsidiaries){
                 $journal->save();
-                $journal->entries()->createMany(collect($request->entries)->values()->toArray());
+                $journal->entries()->createMany($journalEntries);
+                JournalEntriesSubsidiary::query()->insert($subsidiaries);
             });
             return $journal->only('uuid');
         }catch(\Exception $e){
@@ -79,11 +103,35 @@ class GeneralJournalsController extends Controller
         $journal->date = $request->date;
         $journal->remarks = $request->remarks;
 
+        $journalEntries = [];
+        $subsidiaries = [];
+        foreach ($request->entries as $rowId => $entry){
+            $entryUuid = Str::uuid();
+            $journalEntries[] = [
+                "uuid" => $entryUuid,
+                "account_code" => $entry['account_code'],
+                "debit" => $entry['debit'],
+                "credit" => $entry['credit'],
+            ];
+            $journalSubsidiaries = $request->subsidiary_ledgers[$rowId] ?? [];
+            foreach ($journalSubsidiaries as $journalSubsidiary){
+                $subsidiaries[] = [
+                    "journal_entry_uuid" => $entryUuid,
+                    "account_code" => $journalSubsidiary->account_code,
+                    "debit" => $journalSubsidiary->debit == 0 ? null : $journalSubsidiary->debit,
+                    "credit" => $journalSubsidiary->credit == 0 ? null : $journalSubsidiary->credit,
+                ];
+            }
+        }
+
+
         try {
-            DB::transaction(function () use ($journal,$request){
-                $journal->save();
+            DB::transaction(function () use ($journal,$journalEntries,$subsidiaries){
+                $journal->entriesSubsidiaries()->delete();
                 $journal->entries()->delete();
-                $journal->entries()->createMany(collect($request->entries)->values()->toArray());
+                $journal->save();
+                $journal->entries()->createMany($journalEntries);
+                JournalEntriesSubsidiary::query()->insert($subsidiaries);
             });
             return $journal->only('uuid');
         }catch(\Exception $e){

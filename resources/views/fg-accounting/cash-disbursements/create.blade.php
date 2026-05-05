@@ -115,7 +115,7 @@
     <script type="text/javascript">
         let subsidiaryLedgers = {};
     </script>
-    <script src="{{asset('js/fg/cash-disbursements.js')}}"></script>
+    <script src="{{asset('js/fg/journals.js')}}?rand={{Str::random(3)}}"></script>
     <script type="text/javascript">
 
 

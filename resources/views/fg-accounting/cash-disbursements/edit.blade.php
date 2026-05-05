@@ -122,7 +122,7 @@
 
             $sls[] = [
                 'account_code' => $subsidiary->account_code,
-                'account_text' => $subsidiary?->chartOfAccount->account_title.' - '.$subsidiary->account_code,
+                'account_text' => $subsidiary?->subsidiaryAccount?->account_title.' - '.$subsidiary->account_code,
                 'debit' => $subsidiary->debit * 1,
                 'credit' => $subsidiary->credit * 1,
                 'id' => $subsidiary->id,
@@ -171,9 +171,12 @@
 @endsection
 
 @section('scripts')
-    <script src="{{asset('js/fg/cash-disbursements.js')}}"></script>
     <script type="text/javascript">
         let subsidiaryLedgers = {!! json_encode($subsidiaryLedgers) !!};
+    </script>
+    <script src="{{asset('js/fg/journals.js')}}?rand={{Str::random(3)}}"></script>
+    <script type="text/javascript">
+
         $("#edit-journal-form").submit(function (e) {
             e.preventDefault()
             let form = $(this);

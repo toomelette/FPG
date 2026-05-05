@@ -70,7 +70,9 @@ class AjaxController extends Controller
         if($for == 'account-codes'){
             return $this->accountCodes($r);
         }
-
+        if($for == 'subsidiary-account-codes'){
+            return $this->subsidiaryAccountCodes($r);
+        }
 
 
 
@@ -719,7 +721,60 @@ class AjaxController extends Controller
 //        $request->add_null = true;
         return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
     }
+    private function subsidiaryAccountCodes(Request $request){
 
+        $data = null;
+        $cv = \App\Models\FG\SubsidiaryAccounts::query()
+            ->select('account_code','account_title')
+            ->orderBy('account_title','asc');
+        if($request->has('parent_account_code') && filled($request->parent_account_code)){
+            $cv = $cv->where('parent_account_code','=',$request->parent_account_code);
+        }
+
+        if($request->has('q') && $request->q != ''){
+            $cv = $cv->where(function ($q) use ($request){
+                $q->where('account_code','like','%'.$request->q.'%')
+                    ->orWhere('account_title','like','%'.$request->q.'%');
+            });
+        }
+
+        $cv = $cv->paginate(25);
+
+        if($cv->count() > 0){
+
+            $data = $cv->map(function ($data){
+                return [
+                    'id' => $data->account_code,
+                    'text' => $data->account_title .' - '.$data->account_code,
+                ];
+            });
+
+            $array = $data->toArray();
+
+            $exists = 0;
+            foreach ($array as $arr){
+                if ($arr['id'] == $request->q){
+                    $exists = 1;
+                }
+            }
+            if($exists != 1){
+                array_unshift( $array, [
+                    'id' => $request->q,
+                    'text' => $request->q,
+                ] );
+            }
+
+        }else{
+            $array = [];
+            array_unshift( $array, [
+                'id' => $request->q,
+                'text' => $request->q,
+            ] );
+
+        }
+//        $request->add_null = true;
+        return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
+    }
 
     private function newEmployeeForCos(Request $request){
 

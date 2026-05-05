@@ -54,8 +54,8 @@ class CashDisbursementsController extends Controller
                 $subsidiaries[] = [
                     "journal_entry_uuid" => $entryUuid,
                     "account_code" => $journalSubsidiary->account_code,
-                    "debit" => $journalSubsidiary->debit,
-                    "credit" => $journalSubsidiary->credit,
+                    "debit" => $journalSubsidiary->debit == 0 ? null : $journalSubsidiary->debit,
+                    "credit" => $journalSubsidiary->credit == 0 ? null : $journalSubsidiary->credit,
                 ];
             }
         }
@@ -92,7 +92,7 @@ class CashDisbursementsController extends Controller
         $journal = Journals::query()
             ->with([
                 'entries.chartOfAccount',
-                'entries.subsidiaries.chartOfAccount',
+                'entries.subsidiaries.subsidiaryAccount',
             ])
             ->cashDisbursements()
             ->findOrFail($uuid);
@@ -130,8 +130,8 @@ class CashDisbursementsController extends Controller
                 $subsidiaries[] = [
                     "journal_entry_uuid" => $entryUuid,
                     "account_code" => $journalSubsidiary->account_code,
-                    "debit" => $journalSubsidiary->debit,
-                    "credit" => $journalSubsidiary->credit,
+                    "debit" => $journalSubsidiary->debit == 0 ? null : $journalSubsidiary->debit,
+                    "credit" => $journalSubsidiary->credit == 0 ? null : $journalSubsidiary->credit,
                 ];
             }
         }
@@ -139,10 +139,10 @@ class CashDisbursementsController extends Controller
 
         try {
             DB::transaction(function () use ($journal,$journalEntries,$subsidiaries){
-                $journal->save();
-                $journal->entries()->delete();
-                $journal->entries()->createMany($journalEntries);
                 $journal->entriesSubsidiaries()->delete();
+                $journal->entries()->delete();
+                $journal->save();
+                $journal->entries()->createMany($journalEntries);
                 JournalEntriesSubsidiary::query()->insert($subsidiaries);
             });
             return $journal->only('uuid');
@@ -158,8 +158,9 @@ class CashDisbursementsController extends Controller
 
         try {
             DB::transaction(function () use ($journal){
-                $journal->delete();
+                $journal->entriesSubsidiaries()->delete();
                 $journal->entries()->delete();
+                $journal->delete();
             });
             return 1;
         }catch(\Exception $e){

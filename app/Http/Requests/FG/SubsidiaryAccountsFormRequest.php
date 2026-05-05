@@ -3,6 +3,7 @@
 namespace App\Http\Requests\FG;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SubsidiaryAccountsFormRequest extends FormRequest
 {
@@ -25,8 +26,10 @@ class SubsidiaryAccountsFormRequest extends FormRequest
             'account_code' => [
                 'required',
                 'string',
-                'starts_with:'.$this->route('parentAccountCode').'-'
+                'starts_with:'.$this->route('parentAccountCode').'-',
+                Rule::unique('subsidiary_accounts','account_code')
             ],
+
             'account_title' => 'required',
         ];
         if($this->getMethod() == 'PATCH' || $this->getMethod() == 'PUT'){
