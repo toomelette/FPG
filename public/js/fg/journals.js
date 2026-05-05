@@ -119,6 +119,7 @@ $("body").on("click",".subsidiary-ledger-btn",function (e){
 
 
 $("body").on("click",".add-sl-btn",function (){
+    alert();
     let btn = $(this);
     let table = btn.parents('table');
     let templateId = btn.attr('template');
