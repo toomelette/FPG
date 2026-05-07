@@ -61,6 +61,7 @@ class ClientController extends Controller
         $client->address = $request->address;
         $client->contact_person = $request->contact_person;
         $client->contact_no = $request->contact_no;
+        $client->tin = $request->tin;
         if($client->update()){
             return $client->only('uuid');
         }
