@@ -10,6 +10,7 @@ use App\Models\ApplicantPositionApplied;
 use App\Models\Budget\ChartOfAccounts;
 use App\Models\DocumentFolder;
 use App\Models\Employee;
+use App\Models\FG\PayrollAdjustments;
 use App\Models\FLIGHTS\FlightsAirports;
 use App\Models\HRPayPlanitilla;
 use App\Models\HRU\Deductions;
@@ -1337,30 +1338,32 @@ class Arrays
         return $array;
     }
 
-    public static function coeSignatories()
+    public static function payrollAdjustments()
     {
-        $setting = SuSettings::query()
-            ->where('setting','=','coe_signatories')
-            ->first();
-        $array = [];
-        if(!empty($setting) && !empty($setting->json_value)){
-            $plantilla = HRPayPlanitilla::query()
-                ->with([
-                    'incumbentEmployee'
-                ])
-                ->whereIn('item_no',$setting->json_value['plantilla_nos'])
-                ->get();
-            if(!empty($plantilla)){
-                foreach ($plantilla as $p) {
-                    $array[] = [
-                        'id' => $p?->incumbentEmployee?->full['FMiLE'],
-                        'text' => $p?->incumbentEmployee?->full['FMiLE'],
-                        'position' => $p?->alias ?? $p?->position,
+        $payrollAdjustments = PayrollAdjustments::query()
+            ->orderBy('description')
+            ->get();
+
+        return $payrollAdjustments
+            ->groupBy('type')
+            ->map(function ($items) {
+                return $items->mapWithKeys(function ($payrollAdjustment) {
+                    return [
+                        $payrollAdjustment->code =>
+                            $payrollAdjustment->description . ' ' .
+                            ($payrollAdjustment->type == 'INCENTIVE' ? '(+)' : '(-)'),
                     ];
-                }
-            }
-        }
-        return $array;
+                });
+            })
+            ->toArray();
+    }
+
+    public static function payrollAdjustmentTypes()
+    {
+        return [
+            'INCENTIVE' => 'INCENTIVE',
+            'DEDUCTION' => 'DEDUCTION',
+        ];
     }
 
     public static function months()

@@ -36,6 +36,7 @@
             </div>
             <div class="btn-group float-end">
                 <button type="button" id="fetch-table-btn" class="btn btn-outline-secondary btn-sm"> Fetch </button>
+                <button type="button" id="add-adjustment-btn" data-bs-target="#add-adjustment-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-plus"></i> Add Adjustment Code </button>
 
                 <button type="button" id="ad-employee-btn" data-bs-target="#add-employee-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-plus"></i> Add Employee </button>
                 <button type="button" id="submit-form-btn" data-bs-target="#add-employee-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-check"></i> Submit </button>
@@ -49,7 +50,7 @@
 
         <div class="row">
             <div class="col-md-9">
-                <p class="text-info" style="padding-left: 10px"><i class="fa fa-info-circle"></i> Click on the employee's name to print individual payslip or to edit payroll template.</p>
+{{--                <p class="text-info" style="padding-left: 10px"><i class="fa fa-info-circle"></i> Click on the employee's name to print individual payslip or to edit payroll template.</p>--}}
             </div>
             <div class="col-md-3" style="margin-bottom: 5px">
                 <div class="mb-1 row">
@@ -91,8 +92,15 @@
     </div>
 @endsection
 
-@section('modals')
+@section('modals')  
+    <x-adminkit.html.modal-template id="add-adjustment-modal" size="sm" form-id="add-adjustment-form">
+        <x-slot:title>Add Adjustment</x-slot:title>
 
+        <x-forms.select label="Adjustment" name="adjustment_code" cols="12" :options="\App\Swep\Helpers\Arrays::payrollAdjustments()"/>
+        <x-slot:footer>
+            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
+        </x-slot:footer>
+    </x-adminkit.html.modal-template>
 @endsection
 
 @section('scripts')
@@ -233,6 +241,49 @@
                 }
             }
         }
+
+        $("#add-adjustment-form").submit(function (e){
+            e.preventDefault();
+            let form = $(this);
+            loading_btn(form);
+            $.ajax({
+                url : '{{route("payroll-preparation.update", $payrollMaster->uuid)}}?addAdjustment',
+                data : form.serialize(),
+                type: 'PUT',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    succeed(form,true,true);
+                    toast('success','Adjustment successfully added.','Success');
+                    fetchTable();
+                },
+                error: function (res) {
+                    errored(form,res);
+                }
+            })
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         function recompute(btn){
             let uri = '{{route("payroll-preparation.edit",$payrollMaster->uuid)}}?recompute=true';
             let placeholder = $("#loading-placeholder");

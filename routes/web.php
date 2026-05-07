@@ -239,9 +239,10 @@ Route::group([
     Route::resource('inventory-transfers',\App\Http\Controllers\FG\InventoryTransfersController::class);
     Route::resource('purchase-orders',\App\Http\Controllers\FG\PurchaseOrderController::class);
 
-
+    //Payroll
     Route::resource('payroll-template',\App\Http\Controllers\FG\PayrollTemplateController::class);
     Route::resource('payroll-preparation',\App\Http\Controllers\FG\PayrollPreparationController::class);
+    Route::resource('payroll-adjustments',\App\Http\Controllers\FG\PayrollAdjustmentsController::class);
 });
 /** ADMIN LEVEL ROUTES REQUIRING PROJECT ID **/
 Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',

@@ -13,6 +13,7 @@ use App\Models\FG\PayrollTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Yajra\DataTables\DataTables;
 
 class PayrollPreparationController extends Controller
@@ -178,8 +179,48 @@ class PayrollPreparationController extends Controller
         return $template ?? [];
     }
 
+    private function addAdjustment(Request $request,$uuid)
+    {
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollEmployees',
+                'employeeAdjustments'
+            ])
+            ->findOrFail($uuid);
+        $codesUsed = $payrollMaster->employeeAdjustments->pluck('code')->unique();
+        if(!$codesUsed->contains($request->adjustment_code)){
+            $adjustment = PayrollAdjustments::query()->where('code','=',$request->adjustment_code)->firstOrFail();
+
+            $employeeAdjustmentsToInsert = $payrollMaster->payrollEmployees->map(function ($payrollEmployee) use ($adjustment){
+                return [
+                    'payroll_employee_id' => $payrollEmployee->id,
+                    'employee_uuid' => $payrollEmployee->employee_uuid,
+                    'type' => $adjustment->type,
+                    'code' => $adjustment->code,
+                    'priority' => $adjustment->priority,
+                ];
+            });
+            try {
+                DB::transaction(function () use ($employeeAdjustmentsToInsert){
+                    PayrollEmployeeAdjustments::query()->insert($employeeAdjustmentsToInsert->toArray());
+                });
+            }catch (\Exception $exception){
+                abort(503,$exception->getMessage());
+            }
+        }else{
+            throw ValidationException::withMessages([
+                'adjustment_code' => ['The adjustment code selected is already added in this payroll.'],
+            ]);
+        }
+
+
+
+    }
     public function update(PayrollPreparationFormRequest $request,$uuid)
     {
+        if($request->has('addAdjustment')){
+            return $this->addAdjustment($request,$uuid);
+        }
         $requestPayrollEmployees = nested_collection($request->data);
 
         $payrollEmployees = PayrollEmployees::query()
