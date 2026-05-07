@@ -5,6 +5,7 @@ namespace App\Http\Controllers\FG;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FG\ChartOfAccountsFormRequest;
 use App\Models\FG\ChartOfAccounts;
+use App\Swep\Helpers\Arrays;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
@@ -24,6 +25,7 @@ class ChartOfAccountsController extends Controller
                 ->withCount('subsidiaries');
             return DataTables::of($accounts)
                 ->addColumn('action',fn($data) => view($this->folder.'dt-actions')->with(['data' => $data]))
+                ->editColumn('nature_id',fn($data) => Arrays::accountNatures()[$data->nature_id] ?? '')
                 ->escapeColumns([])
                 ->setRowId('id')
                 ->toJson();

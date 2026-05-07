@@ -33,7 +33,7 @@
                     <table style="width: 100%; font-size: 14px; border-spacing: 5px;border-collapse: separate;" class="tbl-padded">
                         <tr>
                             <td>DATE</td>
-                            <td style="border: 1px solid black">{{$journal->date->format('M. d, Y')}}</td>
+                            <td style="border: 1px solid black">{{Helper::dateFormat($journal->date,'M. d, Y')}}</td>
                         </tr>
                         <tr>
                             <td>VOUCHER NO.</td>

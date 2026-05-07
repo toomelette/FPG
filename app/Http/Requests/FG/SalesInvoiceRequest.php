@@ -6,6 +6,7 @@ use App\Models\FG\Stocks;
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class SalesInvoiceRequest extends FormRequest
 {
@@ -61,8 +62,12 @@ class SalesInvoiceRequest extends FormRequest
 
     public function rules(): array
     {
+
         $rules = [
-            'invoice_no' => 'required',
+            'invoice_no' => [
+                'required',
+                Rule::unique('sales_invoices','invoice_no')->ignore($this->route('sales_invoice'),'uuid'),
+            ],
             'book' => 'required',
             'date' => 'required|date_format:Y-m-d' ,
             'client_uuid' => 'required|string',

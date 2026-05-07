@@ -15,7 +15,7 @@
             <tr class="">
                 <th >Account Code</th>
                 <th>Account Title</th>
-                <th >Nature Id</th>
+                <th >Nature</th>
                 <th >Is Header</th>
                 <th >Subsidiary</th>
                 <th style="width: 80px;">Action</th>

@@ -34,7 +34,6 @@ class PayrollPreparationController extends Controller
     private function updateTable(Request $request)
     {
         $employees = Employee::query()
-            ->permanent()
             ->active()
             ->get();
         return view($this->folder.'employee-list')->with([

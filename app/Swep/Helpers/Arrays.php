@@ -1387,11 +1387,11 @@ class Arrays
     public static function accountNatures()
     {
         return [
-            '1' => '1',
-            '2' => '2',
-            '3' => '3',
-            '4' => '4',
-            '5' => '5',
+            '1' => 'ASSET',
+            '2' => 'LIABILITY',
+            '3' => 'NET WORTH',
+            '4' => 'INCOME',
+            '5' => 'EXPENSE',
         ];
     }
 }
