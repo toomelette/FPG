@@ -21,7 +21,6 @@ class PayrollTemplateController extends Controller
 
     public function index(Request $request){
         $employees = \App\Models\Employee::query()
-            ->permanent()
             ->active()
             ->applyProjectId()
             ->orderBy('lastname','asc')
