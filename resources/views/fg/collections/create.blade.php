@@ -14,7 +14,7 @@
                 <x-forms.select label="Payment Type" name="payment_type" cols="2" :options="\App\Swep\Helpers\Arrays::paymentTypes()"/>
                 <x-forms.input label="Reference No." name="ref_no" cols="2"/>
                 <x-forms.input label="Date" name="date" cols="2" type="date"/>
-                <x-forms.input label="Payor" name="payor" cols="3"/>
+                <x-forms.select label="Payor" name="client_uuid" cols="3" id="payor"/>
                 <x-forms.input label="Address" name="address" cols="3"/>
             </div>
             <div class="row mt-2">
@@ -140,5 +140,17 @@
                 }
             })
         })
+        $("#payor").select2({
+            ajax: {
+                url: '/dashboard/ajax/clients',
+                dataType: 'json',
+                delay : 250,
+
+                // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+            },
+            placeholder: "Select",
+            allowClear : true,
+        });
+
     </script>
 @endsection

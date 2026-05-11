@@ -44,4 +44,9 @@ class Collections extends Model
     {
         return $this->hasMany(CollectionChecks::class,'collection_uuid','uuid');
     }
+
+    public function client()
+    {
+        return $this->belongsTo(Clients::class,'client_uuid','uuid');
+    }
 }

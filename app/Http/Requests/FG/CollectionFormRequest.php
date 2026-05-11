@@ -56,7 +56,8 @@ class CollectionFormRequest extends FormRequest
             'payment_type' => 'required',
             'ref_no' => 'required',
             'date' => 'required|date_format:Y-m-d',
-            'payor' => 'required',
+//            'payor' => 'required',
+            'client_uuid' => 'required',
         ];
     }
 }

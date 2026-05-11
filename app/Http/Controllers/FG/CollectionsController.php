@@ -26,7 +26,8 @@ class CollectionsController extends Controller
     public function index(Request $request)
     {
         if($request->ajax() && $request->has('draw')){
-            $collections = Collections::query();
+            $collections = Collections::query()
+                ->with(['client']);
             return DataTables::of($collections)
                 ->addColumn('action',function ($data){
                     return view($this->folder.'dt-actions')->with([
@@ -47,7 +48,7 @@ class CollectionsController extends Controller
         $collection->payment_type = $request->payment_type;
         $collection->ref_no = $request->ref_no;
         $collection->date = $request->date;
-        $collection->payor = $request->payor;
+        $collection->client_uuid = $request->client_uuid;
         $collection->address = $request->address;
         $collection->remarks = $request->remarks;
         $collection->total_check = $request->total_check;
@@ -72,6 +73,7 @@ class CollectionsController extends Controller
             ->with([
                 'distributions.invoice',
                 'checks',
+                'client'
             ])
             ->findOrFail($uuid);
         return view($this->folder.'edit')->with([
@@ -87,7 +89,7 @@ class CollectionsController extends Controller
         $collection->payment_type = $request->payment_type;
         $collection->ref_no = $request->ref_no;
         $collection->date = $request->date;
-        $collection->payor = $request->payor;
+        $collection->client_uuid = $request->client_uuid;
         $collection->address = $request->address;
         $collection->remarks = $request->remarks;
         $collection->total_check = $request->total_check;

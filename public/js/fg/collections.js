@@ -44,7 +44,10 @@ $("body").on("click",".add-btn",function (){
 
             $("#select2-invoices-"+rand).select2({
                 ajax: {
-                    url: '/dashboard/ajax/invoices-grouped-by-clients',
+                    url: function (){
+                        let client = $('#payor').val();
+                        return '/dashboard/ajax/invoices-grouped-by-clients?client='+client;
+                    },
                     dataType: 'json',
                     delay : 250,
 

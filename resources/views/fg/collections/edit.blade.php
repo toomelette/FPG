@@ -15,7 +15,14 @@
                 <x-forms.select label="Payment Type" name="payment_type" cols="2" :options="\App\Swep\Helpers\Arrays::paymentTypes()" :value="$collection ?? null"/>
                 <x-forms.input label="Reference No." name="ref_no" cols="2" :value="$collection ?? null"/>
                 <x-forms.input label="Date" name="date" cols="2" type="date" :value="$collection ?? null"/>
-                <x-forms.input label="Payor" name="payor" cols="3" :value="$collection ?? null"/>
+                <x-forms.select label="Payor"
+                                name="client_uuid" cols="3"
+                                :value="$collection ?? null"
+                                class="select2-ajax-auto-populate"
+                                :s2-id="$collection?->client_uuid"
+                                :s2-text="$collection?->client?->name .' - '.$collection?->client?->account_no "
+                                :s2-url='route("dashboard.ajax.get","clients")'
+                />
                 <x-forms.input label="Address" name="address" cols="3" :value="$collection ?? null"/>
             </div>
             <div class="row mt-2">

@@ -46,7 +46,10 @@
                         return moment(data).format('MM/DD/YYYY');
                     }
                 },
-                { data : "payor" },
+                {
+                    data : "client.name",
+                    name : "client.name"
+                },
                 { data : "remarks" },
                 {
                     data : "total_paid",
