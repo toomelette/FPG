@@ -18,7 +18,7 @@
                         <x-forms.input label="RR Date." name="date" cols="6" type="date"/>
                     </div>
                     <div class="row mt-2">
-                        <x-forms.input label="PO No." name="po_no" cols="6"/>
+                        <x-forms.input label="PO No." name="po_no" cols="6" id="po-no"/>
                         <x-forms.input label="Terms" name="terms" cols="6"/>
                     </div>
                     <div class="row mt-2">
@@ -59,6 +59,24 @@
 
                         </tbody>
                     </table>
+
+                    <div id="placeholder" class="hide-this">
+                        <p class="placeholder-glow ">
+                            <span class="placeholder col-12 placeholder-lg"></span>
+                        </p>
+                        <p class="placeholder-glow ">
+                            <span class="placeholder col-12 placeholder-lg"></span>
+                        </p>
+                        <p class="placeholder-glow ">
+                            <span class="placeholder col-12 placeholder-lg"></span>
+                        </p>
+                        <p class="placeholder-glow ">
+                            <span class="placeholder col-12 placeholder-lg"></span>
+                        </p>
+                        <p class="placeholder-glow ">
+                            <span class="placeholder col-12 placeholder-lg"></span>
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -127,5 +145,54 @@
                 }
             })
         })
+
+        $("#po-no").change(function (){
+            let tbl = $("#details-table");
+            let placeholder = $("#placeholder");
+            let input = $(this);
+            tbl.addClass('hide-this');
+            placeholder.removeClass('hide-this');
+
+
+            $.ajax({
+                url : '{{Request::getUri()}}?getPo',
+                data : {
+                    poNo : input.val(),
+                },
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    tbl.removeClass('hide-this');
+                    placeholder.addClass('hide-this');
+                    tbl.find('tbody').html('');
+                    $.each(res.details,function (i,detail){
+                        tbl.find('.add-btn').click();
+                    });
+
+
+                    let trs = tbl.find('tbody tr');
+                    $.each(trs,function (index,tr){
+                        let detail = res.details[index];
+                        let trId = $(tr).attr('data-id');
+                        let select2 = $("#select2-details-"+trId);
+                        $(tr).find('input[name*="qty"]').val(detail.qty);
+                        $(tr).find('select[name*="uom"]').val(detail.uom);
+                        $(tr).find('input[name*="amount"]').val($.number(detail.amount,2));
+                        setTimeout(function (){
+                            autonums[trId].set(sanitizeAutonum(detail.unit_cost));
+                        },50)
+
+                        let option = new Option(detail.stock.name, detail.stock.uuid, true, true);
+                        select2.append(option).trigger('change');
+                    });
+                    computeTable(tbl);
+                },
+                error: function (res) {
+
+                }
+            })
+        });
     </script>
 @endsection

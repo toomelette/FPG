@@ -583,6 +583,15 @@ class AjaxController extends Controller
 
         $cv = $cv->paginate(25);
 
+        $data = $cv->map(function ($data){
+            return [
+                'id' => $data->uuid,
+                'text' => $data->name,
+                'uom' => $data->uom,
+            ];
+        })->toArray();
+        $array = $data;
+        /*
         if($cv->count() > 0){
 
             $data = $cv->map(function ($data){
@@ -609,6 +618,7 @@ class AjaxController extends Controller
             }
 
         }else{
+
             $array = [];
             array_unshift( $array, [
                 'id' => $request->q,
@@ -616,6 +626,7 @@ class AjaxController extends Controller
             ] );
 
         }
+        */
 //        $request->add_null = true;
         return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
     }

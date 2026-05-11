@@ -4,6 +4,7 @@ namespace App\Http\Controllers\FG;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FG\ReceivingReportsFormRequest;
+use App\Models\FG\PurchaseOrders;
 use App\Models\FG\ReceivingReports;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +21,20 @@ class ReceivingReportsController extends Controller
 
 
 
-    public function create()
+    public function create(Request $request)
     {
+        if($request->has('getPo')){
+            $poNo = $request->poNo;
+            $po = PurchaseOrders::query()
+                ->with(['details.stock'])
+                ->where('control_no','=',$poNo)
+                ->first();
+            if(filled($po)){
+                return $po;
+            }else{
+                return [];
+            }
+        }
         return view($this->folder.'create');
     }
 
