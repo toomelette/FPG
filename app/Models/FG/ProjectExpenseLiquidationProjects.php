@@ -15,4 +15,9 @@ class ProjectExpenseLiquidationProjects extends Model
     {
         return $this->belongsTo(SalesInvoice::class,'sales_invoice_uuid','uuid');
     }
+
+    public function liquidation()
+    {
+        return $this->belongsTo(ProjectExpenseLiquidation::class,'project_expense_liquidation_uuid','uuid');
+    }
 }

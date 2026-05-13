@@ -3,6 +3,10 @@
             data-toggle="modal" data-target="#show-delivery-receipt-modal">
         <i class="fa fa-file-text"></i>
     </button>
+    <button href="{{route('delivery-receipts.print',$data->uuid)}}" for="linkToEdit" type="button"
+            class="btn btn-outline-secondary btn-sm print-btn-dialog">
+        <i class="fa fa-print"></i>
+    </button>
     <a href="{{route('delivery-receipts.edit',$data->uuid)}}"
        class="btn btn-outline-secondary btn-sm edit-delivery-receipt-btn">
         <i class="fa fa-edit"></i>

@@ -115,6 +115,19 @@ class DeliveryReceiptsController extends Controller
         }catch (\Exception $e){
             abort(503,$e->getMessage());
         }
+    }
 
+    public function print($uuid)
+    {
+        $dr = DeliveryReceipts::query()
+            ->with([
+                'details',
+                'invoice.client'
+            ])
+            ->findOrFail($uuid);
+
+        return view($this->folder.'print')->with([
+            'dr' => $dr,
+        ]);
     }
 }

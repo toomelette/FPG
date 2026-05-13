@@ -4,6 +4,7 @@ namespace App\Http\Controllers\FG;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FG\SalesInvoiceRequest;
+use App\Models\FG\ProjectExpenseLiquidationProjects;
 use App\Models\FG\SalesInvoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -141,8 +142,14 @@ class SalesInvoiceController extends Controller
             ->findOrFail($uuid);
 
         if($request->ajax() && $request->has('liquidationsTable')){
-            $salesInvoice = $salesInvoice->load(['liquidations']);
-            return DataTables::of($salesInvoice->liquidations)
+            $expenseLiquidationProjects = ProjectExpenseLiquidationProjects::query()
+                ->with(['liquidation'])
+                ->whereHas('liquidation')
+                ->where('sales_invoice_uuid',$uuid)
+//                ->join('project_expense_liquidations', 'project_expense_liquidations.uuid', '=', 'project_expense_liquidation_projects.project_expense_liquidation_uuid')
+            ;
+
+            return DataTables::of($expenseLiquidationProjects)
                 ->addColumn('action',function ($data){
                     return view('fg.project-expense-liquidation.dt-actions')->with([
                         'data' => $data,

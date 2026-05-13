@@ -221,6 +221,8 @@ Route::group([
 
     Route::resource('collections',\App\Http\Controllers\FG\CollectionsController::class);
     Route::resource('project-preparation',\App\Http\Controllers\FG\ProjectPreparationController::class);
+    Route::get('/delivery-receipts/{uuid}/print',[\App\Http\Controllers\FG\DeliveryReceiptsController::class,'print'])->name('delivery-receipts.print');
+
     Route::resource('delivery-receipts',\App\Http\Controllers\FG\DeliveryReceiptsController::class);
 
     //ACCOUNTING
