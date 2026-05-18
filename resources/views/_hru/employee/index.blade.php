@@ -77,22 +77,7 @@
             @endphp
         @endif
 
-        @if(!empty($noRcs) && $noRcs->count() > 0)
-            <x-adminkit.html.alert type="warning" dismissible="0">
-                <strong>Warning! Please assign Responsibility Center on the following active {{str_plural('employee',$noRcs)}}: {{$noRcs->count()}}</strong>
-                <div class="row">
-                    @forelse($noRcs as $noRc)
-                        <div class="col-xs-6 col-sm-6  col-md-4  col-xl-4 col-xxl-2">
-                            • <a href="{{route('dashboard.employee.edit',$noRc->slug)}}">{{$noRc->full['FMiLE']}}</a>
-                        </div>
-                    @empty
-                    @endforelse
-                </div>
-            </x-adminkit.html.alert>
-            @php
-                $errs++;
-            @endphp
-        @endif
+
 
         @if($errs < 3)
             @php

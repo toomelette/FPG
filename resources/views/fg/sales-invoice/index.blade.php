@@ -17,6 +17,7 @@
                 <th>Client</th>
                 <th>Remarks</th>
                 <th>Amount</th>
+                <th>Collections</th>
                 <th style="width: 80px;">Action</th>
             </tr>
             </thead>
@@ -51,6 +52,10 @@
                     name : "remarks"
                 },
                 { data : "total_amount_due" },
+                {
+                    data : 'distributions_sum_amount',
+                    name : 'distributions_sum_amount'
+                },
                 { data : "action" },
             ],
             buttons : [
@@ -73,12 +78,12 @@
                     }
                 },
                 {
-                    targets : 5,
+                    targets : 6,
                     orderable : false,
                     class : ''
                 },
                 {
-                    targets: 4,
+                    targets: [4,5],
                     class : 'text-end',
                     render: function (data) {
                         if(!data){

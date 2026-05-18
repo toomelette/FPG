@@ -60,6 +60,7 @@ class SalesInvoiceController extends Controller
                     'client',
                     'details',
                 ])
+                ->withSum('distributions','amount')
                 ->cashInvoices();
             return DataTables::of($salesInvoices)
                 ->addColumn('action',function ($data){
@@ -163,7 +164,10 @@ class SalesInvoiceController extends Controller
                 ->toJson();
         }
         if($request->ajax() && $request->has('collectionsTable')){
-            $salesInvoice = $salesInvoice->load(['distributions.collection']);
+            $salesInvoice = $salesInvoice->load([
+                'distributions.collection.client',
+            ]);
+
             return DataTables::of($salesInvoice->distributions)
                 ->addColumn('action',function ($data){
 //                    return view('fg.collections.dt-actions')->with([

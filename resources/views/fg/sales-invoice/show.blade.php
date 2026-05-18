@@ -182,8 +182,8 @@
                     name : 'collection.ref_no',
                 },
                 {
-                    data : 'collection.payor',
-                    name : 'collection.payor',
+                    data : "collection.client.name",
+                    name : "collection.client.name"
                 },
                 {
                     data : "amount" ,

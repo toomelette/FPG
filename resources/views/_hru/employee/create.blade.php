@@ -9,9 +9,9 @@
     <form id="add-employee-form" autocomplete="off">
         <div class="tab mb-1">
             <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item" role="presentation"><a class="nav-link active" href="#tab-1" data-bs-toggle="tab" role="tab" aria-selected="true">Personal Information</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link active" href="#tab-1" data-bs-toggle="tab" role="tab" aria-selected="true">Employee Information</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="#tab-2" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Family Information</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="#tab-3" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Appointment Details</a></li>
+                <li class="nav-item hide-this" role="presentation"><a class="nav-link" href="#tab-3" data-bs-toggle="tab" role="tab" aria-selected="false" tabindex="-1">Appointment Details</a></li>
           </ul>
 
             <div class="tab-content">
@@ -57,6 +57,22 @@
 
 
                     </div>
+
+                    <div class="alert alert-info" role="alert">
+                        <div class="alert-message p-1 text-center">
+                            <strong>Employee Information</strong>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <x-forms.input label="Employee No." name="employee_no" cols="2" />
+                        <x-forms.input label="Position" name="position" cols="3" />
+                        <x-forms.select label="Appt. Status" name="appointment_status" cols="2"  :options="\App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeApptStatus(),'option','value')"/>
+                        <x-forms.select label="Status" name="is_active" cols="2" id="is_active"  :options="\App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeStatus(),'value','option')"/>
+                    </div>
+
+
+
 
                     <div class="alert alert-success mb-1" role="alert">
                         <div class="alert-message p-1 text-center">
@@ -191,7 +207,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane" id="tab-3" role="tabpanel">
+                <div class="tab-pane hide-this" id="tab-3" role="tabpanel">
                     <div class="alert alert-primary mb-2" role="alert">
                         <div class="alert-message p-1 text-center">
                             <strong>Appointment Details</strong>
@@ -199,10 +215,7 @@
                     </div>
 
                     <div class="row mb-2">
-                        <x-forms.input label="Employee No." name="employee_no" cols="2" />
                         <x-forms.select label="Item No" name="item_no" id="item-no" cols="3"  :options="[]"/>
-                        <x-forms.input label="Position" name="position" cols="3" />
-                        <x-forms.select label="Appt. Status" name="appointment_status" cols="2"  :options="\App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeApptStatus(),'option','value')"/>
                         <x-forms.select label="JG" name="salary_grade" class="sgXsi" cols="1"  :options="\App\Swep\Helpers\Arrays::jobGradeLevels()"/>
                         <x-forms.select label="SI" name="step_inc" class="sgXsi" cols="1"  :options="\App\Swep\Helpers\Arrays::stepIncements()"/>
                     </div>
@@ -224,7 +237,6 @@
 
                     </div>
                     <div class="row mb-3">
-                        <x-forms.select label="Status" name="is_active" cols="2" id="is_active"  :options="\App\Swep\Helpers\Helper::populateOptionsFromObjectAsArray(\App\Models\SuOptions::employeeStatus(),'value','option')"/>
                         <x-forms.input label="Date of Separation" name="date_of_separation" type="date" container-class="is_active_toggle" cols="2" />
                         <x-forms.input label="Reason of Separation" name="reason_of_separation" cols="2" container-class="is_active_toggle" />
                     </div>
