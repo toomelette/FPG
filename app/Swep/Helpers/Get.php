@@ -45,4 +45,13 @@ class Get
         }
     }
 
+
+    public static function address()
+    {
+        return 'Lopez Jaena Street, Bacolod City';
+    }
+    public static function company()
+    {
+        return 'Fil Power Group & Marketing Corp.';
+    }
 }

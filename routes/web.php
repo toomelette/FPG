@@ -232,6 +232,11 @@ Route::group([
     Route::resource('general-journals',\App\Http\Controllers\FG\GeneralJournalsController::class);
     Route::resource('chart-of-accounts',\App\Http\Controllers\FG\ChartOfAccountsController::class);
 
+    Route::get('accounting-reports/{report}/print',[\App\Http\Controllers\FG\AccountingReports::class,'print'])->name('accounting-reports.print');
+
+    Route::resource('accounting-reports',\App\Http\Controllers\FG\AccountingReports::class);
+
+
     Route::get('subsidiary-accounts/{id}/index',[\App\Http\Controllers\FG\SubsidiaryAccountsController::class,'index'])->name('subsidiary-accounts.index');
     Route::post('subsidiary-accounts/{parentAccountCode}',[\App\Http\Controllers\FG\SubsidiaryAccountsController::class,'store'])->name('subsidiary-accounts.store');
     Route::resource('subsidiary-accounts',\App\Http\Controllers\FG\SubsidiaryAccountsController::class)->except(['index','store']);

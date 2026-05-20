@@ -410,3 +410,8 @@ table.tbl{
     border-left: 1px solid black;
     border-right: 1px solid black;
 }
+
+
+.b-grey{
+    border-color: #ededed;
+}
