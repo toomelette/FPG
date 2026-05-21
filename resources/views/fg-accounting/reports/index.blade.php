@@ -22,6 +22,9 @@
                     <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#general-ledger" role="tab" aria-selected="false" tabindex="-1">
                         General Ledger
                     </a>
+                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#trial-balance" role="tab" aria-selected="false" tabindex="-1">
+                        Trial Balance
+                    </a>
                 </div>
             </div>
         </div>
@@ -107,6 +110,27 @@
                                     <x-forms.input label="From" name="month_from" cols="2" type="month"/>
                                     <x-forms.input label="To" name="month_to" cols="2" type="month"/>
                                     <x-forms.select label="Account Code" name="account_code" class="select2-account-codes" cols="4" required="required"/>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
+                                <hr>
+                            </form>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mb-2 float-end print-btn"><i class="fa fa-print"></i> Print</button>
+                            <div class="embed-responsive">
+                                <iframe height="600" class="embed-responsive-item" src="" style="padding: 10px"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="trial-balance" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Trial Balance</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            <form class="report-form" target="{{route('accounting-reports.print','trial-balance')}}">
+                                <div class="row mb-2">
+                                    <x-forms.input label="To" name="month_to" cols="2" type="month"/>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
                                 <hr>

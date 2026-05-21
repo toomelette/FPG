@@ -940,4 +940,14 @@ class Helper
 
         return $words;
     }
+
+    public static function accountingFormat($value) {
+        if($value <> 0){
+            return $value < 0
+                ? '(' . number_format(abs($value), 2) . ')'
+                : number_format($value, 2);
+        }else{
+            return  '';
+        }
+    }
 }
