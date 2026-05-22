@@ -66,7 +66,6 @@ class AccountingReports extends Controller
         ;
 
         if(filled($request->month_from)){
-
             $journals = $journals->where('date','>=',Carbon::parse($request->month_from)->firstOfMonth()->format('Y-m-d'));
         }
         if(filled($request->month_to)){
@@ -119,7 +118,9 @@ class AccountingReports extends Controller
             ->keyBy('account_code')
         ;
 
+
         $chartOfAccounts = ChartOfAccounts::query()
+            ->whereIn('account_code',$accounts->keys()->toArray())
             ->orderBy('account_code')
             ->get()
             ->map(function ($coa) use($accounts){
@@ -143,6 +144,47 @@ class AccountingReports extends Controller
         return view('fg-accounting.reports.trial-balance')->with([
             'chartOfAccounts' => $chartOfAccounts,
         ]);
-        dd($chartOfAccounts);
+    }
+
+    private function analysisOfAccounts(Request $request)
+    {
+        if(blank($request->date_from)){
+            abort(504,'Date from required.');
+        }
+        if(blank($request->account_code)){
+            abort(504,'Account code required.');
+        }
+        if(blank($request->date_to)){
+            $request->date_to = Carbon::now()->format('Y-m-d');
+        }
+
+        $balanceForwarded = Journals::query()
+            ->select([
+                DB::raw('coalesce(sum(debit),0) as debit'),
+                DB::raw('coalesce(sum(credit),0) as credit'),
+            ])
+            ->join('journal_entries','journals.uuid','=','journal_entries.journal_uuid')
+            ->where('journal_entries.account_code','=',$request->account_code)
+            ->where('date','<',$request->date_from)
+            ->first()
+        ;
+        $journalEntries = Journals::query()
+            ->join('journal_entries','journals.uuid','=','journal_entries.journal_uuid')
+            ->where('journal_entries.account_code','=',$request->account_code)
+            ->whereBetween('journals.date',[$request->date_from,$request->date_to])
+            ->orderBy('journals.date')
+            ->get()
+        ;
+
+        $chartOfAccount = ChartOfAccounts::query()
+            ->where('account_code','=',$request->account_code)
+            ->firstOrFail();
+
+        return view('fg-accounting.reports.analysis-of-accounts')->with([
+            'balanceForwarded' => $balanceForwarded,
+            'journalEntries' => $journalEntries,
+            'chartOfAccount' => $chartOfAccount,
+        ]);
+        dd($request->all());
     }
 }
