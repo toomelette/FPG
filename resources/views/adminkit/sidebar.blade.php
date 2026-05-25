@@ -35,13 +35,7 @@
         <ul class="sidebar-nav">
 
             @if(Auth::check())
-                @if(!empty(Auth::user()->employee))
-                    <li class="@if('dashboard.profile' == Route::currentRouteName() ) sidebar-item @endif" id="home-nav" >
-                        <a class="sidebar-link" href="{{route('dashboard.profile')}}">
-                            <i class="align-middle fa fa-user" ></i> <span class="">Personal Data </span>  <span style="border-radius: 50%" class=" hide-this sidebar-badge badge bg-success animate__animated animate__flash">●</span>
-                        </a>
-                    </li>
-                @endif
+
                 @php
                     $cos = \App\Models\HRU\COS::query()
                         ->with(['employees'])

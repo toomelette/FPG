@@ -66,7 +66,11 @@ class UserSubmenuRepository extends BaseRepository implements UserSubmenuInterfa
         }else{
             $submenu_id = Submenu::where('route',$route_name)->first();
             if(empty($submenu_id)){
-                abort(503,'Submenu does not exist.: Route name:['.$route_name.']');
+                if($route_name == 'home'){
+                    return true;
+                }else{
+                    abort(503,'Submenu does not exist.: Route name:['.$route_name.']');
+                }
             }
             if($submenu_id->public == 1){
                 return true;
