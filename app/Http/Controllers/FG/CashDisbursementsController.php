@@ -67,7 +67,10 @@ class CashDisbursementsController extends Controller
                 $journal->entries()->createMany($journalEntries);
                 JournalEntriesSubsidiary::query()->insert($subsidiaries);
             });
-            return $journal->only('uuid');
+            return [
+                'uuid' => $journal->uuid,
+                'href' => route('cash-disbursements.print',$journal->uuid),
+            ];
         }catch(\Exception $e){
             abort(503,$e->getMessage());
         }
@@ -168,7 +171,18 @@ class CashDisbursementsController extends Controller
         }
     }
 
-    public function print($uuid)
+    public function print($uuid,Request $request)
+    {
+        if($request->has('print-voucher')){
+            return $this->printVoucher($uuid,$request);
+        }
+
+        if($request->has('print-check')){
+            return $this->printCheck($uuid,$request);
+        }
+    }
+
+    private function printVoucher($uuid,Request $request)
     {
         $journal = Journals::query()
             ->with([
@@ -178,6 +192,20 @@ class CashDisbursementsController extends Controller
             ->findOrFail($uuid);
 
         return view($this->folder.'print-dv')->with([
+            'journal' => $journal,
+        ]);
+    }
+
+    private function printCheck($uuid,Request $request)
+    {
+        $journal = Journals::query()
+            ->with([
+                'entries.chartOfAccount',
+            ])
+            ->cashDisbursements()
+            ->findOrFail($uuid);
+
+        return view($this->folder.'print-check')->with([
             'journal' => $journal,
         ]);
     }

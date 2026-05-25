@@ -9,7 +9,7 @@
     </a>
 
 
-    <button href="{{route('cash-disbursements.print',$data->uuid)}}"  type="button"  class="btn btn-outline-secondary btn-sm print-btn-dialog"  >
+    <button href="{{route('cash-disbursements.print',$data->uuid)}}?print-voucher"  type="button"  class="btn btn-outline-secondary btn-sm print-btn-dialog"  >
         <i class="fa fa-print"></i>
     </button>
     <button type="button" data="{{$data->uuid}}"

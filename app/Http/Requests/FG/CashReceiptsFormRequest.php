@@ -40,6 +40,10 @@ class CashReceiptsFormRequest extends FormRequest
 
     public function rules(): array
     {
+        if(collect($this->entries)->sum('debit') !== collect($this->entries)->sum('credit')){
+            abort(503,'Debit and Credit not equal');
+        }
+
         return [
             'control_no' => 'required',
             'date' => 'required|date_format:Y-m-d',

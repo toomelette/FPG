@@ -109,6 +109,7 @@
         <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
     </x-slot:footer>
 </x-adminkit.html.modal-template>
+
 @endsection
 
 @section('scripts')
@@ -146,9 +147,36 @@
                 success: function (res) {
                     succeed(form,true,true);
                     toast('success','Journal successfully saved.','Success!');
+                    compute($("#entries-table"));
                     $("#entries-table tbody").html('');
                     $(".add-btn").trigger('click');
                     subsidiaryLedgers = {};
+
+                    //choose what to do:
+                    Swal.fire({
+                        title: 'What to do next?',
+                        showConfirmButton: false,
+                        html: `
+                            <button id="btn1" class="btn btn-lg btn-primary"><i class="fa fa-print"></i> Print Voucher</button>
+                            <button id="btn2" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#print-check-modal"><i class="fa fa-print"></i> Print Check</button>
+                            <button id="btn3" class="btn btn-lg btn-outline-secondary"><i class="fa fa-plus"></i> New Journal</button>
+                          `,
+                        didOpen: () => {
+                            $("#btn1").click(function (){
+                                printDialog(res.href+'?print-voucher');
+                            });
+                            $("#btn2").click(function (){
+                                printDialog(res.href+'?print-check');
+
+                            });
+                            $("#btn3").click(function (){
+                                Swal.close('opt3');
+                            });
+                        }
+                    }).then((result) => {
+                        console.log(result.dismiss || result.value);
+                    });
+
                 },
                 error: function (res) {
                     errored(form,res);

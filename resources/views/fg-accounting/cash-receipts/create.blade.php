@@ -142,9 +142,7 @@
                 name: 'subsidiary_ledgers',
                 value : JSON.stringify(subsidiaryLedgers),
             })
-
             loading_btn(form);
-
             $.ajax({
                 url : '{{route("cash-receipts.store")}}',
                 data : $.param(data),
@@ -158,13 +156,12 @@
                     $("#entries-table tbody").html('');
                     $(".add-btn").trigger('click');
                     subsidiaryLedgers = {};
+
                 },
                 error: function (res) {
                     errored(form,res);
                 }
             })
-
-
         })
 
 

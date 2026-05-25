@@ -10,6 +10,7 @@
 
         <link type="text/css" rel="stylesheet" href="{{base_path('/public/template/bower_components/font-awesome/css/font-awesome.min.css')}}">
         <link type="text/css" rel="stylesheet" href="{{base_path('/public/template/bower_components/font-awesome/css/font-awesome.min.css')}}">
+        <script type="text/javascript" src="{{base_path('/public/template/plugins/moment/moment.js')}}"></script>
 
     @else
         <link rel="stylesheet"  href="{{asset('template/plugins/print/bootstrap.print.css')}}">
@@ -21,6 +22,8 @@
 
         <link type="text/css" rel="stylesheet" href="{{asset('template/bower_components/font-awesome/css/font-awesome.min.css')}}">
         <link type="text/css" rel="stylesheet" href="{{asset('template/bower_components/font-awesome/css/font-awesome.min.css')}}">
+        <script type="text/javascript" src="{{asset('template/plugins/moment/moment.js')}}"></script>
+
     @endif
 
             <meta charset="utf-8">
