@@ -950,4 +950,11 @@ class Helper
             return  '';
         }
     }
+
+    public static  function getInitials($name)
+    {
+        return collect(explode(' ', $name))
+            ->map(fn ($word) => Str::upper(Str::substr($word, 0, 1)))
+            ->join('');
+    }
 }

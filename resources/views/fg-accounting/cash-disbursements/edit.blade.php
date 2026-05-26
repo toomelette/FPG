@@ -14,7 +14,7 @@
                 <div class="col-md-4">
                     <div class="row">
                         <x-forms.input label="CV No." name="control_no" cols="6" :value="$journal ?? null"/>
-                        <x-forms.input label="Date" name="date" cols="6" type="date" :value="$journal->date->format('Y-m-d') ?? null"/>
+                        <x-forms.input label="Date" name="date" cols="6" type="date" :value="$journal ?? null"/>
                     </div>
                     <div class="row mt-2">
                         <x-forms.input label="Payee" name="counterparty" cols="12" :value="$journal ?? null"/>

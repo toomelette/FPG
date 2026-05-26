@@ -763,3 +763,22 @@ tr.color-change td {
 .input-payroll:hover {
     border-color: #1d4ed8; /* change color on hover */
 }
+
+.list-group-custom{
+    border-bottom: 1px solid #dee2e6;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.list-group-primary{
+    border-left: 3px solid #3b7ddd !important;
+}
+
+.list-group-success{
+    border-left: 3px solid #1cbb8c !important;
+}
+
+
+.header-success{
+    background-color: #e6faeb ;
+}

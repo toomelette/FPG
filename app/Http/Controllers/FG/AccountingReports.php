@@ -5,6 +5,7 @@ namespace App\Http\Controllers\FG;
 use App\Http\Controllers\Controller;
 use App\Models\FG\ChartOfAccounts;
 use App\Models\FG\Journals;
+use App\Models\FG\SubsidiaryAccounts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -186,5 +187,89 @@ class AccountingReports extends Controller
             'chartOfAccount' => $chartOfAccount,
         ]);
         dd($request->all());
+    }
+
+    private function subsidiaryLedger(Request $request)
+    {
+        if(blank($request->date_to)){
+            $request->date_to = Carbon::now()->format('Y-m-d');
+        }
+
+        $lines = Journals::query()
+            ->select([
+                DB::raw('journals.*'),
+                DB::raw('journal_entries_subsidiaries.*')
+            ])
+            ->join('journal_entries','journals.uuid','=','journal_entries.journal_uuid')
+            ->join('journal_entries_subsidiaries','journal_entries.uuid','=','journal_entries_subsidiaries.journal_entry_uuid')
+            ->orderBy('journals.date')
+            ->where('journal_entries_subsidiaries.account_code','=',$request->subsidiary_account_code)
+            ->where('journals.date','<=',$request->date_to)
+            ->get()
+        ;
+
+
+        $subsidiaryAccount = SubsidiaryAccounts::query()
+            ->where('account_code','=',$request->subsidiary_account_code)
+            ->firstOrFail();
+        return view('fg-accounting.reports.subsidiary-ledger')->with([
+            'lines' => $lines,
+            'subsidiaryAccount' => $subsidiaryAccount,
+        ]);
+        dd($lines);
+    }
+
+    private function scheduleOfAccounts(Request $request)
+    {
+        $dateTo = Carbon::parse($request->date_to);
+        $cutoffDate = $dateTo->clone()->firstOfMonth()->subDay()->format('Y-m-d');
+        $firstOfSelectedMonth = $dateTo->firstOfMonth()->format('Y-m-d');
+        $lastOfSelectedMonth = $dateTo->lastOfMonth()->format('Y-m-d');
+
+        $baseQuery = Journals::query()
+            ->select([
+                'subsidiary_accounts.account_code',
+                'subsidiary_accounts.account_title',
+                DB::raw('coalesce(sum(journal_entries_subsidiaries.debit),0) as  debit'),
+                DB::raw('coalesce(sum(journal_entries_subsidiaries.credit),0) as  credit')
+            ])
+            ->join('journal_entries','journals.uuid','=','journal_entries.journal_uuid')
+            ->join('journal_entries_subsidiaries','journal_entries.uuid','=','journal_entries_subsidiaries.journal_entry_uuid')
+            ->join('subsidiary_accounts','subsidiary_accounts.account_code','=','journal_entries_subsidiaries.account_code')
+            ->orderBy('journal_entries_subsidiaries.account_code')
+            ->groupBy([
+                'journal_entries_subsidiaries.account_code',
+                'subsidiary_accounts.account_title'
+            ]);
+        $accountsOnCutoff = (clone $baseQuery)
+            ->where('date','<=',$cutoffDate)
+            ->get()
+        ;
+
+        $accountsOnSelectedMonth = (clone $baseQuery)
+            ->whereBetween('date',[$firstOfSelectedMonth,$lastOfSelectedMonth])
+            ->get()
+        ;
+
+        $mergedAccountCodes = $accountsOnCutoff
+            ->pluck('account_code')
+            ->merge($accountsOnSelectedMonth->pluck('account_code'))
+            ->unique()
+            ->values();
+
+        $usedSubsidiaryAccounts = SubsidiaryAccounts::query()
+            ->whereIn('account_code',$mergedAccountCodes->toArray())
+            ->orderBy('account_code')
+            ->get();
+        $chartOfAccount = ChartOfAccounts::query()
+            ->where('account_code','=',$request->account_code)
+            ->firstOrFail();
+
+        return view('fg-accounting.reports.schedule-of-accounts')->with([
+            'usedSubsidiaryAccounts' => $usedSubsidiaryAccounts,
+            'accountsOnCutoff' => $accountsOnCutoff,
+            'accountsOnSelectedMonth' => $accountsOnSelectedMonth,
+            'chartOfAccount' => $chartOfAccount,
+        ]);
     }
 }

@@ -77,11 +77,6 @@
                     class : 'w-20p'
                 },
                 {
-                    targets : 0,
-                    class : 'w-20p'
-                },
-
-                {
                     targets : 4,
                     render: function (data) {
                        if(data !== 0){
@@ -89,7 +84,9 @@
                        }else{
                            return  '';
                        }
-                    }
+                    },
+                    orderable : false,
+                    searchable: false,
                 },
             ],
             order:[[0,'asc']],

@@ -697,6 +697,14 @@ class AjaxController extends Controller
 
         $cv = $cv->paginate(25);
 
+        $data = $cv->map(function ($data){
+            return [
+                'id' => $data->account_code,
+                'text' => $data->account_title .' - '.$data->account_code,
+            ];
+        })->toArray();
+        $array = $data;
+        /*
         if($cv->count() > 0){
 
             $data = $cv->map(function ($data){
@@ -729,6 +737,7 @@ class AjaxController extends Controller
             ] );
 
         }
+        */
 //        $request->add_null = true;
         return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
     }
@@ -751,6 +760,14 @@ class AjaxController extends Controller
 
         $cv = $cv->paginate(25);
 
+        $data = $cv->map(function ($data){
+            return [
+                'id' => $data->account_code,
+                'text' => $data->account_title .' - '.$data->account_code,
+            ];
+        })->toArray();
+        $array = $data;
+        /*
         if($cv->count() > 0){
 
             $data = $cv->map(function ($data){
@@ -783,6 +800,7 @@ class AjaxController extends Controller
             ] );
 
         }
+        */
 //        $request->add_null = true;
         return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
     }
