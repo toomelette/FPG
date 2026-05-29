@@ -10,6 +10,7 @@ use App\Models\FG\PayrollEmployeeAdjustments;
 use App\Models\FG\PayrollEmployees;
 use App\Models\FG\PayrollMaster;
 use App\Models\FG\PayrollTemplate;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -44,9 +45,10 @@ class PayrollPreparationController extends Controller
 
     public function store(Request $request)
     {
+
         $payrollMaster = new PayrollMaster();
         $payrollMaster->uuid = Str::uuid()->toString();
-        $payrollMaster->date = $request->date;
+        $payrollMaster->date = Carbon::parse($request->date)->firstOfMonth()->format('Y-m-d');
         $payrollMaster->type = $request->type;
         $payrollMaster->date_from = $request->date_from;
         $payrollMaster->date_to = $request->date_to;
@@ -328,5 +330,38 @@ class PayrollPreparationController extends Controller
             abort(503,$e->getMessage());
         }
         return 1;
+    }
+
+    public function print($uuid)
+    {
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollEmployees.employeeAdjustments',
+                'employeeAdjustments',
+
+            ])
+            ->findOrFail($uuid);
+        $deductionsUsed = $payrollMaster->employeeAdjustments
+            ->where('type','=','DEDUCTION')
+            ->sortBy(function ($adjustment){
+                return $adjustment->priority;
+            })
+            ->groupBy('code')
+            ->keys()
+        ;
+        $incentivesUsed = $payrollMaster->employeeAdjustments
+            ->where('type','=','INCENTIVE')
+            ->sortBy(function ($adjustment){
+                return $adjustment->priority;
+            })
+            ->groupBy('code')
+            ->keys()
+        ;
+
+        return view('fg.payroll-preparation.MID-MONTH.payroll')->with([
+            'payrollMaster' => $payrollMaster,
+            'deductionsUsed' => $deductionsUsed,
+            'incentivesUsed' => $incentivesUsed,
+        ]);
     }
 }

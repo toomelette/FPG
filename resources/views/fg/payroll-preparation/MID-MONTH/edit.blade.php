@@ -35,7 +35,8 @@
 
             </div>
             <div class="btn-group float-end">
-                <button type="button" id="fetch-table-btn" class="btn btn-outline-secondary btn-sm"> Fetch </button>
+                <button type="button" id="download-template-btn" class="btn btn-outline-secondary btn-sm"><i class="fa fa-download"></i> Download all from template </button>
+                <button type="button" id="fetch-table-btn" class="btn btn-outline-secondary btn-sm hide-this"> Fetch </button>
                 <button type="button" id="add-adjustment-btn" data-bs-target="#add-adjustment-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-plus"></i> Add Adjustment Code </button>
 
                 <button type="button" id="ad-employee-btn" data-bs-target="#add-employee-modal" data-bs-toggle="modal" class="btn btn-outline-secondary btn-sm" {{$payrollMaster->is_locked == 1 ? 'disabled':''}}> <i class="fa fa-plus"></i> Add Employee </button>
@@ -72,6 +73,7 @@
 
                     </tbody>
                 </table>
+                <button type="submit"></button>
             </form>
         </div>
 
@@ -101,6 +103,16 @@
             <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
         </x-slot:footer>
     </x-adminkit.html.modal-template>
+
+    <x-adminkit.html.offcanvas class="end" id="print-offcanvas">
+        <x-slot:title>
+            Print Options
+        </x-slot:title>
+
+        <a href="{{route('payroll-preparation.print',[$payrollMaster->uuid])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 print-btn-dialog"> <i class="fa fa-print"></i> Payroll Summary</a>
+        <hr>
+
+    </x-adminkit.html.offcanvas>
 @endsection
 
 @section('scripts')
@@ -169,7 +181,7 @@
         $("body").on("click",".fetch-template-btn",function () {
             let btn = $(this);
             let code = btn.data('code');
-            load_modal2(btn);
+            wait_this_button(btn);
             let uri = '{{route("payroll-preparation.edit",$payrollMaster->uuid)}}?fetchTemplate='+code;
             uri = uri.replace('slug',btn.attr('data'));
             $.ajax({
@@ -187,13 +199,18 @@
                         }
 
                     })
-
+                    unwait_this_button(btn);
                 },
                 error: function (res) {
 
                 }
             })
-        })
+        });
+        $("#download-template-btn").click(function (){
+            $(".fetch-template-btn").each(function (){
+                $(this).trigger('click');
+            })
+        });
 
         $("#submit-form-btn").click(function(){
             $("#payroll-form").submit();
