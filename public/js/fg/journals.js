@@ -152,55 +152,74 @@ $("body").on("click",".add-sl-btn",function (){
 })
 
 $("#subsidiary-ledger-form").submit(function (e){
-    e.preventDefault();
+    let url = '/validate-subsidiaries';
     let form = $(this);
-    let modal = form.closest('.modal');
-    let journalEntryId = modal.attr('data-account');
-    let data = form.serializeArray();
+    e.preventDefault();
+    loading_btn(form)
+    $.ajax({
+        url : url,
+        data : form.serialize(),
+        type: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        },
+        success: function (res) {
 
-    let formData = Object.fromEntries(
-        form.serializeArray().map(item => [item.name, item.value])
-    );
+            let modal = form.closest('.modal');
+            let journalEntryId = modal.attr('data-account');
+            let data = form.serializeArray();
 
-    let input = formData;
-    let result = [];
+            let formData = Object.fromEntries(
+                form.serializeArray().map(item => [item.name, item.value])
+            );
 
-    for (let [key, value] of Object.entries(input)) {
+            let input = formData;
+            let result = [];
 
-        let match = key.match(/^subsidiary_ledger\[(.*?)\]\[(.*?)\]$/);
-        if (!match) continue;
+            for (let [key, value] of Object.entries(input)) {
 
-        let rowId = match[1];
-        let field = match[2];
+                let match = key.match(/^subsidiary_ledger\[(.*?)\]\[(.*?)\]$/);
+                if (!match) continue;
 
-        // 🔥 find or create row
-        let row = result.find(r => r.id === rowId);
+                let rowId = match[1];
+                let field = match[2];
 
-        if (!row) {
-            row = { id: rowId };
-            result.push(row);
+                // 🔥 find or create row
+                let row = result.find(r => r.id === rowId);
+
+                if (!row) {
+                    row = { id: rowId };
+                    result.push(row);
+                }
+
+                // 🔥 debit / credit sanitizing
+                if (field === 'debit' || field === 'credit') {
+                    row[field] = sanitizeAutonum(value);
+                }
+                else {
+                    row[field] = value;
+                }
+
+                // 🔥 Select2 text for account_code
+                if (field === 'account_code') {
+                    let select = $(`[name="${key}"]`);
+
+                    let text = select.select2('data')[0]?.text
+                        || select.find('option:selected').text();
+
+                    row['account_text'] = text;
+                }
+            }
+            $(form).parents('.modal').modal('hide');
+            subsidiaryLedgers[journalEntryId] = result;
+            remove_loading_btn(form);
+        },
+        error: function (res) {
+            errored(form,res);
+            remove_loading_btn(form);
         }
+    });
 
-        // 🔥 debit / credit sanitizing
-        if (field === 'debit' || field === 'credit') {
-            row[field] = sanitizeAutonum(value);
-        }
-        else {
-            row[field] = value;
-        }
-
-        // 🔥 Select2 text for account_code
-        if (field === 'account_code') {
-            let select = $(`[name="${key}"]`);
-
-            let text = select.select2('data')[0]?.text
-                || select.find('option:selected').text();
-
-            row['account_text'] = text;
-        }
-    }
-    $(form).parents('.modal').modal('hide');
-    subsidiaryLedgers[journalEntryId] = result;
 })
 
 $('#subsidiary-ledgers-modal').on('hidden.bs.modal', function (event) {

@@ -49,6 +49,8 @@ class CashDisbursementsFormRequest extends FormRequest
             'date' => 'required|date_format:Y-m-d',
             'counterparty' => 'required',
             'entries.*.account_code' => 'required',
+            'entries.*.debit'  => 'nullable|required_without:entries.*.credit',
+            'entries.*.credit' => 'nullable|required_without:entries.*.debit',
         ];
     }
 }

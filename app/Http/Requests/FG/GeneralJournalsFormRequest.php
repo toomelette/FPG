@@ -46,6 +46,8 @@ class GeneralJournalsFormRequest extends FormRequest
             'control_no' => 'required',
             'date' => 'required|date_format:Y-m-d',
             'entries.*.account_code' => 'required',
+            'entries.*.debit'  => 'nullable|required_without:entries.*.credit',
+            'entries.*.credit' => 'nullable|required_without:entries.*.debit',
         ];
     }
 }

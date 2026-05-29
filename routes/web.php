@@ -72,7 +72,9 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     ]
 ], function () {
 
-	/** USER **/
+
+
+    /** USER **/
 
 	Route::post('/user/activate/{slug}', 'UserController@activate')->name('user.activate');
 	Route::post('/user/deactivate/{slug}', 'UserController@deactivate')->name('user.deactivate');
@@ -200,13 +202,20 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
 
 
 });
+Route::group([
+    'middleware' => [
+        'check.user_status',
+        'last_activity',
+    ]
+], function () {
+    Route::post('validate-subsidiaries',[\App\Http\Controllers\FG\SubsidiariesController::class,'validateSubsidiaries']);
+});
 
 Route::group([
     'middleware' => [
         'check.user_status',
         'check.user_route',
         'last_activity',
-//        'verify.email'
     ]
 ], function () {
     Route::get('/home', 'HomeController@index')->name('home');
@@ -227,6 +236,7 @@ Route::group([
 
     //ACCOUNTING
     Route::get('/cash-disbursements/{uuid}/print',[\App\Http\Controllers\FG\CashDisbursementsController::class,'print'])->name('cash-disbursements.print');
+
     Route::resource('cash-disbursements',\App\Http\Controllers\FG\CashDisbursementsController::class);
     Route::resource('cash-receipts',\App\Http\Controllers\FG\CashReceiptsController::class);
     Route::resource('general-journals',\App\Http\Controllers\FG\GeneralJournalsController::class);
