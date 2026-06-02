@@ -72,6 +72,10 @@
                                        ]"
                                        :value="$user->pms_allowed ?? null"
                                    />
+
+                                   <x-forms.select label="Warehouse" name="warehouse" cols="3" :options="\App\Swep\Helpers\Arrays::db('warehouses')"
+                                                   :value="$user->warehouse ?? null"
+                                   />
                                </div>
 
 

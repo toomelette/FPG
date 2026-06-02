@@ -144,6 +144,7 @@ class UserService extends BaseService{
         $user->project_id = $request->project_id;
         $user->pms_allowed = $request->pms_allowed ?? null;
         $user->dash = $request->dash_type;
+        $user->warehouse = $request->warehouse;
 
         $user_id = $user->user_id;
 
