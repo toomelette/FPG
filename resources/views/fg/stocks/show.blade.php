@@ -12,6 +12,7 @@
                 <th>Control No.</th>
                 <th>Description</th>
                 <th>UOM</th>
+                <th>REF DOC</th>
                 <th>Add</th>
                 <th>Less</th>
                 <th>Balance</th>
@@ -30,6 +31,7 @@
                     <td>{{$line->control_no}}</td>
                     <td>{{$line->remarks}}</td>
                     <td>{{$line->uom}}</td>
+                    <td>{{$line->book}}</td>
                     @if($line->direction == 1)
                         <td class="text-center">{{$line->qty}}</td>
                         <td class="text-center"></td>
