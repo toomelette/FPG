@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Stocks extends Model
 {
     use HasFactory;
+
+    protected $primaryKey = 'uuid';
+    public $incrementing = false;
+    protected $keyType = 'string';
 }

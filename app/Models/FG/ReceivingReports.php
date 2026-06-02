@@ -31,6 +31,8 @@ class ReceivingReports extends Model
 
     public function details()
     {
-        return $this->hasMany(InventoryLedger::class,'reference_uuid','uuid');
+        return $this->hasMany(ReceivingReportDetails::class,'receiving_report_uuid','uuid');
+
+        //return $this->hasMany(InventoryLedger::class,'reference_uuid','uuid');
     }
 }

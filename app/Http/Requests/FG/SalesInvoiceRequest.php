@@ -33,6 +33,7 @@ class SalesInvoiceRequest extends FormRequest
                 $detail['amount'] = Helper::sanitizeAutonum($detail['unit_cost']) * $detail['qty'];
                 $detail['stock_uuid'] = $stocks?->firstWhere('uuid',$detail['description'])?->uuid ?? null;
                 $detail['description'] = $stocks?->firstWhere('uuid',$detail['description'])?->name ?? $detail['description'];
+                $detail['warehouse']= Auth::user()->warehouse;
                 return $detail;
             })
             ->toArray();

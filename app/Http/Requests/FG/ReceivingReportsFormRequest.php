@@ -30,15 +30,11 @@ class ReceivingReportsFormRequest extends FormRequest
             ->get();
         $details = collect($this->details ?? [])
             ->map(function ($detail) use ($stocks){
-                $detail['reference_type'] = 'RECEIVING REPORT';
-                $detail['movement_type']= 'IN';
-                $detail['direction']= 1;
-                $detail['warehouse']= Auth::user()->warehouse;
-                $detail['date'] = $this->date;
                 $detail['unit_cost'] = isset($detail['unit_cost']) ? (Helper::sanitizeAutonum($detail['unit_cost']) * 1) : null;
-                $detail['amount'] = Helper::sanitizeAutonum($detail['unit_cost']) * $detail['qty'];
+                $detail['amount'] = $detail['unit_cost'] * $detail['qty'];
                 $detail['stock_uuid'] = $stocks?->firstWhere('uuid',$detail['description'])?->uuid ?? null;
                 $detail['description'] = $stocks?->firstWhere('uuid',$detail['description'])?->name ?? $detail['description'];
+                $detail['warehouse']= Auth::user()->warehouse;
                 return $detail;
             })
             ->toArray();

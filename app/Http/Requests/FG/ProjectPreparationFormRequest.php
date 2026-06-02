@@ -5,6 +5,7 @@ namespace App\Http\Requests\FG;
 use App\Models\FG\Stocks;
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectPreparationFormRequest extends FormRequest
 {
@@ -32,12 +33,12 @@ class ProjectPreparationFormRequest extends FormRequest
                 $detail['amount'] = $detail['unit_cost'] * $detail['qty'];
                 $detail['stock_uuid'] = $stocks?->firstWhere('uuid',$detail['description'])?->uuid ?? null;
                 $detail['description'] = $stocks?->firstWhere('uuid',$detail['description'])?->name ?? $detail['description'];
+                $detail['warehouse']= Auth::user()->warehouse;
                 return $detail;
             })
             ->toArray();
         $this->merge([
             'details' => $details,
-
         ]);
     }
 

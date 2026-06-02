@@ -255,6 +255,7 @@ Route::group([
     Route::resource('receiving-report',\App\Http\Controllers\FG\ReceivingReportsController::class);
     Route::resource('inventory-transfers',\App\Http\Controllers\FG\InventoryTransfersController::class);
     Route::resource('purchase-orders',\App\Http\Controllers\FG\PurchaseOrderController::class);
+    Route::resource('stocks',\App\Http\Controllers\FG\StocksController::class);
 
     //Payroll
     Route::resource('payroll-template',\App\Http\Controllers\FG\PayrollTemplateController::class);
