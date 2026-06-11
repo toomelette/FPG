@@ -183,7 +183,11 @@ class SalesInvoiceController extends Controller
         }
 
         if($request->ajax() && $request->has('preparationsTable')){
-            $salesInvoice = $salesInvoice->load(['preparations']);
+            $salesInvoice = $salesInvoice->load([
+                'preparations' => function ($preparations) {
+                    $preparations->withSum('details','amount');
+                }
+            ]);
             return DataTables::of($salesInvoice->preparations)
                 ->addColumn('action',function ($data){
 

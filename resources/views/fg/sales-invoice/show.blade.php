@@ -266,7 +266,6 @@
                 {
                     targets: 2,
                     orderable : false,
-                    searchable : false,
                     class : 'text-end'
                 },
                 {

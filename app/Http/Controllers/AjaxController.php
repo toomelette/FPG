@@ -12,6 +12,7 @@ use App\Models\Document;
 use App\Models\Employee;
 use App\Models\FG\Clients;
 use App\Models\FG\CollectionChecks;
+use App\Models\FG\Journals;
 use App\Models\FG\ProjectExpenseLiquidation;
 use App\Models\FG\ProjectExpenseLiquidationDetails;
 use App\Models\FG\Projects;
@@ -73,6 +74,16 @@ class AjaxController extends Controller
         if($for == 'subsidiary-account-codes'){
             return $this->subsidiaryAccountCodes($r);
         }
+
+        if($for == 'payor'){
+            return $this->payor($r);
+        }
+
+        if($for == 'counterparty-info'){
+            return $this->counterpartyInfo($r);
+        }
+
+
 
 
 
@@ -805,6 +816,34 @@ class AjaxController extends Controller
         return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
     }
 
+    public function payor(Request $request)
+    {
+
+        $data = null;
+        $cv = \App\Models\FG\Journals::query()
+            ->select('counterparty')
+            ->distinct()
+            ->orderBy('counterparty','asc');
+
+        if($request->has('q') && $request->q != ''){
+            $cv = $cv->where(function ($q) use ($request){
+                $q->where('counterparty','like','%'.$request->q.'%');
+            });
+        }
+
+        $cv = $cv->paginate(25);
+
+        $data = $cv->map(function ($data){
+            return [
+                'id' => $data->counterparty,
+                'text' => $data->counterparty,
+            ];
+        })->toArray();
+        $array = $data;
+
+        return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
+    }
+
     private function newEmployeeForCos(Request $request){
 
         $arr = [];
@@ -840,6 +879,14 @@ class AjaxController extends Controller
 
         $request->add_null = true;
         return Helper::wrapForSelect2($arr,true,$request);
+    }
+
+    public function counterpartyInfo(Request $request)
+    {
+        $journals = Journals::query()->where('counterparty','=',$request->counterparty)->get();
+        return view('fg-accounting.common.counterparty-info')->with([
+            'journals' => $journals,
+        ]);
     }
 
     private function document_person_to(Request $request){

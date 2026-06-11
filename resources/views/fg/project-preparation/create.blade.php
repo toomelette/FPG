@@ -151,6 +151,8 @@
                     succeed(form,true,false);
                     toast('success','Project preparation successfully saved.','Success');
                     $("#grandTotal").html('0.00');
+                    $("#details-table tbody").html('');
+                    $("#details-table .add-btn").trigger('click');
                 },
                 error: function (res) {
                     errored(form,res);

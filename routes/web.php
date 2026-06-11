@@ -223,16 +223,16 @@ Route::group([
     Route::resource('projects',\App\Http\Controllers\FG\ProjectsController::class);
     Route::resource('project-expense-liquidation',\App\Http\Controllers\FG\ProjectExpenseLiquidationController::class);
     Route::get('/sales-invoice/{uuid}/print',[\App\Http\Controllers\FG\SalesInvoiceController::class,'print'])->name('sales-invoice.print');
-
     Route::resource('sales-invoice',\App\Http\Controllers\FG\SalesInvoiceController::class);
     Route::resource('charge-sales-invoice',\App\Http\Controllers\FG\ChargeSalesInvoiceController::class);
     Route::resource('billing',\App\Http\Controllers\FG\BillingController::class);
-
     Route::resource('collections',\App\Http\Controllers\FG\CollectionsController::class);
     Route::resource('project-preparation',\App\Http\Controllers\FG\ProjectPreparationController::class);
     Route::get('/delivery-receipts/{uuid}/print',[\App\Http\Controllers\FG\DeliveryReceiptsController::class,'print'])->name('delivery-receipts.print');
-
     Route::resource('delivery-receipts',\App\Http\Controllers\FG\DeliveryReceiptsController::class);
+    Route::get('/cash-advances/{uuid}/print',[\App\Http\Controllers\FG\CashAdvancesController::class,'print'])->name('cash-advances.print');
+    Route::get('/cash-advances/my',[\App\Http\Controllers\FG\CashAdvancesController::class,'userIndex'])->name('cash-advances.my');
+    Route::resource('cash-advances',\App\Http\Controllers\FG\CashAdvancesController::class);
 
     //ACCOUNTING
     Route::get('/cash-disbursements/{uuid}/print',[\App\Http\Controllers\FG\CashDisbursementsController::class,'print'])->name('cash-disbursements.print');

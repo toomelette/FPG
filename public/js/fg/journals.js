@@ -227,3 +227,73 @@ $('#subsidiary-ledgers-modal').on('hidden.bs.modal', function (event) {
     let totalSubsidiaries = subsidiaryLedgers[id].length === 0 ? '' : subsidiaryLedgers[id].length ;
     $("#journal-entries-"+id).find('.counter').html(totalSubsidiaries);
 });
+
+$("#counterparty").select2({
+    ajax: {
+        url: '/dashboard/ajax/payor',
+        dataType: 'json',
+        delay: 250,
+        processResults: function (data) {
+            return {
+                results: data.results,
+                pagination: {
+                    more: data.pagination.more
+                }
+            };
+        }
+    },
+    tags: true,
+    placeholder: "Select payor",
+    allowClear: true,
+    createTag: function (params) {
+        let term = $.trim(params.term);
+        if (term === '') return null;
+
+        return {
+            id: term,
+            text: term,
+            newTag: true
+        };
+    },
+    templateResult: function (data) {
+        if (data.loading) return data.text;
+
+        if (data.newTag) {
+            return $('<span>Add "<b>' + data.text + '</b>"</span>');
+        }
+
+        return data.text;
+    }
+});
+
+$("#counterparty").change(function (){
+    let val = $(this).val();
+    let info = $("#counterparty-info");
+    if(val === ''){
+        info.hide();
+    }else{
+        info.show();
+    }
+})
+
+$("#counterparty-info").click(function (){
+    let btn = $(this);
+    let uri = '/dashboard/ajax/counterparty-info';
+    load_modal2(btn);
+    $.ajax({
+        url : uri,
+        data : {
+            counterparty : $("#counterparty").val(),
+        },
+        type: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        },
+    success: function (res) {
+        populate_modal2(btn,res);
+    },
+    error: function (res) {
+        populate_modal2_error(res);
+    }
+})
+})

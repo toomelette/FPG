@@ -415,3 +415,13 @@ table.tbl{
 .b-grey{
     border-color: #ededed;
 }
+
+.inverted{
+    background-color: black;
+    color: white;
+}
+
+.inverted-dark-grey{
+    background-color: #424242;
+    color: white;
+}

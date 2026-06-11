@@ -18,7 +18,9 @@
                             <x-forms.input label="Date" name="date" cols="6" type="date"/>
                         </div>
                         <div class="row mt-2">
-                            <x-forms.input label="Payee" name="counterparty" cols="12"/>
+                            <x-forms.select label="Payee" name="counterparty" id="counterparty" cols="12"/>
+                            <a href="#"><span class="warning-message small text-info" id="counterparty-info" style="display:none;" data-bs-toggle="modal" data-bs-target="#counterparty-info-modal"> Show all journals with this payee.</span></a>
+
                         </div>
                         <div class="row mt-2 mb-4">
                             <x-forms.textarea label="Explanation" name="remarks" cols="12"/>
@@ -109,7 +111,7 @@
         <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
     </x-slot:footer>
 </x-adminkit.html.modal-template>
-
+<x-adminkit.html.modal id="counterparty-info-modal" size="lg"/>
 @endsection
 
 @section('scripts')

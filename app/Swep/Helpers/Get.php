@@ -50,6 +50,11 @@ class Get
     {
         return 'Lopez Jaena Street, Bacolod City';
     }
+
+    public static function fullAddress()
+    {
+        return 'Saint Anthony Building, '.self::address();
+    }
     public static function company()
     {
         return 'Fil Power Group & Marketing Corp.';

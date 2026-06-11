@@ -12,6 +12,9 @@
     <button href="{{route('cash-disbursements.print',$data->uuid)}}?print-voucher"  type="button"  class="btn btn-outline-secondary btn-sm print-btn-dialog"  >
         <i class="fa fa-print"></i>
     </button>
+    <button href="{{route('cash-disbursements.print',$data->uuid)}}?print-check"  type="button"  class="btn btn-outline-secondary btn-sm print-btn-dialog"  >
+        <i class="fa fa-money-check"></i>
+    </button>
     <button type="button" data="{{$data->uuid}}"
             onclick="delete_data('{{$data->uuid}}','{{route("cash-disbursements.destroy","slug")}}')"
             class="btn btn-sm btn-danger" data-toggle="tooltip" title="Delete" data-placement="top">
