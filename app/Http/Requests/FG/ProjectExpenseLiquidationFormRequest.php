@@ -31,16 +31,10 @@ class ProjectExpenseLiquidationFormRequest extends FormRequest
                 return $detail;
             })
             ->toArray();
-        $projects = collect($this->projects ?? [])
-            ->map(function ($project){
-                unset($project['client']);
-                $project['amount'] = isset($project['amount']) ? Helper::sanitizeAutonum($project['amount']) : null;
-                return $project;
-            })
-            ->toArray();
+
         $this->merge([
             'details' => $details,
-            'projects' => $projects,
+
         ]);
     }
 
@@ -53,18 +47,21 @@ class ProjectExpenseLiquidationFormRequest extends FormRequest
             'details' => 'required',
 
             'details.*.description' => 'required',
+
+            'details.*.sales_invoice_uuid' => 'required',
             'details.*.debit' => 'required_without:details.*.credit',
             'details.*.credit' => 'required_without:details.*.debit',
 
-            'projects' => 'required',
-            'projects.*.sales_invoice_uuid' => 'required',
-            'projects.*.amount' => 'required',
+            //'projects' => 'required',
+            //'projects.*.sales_invoice_uuid' => 'required',
+            //'projects.*.amount' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
+
             'details.*.credit.required_without' => 'The credit field is required if debit field is empty',
             'details.*.debit.required_without' => 'The debit field is required if credit field is empty',
             'details.required' => 'At least one row in DETAILS is required',

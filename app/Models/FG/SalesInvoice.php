@@ -60,6 +60,11 @@ class SalesInvoice extends Model
         return $this->hasMany(ProjectExpenseLiquidation::class,'invoice_uuid','uuid');
     }
 
+    public function liquidationDetails()
+    {
+        return $this->hasMany(ProjectExpenseLiquidationDetails::class,'sales_invoice_uuid','uuid');
+    }
+
     public function distributions()
     {
         return $this->hasMany(CollectionDistributions::class,'invoice_uuid','uuid');

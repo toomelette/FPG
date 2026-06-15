@@ -101,16 +101,16 @@
             ajax : '{{\Illuminate\Support\Facades\Request::getUri()}}?liquidationsTable',
             columns : [
                 {
-                    data : "liquidation.control_no",
-                    name : "liquidation.control_no"
+                    data : "control_no",
+                    name : "control_no"
                 },
                 {
-                    data : "liquidation.date",
-                    name : "liquidation.date"
+                    data : "date",
+                    name : "date"
                 },
                 {
-                    data : "liquidation.remarks",
-                    name : "liquidation.remarks"
+                    data : "remarks",
+                    name : "remarks"
                 },
                 { data : "details" },
                 { data : "action" },

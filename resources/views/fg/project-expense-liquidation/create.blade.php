@@ -24,9 +24,10 @@
                     <table class="table table-striped table-sm table-bordered" id="details-table">
                         <thead>
                         <tr>
+                            <th style="width: 30%;">Client/Sales Invoice</th>
                             <th>Description</th>
-                            <th style="width: 20%">Debit</th>
-                            <th style="width: 20%">Credit</th>
+                            <th style="width: 15%">Debit</th>
+                            <th style="width: 15%">Credit</th>
                             <th style="width: 50px">
                                 <button type="button" class="btn btn-secondary btn-sm add-btn" template="#details-template">
                                     <i class="fa fa-plus"></i>
@@ -39,43 +40,11 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Total</th>
+                                <th colspan="2">Total</th>
                                 <th id="total-debit" class="text-end">0.00</th>
                                 <th id="total-credit" class="text-end">0.00</th>
                                 <th></th>
                             </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-            <x-adminkit.html.alert type="info" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
-                Projects
-            </x-adminkit.html.alert>
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="table table-striped table-sm table-bordered" id="projects-table">
-                        <thead>
-                        <tr>
-                            <th style="width: 30%;">Client</th>
-                            <th>Sales</th>
-                            <th style="width: 20%">Amount</th>
-                            <th style="width: 50px">
-                                <button type="button" class="btn btn-secondary btn-sm add-btn" template="#projects-template">
-                                    <i class="fa fa-plus"></i>
-                                </button>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-
-                        <tfoot>
-                        <tr>
-                            <th colspan="2">Total</th>
-                            <th id="total-amount" class="text-end">0.00</th>
-                            <th></th>
-                        </tr>
                         </tfoot>
                     </table>
                 </div>
@@ -97,7 +66,7 @@
 @endsection
 
 @section('scripts')
-    <script src="{{asset('js/fg/project-expense-liquidation.js')}}"></script>
+    <script src="{{asset('js/fg/project-expense-liquidation.js')}}?{{\Illuminate\Support\Str::random(3)}}"></script>
     <script type="text/javascript">
         $("#select2-project").select2({
             ajax: {
@@ -130,6 +99,8 @@
                     $("#details-table tbody").html('')
                         .ready(function (){
                             $("#details-table .add-btn").trigger('click');
+                            $("#total-debit").html($.number(0,2));
+                            $("#total-credit").html($.number(0,2));
                         })
                 },
                 error: function (res) {

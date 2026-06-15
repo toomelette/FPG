@@ -1,4 +1,4 @@
-<span class="{{empty($data->plantilla) && ($data->appointment_status != 'COS' ) ? 'text-danger' : ''}}">
+<span>
     <b>{{$data->plantilla->position ?? $data->position}}</b>
 </span>
 <span class="float-end text-right text-strong text-success">{{$data->item_no ?? ''}}</span>

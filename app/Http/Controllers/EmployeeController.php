@@ -270,8 +270,9 @@ class EmployeeController extends Controller{
         if(!Hash::check($request->password,Auth::user()->password)){
             abort(503, 'Incorrect password.');
         }
-    	$employee = $this->employee->destroy($slug);
-        if($employee){
+        $employee = Employee::query()->find($slug);
+
+        if($employee->delete()){
             return 1;
         }
         abort(503,'Error deleting data');

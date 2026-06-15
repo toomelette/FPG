@@ -15,4 +15,12 @@
             class="btn btn-sm btn-danger" data-toggle="tooltip" title="Delete" data-placement="top">
         <i class="fa fa-trash"></i>
     </button>
+    <div class="btn-group btn-group-sm" role="group">
+        <button id="" type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
+        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            <li class="dropdown-item print-btn-dialog" href="{{route('sales-invoice.print',$data->uuid)}}?summary">
+                Print Summary
+            </li>
+        </ul>
+    </div>
 </div>

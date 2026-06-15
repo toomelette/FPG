@@ -4,6 +4,7 @@ namespace App\Http\Controllers\FG;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FG\SalesInvoiceRequest;
+use App\Models\FG\ProjectExpenseLiquidation;
 use App\Models\FG\ProjectExpenseLiquidationProjects;
 use App\Models\FG\SalesInvoice;
 use Illuminate\Http\Request;
@@ -143,14 +144,15 @@ class SalesInvoiceController extends Controller
             ->findOrFail($uuid);
 
         if($request->ajax() && $request->has('liquidationsTable')){
-            $expenseLiquidationProjects = ProjectExpenseLiquidationProjects::query()
-                ->with(['liquidation'])
-                ->whereHas('liquidation')
-                ->where('sales_invoice_uuid',$uuid)
+            $expenseLiquidation = ProjectExpenseLiquidation::query()
+                ->with(['details'])
+                ->whereHas('details',function ($details) use ($uuid){
+                    $details->where('sales_invoice_uuid','=',$uuid);
+                })
 //                ->join('project_expense_liquidations', 'project_expense_liquidations.uuid', '=', 'project_expense_liquidation_projects.project_expense_liquidation_uuid')
             ;
 
-            return DataTables::of($expenseLiquidationProjects)
+            return DataTables::of($expenseLiquidation)
                 ->addColumn('action',function ($data){
                     return view('fg.project-expense-liquidation.dt-actions')->with([
                         'data' => $data,
@@ -220,8 +222,11 @@ class SalesInvoiceController extends Controller
         ]);
     }
 
-    public function print($uuid)
+    public function print($uuid, Request $request)
     {
+        if($request->has('summary')){
+            return  $this->printSummary($uuid);
+        }
         $si = SalesInvoice::query()
             ->with([
                 'client',
@@ -230,6 +235,28 @@ class SalesInvoiceController extends Controller
             ->findOrFail($uuid);
         return view($this->folder.'print-'.strtolower($si->ref_book))->with([
             'salesInvoice' => $si,
+        ]);
+    }
+
+    public function printSummary($uuid)
+    {
+        $si = SalesInvoice::query()
+            ->with([
+                'client',
+                'details',
+                'preparations.details',
+                'liquidationDetails.liquidation',
+            ])
+            ->findOrFail($uuid);
+
+        $liquidationDetails = $si->liquidationDetails->sortBy('date');
+
+        $preparations = $si->preparations->sortBy('date');
+        $preparationDetails = $preparations->pluck('details')->flatten();
+        return view($this->folder.'print-summary')->with([
+            'si' => $si,
+            'preparationDetails' => $preparationDetails,
+            'liquidationDetails' => $liquidationDetails,
         ]);
     }
 }

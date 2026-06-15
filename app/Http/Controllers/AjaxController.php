@@ -530,7 +530,6 @@ class AjaxController extends Controller
 
     private function projectExpenseLiquadationDescription(Request $request){
 
-        $data = null;
         $cv = ProjectExpenseLiquidationDetails::query()
             ->select('description')
             ->groupBy('description')
@@ -542,39 +541,14 @@ class AjaxController extends Controller
         }
 
         $cv = $cv->paginate(25);
+        $data = $cv->map(function ($data){
+            return [
+                'id' => $data->description,
+                'text' => $data->description,
+            ];
+        })->toArray();
+        $array = $data;
 
-        if($cv->count() > 0){
-
-            $data = $cv->map(function ($data){
-                return [
-                    'id' => $data->description,
-                    'text' => $data->description,
-                ];
-            });
-
-            $array = $data->toArray();
-
-            $exists = 0;
-            foreach ($array as $arr){
-                if ($arr['id'] == $request->q){
-                    $exists = 1;
-                }
-            }
-            if($exists != 1){
-                array_unshift( $array, [
-                    'id' => $request->q,
-                    'text' => $request->q,
-                ] );
-            }
-
-        }else{
-            $array = [];
-            array_unshift( $array, [
-                'id' => $request->q,
-                'text' => $request->q,
-            ] );
-
-        }
 //        $request->add_null = true;
         return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
     }

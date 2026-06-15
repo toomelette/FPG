@@ -5,7 +5,7 @@
 
     @if(Route::currentRouteName() == 'dashboard.employee.index')
         <x-adminkit.html.page-title>
-            <x-slot:title>Manage Permanent Employees</x-slot:title>
+            <x-slot:title>Manage Employees</x-slot:title>
         </x-adminkit.html.page-title>
         @php
             $noItems = \App\Models\Employee::query()

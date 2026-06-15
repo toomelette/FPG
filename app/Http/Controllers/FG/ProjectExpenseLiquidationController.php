@@ -66,11 +66,11 @@ class ProjectExpenseLiquidationController extends Controller
             return $item;
         });
 
+
         try {
             DB::transaction(function ($transaction) use ($projectExpenseLiquidation, $details, $request){
                 $projectExpenseLiquidation->save();
                 $projectExpenseLiquidation->details()->createMany($details->toArray());
-                $projectExpenseLiquidation->projects()->createMany(collect($request->projects)->values()->toArray());
             });
             return $projectExpenseLiquidation->only('uuid');
         }catch (\Exception $exception){
@@ -110,8 +110,6 @@ class ProjectExpenseLiquidationController extends Controller
             $projectExpenseLiquidation->save();
             $projectExpenseLiquidation->details()->delete();
             $projectExpenseLiquidation->details()->createMany($details->toArray());
-            $projectExpenseLiquidation->projects()->delete();
-            $projectExpenseLiquidation->projects()->createMany(collect($request->projects)->values()->toArray());
         });
         if($projectExpenseLiquidation->id){
             return $projectExpenseLiquidation->only('uuid');

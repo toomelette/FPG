@@ -44,16 +44,45 @@ $("body").on("click",".add-btn",function (){
         .ready(function (){
             initializeAutonumByClass('.autonum-'+rand);
             $("#select2-details-"+rand).select2({
-                ajax: {
+                    ajax: {
                     url: '/dashboard/ajax/project-expense-liquidation-description',
                     dataType: 'json',
-                    delay : 250,
-
-                    // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+                    delay: 250,
+                    processResults: function (data) {
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: data.pagination.more
+                            }
+                        };
+                    }
                 },
+                tags: true,
                 placeholder: "Select",
-                allowClear : true,
+                allowClear: true,
+                createTag: function (params) {
+                    let term = $.trim(params.term);
+                    if (term === '') return null;
+
+                    return {
+                        id: term,
+                        text: term,
+                        newTag: true
+                    };
+                },
+                templateResult: function (data) {
+                    if (data.loading) return data.text;
+
+                    if (data.newTag) {
+                        return $('<span>Add "<b>' + data.text + '</b>"</span>');
+                    }
+
+                    return data.text;
+                }
+
+
             });
+
 
             $("#select2-client-"+rand).select2({
                 ajax: {

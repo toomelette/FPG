@@ -2,6 +2,11 @@
     <tbody id="details-template">
     <tr id="details-rand" data="rand">
         <td class="align-top">
+            <x-forms.select :select-only="true" :auto-class="true" class="select2-client-by-class" id="select2-client-rand" label="A" name="details[rand][client]" cols="12"/>
+
+            <x-forms.select :select-only="true" :auto-class="true" id="select2-sales-invoice-rand" label="A" name="details[rand][sales_invoice_uuid]" cols="12" container-class="mt-2 mb-2"/>
+        </td>
+        <td class="align-top">
             <x-forms.select :select-only="true" :auto-class="true" id="select2-details-rand" label="A" name="details[rand][description]" cols="12"/>
         </td>
         <td class="align-top">
