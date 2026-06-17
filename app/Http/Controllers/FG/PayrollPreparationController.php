@@ -67,6 +67,8 @@ class PayrollPreparationController extends Controller
                         'monthly_basic' => $e->monthly_basic,
                         'LFEMi' => $e->full['LFEMi'],
                         'FMiLE' => $e->full['FMiLE'],
+                        'position' => $e->position,
+                        'employee_no' => $e->employee_no,
                     ],
                 ];
             }
@@ -332,7 +334,13 @@ class PayrollPreparationController extends Controller
         return 1;
     }
 
-    public function print($uuid)
+    public function print($uuid,$type)
+    {
+        return $this->{Str::of($type)->camel()->toString()}($uuid);
+
+    }
+
+    private function payrollSummary($uuid)
     {
         $payrollMaster = PayrollMaster::query()
             ->with([
@@ -362,6 +370,27 @@ class PayrollPreparationController extends Controller
             'payrollMaster' => $payrollMaster,
             'deductionsUsed' => $deductionsUsed,
             'incentivesUsed' => $incentivesUsed,
+        ]);
+    }
+
+    private function payslips($uuid)
+    {
+        $request = Request::capture();
+
+        $payrollMaster = PayrollMaster::query()
+            ->with([
+                'payrollEmployees' => function ($payrollEmployees) use($request) {
+                    if($request->has('single')){
+                        $payrollEmployees->where('id','=',$request->employee);
+                    }
+                },
+                'payrollEmployees.employeeAdjustments',
+                'employeeAdjustments',
+
+            ])
+            ->findOrFail($uuid);
+        return view('fg.payroll-preparation.MID-MONTH.print-payslips')->with([
+            'payrollMaster' => $payrollMaster,
         ]);
     }
 }

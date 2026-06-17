@@ -259,7 +259,7 @@ Route::group([
 
     //Payroll
     Route::resource('payroll-template',\App\Http\Controllers\FG\PayrollTemplateController::class);
-    Route::get('payroll-preparation/{uuid}/print',[\App\Http\Controllers\FG\PayrollPreparationController::class,'print'])->name('payroll-preparation.print');
+    Route::get('payroll-preparation/{uuid}/{type}/print',[\App\Http\Controllers\FG\PayrollPreparationController::class,'print'])->name('payroll-preparation.print');
     Route::resource('payroll-preparation',\App\Http\Controllers\FG\PayrollPreparationController::class);
     Route::resource('payroll-adjustments',\App\Http\Controllers\FG\PayrollAdjustmentsController::class);
 });

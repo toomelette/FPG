@@ -1,9 +1,12 @@
 <td>
     {{$payrollEmployee?->saved_data['LFEMi']}}
+    <button class="float-end btn btn-sm btn-outline-secondary print-btn-dialog" type="button" href="{{route('payroll-preparation.print',[$payrollEmployee->payrollMaster->uuid,'payslips'])}}?single&employee={{$payrollEmployee->id}}" ><i class="fa fa-print"></i></button>
+
 </td>
 
 <td class="text-end">
     {{\App\Swep\Helpers\Helper::toNumber($payrollEmployee?->saved_data['monthly_basic'])}}
+
 </td>
 @forelse($employeeAdjustments as $employeeAdjustment)
     <td class="text-center">

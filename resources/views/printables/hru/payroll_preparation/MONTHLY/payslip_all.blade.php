@@ -82,7 +82,7 @@
                                             }
                                         })
                                 @endphp
-                                <table style="width: 50%" class="b-right">
+                                <table style="width: 50%; margin-bottom: 100px" class="b-right">
                                     @forelse($employeeDeductions as $deduction)
                                         <tr>
                                             <td>{{$deduction->code}}</td>

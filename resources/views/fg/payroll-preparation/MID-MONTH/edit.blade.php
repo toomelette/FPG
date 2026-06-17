@@ -73,7 +73,7 @@
 
                     </tbody>
                 </table>
-                <button type="submit"></button>
+                <button type="submit" style="display:none;"></button>
             </form>
         </div>
 
@@ -109,7 +109,9 @@
             Print Options
         </x-slot:title>
 
-        <a href="{{route('payroll-preparation.print',[$payrollMaster->uuid])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 print-btn-dialog"> <i class="fa fa-print"></i> Payroll Summary</a>
+        <a href="{{route('payroll-preparation.print',[$payrollMaster->uuid,'payroll-summary'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 print-btn-dialog"> <i class="fa fa-print"></i> Payroll Summary</a>
+        <a href="{{route('payroll-preparation.print',[$payrollMaster->uuid,'payslips'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 print-btn-dialog"> <i class="fa fa-print"></i> Payslips</a>
+
         <hr>
 
     </x-adminkit.html.offcanvas>
