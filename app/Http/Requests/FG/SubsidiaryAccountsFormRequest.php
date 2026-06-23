@@ -29,7 +29,6 @@ class SubsidiaryAccountsFormRequest extends FormRequest
                 'starts_with:'.$this->route('parentAccountCode').'-',
                 Rule::unique('subsidiary_accounts','account_code')
             ],
-
             'account_title' => 'required',
         ];
         if($this->getMethod() == 'PATCH' || $this->getMethod() == 'PUT'){

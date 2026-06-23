@@ -5,6 +5,7 @@ namespace App\Http\Controllers\FG;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FG\SubsidiaryAccountsFormRequest;
 use App\Models\FG\ChartOfAccounts;
+use App\Models\FG\Clients;
 use App\Models\FG\SubsidiaryAccounts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -45,10 +46,32 @@ class SubsidiaryAccountsController extends Controller
         $account->account_address = $request->account_address;
         $account->contact_person = $request->contact_person;
         $account->contact_no = $request->contact_no;
+
         try {
-            DB::transaction(function () use ($account){
+            DB::transaction(function () use ($account, $request){
                 $account->save();
+                if($request->has('create_account')){
+                    $clientAccountCode = $request->account_code;
+                    $clientName = $request->account_title;
+                    $client = Clients::query()->where('account_no','=',$clientAccountCode)->first();
+                    if(!empty($client)){
+                        abort(503,'Client '.$request->account_code.' already exists.');
+                    }else{
+                        $newClient = new Clients();
+                        $newClient->uuid = \Str::uuid();
+                        $newClient->account_no = $clientAccountCode;
+                        $newClient->name = $clientName;
+                        $newClient->address = $request->account_address;
+                        $newClient->contact_no = $request->contact_no;
+                        $newClient->contact_person = $request->contact_person;
+                        $newClient->save();
+                    }
+                }
             });
+
+
+
+
         }catch (\Exception $exception){
             abort(503,$exception->getMessage());
         }
@@ -71,8 +94,26 @@ class SubsidiaryAccountsController extends Controller
         $account->contact_person = $request->contact_person;
         $account->contact_no = $request->contact_no;
         try {
-            DB::transaction(function () use ($account){
+            DB::transaction(function () use ($account,$request){
                 $account->save();
+
+                if($request->has('create_account')){
+                    $clientAccountCode = $account->account_code;
+                    $clientName = $account->account_title;
+                    $client = Clients::query()->where('account_no','=',$clientAccountCode)->first();
+                    if(!empty($client)){
+                        abort(503,'Client '.$request->account_code.' already exists.');
+                    }else{
+                        $newClient = new Clients();
+                        $newClient->uuid = \Str::uuid();
+                        $newClient->account_no = $clientAccountCode;
+                        $newClient->name = $clientName;
+                        $newClient->address = $request->account_address;
+                        $newClient->contact_no = $request->contact_no;
+                        $newClient->contact_person = $request->contact_person;
+                        $newClient->save();
+                    }
+                }
             });
         }catch (\Exception $exception){
             abort(503,$exception->getMessage());

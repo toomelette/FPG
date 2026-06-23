@@ -48,6 +48,17 @@
         <div class="row mt-2">
             <x-forms.input label="Contact No" name="contact_no" cols="12"/>
         </div>
+
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <label class="form-check">
+                    <input class="form-check-input" type="checkbox" checked name="create_account">
+                    <span class="form-check-label">
+                    Create a client profile
+                </span>
+                </label>
+            </div>
+        </div>
         <x-slot:footer>
             <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
         </x-slot:footer>

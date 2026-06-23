@@ -16,4 +16,9 @@ class ReceivingReportDetails extends Model
 
         //return $this->hasMany(InventoryLedger::class,'reference_uuid','uuid');
     }
+
+    public function stock()
+    {
+        return $this->belongsTo(Stocks::class,'stock_uuid','uuid');
+    }
 }

@@ -24,6 +24,19 @@
     <div class="row mt-2">
         <x-forms.input label="Contact No" name="contact_no" cols="12" :value="$account ?? null"/>
     </div>
+    @if(empty($account->client))
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <label class="form-check">
+                    <input class="form-check-input" type="checkbox" checked name="create_account">
+                    <span class="form-check-label">
+                    Create a client profile
+                </span>
+                </label>
+            </div>
+        </div>
+    @endif
+
 @endsection
 
 @section('modal-footer')

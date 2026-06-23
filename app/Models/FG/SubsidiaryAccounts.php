@@ -31,4 +31,8 @@ class SubsidiaryAccounts extends Model
         return $this->belongsTo(ChartOfAccounts::class,'parent_account_code','account_code');
     }
 
+    public function client()
+    {
+        return $this->hasOne(Clients::class,'account_no','account_code');
+    }
 }
