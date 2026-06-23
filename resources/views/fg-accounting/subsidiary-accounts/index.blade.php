@@ -34,7 +34,7 @@
     <x-adminkit.html.modal-template id="add-account-modal" size="sm" form-id="add-account-form">
         <x-slot:title>New Account | {{$account->account_title}}</x-slot:title>
         <div class="row">
-            <x-forms.input label="Account Code" name="account_code" cols="12" :value="$account->account_code.'-'"/>
+            <x-forms.input label="Account Code" id="updating-account-code" name="account_code" cols="12" :value="$account->account_code.'-'"/>
         </div>
         <div class="row mt-2">
             <x-forms.input label="Account Title" name="account_title" cols="12"/>
@@ -69,6 +69,18 @@
 
 @section('scripts')
     <script type="text/javascript">
+        let accountCode = '{{$account->account_code}}';
+        let last = {{Str::of($account->lastSubsidiary->account_code ?? '0')->replace($account->account_code.'-','')->toString() * 1}};
+        function updateAccountCode(){
+            let stringLast = String(last + 1).padStart(4, '0');
+            let newAccountCode = String(accountCode)+'-'+stringLast;
+            $("#updating-account-code").val(newAccountCode);
+        }
+
+        $(document).ready(function (){
+            updateAccountCode();
+        })
+
         let active = '';
         accountsTbl = $("#accounts-table").DataTable({
             dom : 'lBfrtip',
@@ -133,7 +145,9 @@
                 success: function (res) {
                     active = res.id;
                     accountsTbl.draw(false);
+                    last = res.end;
                     succeed(form,true,true);
+                    updateAccountCode();
                 },
                 error: function (res) {
                     errored(form,res);

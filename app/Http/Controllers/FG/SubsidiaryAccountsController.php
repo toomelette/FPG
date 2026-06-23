@@ -9,6 +9,7 @@ use App\Models\FG\Clients;
 use App\Models\FG\SubsidiaryAccounts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
 class SubsidiaryAccountsController extends Controller
@@ -75,12 +76,20 @@ class SubsidiaryAccountsController extends Controller
         }catch (\Exception $exception){
             abort(503,$exception->getMessage());
         }
-        return $account->only('id');
+        return collect($account)
+            ->only(['id'])
+            ->merge([
+                'end' => (int) Str::of($request->account_code)->after('-')->toString(),
+            ]);
     }
 
     public function edit($id)
     {
-        $account = SubsidiaryAccounts::query()->findOrFail($id);
+        $account = SubsidiaryAccounts::query()
+            ->with([
+                'lastSubsidiary'
+            ])
+            ->findOrFail($id);
         return view($this->folder.'edit')->with([
             'account' => $account,
         ]);

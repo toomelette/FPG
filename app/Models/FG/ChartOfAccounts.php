@@ -30,4 +30,10 @@ class ChartOfAccounts extends Model
     {
         return $this->hasMany(SubsidiaryAccounts::class,'parent_account_code','account_code');
     }
+
+    public function lastSubsidiary()
+    {
+        return $this->hasOne(SubsidiaryAccounts::class,'parent_account_code','account_code')->latestOfMany('account_code');
+
+    }
 }
