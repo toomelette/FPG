@@ -48,7 +48,7 @@
         <div class="row mt-2">
             <x-forms.input label="Contact No" name="contact_no" cols="12"/>
         </div>
-
+        @if($account->account_code == '11000')
         <div class="row mt-2">
             <div class="col-md-12">
                 <label class="form-check">
@@ -59,6 +59,7 @@
                 </label>
             </div>
         </div>
+        @endif
         <x-slot:footer>
             <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
         </x-slot:footer>
