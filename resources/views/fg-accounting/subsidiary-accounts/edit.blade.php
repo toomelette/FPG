@@ -25,7 +25,8 @@
         <x-forms.input label="Contact No" name="contact_no" cols="12" :value="$account ?? null"/>
     </div>
 
-    @if(empty($account->client) && $account->account_code == '11000')
+
+    @if(empty($account->client) && $account->account->account_code == '11000')
         <div class="row mt-2">
             <div class="col-md-12">
                 <label class="form-check">
