@@ -22,7 +22,7 @@
         <table style="width: 100%; font-size: 14px" class="">
             <tr>
                 <td style="height: 6mm; width: 31mm"></td>
-                <td class="text-strong" style="width: 74mm">BUSINESS STYLE</td>
+                <td class="text-strong" style="width: 74mm"><br></td>
                 <td class="text-strong" style="width: 10mm"></td>
                 <td class="text-strong">{{$salesInvoice->client->tin}}</td>
             </tr>
