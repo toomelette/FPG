@@ -49,10 +49,10 @@
                         Total Amount
                     </p>
                     <div class="row mt-2">
-                        <x-forms.input label="Tax Base" class="autonum text-end" name="tax_base" cols="12"/>
+                        <x-forms.input label="Tax Base" class="autonum-tax-base autonum text-end" name="tax_base" cols="12"/>
                     </div>
                     <div class="row mt-2">
-                        <x-forms.input label="VAT" class="autonum text-end" name="vat" cols="12"/>
+                        <x-forms.input label="VAT" class="autonum-vat autonum text-end" name="vat" cols="12"/>
                     </div>
                     <div class="row mt-2">
                         <x-forms.input label="Total Amount Due" class="autonum-total-amount-due text-end" name="total_amount_due" cols="12"/>
@@ -97,7 +97,7 @@
 @endsection
 
 @section('scripts')
-    <script src="{{asset('js/fg/sales-invoice.js')}}"></script>
+    <script src="{{asset('js/fg/sales-invoice.js')}}?{{Str::random(3)}}"></script>
     <script type="text/javascript">
 
         $("#select2-project").select2({
@@ -111,6 +111,8 @@
         $(document).ready(function (){
             $(".add-btn").trigger('click');
             autonums['totalAmountDue'] = new AutoNumeric('.autonum-total-amount-due',autonum_settings_simple);
+            autonums['taxBase'] = new AutoNumeric('.autonum-tax-base',autonum_settings_simple);
+            autonums['vat'] = new AutoNumeric('.autonum-vat',autonum_settings_simple);
         })
 
 

@@ -19,4 +19,6 @@ function computeTable($table){
         grandTotal = grandTotal + totalCost;
     });
     autonums['totalAmountDue'].set(grandTotal);
+    autonums['taxBase'].set(grandTotal / 1.12);
+    autonums['vat'].set(grandTotal/1.12 * 0.12);
 }
