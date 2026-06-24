@@ -30,7 +30,14 @@
     <x-adminkit.html.modal-template id="add-client-modal" form-id="add-client-form">
         <x-slot:title>Add New Client</x-slot:title>
         <div class="row">
-            <x-forms.input label="Account No." name="account_no" cols="5"/>
+            <div class="form-group  col-md-5 account_no  ">
+                <label for="">Account No.:</label>
+                <div class="input-group">
+                    <span class="input-group-text">11000-</span>
+                    <input type="text" class="form-control" name="account_no" id="account-update" value="" placeholder="Account No." autocomplete="off">
+                </div>
+            </div>
+
             <x-forms.input label="Client Name" name="name" cols="7"/>
         </div>
         <div class="row mt-2">
@@ -53,6 +60,18 @@
 
 @section('scripts')
     <script type="text/javascript">
+        let last = '{{Str::of(\App\Models\FG\Clients::query()->orderBy('account_no','desc')->first()?->account_no ?? '0')->after('-')->toString()}}';
+
+
+        function updateAccountCode(){
+            next = Number(last) + 1;
+            let padded = String(next).padStart(4, '0');
+            $("#account-update").val(padded);
+        }
+
+        $(document).ready(function (){
+            updateAccountCode();
+        });
         let active = '';
         clientsTbl = $("#clients-table").DataTable({
             dom : 'lBfrtip',
@@ -115,6 +134,8 @@
                     toast('success','Client successfully added.','Success');
                     active = res.uuid;
                     clientsTbl.draw(false);
+                    last = res.inserted;
+                    updateAccountCode();
                 },
                 error: function (res) {
                     errored(form,res);

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\FG;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FG\ClientFormRequest;
 use App\Models\FG\Clients;
+use App\Models\FG\SubsidiaryAccounts;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
@@ -34,6 +36,7 @@ class ClientController extends Controller
 
     public function store(ClientFormRequest $request)
     {
+
         $client = new Clients();
         $client->uuid = Str::uuid();
         $client->account_no = $request->account_no;
@@ -41,10 +44,23 @@ class ClientController extends Controller
         $client->address = $request->address;
         $client->contact_person = $request->contact_person;
         $client->contact_no = $request->contact_no;
-        if($client->save()){
-            return $client->only('uuid');
+
+        try {
+            DB::transaction(function () use ($client,$request){
+                $client->save();
+                $sa = new SubsidiaryAccounts();
+                $sa->parent_account_code = '11000';
+                $sa->account_code = $request->account_no;
+                $sa->account_title = $request->name;
+                $sa->save();
+            });
+        }catch (\Exception $exception){
+            abort(503,$exception->getMessage());
         }
-        abort(503);
+        return [
+            'uuid' => $client->uuid,
+            'inserted' => (int) Str::of($request->account_no)->after('-')->toString()
+        ];
     }
 
     public function edit($uuid)
