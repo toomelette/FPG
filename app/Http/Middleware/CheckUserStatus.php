@@ -32,8 +32,14 @@ class CheckUserStatus{
         if(request()->has('trigger') && request('trigger') == 'SCANNER'){
             return redirect(route('public.verify.document').'?document='.request()->route()->parameter('slug'));
         }
+
         if($this->auth->guard()->check()){
             $user = Auth::user();
+            if(empty($user->employee)){
+                $this->auth->logout();
+                $this->session->flush();
+                return redirect('/');
+            }
             if($user?->employee?->is_active == 'INACTIVE'){
                 $user->is_activated = 0;
                 $user->save();
