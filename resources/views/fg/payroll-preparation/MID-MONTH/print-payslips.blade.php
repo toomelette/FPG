@@ -105,8 +105,18 @@
                                 </td>
                             </tr>
                         </table>
-                        <p><b> {{$payrollEmployee->saved_data['employee_no'] ?? ''}} </b></p>
+                        <p class="no-margin"><b> {{$payrollEmployee->saved_data['employee_no'] ?? ''}} </b></p>
 
+                        <table style="width: 100%; margin-top: 25px; margin-bottom: 5px">
+                            <tr>
+                                <td style="width: 85px">Prepared by:</td>
+                                <td class="text-strong"><u>LHYCA DIAMANTE</u></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><i>Finance Officer</i></td>
+                            </tr>
+                        </table>
                         <hr style="border: 1px dashed grey" class="no-margin">
                         <p class="no-margin" style="font-size: 8px"><i class="fa fa-scissors"></i> CUT HERE</p>
                     </div>
@@ -121,7 +131,7 @@
 
 @section('scripts')
     <script type="text/javascript">
-        let max = 300
+        let max = 350
         $(".payslip-container").each(function (){
             let containerHeight = $(this).height();
             if(containerHeight < max){
