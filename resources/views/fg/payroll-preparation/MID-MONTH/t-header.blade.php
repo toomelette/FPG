@@ -1,5 +1,5 @@
 <tr>
-    <th class="text-center">Employee</th>
+    <th class="text-center" style="width: 15%">Employee</th>
     <th class="text-center">Monthly Basic</th>
     @forelse($payrollMaster->employeeAdjustments as $employeeAdjustment)
         <th class="text-center" style="width: 120px">
