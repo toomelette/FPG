@@ -34,7 +34,7 @@ class CheckUserStatus{
         }
         if($this->auth->guard()->check()){
             $user = Auth::user();
-            if($user->employee->is_active == 'INACTIVE'){
+            if($user?->employee?->is_active == 'INACTIVE'){
                 $user->is_activated = 0;
                 $user->save();
             }
