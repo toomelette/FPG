@@ -401,7 +401,7 @@
           employees_tbl.search(this.value).draw();
       }
     });
-    
+
     $("body").on('click','.view_employee_btn', function () {
         btn = $(this);
         load_modal2(btn);

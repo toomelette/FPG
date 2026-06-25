@@ -1301,6 +1301,7 @@ class Arrays
         $units = [
             'COLLECTION RECEIPT'     => 'COLLECTION RECEIPT',
             'PROBATIONARY RECEIPT'    => 'PROBATIONARY RECEIPT',
+            'CASH SALES INVOICE'    => 'CASH SALES INVOICE',
         ];
         ksort($units);
         return $units;

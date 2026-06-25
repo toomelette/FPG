@@ -45,6 +45,7 @@ class CheckUserStatus{
                 $user->save();
             }
 
+            /*
             if($this->auth->user()->is_activated == false){
 
                 $this->auth->logout();
@@ -53,7 +54,7 @@ class CheckUserStatus{
                 return redirect('/');
 
             }
-
+            */
 
 
             return $next($request);
