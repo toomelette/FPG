@@ -91,6 +91,12 @@
                     orderable : false,
                     class : ''
                 },
+                {
+                    targets : 5,
+                    orderable : false,
+                    searchable : false,
+                    class : ''
+                },
             ],
             order:[[0,'asc']],
             responsive : false,
