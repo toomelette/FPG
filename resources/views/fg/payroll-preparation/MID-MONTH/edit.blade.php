@@ -65,15 +65,17 @@
         </div>
         <div class="box-body">
             <form id="payroll-form">
-                <table id="payroll-table" class="table table-sm table-bordered table-striped">
-                    <thead>
+                <div class="table-responsive">
+                    <table id="payroll-table" class="table table-sm table-bordered table-striped">
+                        <thead>
 
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
 
-                    </tbody>
-                </table>
-                <button type="submit" style="display:none;"></button>
+                        </tbody>
+                    </table>
+                    <button type="submit" style="display:none;"></button>
+                </div>
             </form>
         </div>
 
