@@ -188,7 +188,8 @@
                         <div class="card-body pt-0">
                             <form class="report-form" target="{{route('accounting-reports.print','subsidiary-ledger')}}">
                                 <div class="row mb-2">
-                                    <x-forms.input label="As of" name="date_to" cols="2" type="date"/>
+                                    <x-forms.input label="Date From" name="date_from" cols="2" type="date"/>
+                                    <x-forms.input label="Date to" name="date_to" cols="2" type="date" value="{{now()->format('Y-m-d')}}"/>
                                     <x-forms.select label="Account Code" name="account_code" class="select2-account-codes" cols="4"/>
                                     <x-forms.select label="Subsidiary Account Code" name="subsidiary_account_code" class="select2-subsidiary-account-codes" cols="4" required="required"/>
 

@@ -194,20 +194,48 @@ class AccountingReports extends Controller
         if(blank($request->date_to)){
             $request->date_to = Carbon::now()->format('Y-m-d');
         }
+        $dateFrom = '1900-01-01';
 
-        $lines = Journals::query()
-            ->select([
-                DB::raw('journals.*'),
-                DB::raw('journal_entries_subsidiaries.*')
-            ])
+        if(filled($request->date_from)){
+            $dateFrom = $request->date_from;
+        }
+
+        $linesBaseQuery = Journals::query()
             ->join('journal_entries','journals.uuid','=','journal_entries.journal_uuid')
             ->join('journal_entries_subsidiaries','journal_entries.uuid','=','journal_entries_subsidiaries.journal_entry_uuid')
             ->orderBy('journals.date')
             ->where('journal_entries_subsidiaries.account_code','=',$request->subsidiary_account_code)
+        ;
+
+
+        $lines =  (clone $linesBaseQuery)
+            ->select([
+                DB::raw('journals.*'),
+                DB::raw('journal_entries_subsidiaries.*')
+            ])
             ->where('journals.date','<=',$request->date_to)
+            ->where(function ($query) use ($request){
+                if(filled($request->date_from)){
+                    $query->where('journals.date','>=',$request->date_from);
+                }
+            })
             ->get()
         ;
 
+        $begBal = ( clone $linesBaseQuery)
+            ->where(function ($query) use ($request){
+                if(filled($request->date_from)){
+                    $query->where('journals.date','<',$request->date_from);
+                }else{
+                    $query->where('journals.date','<','1990-01-01');
+                }
+            })
+            ->selectRaw('
+                COALESCE(SUM(journal_entries_subsidiaries.debit),0) as total_debit,
+                COALESCE(SUM(journal_entries_subsidiaries.credit),0) as total_credit
+            ')
+            ->first();
+        ;
 
         $subsidiaryAccount = SubsidiaryAccounts::query()
             ->where('account_code','=',$request->subsidiary_account_code)
@@ -215,6 +243,7 @@ class AccountingReports extends Controller
         return view('fg-accounting.reports.subsidiary-ledger')->with([
             'lines' => $lines,
             'subsidiaryAccount' => $subsidiaryAccount,
+            'begBal' => $begBal
         ]);
         dd($lines);
     }

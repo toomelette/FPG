@@ -23,8 +23,12 @@
             </thead>
             <tbody>
             @php
-                $runningBalance = 0;
+                $runningBalance = $begBal->total_debit - $begBal->total_credit;
             @endphp
+            <tr>
+                <td colspan="6">Beginning Balance</td>
+                <td class="text-right">{{number_format($runningBalance,2)}}</td>
+            </tr>
             @forelse($lines as $line)
                 @php
                     $runningBalance += $line->debit - $line->credit;
