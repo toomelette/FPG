@@ -18,9 +18,26 @@ class CollectionsController extends Controller
         $this->folder = 'fg.collections.';
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        if($request->has('get-next-ref-no')){
+            return  $this->getNextRefNo($request);
+        }
         return view($this->folder.'create');
+    }
+
+    private function getNextRefNo($request)
+    {
+        $collections = Collections::query()
+            ->select(['ref_no'])
+            ->where('payment_type',$request->payment_type)
+            ->orderBy('ref_no','desc')
+            ->first();
+        if(!empty($collections)){
+            return $collections->ref_no + 1;
+        }else{
+            return 1;
+        }
     }
 
     public function index(Request $request)

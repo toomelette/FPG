@@ -11,7 +11,7 @@
                 <button class="btn btn-sm btn-primary float-end" type="submit" data-bs-toggle="modal"><i class="fa fa-check"></i> Save</button>
             </x-slot:title>
             <div class="row">
-                <x-forms.select label="Payment Type" name="payment_type" cols="2" :options="\App\Swep\Helpers\Arrays::paymentTypes()"/>
+                <x-forms.select label="Payment Type" name="payment_type" id="payment-type" cols="2" :options="\App\Swep\Helpers\Arrays::paymentTypes()"/>
                 <x-forms.input label="Reference No." name="ref_no" cols="2"/>
                 <x-forms.input label="Date" name="date" cols="2" type="date"/>
                 <x-forms.select label="Payor" name="client_uuid" cols="3" id="payor"/>
@@ -151,6 +151,27 @@
             placeholder: "Select",
             allowClear : true,
         });
+
+        $("#payment-type").change(function (){
+            let t = $(this);
+            let paymentType = t.val();
+            $.ajax({
+                url : '{{Request::getUri()}}?get-next-ref-no',
+                data : {
+                    payment_type : paymentType
+                },
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    t.closest('form').find('input[name="ref_no"]').val(res);
+                },
+                error: function (res) {
+
+                }
+            })
+        })
 
     </script>
 @endsection
