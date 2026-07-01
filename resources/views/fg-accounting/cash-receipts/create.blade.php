@@ -21,7 +21,7 @@
                         <x-forms.input label="Date" name="date" cols="6" type="date"/>
                     </div>
                     <div class="row mt-2">
-                        <x-forms.input label="Payor" name="counterparty" id="counterparty" cols="12" readonly/>
+                        <x-forms.input label="Payor" name="counterparty" id="payor" cols="12" readonly/>
                         <x-forms.input label="Client UUID" name="client_uuid" id="client_uuid" container-class="hide-this" cols="12" readonly/>
                         <x-forms.input label="Collection UUID" name="collection_uuid" id="collection_uuid" container-class="hide-this" cols="12" readonly/>
 

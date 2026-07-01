@@ -227,7 +227,7 @@ $('#subsidiary-ledgers-modal').on('hidden.bs.modal', function (event) {
     let totalSubsidiaries = subsidiaryLedgers[id].length === 0 ? '' : subsidiaryLedgers[id].length ;
     $("#journal-entries-"+id).find('.counter').html(totalSubsidiaries);
 });
-/*
+
 $("#counterparty").select2({
     ajax: {
         url: '/dashboard/ajax/payor',
@@ -266,7 +266,7 @@ $("#counterparty").select2({
     }
 });
 
- */
+
 
 $("#counterparty").change(function (){
     let val = $(this).val();
@@ -322,7 +322,7 @@ $("#or_no").select2({
 
 $('#or_no').on('select2:select', function (e) {
     let data = e.params.data;
-    $("#counterparty").val(data.client.name);
+    $("#payor").val(data.client.name);
     $("#client_uuid").val(data.client.uuid);
     $("#collection_uuid").val(data.collection_uuid);
 });
