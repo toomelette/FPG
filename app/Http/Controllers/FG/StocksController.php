@@ -130,4 +130,18 @@ class StocksController extends Controller
             'ledger' => $ledger,
         ]);
     }
+
+    public function destroy($uuid)
+    {
+        $stock = Stocks::findOrFail($uuid);
+        try {
+            DB::transaction(function () use ($stock){
+                $stock->delete();
+            });
+            return 1;
+        }catch (\Exception $exception){
+            abort(503,$exception->getMessage());
+        }
+
+    }
 }
