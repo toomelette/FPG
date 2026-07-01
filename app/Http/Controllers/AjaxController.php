@@ -88,7 +88,9 @@ class AjaxController extends Controller
             return $this->counterpartyInfo($r);
         }
 
-
+        if($for == 'new-journal-no'){
+            return $this->getNewJournalNo($r);
+        }
 
 
 
@@ -903,5 +905,15 @@ class AjaxController extends Controller
         $array = $data;
 
         return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
+    }
+
+    private function getNewJournalNo($request)
+    {
+        $journal = Journals::query()
+            ->where('book','=',$request->book)
+            ->orderBy('control_no','desc')
+            ->first();
+        $last = $journal->control_no ?? 0;
+        return $last + 1;
     }
 }

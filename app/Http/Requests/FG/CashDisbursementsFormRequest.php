@@ -4,6 +4,7 @@ namespace App\Http\Requests\FG;
 
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CashDisbursementsFormRequest extends FormRequest
 {
@@ -45,7 +46,12 @@ class CashDisbursementsFormRequest extends FormRequest
             abort(503,'Debit and Credit not equal');
         }
         return [
-            'control_no' => 'required',
+            'control_no' => [
+                'required',
+                Rule::unique('journals')
+                    ->ignore($this->uuid,'uuid')
+                    ->where('book','CASH DISBURSEMENT')
+            ],
             'date' => 'required|date_format:Y-m-d',
             'counterparty' => 'required',
             'entries.*.account_code' => 'required',

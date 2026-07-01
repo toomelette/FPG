@@ -4,6 +4,7 @@ namespace App\Http\Requests\FG;
 
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class GeneralJournalsFormRequest extends FormRequest
 {
@@ -43,7 +44,12 @@ class GeneralJournalsFormRequest extends FormRequest
             abort(503,'Debit and Credit not equal');
         }
         return [
-            'control_no' => 'required',
+            'control_no' => [
+                'required',
+                Rule::unique('journals')
+                    ->ignore($this->uuid,'uuid')
+                    ->where('book','GENERAL JOURNAL')
+            ],
             'date' => 'required|date_format:Y-m-d',
             'entries.*.account_code' => 'required',
             'entries.*.debit'  => 'nullable|required_without:entries.*.credit',

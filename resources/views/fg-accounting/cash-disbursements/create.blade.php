@@ -14,7 +14,7 @@
             <div class="row">
                     <div class="col-md-4">
                         <div class="row">
-                            <x-forms.input label="CV No." name="control_no" cols="6"/>
+                            <x-forms.input label="CV No." name="control_no" id="control_no" cols="6"/>
                             <x-forms.input label="Date" name="date" cols="6" type="date"/>
                         </div>
                         <div class="row mt-2">
@@ -121,8 +121,27 @@
     <script src="{{asset('js/fg/journals.js')}}?rand={{Str::random(3)}}"></script>
     <script type="text/javascript">
 
+        function newJournalNo(){
+            $.ajax({
+                url : '{{route("dashboard.ajax.get","new-journal-no")}}',
+                data : {
+                    book : 'CASH DISBURSEMENT'
+                },
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    $("#control_no").val(res);
+                },
+                error: function (res) {
+
+                }
+            })
+        }
         $(document).ready(function (){
             $(".add-btn").trigger('click');
+            newJournalNo();
         })
 
         $("#add-journal-form").submit(function (e) {
@@ -153,6 +172,7 @@
                     $("#entries-table tbody").html('');
                     $(".add-btn").trigger('click');
                     subsidiaryLedgers = {};
+                    newJournalNo();
 
                     //choose what to do:
                     Swal.fire({
