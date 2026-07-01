@@ -1296,6 +1296,32 @@ class Arrays
         return $units;
     }
 
+    public static function productCategories()
+    {
+        return [
+            'AIR FILTER' => 'AIR FILTER',
+            'ATS' => 'ATS',
+            'AVR' => 'AVR',
+            'BATTERY' => 'BATTERY',
+            'BATTERY CHARGER' => 'BATTERY CHARGER',
+            'BREAKER' => 'BREAKER',
+            'COOLANT' => 'COOLANT',
+            'ENGINE OIL' => 'ENGINE OIL',
+            'FAN BELT' => 'FAN BELT',
+            'FILTERS' => 'FILTERS',
+            'GAUGES' => 'GAUGES',
+            'GENSET' => 'GENSET',
+            'GRINDER STONE' => 'GRINDER STONE',
+            'METERS' => 'METERS',
+            'MODULE' => 'MODULE',
+            'PARTS' => 'PARTS',
+            'RUBBER DUMPER' => 'RUBBER DUMPER',
+            'TRANSFORMER' => 'TRANSFORMER',
+            'UNIT' => 'UNIT',
+            'VOLTMETER' => 'VOLTMETER',
+        ];
+    }
+
     public static function paymentTypes()
     {
         $units = [

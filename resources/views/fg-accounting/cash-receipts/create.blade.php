@@ -14,11 +14,22 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="row">
-                        <x-forms.input label="OR No." name="control_no" cols="6"/>
+                        <x-forms.select :options="\App\Swep\Helpers\Arrays::paymentTypes()" label="Ref Coll. Type" name="ref_payment_type" id="ref_payment_type" cols="6"/>
+                        <x-forms.select label="OR No." name="control_no" id="or_no" cols="6"/>
+                    </div>
+                    <div class="row mt-2">
                         <x-forms.input label="Date" name="date" cols="6" type="date"/>
                     </div>
                     <div class="row mt-2">
-                        <x-forms.select label="Payor" name="counterparty" id="counterparty" cols="12"/>
+                        <x-forms.input label="Payor" name="counterparty" id="counterparty" cols="12" readonly/>
+                        <x-forms.input label="Client UUID" name="client_uuid" id="client_uuid" container-class="hide-this" cols="12" readonly/>
+                        <x-forms.input label="Collection UUID" name="collection_uuid" id="collection_uuid" container-class="hide-this" cols="12" readonly/>
+
+                        <a href="#"><span class="warning-message small text-info" id="counterparty-info" style="display: none" data-bs-toggle="modal" data-bs-target="#counterparty-info-modal"> Show all journals with this payee.</span></a>
+                    </div>
+
+                    <div class="row mt-2">
+                        <x-forms.select label="Payor" name="counterpartyx" id="counterpartyx" container-class="hide-this" cols="12"/>
                         <a href="#"><span class="warning-message small text-info" id="counterparty-info" style="display: none" data-bs-toggle="modal" data-bs-target="#counterparty-info-modal"> Show all journals with this payee.</span></a>
                     </div>
                     <div class="row mt-2 mb-4">
@@ -165,10 +176,6 @@
                 }
             })
         })
-
-
-
-
 
 
     </script>

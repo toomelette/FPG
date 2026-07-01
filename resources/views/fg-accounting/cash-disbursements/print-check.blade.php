@@ -26,10 +26,10 @@
                     <td class="text-center" style="width: 146mm; height: 5mm"></td>
                     <td class="text-center" style="width: 5mm; height: 5mm" id="m1">M</td>
                     <td class="text-center" style="width: 5mm; height: 5mm" id="m2">M</td>
-                    <td class="text-center" style="width: 2mm; height: 5mm">-</td>
+                    <td class="text-center" style="width: 2mm; height: 5mm">&nbsp;</td>
                     <td class="text-center" style="width: 5mm; height: 6mm" id="d1">D</td>
                     <td class="text-center" style="width: 5mm; height: 6mm" id="d2">D</td>
-                    <td class="text-center" style="width: 3mm; height: 5mm">-</td>
+                    <td class="text-center" style="width: 3mm; height: 5mm">&nbsp;</td>
                     <td class="text-center" style="width: 5mm; height: 5mm" id="y1">Y</td>
                     <td class="text-center" style="width: 5mm; height: 5mm" id="y2">Y</td>
                     <td class="text-center" style="width: 5mm; height: 5mm" id="y3">Y</td>
@@ -52,7 +52,7 @@
             <table style="width: 100%; font-size: 14px; margin-top: 5px">
                 <tr>
                     <td style="width: 12mm; height: 7mm"></td>
-                    <td style="width: 112mm; height: 7mm">
+                    <td style="width: 112mm; height: 7mm" class="text-strong">
                         {{Str::upper(Helper::numberToWords($journal->check_amount))}} ONLY
                     </td>
                     <td></td>

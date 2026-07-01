@@ -19,15 +19,20 @@
             </tr>
             </thead>
             <tbody>
+            <tr>
+                <th>{{Helper::dateFormat($stock->beg_bal_date,'m/d/Y')}}</th>
+                <th colspan="6">BEGINNING BALANCE</th>
+                <th class="text-center">{{$stock->beg_bal_qty}}</th>
+            </tr>
             @php
-                $runningBalance = 0;
+                $runningBalance = $stock->beg_bal_qty ?? 0;
             @endphp
             @forelse($ledger as $line)
                 @php
                     $runningBalance = $runningBalance + $line->movement;
                 @endphp
                 <tr>
-                    <td>{{Helper::dateFormat($line->date,'M d, Y')}}</td>
+                    <td>{{Helper::dateFormat($line->date,'m/d/Y')}}</td>
                     <td>{{$line->control_no}}</td>
                     <td>{{$line->remarks}}</td>
                     <td>{{$line->uom}}</td>

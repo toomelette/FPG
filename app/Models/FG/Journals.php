@@ -33,6 +33,11 @@ class Journals extends Model
         );
     }
 
+    public function collection()
+    {
+        return $this->hasOne(Collections::class,'uuid','collection_uuid');
+    }
+
 
     /*Scopes*/
     public function scopeCashDisbursements(Builder $builder)

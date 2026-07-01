@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\FG;
 
+use App\Exports\GenericExport;
+use App\Exports\MultiSheetExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FG\SalesInvoiceRequest;
 use App\Models\FG\ProjectExpenseLiquidation;
@@ -10,6 +12,7 @@ use App\Models\FG\SalesInvoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
 
 class SalesInvoiceController extends Controller
@@ -240,6 +243,8 @@ class SalesInvoiceController extends Controller
 
     public function printSummary($uuid)
     {
+        $request = Request::capture();
+
         $si = SalesInvoice::query()
             ->with([
                 'client',
@@ -253,6 +258,30 @@ class SalesInvoiceController extends Controller
 
         $preparations = $si->preparations->sortBy('date');
         $preparationDetails = $preparations->pluck('details')->flatten();
+
+        if($request->has('excel')){
+            $sheets = [
+                new GenericExport(
+                    $this->folder.'print-table-expenses',
+                    [
+                        'si' => $si,
+                        'liquidationDetails' => $liquidationDetails,
+                    ],
+                    'Project Expenses'
+                ),
+                new GenericExport(
+                    $this->folder.'print-table-preparations',
+                    [
+                        'si' => $si,
+                        'preparationDetails' => $preparationDetails,
+                    ],
+                    'Project Preparations'
+                ),
+            ];
+            return Excel::download(new MultiSheetExport($sheets),'Summary '.$si->invoice_no.' - '.$si->remarks.'.xlsx');
+        }
+
+
         return view($this->folder.'print-summary')->with([
             'si' => $si,
             'preparationDetails' => $preparationDetails,

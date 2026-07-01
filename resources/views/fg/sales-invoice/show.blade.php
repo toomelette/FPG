@@ -4,8 +4,14 @@
     <x-adminkit.html.page-title>
         <x-slot:title>{{$salesInvoice->remarks}}</x-slot:title>
         <x-slot:subtitle>{{$salesInvoice->client->name}} - {{$salesInvoice->client->account_no}}</x-slot:subtitle>
-        <x-slot:float-end></x-slot:float-end>
+        <x-slot:float-end>
+            <div class="btn-group btn-group-sm mb-4" role="group" aria-label="Small button group">
+                <button href="{{route('sales-invoice.print',$salesInvoice->uuid)}}?summary" class="btn btn-outline-secondary print-btn-dialog"><i class="fa fa-print"></i> Summary</button>
+                <a href="{{route('sales-invoice.print',$salesInvoice->uuid)}}?summary&excel=true" target="_blank" type="button" class="btn btn-outline-secondary"><i class="fa fa-file-excel"></i> Excel</a>
+            </div>
+        </x-slot:float-end>
     </x-adminkit.html.page-title>
+
     <div class="tab">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item" role="presentation"><a class="nav-link active" href="#tab-1" data-bs-toggle="tab" role="tab" aria-selected="true">Project Expense Liquidation</a></li>

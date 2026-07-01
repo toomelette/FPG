@@ -142,4 +142,46 @@ class CollectionsController extends Controller
         }
         return 1;
     }
+
+    public function reports(Request $request)
+    {
+        if($request->has('generate')){
+            $report = Str::of($request->report_type)->camel()->toString();
+
+            return $this->$report($request);
+        }
+        return view($this->folder.'reports');
+    }
+
+    private function collectionSummary(Request $request)
+    {
+        $collections = Collections::query()
+            ->with([
+                'client',
+                'distributions.invoice'
+            ])
+            ->when(filled($request->payment_type),function ($query) use ($request){
+                $query->where('payment_type','=',$request->payment_type);
+            })
+            ->when(
+                filled($request->date_from) && filled($request->date_to),
+                fn($q) =>
+                $q->whereBetween('date', [$request->date_from, $request->date_to])
+            )
+            ->when(
+                filled($request->date_from) && !filled($request->date_to),
+                fn($q) =>
+                $q->whereDate('date', '>=', $request->date_from)
+            )
+            ->when(
+                !filled($request->date_from) && filled($request->date_to),
+                fn($q) =>
+                $q->whereDate('date', '<=', $request->date_to)
+            )
+            ->orderBy('date')
+            ->get();
+        return view($this->folder.'print-summary')->with([
+            'collections' => $collections,
+        ]);
+    }
 }

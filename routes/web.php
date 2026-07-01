@@ -226,6 +226,7 @@ Route::group([
     Route::resource('sales-invoice',\App\Http\Controllers\FG\SalesInvoiceController::class);
     Route::resource('charge-sales-invoice',\App\Http\Controllers\FG\ChargeSalesInvoiceController::class);
     Route::resource('billing',\App\Http\Controllers\FG\BillingController::class);
+    Route::get('collections/reports',[\App\Http\Controllers\FG\CollectionsController::class,'reports'])->name('collections.reports');
     Route::resource('collections',\App\Http\Controllers\FG\CollectionsController::class);
     Route::resource('project-preparation',\App\Http\Controllers\FG\ProjectPreparationController::class);
     Route::get('/delivery-receipts/{uuid}/print',[\App\Http\Controllers\FG\DeliveryReceiptsController::class,'print'])->name('delivery-receipts.print');

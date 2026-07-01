@@ -9,17 +9,22 @@
             <x-slot:title>
                 <button class="btn btn-sm btn-primary float-end" type="submit"><i class="fa fa-check"></i> Save</button>
             </x-slot:title>
-
             <div class="row">
                 <div class="col-md-4">
                     <div class="row">
-                        <x-forms.input label="CV No." name="control_no" cols="6" :value="$journal ?? null"/>
-                        <x-forms.input label="Date" name="date" cols="6" type="date" :value=" $journal->date ??  null"/>
+                        <x-forms.select :options="\App\Swep\Helpers\Arrays::paymentTypes()" label="Ref Coll. Type" name="ref_payment_type" id="ref_payment_type" cols="6"/>
+                        <x-forms.select label="OR No." name="control_no" id="or_no" cols="6"/>
                     </div>
                     <div class="row mt-2">
-                        <x-forms.select label="Payee" name="counterparty" id="counterparty" cols="12" :value="$journal ?? null" select2-preselected="{{$journal->counterparty}}"/>
-                        <a href="#"><span class="warning-message small text-info" id="counterparty-info" data-bs-toggle="modal" data-bs-target="#counterparty-info-modal"> Show all journals with this payee.</span></a>
+                        <x-forms.input label="Date" name="date" cols="6" type="date" :value="$journal ?? null"/>
+                    </div>
+                    <div class="row mt-2">
+                        <x-forms.input label="Payor" name="counterparty" id="counterparty" cols="12" readonly :value="$journal ?? null"/>
+                        <x-forms.input label="Client UUID" name="client_uuid" id="client_uuid" container-class="hide-this" cols="12" readonly :value="$journal ?? null"/>
+                        <x-forms.input label="Collection UUID" name="collection_uuid" id="collection_uuid" container-class="hide-this" cols="12" readonly :value="$journal ?? null"/>
 
+
+                        <a href="#"><span class="warning-message small text-info" id="counterparty-info" style="display: none" data-bs-toggle="modal" data-bs-target="#counterparty-info-modal"> Show all journals with this payee.</span></a>
                     </div>
                     <div class="row mt-2 mb-4">
                         <x-forms.textarea label="Explanation" name="remarks" cols="12" :value="$journal ?? null"/>
@@ -179,6 +184,9 @@
     </script>
     <script src="{{asset('js/fg/journals.js')}}?rand={{Str::random(3)}}"></script>
     <script type="text/javascript">
+        let orNo = '{{$journal?->collection?->ref_no}} - {{Helper::getInitials($journal?->collection?->payment_type)}}';
+        let option = new Option(orNo, orNo, true, true);
+        $('#or_no').append(option).trigger('change');
 
         $("#edit-journal-form").submit(function (e) {
             e.preventDefault()

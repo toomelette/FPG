@@ -66,6 +66,8 @@ class StocksController extends Controller
         $stock->uom = $request->uom;
         $stock->category = $request->category;
         $stock->bar_code = $request->bar_code;
+        $stock->beg_bal_date = $request->beg_bal_date;
+        $stock->beg_bal_qty = $request->beg_bal_qty;
 
         try {
             DB::transaction(function () use ($stock){
@@ -93,6 +95,8 @@ class StocksController extends Controller
         $stock->uom = $request->uom;
         $stock->category = $request->category;
         $stock->bar_code = $request->bar_code;
+        $stock->beg_bal_date = $request->beg_bal_date;
+        $stock->beg_bal_qty = $request->beg_bal_qty;
 
         try {
             DB::transaction(function () use ($stock){

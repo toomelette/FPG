@@ -2,7 +2,7 @@
 
 @section('content2')
     <x-adminkit.html.page-title>
-        <x-slot:title>Cash Disbursement Journals</x-slot:title>
+        <x-slot:title>Cash Receipt Journals</x-slot:title>
     </x-adminkit.html.page-title>
     <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
         <table class="table table-bordered table-striped table-hover table-sm" id="journals-table" style="width: 100% !important">

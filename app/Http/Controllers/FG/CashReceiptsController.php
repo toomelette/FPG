@@ -27,14 +27,14 @@ class CashReceiptsController extends Controller
 
     public function store(CashReceiptsFormRequest $request)
     {
-
-
         $journal = new Journals();
         $journal->book = $this->book;
         $journal->uuid = Str::uuid();
         $journal->control_no = $request->control_no;
         $journal->date = $request->date;
         $journal->counterparty = $request->counterparty;
+        $journal->client_uuid = $request->client_uuid;
+        $journal->collection_uuid = $request->collection_uuid;
         $journal->remarks = $request->remarks;
         $journal->bank = $request->bank;
         $journal->check_no = $request->check_no;
@@ -92,7 +92,10 @@ class CashReceiptsController extends Controller
     public function edit($uuid)
     {
         $journal = Journals::query()
-            ->with(['entries.chartOfAccount'])
+            ->with([
+                'entries.chartOfAccount',
+                'collection'
+            ])
             ->cashReceipts()
             ->findOrFail($uuid);
         return view($this->folder.'edit')->with([
@@ -114,7 +117,8 @@ class CashReceiptsController extends Controller
         $journal->check_no = $request->check_no;
         $journal->check_amount = $request->check_amount;
         $journal->cash_amount = $request->cash_amount;
-
+        $journal->client_uuid = $request->client_uuid;
+        $journal->collection_uuid = $request->collection_uuid;
 
         $journalEntries = [];
         $subsidiaries = [];

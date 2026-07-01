@@ -12,6 +12,7 @@
                 <th style="width: 120px;">Date</th>
                 <th>Payor</th>
                 <th>Remarks</th>
+                <th style="width: 15%">Type</th>
                 <th style="width: 150px;">Total Amount Paid</th>
                 <th style="width: 80px;">Action</th>
             </tr>
@@ -51,6 +52,7 @@
                     name : "client.name"
                 },
                 { data : "remarks" },
+                { data : "payment_type" },
                 {
                     data : "total_paid",
                     render: function (data) {
@@ -72,11 +74,11 @@
                     class : 'align-top'
                 },
                 {
-                    targets : 4,
+                    targets : 5,
                     class : 'text-end',
                 },
                 {
-                    targets : 5,
+                    targets : 6,
                     orderable : false,
                     class : ''
                 },

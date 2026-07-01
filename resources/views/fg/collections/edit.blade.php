@@ -16,6 +16,7 @@
                 <x-forms.input label="Reference No." name="ref_no" cols="2" :value="$collection ?? null"/>
                 <x-forms.input label="Date" name="date" cols="2" type="date" :value="$collection ?? null"/>
                 <x-forms.select label="Payor"
+                                id="payor"
                                 name="client_uuid" cols="3"
                                 :value="$collection ?? null"
                                 class="select2-ajax-auto-populate"
@@ -49,7 +50,7 @@
                         @forelse($collection->distributions as $distribution)
                             <tr id="distribution-{{$distribution->id}}" data-id="{{$distribution->id}}">
                                 <td class="align-top">
-                                    <x-forms.select :select-only="true" :auto-class="true" label="" name="distributions[{{$distribution->id}}][invoice_uuid]"  class="select2-ajax-auto-populate" :options="\App\Swep\Helpers\Arrays::invoiceTypes()" cols="12" :s2-id="$distribution->invoice->uuid" :s2-text="$distribution?->invoice?->remarks .' - '.$distribution?->invoice->invoice_no" :s2-url="route('dashboard.ajax.get','invoices-grouped-by-clients')"/>
+                                    <x-forms.select :select-only="true" :auto-class="true" label="" name="distributions[{{$distribution->id}}][invoice_uuid]"  class="select2-ajax-auto-populate" :options="\App\Swep\Helpers\Arrays::invoiceTypes()" cols="12" :s2-id="$distribution?->invoice?->uuid" :s2-text="$distribution?->invoice?->remarks .' - '.$distribution?->invoice?->invoice_no" :s2-url="route('dashboard.ajax.get','invoices-grouped-by-clients')"/>
                                 </td>
                                 <td class="align-top">
                                     <x-forms.input :input-only="true" :auto-class="true"  label="Amount" data-autonum-key="{{$distribution->id}}" class="autonum-auto-init-assoc text-end compute" name="distributions[{{$distribution->id}}][amount]" cols="12" :value="$distribution->amount ?? null"/>

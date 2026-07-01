@@ -12,6 +12,7 @@ use App\Models\Document;
 use App\Models\Employee;
 use App\Models\FG\Clients;
 use App\Models\FG\CollectionChecks;
+use App\Models\FG\Collections;
 use App\Models\FG\Journals;
 use App\Models\FG\ProjectExpenseLiquidation;
 use App\Models\FG\ProjectExpenseLiquidationDetails;
@@ -62,6 +63,10 @@ class AjaxController extends Controller
 
         if($for == 'invoices-grouped-by-clients'){
             return $this->invoicesGroupedByClients($r);
+        }
+
+        if($for == 'or_nos'){
+            return $this->orNos($r);
         }
 
         if($for == 'banks'){
@@ -863,131 +868,40 @@ class AjaxController extends Controller
         ]);
     }
 
-    private function document_person_to(Request $request){
-        $arr = [];
-        $docs = Document::query()->select('person_to')
-            ->where('person_to','like','%'.\Illuminate\Support\Facades\Request::get("q").'%')
-            ->orderBy('person_to','asc')
-            ->groupBy('person_to');
-        if($request->has('page')){
-            $docs = $docs->offset((($request->page) - 1) * 10);
+
+
+    private function orNos(Request $request)
+    {
+
+        $data = null;
+        $cv = Collections::query()
+            ->with([
+                'client',
+            ])
+            ->select('uuid','ref_no','payment_type','client_uuid')
+            ->orderBy('ref_no','asc');
+        if($request->has('q') && $request->q != ''){
+            $cv = $cv->where(function ($q) use ($request){
+                $q->where('ref_no','like','%'.$request->q.'%');
+            });
         }
-        $docs = $docs->limit(10)
-            ->get();
-        if(!empty($docs)){
-
-            foreach ($docs as $doc){
-                array_push($arr,['id'=>$doc->person_to,'text' => $doc->person_to]);
-            }
+        if($request->has('payment_type') && filled($request->payment_type)){
+            $cv = $cv->where('payment_type','=',$request->payment_type);
         }
 
-        $request->add_null = true;
-        return Helper::wrapForSelect2($arr,true,$request);
-    }
+        $cv = $cv->paginate(25);
 
-    private function document_person_from(Request $request){
-        $arr = [];
-        $docs = Document::query()->select('person_from')
-            ->where('person_from','like','%'.\Illuminate\Support\Facades\Request::get("q").'%')
-            ->orderBy('person_from','asc')
-            ->groupBy('person_from');
-        if($request->has('page')){
-            $docs = $docs->offset((($request->page) - 1) * 10);
-        }
-        $docs = $docs->limit(10)
-            ->get();
-        if(!empty($docs)){
-
-            foreach ($docs as $doc){
-                array_push($arr,['id'=>$doc->person_from,'text' => $doc->person_from]);
-            }
-        }
-        $request->add_null = true;
-        return Helper::wrapForSelect2($arr,true,$request);
-    }
-
-    private function dv_add_item(){
-        $rcs = \App\Models\RC::query()->get();
-        $rand = \Illuminate\Support\Str::random(5);
-        return [
-            'view' => view('ajax.disbursement_voucher.add_item')->with([
-                'rcs'=>$rcs,
-                'rand' => $rand,
-            ])->render(),
-            'rand' => $rand,
-        ];
-    }
-
-    private function position_applied(){
-        $arr = [];
-        $pps = HRPayPlanitilla::query()->select('item_no','position')->get();
-        foreach ($pps as $pp){
-            array_push($arr,'ITEM '.$pp->item_no.' - '.$pp->position);
-        }
-        return $arr;
-    }
-
-    private function applicant_courses(){
-        $arr = [];
-        $request = Request::capture();
-        $courses = Course::query()->where('acronym','like','%'.$request->get("q").'%')
-            ->orWhere('name','like','%'.\Illuminate\Support\Facades\Request::get("q").'%')
-            ->groupBy('name');
-        if($request->has('page')){
-            $courses = $courses->offset((($request->page) - 1) * 10);
-        }
-        $courses = $courses->limit(10)
-            ->get();
-
-
-        if(!empty($courses)){
-            foreach ($courses as $course){
-                array_push($arr,['id'=>$course->name,'text' => $course->name]);
-            }
-        }
-        $request->add_null = true;
-        return Helper::wrapForSelect2($arr,true,$request);
-    }
-
-    private function search_active_employees(){
-        if(\Illuminate\Support\Facades\Request::get('afterTypeahead') == true){
-            $emp = Employee::query()
-                ->select('lastname','firstname','middlename','sex','date_of_birth','civil_status','cell_no')
-                ->where('slug','=',\Illuminate\Support\Facades\Request::get('id'))->first();
-
+        $data = $cv->map(function ($data){
             return [
-                'lastname' => $emp->lastname,
-                'firstname' => $emp->firstname,
-                'middlename' => $emp->middlename,
-                'sex' => $emp->sex,
-                'date_of_birth' => Carbon::parse($emp->date_of_birth)->format('Y-m-d'),
-                'civil_status' => $emp->civil_status,
-                'cell_no' => $emp->cell_no,
-                'civil_status' => $emp->civil_status,
+                'id' => $data->ref_no,
+                'text' => $data->ref_no . ' - '.Helper::getInitials($data->payment_type),
+                'client_uuid' => $data->client_uuid,
+                'client' => $data->client,
+                'collection_uuid' => $data->uuid,
             ];
-        }
-        $arr = [];
-        $find = \Illuminate\Support\Facades\Request::get('query');
+        })->toArray();
+        $array = $data;
 
-        $emps = Employee::query()
-            ->where(function ($query) use($find){
-                $query->where('lastname','like','%'.$find.'%')
-                    ->orWhere('firstname','like','%'.$find.'%')
-                    ->orWhere('middlename','like','%'.$find.'%');
-            })
-            ->limit(10)
-            ->get();
-
-        if(!empty($emps)){
-            foreach ($emps as $emp){
-                array_push($arr,[
-                    'id' => $emp->slug,
-                    'name' => $emp->lastname.', '.$emp->firstname.' '.$emp->middlename,
-                    'sex' => $emp->sex,
-                ]);
-            }
-        }
-
-        return $arr;
+        return Helper::wrapForSelect2($array,$cv->hasMorePages(),$request);
     }
 }

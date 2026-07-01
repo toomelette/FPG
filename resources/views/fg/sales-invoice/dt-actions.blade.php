@@ -21,6 +21,9 @@
             <li class="dropdown-item print-btn-dialog" href="{{route('sales-invoice.print',$data->uuid)}}?summary">
                 Print Summary
             </li>
+            <a class="dropdown-item" target="_blank" href="{{route('sales-invoice.print',$data->uuid)}}?summary&excel=true">
+                Excel Summary
+            </a>
         </ul>
     </div>
 </div>
