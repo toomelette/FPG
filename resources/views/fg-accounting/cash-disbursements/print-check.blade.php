@@ -52,10 +52,9 @@
             <table style="width: 100%; font-size: 14px; margin-top: 5px">
                 <tr>
                     <td style="width: 12mm; height: 7mm"></td>
-                    <td style="width: 112mm; height: 7mm" class="text-strong">
+                    <td style=" height: 7mm" class="text-strong">
                         {{Str::upper(Helper::numberToWords($journal->check_amount))}} ONLY
                     </td>
-                    <td></td>
                 </tr>
             </table>
 
