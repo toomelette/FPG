@@ -36,6 +36,7 @@ class CashAdvancesController extends Controller
         $ca = new CashAdvances();
         $ca->uuid = Str::uuid();
         $ca->date = $request->date;
+        $ca->type = $request->type;
         $ca->reason = $request->reason;
         $ca->requested_by = $request->requested_by;
         $ca->amount_requested = $request->amount_requested;

@@ -1322,6 +1322,15 @@ class Arrays
         ];
     }
 
+    public static function cashAdvanceTypes()
+    {
+        return [
+            'CASH ADVANCE – LIQUIDABLE' => 'CASH ADVANCE – LIQUIDABLE',
+            'CASH ADVANCE – PERSONAL' => 'CASH ADVANCE – PERSONAL',
+            'BUYERS COMMISSION' => 'BUYERS COMMISSION',
+            'PAYMENT TO SUPPLIER' => 'PAYMENT TO SUPPLIER',
+        ];
+    }
     public static function paymentTypes()
     {
         $units = [

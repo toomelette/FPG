@@ -24,6 +24,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="inverted-dark-grey b-all">Type:</td>
+                <td class="text-strong b-all">{{$ca->type}}</td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
                 <td class="inverted-dark-grey b-all">Amount:</td>
                 <td class="text-strong b-all">{{Helper::toNumber($ca->amount_requested,2)}}</td>
             </tr>

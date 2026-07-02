@@ -38,10 +38,12 @@ class CashDisbursementsFormRequest extends FormRequest
             'check_amount' => Helper::sanitizeAutonum($this->check_amount) * 1,
             'subsidiary_ledgers' => $subsidiaryLedgers,
         ]);
+
     }
 
     public function rules(): array
     {
+
         if(collect($this->entries)->sum('debit') !== collect($this->entries)->sum('credit')){
             abort(503,'Debit and Credit not equal');
         }
@@ -49,7 +51,7 @@ class CashDisbursementsFormRequest extends FormRequest
             'control_no' => [
                 'required',
                 Rule::unique('journals')
-                    ->ignore($this->uuid,'uuid')
+                    ->ignore($this->route('cash_disbursement'),'uuid')
                     ->where('book','CASH DISBURSEMENT')
             ],
             'date' => 'required|date_format:Y-m-d',

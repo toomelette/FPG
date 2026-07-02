@@ -13,6 +13,7 @@
             <thead>
             <tr class="">
                 <th>Date</th>
+                <th>Type</th>
                 <th>Requested By</th>
                 <th>Reason</th>
                 <th>Requested Amount</th>
@@ -32,6 +33,10 @@
         <x-slot:title>Make Cash Advance Request</x-slot:title>
         <div class="row">
             <x-forms.input label="Date" name="date" cols="6" type="date"/>
+        </div>
+
+        <div class="row mt-2">
+            <x-forms.select :options="\App\Swep\Helpers\Arrays::cashAdvanceTypes()" label="Type" name="type" cols="12" />
         </div>
 
         <div class="row mt-2">
@@ -60,6 +65,7 @@
             ajax : '{{route('cash-advances.my')}}',
             columns : [
                 { data : "date" },
+                { data : "type" },
                 { data : "requested_by" },
                 { data : "reason" },
                 { data : "amount_requested" },
@@ -85,12 +91,12 @@
                     }
                 },
                 {
-                    targets : 5,
+                    targets : 6,
                     orderable : false,
                     class : ''
                 },
                 {
-                    targets: [3,4],
+                    targets: [4,5],
                     class : 'text-end',
                     render: function (data) {
                         if(!data){

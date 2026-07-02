@@ -16,6 +16,10 @@
     </div>
 
     <div class="row mt-2">
+        <x-forms.select :options="\App\Swep\Helpers\Arrays::cashAdvanceTypes()" label="Type" name="type" cols="12" :value="$ca ?? null"/>
+    </div>
+
+    <div class="row mt-2">
         <x-forms.textarea label="Reason" name="reason" cols="12"  :value="$ca ?? null"/>
     </div>
     <div class="row mt-2">

@@ -28,7 +28,6 @@ class CashAdvancesFormRequest extends FormRequest
         }
 
 
-
     }
 
     /**
@@ -46,9 +45,10 @@ class CashAdvancesFormRequest extends FormRequest
 
         return [
             'date' => 'required|date_format:Y-m-d',
+            'type' => 'required',
             'reason' => 'required',
             'requested_by' => 'required',
-            'amount_requested' => 'required',
+            'amount_requested' => 'required|numeric|gt:0',
         ];
     }
 }

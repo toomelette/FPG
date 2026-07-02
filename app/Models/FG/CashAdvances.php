@@ -22,6 +22,7 @@ class CashAdvances extends Model
             $a->user_created = \Auth::user()->user_id;
             $a->ip_created = request()->ip();
             $a->created_at = \Carbon::now();
+            $a->project_id =  \Auth::user()->project_id;
         });
     }
 

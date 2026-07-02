@@ -43,11 +43,12 @@ class GeneralJournalsFormRequest extends FormRequest
         if(collect($this->entries)->sum('debit') !== collect($this->entries)->sum('credit')){
             abort(503,'Debit and Credit not equal');
         }
+
         return [
             'control_no' => [
                 'required',
                 Rule::unique('journals')
-                    ->ignore($this->uuid,'uuid')
+                    ->ignore($this->route('general_journal'),'uuid')
                     ->where('book','GENERAL JOURNAL')
             ],
             'date' => 'required|date_format:Y-m-d',

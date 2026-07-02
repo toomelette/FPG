@@ -11,6 +11,8 @@
             <thead>
             <tr class="">
                 <th>Date</th>
+                <th>Office</th>
+                <th>Type</th>
                 <th>Requested By</th>
                 <th>Reason</th>
                 <th>Requested Amount</th>
@@ -58,6 +60,8 @@
             ajax : '{{route('cash-advances.index')}}',
             columns : [
                 { data : "date" },
+                { data : "project_id" },
+                { data : "type" },
                 { data : "requested_by" },
                 { data : "reason" },
                 { data : "amount_requested" },
@@ -83,12 +87,12 @@
                     }
                 },
                 {
-                    targets : 5,
+                    targets : 7,
                     orderable : false,
                     class : ''
                 },
                 {
-                    targets: [3,4],
+                    targets: [5,6],
                     class : 'text-end',
                     render: function (data) {
                         if(!data){
