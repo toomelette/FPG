@@ -619,7 +619,10 @@ class Helper
             ->leftJoin('su_submenus','su_submenus.submenu_id','=','su_user_submenus.submenu_id')
             ->where('su_submenus.route','=',$routeName)
             ->first();
-        return $a;
+        if(empty($a)){
+            return false;
+        }
+        return true;
     }
     public static function wrapForSelect2($array,$paginate = true,$request = null){
         if(($request->add_null ?? false) == true && $request->page < 2){

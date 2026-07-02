@@ -10,5 +10,9 @@
             data="{{$data->uuid}}" class="btn btn-outline-secondary btn-sm make-action-cash-advance-btn">
         <i class="fa fa-arrow-right"></i>
     </button>
-
+    <button type="button" data="{{$data->uuid}}"
+            onclick="delete_data('{{$data->uuid}}','{{route("cash-advances.destroy","slug")}}')"
+            class="btn btn-sm btn-danger" data-toggle="tooltip" title="Delete" data-placement="top">
+        <i class="fa fa-trash"></i>
+    </button>
 </div>

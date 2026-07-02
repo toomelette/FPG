@@ -5,6 +5,7 @@ namespace App\Http\Controllers\FG;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FG\CashAdvancesFormRequest;
 use App\Models\FG\CashAdvances;
+use App\Swep\Helpers\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -92,7 +93,9 @@ class CashAdvancesController extends Controller
     {
         $ca = CashAdvances::query()->findOrFail($uuid);
         if(filled($ca->amount_approved)){
-            abort(503,'Cash advance cannot be deleted.');
+            if(!Helper::checkRouteAccess('cash-advances.destroy')){
+                abort(503,'Cash advance cannot be deleted.');
+            }
         }
         try {
             DB::transaction(function () use ($ca){
