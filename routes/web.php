@@ -233,6 +233,7 @@ Route::group([
     Route::resource('delivery-receipts',\App\Http\Controllers\FG\DeliveryReceiptsController::class);
     Route::get('/cash-advances/{uuid}/print',[\App\Http\Controllers\FG\CashAdvancesController::class,'print'])->name('cash-advances.print');
     Route::get('/cash-advances/my',[\App\Http\Controllers\FG\CashAdvancesController::class,'userIndex'])->name('cash-advances.my');
+    Route::get('/cash-advances/reports',[\App\Http\Controllers\FG\CashAdvancesController::class,'reports'])->name('cash-advances.reports');
     Route::resource('cash-advances',\App\Http\Controllers\FG\CashAdvancesController::class);
 
     //ACCOUNTING

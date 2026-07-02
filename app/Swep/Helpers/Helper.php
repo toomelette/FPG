@@ -957,4 +957,20 @@ class Helper
             ->map(fn ($word) => Str::upper(Str::substr($word, 0, 1)))
             ->join('');
     }
+
+    public static function concatenate(...$strings)
+    {
+        // Remove empty strings
+        $filtered = array_filter($strings, function ($str) {
+            return !is_null($str) && trim($str) !== '';
+        });
+
+        // Convert to uppercase
+        $uppercased = array_map(function ($str) {
+            return strtoupper($str);
+        }, $filtered);
+
+        // Join with comma and space
+        return implode(', ', $uppercased);
+    }
 }

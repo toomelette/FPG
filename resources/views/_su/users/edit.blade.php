@@ -60,10 +60,7 @@
                                 </x-adminkit.html.alert>
 
                                <div class="row">
-                                   <x-forms.select label="Project ID" name="project_id" cols="3" :options="[
-                                           'BACOLOD' => 'BACOLOD',
-                                           'DUMAGUETE' => 'DUMAGUETE',
-                                       ]"
+                                   <x-forms.select label="Project ID" name="project_id" cols="3" :options="\App\Swep\Helpers\Arrays::projectIds()"
                                         :value="$user->project_id ?? null"
                                    />
 

@@ -1434,6 +1434,17 @@ class Arrays
         ];
     }
 
-
+    public static function projectIds()
+    {
+        return [
+            'BACOLOD' => 'BACOLOD',
+            'ILOILO' => 'ILOILO',
+            'CEBU' => 'CEBU',
+            'DUMAGUETE' => 'DUMAGUETE',
+            'DAVAO' => 'DAVAO',
+            'PALAWAN' => 'PALAWAN',
+            'MANILA' => 'MANILA',
+        ];
+    }
 
 }

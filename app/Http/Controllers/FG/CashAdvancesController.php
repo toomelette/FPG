@@ -149,4 +149,44 @@ class CashAdvancesController extends Controller
             'ca' => $ca,
         ]);
     }
+
+    public function reports(Request $request)
+    {
+        if($request->has('generate')){
+            $report = Str::of($request->report_type)->camel()->toString();
+
+            return $this->$report($request);
+        }
+        return view($this->folder.'reports');
+    }
+    private function summary(Request $request)
+    {
+        $cashAdvances =  CashAdvances::query()
+            ->when(filled($request->project_id),function ($query) use ($request){
+                $query->where('project_id','=',$request->project_id);
+            })
+            ->when(filled($request->type),function ($query) use ($request){
+                $query->where('type','=',$request->type);
+            })
+            ->when(
+                filled($request->date_from) && filled($request->date_to),
+                fn($q) =>
+                $q->whereBetween('date', [$request->date_from, $request->date_to])
+            )
+            ->when(
+                filled($request->date_from) && !filled($request->date_to),
+                fn($q) =>
+                $q->whereDate('date', '>=', $request->date_from)
+            )
+            ->when(
+                !filled($request->date_from) && filled($request->date_to),
+                fn($q) =>
+                $q->whereDate('date', '<=', $request->date_to)
+            )
+            ->orderBy('date')
+            ->get();
+        return view($this->folder.'print-summary')->with([
+            'cashAdvances' => $cashAdvances,
+        ]);
+    }
 }
