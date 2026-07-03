@@ -17,7 +17,7 @@
             </div>
 
             <div class="form-group  col-md-12 uoms mt-2">
-                <label for="lastname">Unit of Measurements:</label>
+                <label for="lastname">Units of Measurement:</label>
                 <input type="text" name="uoms" value="{{implode(',',\App\Swep\Helpers\Arrays::uoms())}}" data-role="tagsinput" id="uoms" />
             </div>
         </x-adminkit.html.card>
