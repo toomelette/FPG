@@ -70,6 +70,7 @@
                         {!! __html::token_header() !!}
                     },
                     success: function (res) {
+                        succeed(form,false,false);
                         toast('info','Data successfully updated.','Updated');
                     },
                     error: function (res) {
