@@ -782,3 +782,7 @@ tr.color-change td {
 .header-success{
     background-color: #e6faeb ;
 }
+
+.hide-dropdown {
+    display: none !important;
+}

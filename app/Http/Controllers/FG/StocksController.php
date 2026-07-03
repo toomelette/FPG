@@ -9,11 +9,14 @@ use App\Models\FG\ProjectPreparations;
 use App\Models\FG\ReceivingReports;
 use App\Models\FG\SalesInvoice;
 use App\Models\FG\Stocks;
+use App\Models\SuOptions;
 use App\Services\StockService;
+use App\Swep\Helpers\Arrays;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
+use function React\Promise\all;
 
 class StocksController extends Controller
 {
@@ -54,9 +57,57 @@ class StocksController extends Controller
                 ->setRowId('uuid')
                 ->toJson();
         }
+
+        if($request->has('maintenance')){
+            return  $this->showMaintenance($request);
+        }
         return view($this->folder.'index');
     }
 
+    public function showMaintenance(Request $request)
+    {
+        $categories = Arrays::productCategories();
+        return view($this->folder.'maintenance')->with([
+            'categories' => $categories,
+        ]);
+    }
+
+    public function updateMaintenance(Request $request)
+    {
+        $categories = SuOptions::query()->where('for','=','product_categories');
+        $uoms = SuOptions::query()->where('for','=','uoms');
+
+        $newCategories = collect(explode(',',$request->categories) ?? [])
+            ->sort()
+            ->map(fn($data) => [
+                'for' => 'product_categories',
+                'option' => $data,
+                'value' => $data,
+            ])
+            ->toArray();
+        $newUoms = collect(explode(',',$request->uoms) ?? [])
+            ->sort()
+            ->map(fn($data) => [
+                'for' => 'uoms',
+                'option' => $data,
+                'value' => $data,
+            ])
+            ->toArray();
+
+
+        try {
+            DB::transaction(function () use ($categories,$uoms,$newCategories,$newUoms){
+                $categories->delete();
+                $uoms->delete();
+                SuOptions::query()->insert($newCategories);
+                SuOptions::query()->insert($newUoms);
+
+            });
+        }catch (\Exception $exception){
+            abort(503,$exception->getMessage());
+        }
+
+    }
     public function store(StocksFormRequest $request)
     {
         $stock = new Stocks();
@@ -89,6 +140,9 @@ class StocksController extends Controller
 
     public function update(StocksFormRequest $request,$uuid)
     {
+        if($request->has('maintenance')){
+            return  $this->updateMaintenance($request);
+        }
         $stock = Stocks::query()->findOrFail($uuid);
         $stock->name = $request->name;
         $stock->description = $request->description;

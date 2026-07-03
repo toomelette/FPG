@@ -1282,6 +1282,7 @@ class Arrays
 
     public static function uoms()
     {
+        return self::db('uoms');
         $units = [
             'PCS'     => 'PCS',
             'UNIT'    => 'UNIT',
@@ -1298,6 +1299,7 @@ class Arrays
 
     public static function productCategories()
     {
+        return self::db('product_categories');
         return [
             'AIR FILTER' => 'AIR FILTER',
             'ATS' => 'ATS',

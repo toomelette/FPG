@@ -21,6 +21,9 @@ class StocksFormRequest extends FormRequest
      */
     public function rules(): array
     {
+        if($this->has('maintenance')){
+            return  [];
+        }
         return [
             'name' => 'required|string'
         ];
