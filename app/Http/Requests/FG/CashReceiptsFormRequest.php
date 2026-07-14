@@ -40,7 +40,8 @@ class CashReceiptsFormRequest extends FormRequest
 
     public function rules(): array
     {
-        if(collect($this->entries)->sum('debit') !== collect($this->entries)->sum('credit')){
+
+        if(Helper::absolute(collect($this->entries)->sum('debit')) !== Helper::absolute(collect($this->entries)->sum('credit'))){
             abort(503,'Debit and Credit not equal');
         }
 
