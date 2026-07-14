@@ -256,6 +256,8 @@ Route::group([
     //INVENTORY
     Route::resource('receiving-report',\App\Http\Controllers\FG\ReceivingReportsController::class);
     Route::resource('inventory-transfers',\App\Http\Controllers\FG\InventoryTransfersController::class);
+    Route::get('/purchase-orders/{uuid}/print',[\App\Http\Controllers\FG\PurchaseOrderController::class,'print'])->name('purchase-orders.print');
+
     Route::resource('purchase-orders',\App\Http\Controllers\FG\PurchaseOrderController::class);
     Route::resource('stocks',\App\Http\Controllers\FG\StocksController::class);
 

@@ -31,6 +31,7 @@ class PurchaseOrderController extends Controller
         $po->date = $request->date;
         $po->terms = $request->terms;
         $po->supplier = $request->supplier;
+        $po->address = $request->address;
         $po->account_no = $request->account_no;
         $po->remarks = $request->remarks;
         $po->total_amount_due = $request->total_amount_due;
@@ -75,6 +76,7 @@ class PurchaseOrderController extends Controller
         $purchaseOrder->date = $request->date;
         $purchaseOrder->terms = $request->terms;
         $purchaseOrder->supplier = $request->supplier;
+        $purchaseOrder->address = $request->address;
         $purchaseOrder->account_no = $request->account_no;
         $purchaseOrder->remarks = $request->remarks;
         $purchaseOrder->total_amount_due = $request->total_amount_due;
@@ -102,5 +104,17 @@ class PurchaseOrderController extends Controller
             abort(503,$exception->getMessage());
         }
         return 1;
+    }
+
+    public function print($uuid)
+    {
+        $purchaseOrder = PurchaseOrders::query()
+            ->with([
+                'details',
+            ])
+            ->findOrFail($uuid);
+        return view($this->folder.'print')->with([
+            'purchaseOrder' =>$purchaseOrder,
+        ]);
     }
 }

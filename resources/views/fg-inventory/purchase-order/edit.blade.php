@@ -25,6 +25,9 @@
                         <x-forms.input label="Supplier" name="supplier" cols="12" :value="$purchaseOrder ?? null"/>
                     </div>
                     <div class="row mt-2">
+                        <x-forms.input label="Address" name="address" cols="12" :value="$purchaseOrder ?? null"/>
+                    </div>
+                    <div class="row mt-2">
                         <x-forms.input label="Acct No." name="account_no" cols="6" :value="$purchaseOrder ?? null"/>
                     </div>
                     <div class="row mt-2">
