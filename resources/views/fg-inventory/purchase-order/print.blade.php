@@ -24,7 +24,7 @@
                             <td style="border: 1px solid black">{{$purchaseOrder->supplier}}</td>
                         </tr>
                         <tr>
-                            <td style="border: 1px solid black">{{$purchaseOrder->address}}</td>
+                            <td style="border: 1px solid black">{{$purchaseOrder->remarks}}</td>
                         </tr>
                     </table>
                 </td>
