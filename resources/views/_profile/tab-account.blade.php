@@ -40,23 +40,12 @@
                     <div class="col-md-6 col-xl-4 col-xxl-3">
                         <dl class="dl-horizontal" style="">
                             <dt>Position:</dt>
-                            <dd>{{ $employee->plantilla->position ?? $employee->position ?? '-'}}</dd>
-                            <dt>Item No:</dt>
-                            <dd>{{ $employee->plantilla->item_no ?? '-'}}</dd>
-                            <dt>SG/JG & Step:</dt>
-                            <dd>{{ $employee->salary_grade ?? '-' }}{{ $employee->step_inc != null ? ', '.$employee->step_inc : ''}}</dd>
-                            <dt>Date of Original Appointment:</dt>
-                            <dd>{{ Helper::dateFormat($employee->firstday_gov) ?? '-'}}</dd>
-                            <dt>First day in SRA:</dt>
-                            <dd>{{ Helper::dateFormat($employee->firstday_sra) ?? '-'}}</dd>
-                            <dt>Appointment Status:</dt>
-                            <dd>{{ $employee->appointment_status ?? '-'}}</dd>
+                            <dd>{{ $employee->position ?? '-'}}</dd>
+
                         </dl>
                     </div>
                     <div class="col-md-6 col-xl-4 col-xxl-3">
                         <dl class="dl-horizontal" style="">
-                            <dt>GSIS BP No:</dt>
-                            <dd>{{ $employee->gsis ?? '-' }}</dd>
                             <dt>PhilHealth.:</dt>
                             <dd>{{ $employee->philhealth ?? '-' }}</dd>
                             <dt>TIN:</dt>
@@ -80,7 +69,7 @@
         </div>
     </div>
 </div>
-<div class="card">
+<div class="card hide-this">
     <div class="card-header">
 
         <h5 class="card-title mb-0">Family info</h5>

@@ -20,19 +20,12 @@
                     <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#account" role="tab" aria-selected="true">
                         Account
                     </a>
-                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#educ" role="tab" aria-selected="false" tabindex="-1">
-                        Education & Eligibility
-                    </a>
-                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#service-records" role="tab" aria-selected="false" tabindex="-1">
-                        Service Records
-                    </a>
-                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#trainings" role="tab" aria-selected="false" tabindex="-1">
-                        Trainings
-                    </a>
+
                     <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#password" role="tab" aria-selected="false" tabindex="-1">
                         Password & Login
                     </a>
-                    @if(Helper::isPermanent(Auth::user()->employee))
+                    @if(1==2)
+{{--                    @if(Helper::isPermanent(Auth::user()->employee))--}}
                         <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#payslip" role="tab" aria-selected="false" tabindex="-1">
                             Payslips <span class="sidebar-badge badge bg-success">Beta</span>
                         </a>
@@ -46,15 +39,7 @@
                 <div class="tab-pane fade active show" id="account" role="tabpanel">
                     @include('_profile.tab-account ')
                 </div>
-                <div class="tab-pane fade" id="educ" role="tabpanel">
-                    @include('_profile.tab-educ')
-                </div>
-                <div class="tab-pane fade" id="service-records" role="tabpanel">
-                    @include('_profile.tab-service-records')
-                </div>
-                <div class="tab-pane fade" id="trainings" role="tabpanel">
-                    @include('_profile.tab-trainings')
-                </div>
+
                 <div class="tab-pane fade" id="password" role="tabpanel">
                     @include('_profile.tab-password')
                 </div>
@@ -78,7 +63,7 @@
         $("#change-pass-form").submit(function (e) {
             e.preventDefault();
             let form = $(this);
-            let uri = '{{route("dashboard.profile.update_password")}}';
+            let uri = '{{route("profile.update_password")}}';
             uri = uri.replace('slug',form.attr('data'));
             loading_btn(form);
             $.ajax({
@@ -100,7 +85,7 @@
         })
 
         $(".payslip-btn").click(function (){
-            let url = '{{route('dashboard.profile.payslip')}}';
+            let url = '{{route('profile.payslip')}}';
             let btn = $(this);
             Swal.fire({
                 title: '',
@@ -147,7 +132,7 @@
         $(".sign-out-btn").click(function (){
             let btn = $(this);
             $.ajax({
-                url : '{{route('dashboard.profile.sign_out_device')}}',
+                url : '{{route('profile.sign_out_device')}}',
                 data : {
                     session_id : btn.attr('data'),
                 },

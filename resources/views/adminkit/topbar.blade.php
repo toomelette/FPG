@@ -222,6 +222,8 @@
 {{--                    <a class="dropdown-item" href="index.html"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>--}}
 {{--                    <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="help-circle"></i> Help Center</a>--}}
 {{--                    <div class="dropdown-divider"></div>--}}
+                    <a  href="{{ route('profile') }}" class="dropdown-item">Profile</a>
+
                     <a  href="{{ route('auth.logout') }}" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();" class="dropdown-item">Log out</a>
 
                     <form id="frm-logout" action="{{ route('auth.logout') }}?portal={{\Illuminate\Support\Facades\Auth::user()->portal}}" method="POST" style="display: none;">

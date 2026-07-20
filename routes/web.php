@@ -36,7 +36,7 @@ Route::get('/dashboard/plantilla/print','PlantillaController@print')->name('plan
 
 
 //USER LEVEL ROUTES
-Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
+Route::group([
     'middleware' => [
         'check.user_status',
         'last_activity',
