@@ -28,7 +28,8 @@ class PettyCashLiquidationController extends Controller
             $pettyCashLiquidations = PettyCashLiquidations::query()
                 ->with([
                     'attachments'
-                ]);
+                ])
+                ->where('user_created','=',Auth::user()->user_id);
             return DataTables::of($pettyCashLiquidations)
                 ->addColumn('action', fn($data) => view($this->folder.'dt-user-actions')->with(['data' => $data]))
                 ->addColumn('attachments_view', fn($data) => view($this->folder.'dt-attachments')->with(['data' => $data]))
