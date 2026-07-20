@@ -37,9 +37,7 @@
             <li onclick="window.open('{{route("dashboard.employee.other_hr_actions",$data->slug)}}')" class="dropdown-item" data="{{$data->slug}}">
                 <i class="fa icon-service-record"></i> Other HR Actions
             </li>
-            <li class="dropdown-item other_actions_btn" target="_blank" href="{{route('dashboard.employee.generate_qr',$data->slug)}}" data="{{$data->slug}}">
-                <i class="fa fa-qrcode"></i> Get QR Code
-            </li>
+
         </ul>
     </div>
 
