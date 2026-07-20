@@ -9,11 +9,11 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 
 class GenericExport implements FromView, WithTitle
 {
-    protected $view;
-    protected $data;
-    protected $title;
+    protected string $view;
+    protected array $data;
+    protected string $title;
 
-    public function __construct($view, $data,$title)
+    public function __construct($view, $data,$title = 'Sheet')
     {
         $this->view = $view;
         $this->data = $data;

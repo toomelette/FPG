@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers\FG;
 
+use App\Exports\GenericExport;
+use App\Exports\MultiSheetExport;
 use App\Http\Controllers\Controller;
 use App\Models\FG\ChartOfAccounts;
 use App\Models\FG\Journals;
 use App\Models\FG\SubsidiaryAccounts;
+use App\Swep\Helpers\Helper;
+use App\Swep\ViewHelpers\__form;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class AccountingReports extends Controller
 {
@@ -49,11 +55,34 @@ class AccountingReports extends Controller
         $journals = $journals
             ->orderBy('date')
             ->get();
+        $accountsUsed = $journals->pluck('entries')
+            ->flatten()
+            ->groupBy('account_code')
+            ->sortKeys();
 
-        return view('fg-accounting.reports.journal-register')->with([
+        $params = [
             'request' => $request,
             'journals' => $journals,
-        ]);
+            'accountsUsed' => $accountsUsed,
+        ];
+        if($request->has('excel') && $request->excel == 'true'){
+            $sheets = [];
+            $sheets[] = new GenericExport(
+                'fg-accounting.reports.journal-register-table',
+                $params,
+                $request->book
+            );
+            $sheets[] = new GenericExport(
+                'fg-accounting.reports.journal-register-recap-table',
+                $params,
+                Helper::makeTitle('Recap')
+            );
+            return Excel::download(
+                new MultiSheetExport($sheets),
+                Helper::makeTitle(__FUNCTION__).'.xlsx'
+            );
+        }
+        return view('fg-accounting.reports.journal-register')->with($params);
     }
 
     private function generalLedger(Request $request)
@@ -96,10 +125,22 @@ class AccountingReports extends Controller
                 },
             ])
         ;
-        return view('fg-accounting.reports.general-ledger')->with([
+        $params = [
             'months' => $journalEntries,
             'chartOfAccount' => $chartOfAccount,
-        ]);
+        ];
+
+        if($request->has('excel') && $request->excel == 'true'){
+            return Excel::download(
+                new GenericExport(
+                    'fg-accounting.reports.general-ledger-table',
+                    $params,
+                    Helper::makeTitle(__FUNCTION__)
+                ),
+                Helper::makeTitle(__FUNCTION__).'.xlsx'
+            );
+        }
+        return view('fg-accounting.reports.general-ledger')->with($params);
     }
 
     private function trialBalance(Request $request)
@@ -142,9 +183,21 @@ class AccountingReports extends Controller
             })
         ;
 
-        return view('fg-accounting.reports.trial-balance')->with([
+        $params = [
             'chartOfAccounts' => $chartOfAccounts,
-        ]);
+        ];
+        if($request->has('excel') && $request->excel == 'true'){
+            return Excel::download(
+                new GenericExport(
+                    'fg-accounting.reports.trial-balance-table',
+                    $params,
+                    Helper::makeTitle(__FUNCTION__)
+                ),
+                Helper::makeTitle(__FUNCTION__).'.xlsx'
+            );
+        }
+
+        return view('fg-accounting.reports.trial-balance')->with($params);
     }
 
     private function analysisOfAccounts(Request $request)
@@ -181,12 +234,24 @@ class AccountingReports extends Controller
             ->where('account_code','=',$request->account_code)
             ->firstOrFail();
 
-        return view('fg-accounting.reports.analysis-of-accounts')->with([
+        $params = [
             'balanceForwarded' => $balanceForwarded,
             'journalEntries' => $journalEntries,
             'chartOfAccount' => $chartOfAccount,
-        ]);
-        dd($request->all());
+        ];
+        if($request->has('excel') && $request->excel == 'true'){
+            return Excel::download(
+                new GenericExport(
+                    'fg-accounting.reports.analysis-of-accounts-table',
+                    $params,
+                    Helper::makeTitle(__FUNCTION__)
+                ),
+                Helper::makeTitle(__FUNCTION__).'.xlsx'
+            );
+        }
+
+        return view('fg-accounting.reports.analysis-of-accounts')->with($params);
+
     }
 
     private function subsidiaryLedger(Request $request)
@@ -240,11 +305,23 @@ class AccountingReports extends Controller
         $subsidiaryAccount = SubsidiaryAccounts::query()
             ->where('account_code','=',$request->subsidiary_account_code)
             ->firstOrFail();
-        return view('fg-accounting.reports.subsidiary-ledger')->with([
+        $params = [
             'lines' => $lines,
             'subsidiaryAccount' => $subsidiaryAccount,
             'begBal' => $begBal
-        ]);
+        ];
+        if($request->has('excel') && $request->excel == 'true'){
+            return Excel::download(
+                new GenericExport(
+                    'fg-accounting.reports.subsidiary-ledger-table',
+                    $params,
+                    Helper::makeTitle(__FUNCTION__)
+                ),
+                Helper::makeTitle(__FUNCTION__).'.xlsx'
+            );
+        }
+
+        return view('fg-accounting.reports.subsidiary-ledger')->with($params);
         dd($lines);
     }
 

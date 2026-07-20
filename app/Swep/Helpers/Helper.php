@@ -945,6 +945,9 @@ class Helper
     }
 
     public static function accountingFormat($value) {
+        if(request()->has('excel') && request('excel') == 'true'){
+            return $value;
+        }
         if($value <> 0){
             return $value < 0
                 ? '(' . number_format(abs($value), 2) . ')'
@@ -998,5 +1001,14 @@ class Helper
         }
 
         return 'object'; // fallback
+    }
+
+    public static function makeTitle($fn)
+    {
+        $title = Str::of($fn)
+            ->snake()          // journal_register
+            ->replace('_', ' ')// journal register
+            ->title();         // Journal Register
+        return $title->toString();
     }
 }

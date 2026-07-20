@@ -59,7 +59,10 @@
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
                                 <hr>
                             </form>
-                            <button type="button" class="btn btn-sm btn-outline-secondary mb-2 float-end print-btn"><i class="fa fa-print"></i> Print</button>
+                            <div class="btn-group float-end">
+                                <a type="button" target="_blank" class="btn btn-sm btn-outline-secondary mb-2 excel-btn hide-this"><i class="fa fa-file-excel"></i> Excel</a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mb-2 print-btn"><i class="fa fa-print"></i> Print</button>
+                            </div>
                             <div class="embed-responsive">
                                 <iframe height="600" class="embed-responsive-item" src="" style="padding: 10px"></iframe>
                             </div>
@@ -81,7 +84,10 @@
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
                                 <hr>
                             </form>
-                            <button type="button" class="btn btn-sm btn-outline-secondary mb-2 float-end print-btn"><i class="fa fa-print"></i> Print</button>
+                            <div class="btn-group float-end">
+                                <a type="button" target="_blank" class="btn btn-sm btn-outline-secondary mb-2 excel-btn hide-this"><i class="fa fa-file-excel"></i> Excel</a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mb-2 print-btn"><i class="fa fa-print"></i> Print</button>
+                            </div>
                             <div class="embed-responsive">
                                 <iframe height="600" class="embed-responsive-item" src="" style="padding: 10px"></iframe>
                             </div>
@@ -103,7 +109,10 @@
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
                                 <hr>
                             </form>
-                            <button type="button" class="btn btn-sm btn-outline-secondary mb-2 float-end print-btn"><i class="fa fa-print"></i> Print</button>
+                            <div class="btn-group float-end">
+                                <a type="button" target="_blank" class="btn btn-sm btn-outline-secondary mb-2 excel-btn hide-this"><i class="fa fa-file-excel"></i> Excel</a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mb-2 print-btn"><i class="fa fa-print"></i> Print</button>
+                            </div>
                             <div class="embed-responsive">
                                 <iframe height="600" class="embed-responsive-item" src="" style="padding: 10px"></iframe>
                             </div>
@@ -127,7 +136,10 @@
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
                                 <hr>
                             </form>
-                            <button type="button" class="btn btn-sm btn-outline-secondary mb-2 float-end print-btn"><i class="fa fa-print"></i> Print</button>
+                            <div class="btn-group float-end">
+                                <a type="button" target="_blank" class="btn btn-sm btn-outline-secondary mb-2 excel-btn hide-this"><i class="fa fa-file-excel"></i> Excel</a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mb-2 print-btn"><i class="fa fa-print"></i> Print</button>
+                            </div>
                             <div class="embed-responsive">
                                 <iframe height="600" class="embed-responsive-item" src="" style="padding: 10px"></iframe>
                             </div>
@@ -148,7 +160,10 @@
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
                                 <hr>
                             </form>
-                            <button type="button" class="btn btn-sm btn-outline-secondary mb-2 float-end print-btn"><i class="fa fa-print"></i> Print</button>
+                            <div class="btn-group float-end">
+                                <a type="button" target="_blank" class="btn btn-sm btn-outline-secondary mb-2 excel-btn hide-this"><i class="fa fa-file-excel"></i> Excel</a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mb-2 print-btn"><i class="fa fa-print"></i> Print</button>
+                            </div>
                             <div class="embed-responsive">
                                 <iframe height="600" class="embed-responsive-item" src="" style="padding: 10px"></iframe>
                             </div>
@@ -171,7 +186,10 @@
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
                                 <hr>
                             </form>
-                            <button type="button" class="btn btn-sm btn-outline-secondary mb-2 float-end print-btn"><i class="fa fa-print"></i> Print</button>
+                            <div class="btn-group float-end">
+                                <a type="button" target="_blank" class="btn btn-sm btn-outline-secondary mb-2 excel-btn hide-this"><i class="fa fa-file-excel"></i> Excel</a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mb-2 print-btn"><i class="fa fa-print"></i> Print</button>
+                            </div>
                             <div class="embed-responsive">
                                 <iframe height="600" class="embed-responsive-item" src="" style="padding: 10px"></iframe>
                             </div>
@@ -197,7 +215,10 @@
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
                                 <hr>
                             </form>
-                            <button type="button" class="btn btn-sm btn-outline-secondary mb-2 float-end print-btn"><i class="fa fa-print"></i> Print</button>
+                            <div class="btn-group float-end">
+                                <a type="button" target="_blank" class="btn btn-sm btn-outline-secondary mb-2 excel-btn hide-this"><i class="fa fa-file-excel"></i> Excel</a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mb-2 print-btn"><i class="fa fa-print"></i> Print</button>
+                            </div>
                             <div class="embed-responsive">
                                 <iframe height="600" class="embed-responsive-item" src="" style="padding: 10px"></iframe>
                             </div>
@@ -219,7 +240,10 @@
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
                                 <hr>
                             </form>
-                            <button type="button" class="btn btn-sm btn-outline-secondary mb-2 float-end print-btn"><i class="fa fa-print"></i> Print</button>
+                            <div class="btn-group float-end">
+                                <a type="button" target="_blank" class="btn btn-sm btn-outline-secondary mb-2 excel-btn hide-this"><i class="fa fa-file-excel"></i> Excel</a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mb-2 print-btn"><i class="fa fa-print"></i> Print</button>
+                            </div>
                             <div class="embed-responsive">
                                 <iframe height="600" class="embed-responsive-item" src="" style="padding: 10px"></iframe>
                             </div>
@@ -244,14 +268,17 @@
             let route = form.attr('target');
             let params = form.serialize();
             let target = route+'?'+params;
+            let targetExcel = route+'?excel=true&'+params;
             let iframe = form.closest('div').find('iframe');
-
+            let excelBtn = form.closest('div').find('.excel-btn');
+            excelBtn.removeClass('hide-this');
+            excelBtn.attr('href',targetExcel);
             iframe.attr('src',target);
         })
 
         $(".print-btn").click(function (){
             let btn = $(this);
-            let iframe = btn.closest('div').find('iframe');
+            let iframe = btn.parent('div').parent('div').find('iframe');
             iframe.get(0).contentWindow.print();
         })
 
