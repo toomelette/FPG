@@ -15,6 +15,7 @@
                 <th>Date</th>
                 <th>Attachments</th>
                 <th>Amount</th>
+                <th>Status</th>
                 <th style="width: 80px;">Action</th>
             </tr>
             </thead>
@@ -26,6 +27,7 @@
 
 
 @section('modals')
+    <x-adminkit.html.modal id="show-files-modal" size="lg"/>
 <x-adminkit.html.modal-template id="add-liquidation-modal" size="lg" form-id="add-liquidation-form">
     <x-slot:title>New Liquidation</x-slot:title>
     <div class="row">
@@ -51,6 +53,27 @@
 
 @section('scripts')
     <script type="text/javascript">
+        $("body").on("click",".show-files-button",function () {
+            let btn = $(this);
+            load_modal2(btn);
+            let uri = '{{route("petty-cash-liquidations.show","slug")}}?showFiles';
+            uri = uri.replace('slug',btn.attr('data'));
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
+
+
         let active = '';
         pettyCashLiquidationsTbl = $("#liquidations-table").DataTable({
             dom : 'lBfrtip',
@@ -61,6 +84,7 @@
                 { data : "date" },
                 { data : "attachments_view" },
                 { data : "total_amount" },
+                { data : "status" },
                 { data : "action" },
             ],
             buttons : [

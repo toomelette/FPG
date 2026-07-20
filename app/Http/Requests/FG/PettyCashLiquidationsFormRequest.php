@@ -24,11 +24,22 @@ class PettyCashLiquidationsFormRequest extends FormRequest
     {
         $this->merge([
             'total_amount' => Helper::sanitizeAutonum($this->total_amount) * 1,
+            'approved_amount' => Helper::sanitizeAutonum($this->approved_amount) * 1,
         ]);
     }
 
     public function rules(): array
     {
+        if($this->has('takeAction')){
+            $rules = [
+                'radio' => 'required',
+            ];
+            if($this->radio == 'approve'){
+                $rules['cv_no'] = 'required';
+                $rules['approved_amount'] = 'required|gt:0';
+            }
+            return $rules;
+        }
         return [
             'date' => 'required|date_format:Y-m-d',
             'total_amount' => 'required|gt:0',

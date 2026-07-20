@@ -7,6 +7,7 @@ use App\Http\Requests\FG\PettyCashLiquidationsFormRequest;
 use App\Models\FG\PettyCashLiquidationAttachments;
 use App\Models\FG\PettyCashLiquidations;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -31,18 +32,39 @@ class PettyCashLiquidationController extends Controller
             return DataTables::of($pettyCashLiquidations)
                 ->addColumn('action', fn($data) => view($this->folder.'dt-user-actions')->with(['data' => $data]))
                 ->addColumn('attachments_view', fn($data) => view($this->folder.'dt-attachments')->with(['data' => $data]))
+                ->editColumn('status',fn($data) => view($this->folder.'dt-status')->with(['data' => $data]))
+
                 ->escapeColumns([])
                 ->setRowId('uuid')
                 ->toJson();
         }
         return view($this->folder.'user-index');
     }
-    public function edit($uuid)
+
+    private function isEditable($pcl)
+    {
+        if($pcl->status !== null){
+            abort(503,'This data can no longer be modified.');
+        }
+    }
+    public function edit($uuid,Request $request)
     {
         $pcl = PettyCashLiquidations::query()
             ->with(['attachments'])
             ->findOrFail($uuid);
+
+        $this->isEditable($pcl);
+        if($request->has('takeAction')){
+            return $this->takeAction($pcl);
+        }
         return view($this->folder.'user-edit')->with([
+            'pcl' => $pcl,
+        ]);
+    }
+
+    private function takeAction($pcl)
+    {
+        return view($this->folder.'take-action')->with([
             'pcl' => $pcl,
         ]);
     }
@@ -50,6 +72,10 @@ class PettyCashLiquidationController extends Controller
     public function update($uuid,PettyCashLiquidationsFormRequest $request)
     {
         $pettyCash = PettyCashLiquidations::query()->findOrFail($uuid);
+        if($request->has('takeAction')){
+            return  $this->approveDisapprove($pettyCash,$request);
+        }
+
         $pettyCash->date = $request->date;
         $pettyCash->total_amount = $request->total_amount;
 
@@ -81,6 +107,26 @@ class PettyCashLiquidationController extends Controller
             abort(503,$exception->getMessage());
         }
         return $pettyCash->only('uuid');
+    }
+
+    private function approveDisapprove($pcl,$request)
+    {
+        if($request->radio == 'approve'){
+            $pcl->cv_no = $request->cv_no;
+            $pcl->approved_amount = $request->approved_amount;
+        }
+
+        $pcl->status = strtoupper($request->radio.'d');
+        $pcl->user_action = Auth::user()->user_id;
+        $pcl->action_at = now();
+        try {
+            DB::transaction(function () use ($pcl){
+                $pcl->save();
+            });
+        }catch (\Exception $exception){
+            abort(503, $exception->getMessage());
+        }
+        return $pcl->only('uuid');
     }
 
     public function store(PettyCashLiquidationsFormRequest $request)
@@ -125,6 +171,9 @@ class PettyCashLiquidationController extends Controller
         if($request->has('showAttachment')){
             return $this->showAttachment($uuid,$request);
         }
+        if($request->has('showFiles')){
+            return $this->showFiles($uuid);
+        }
     }
     public function showAttachment($uuid,Request $request)
     {
@@ -143,13 +192,23 @@ class PettyCashLiquidationController extends Controller
         ]);
     }
 
+    private function showFiles($uuid)
+    {
+        $pcl = PettyCashLiquidations::query()
+            ->with(['attachments'])
+            ->findOrFail($uuid);
+        return view($this->folder.'show-files')->with([
+            'pcl' => $pcl
+        ]);
+    }
+
     public function destroy($uuid,Request $request)
     {
         if($request->has('deleteAttachment')){
             return $this->deleteAttachment($request->key);
         }
         $pettyCash = PettyCashLiquidations::query()->findOrFail($uuid);
-
+        $this->isEditable($pettyCash);
         try {
             DB::transaction(function () use ($pettyCash) {
                 $pettyCash->delete();
@@ -167,5 +226,21 @@ class PettyCashLiquidationController extends Controller
         Storage::disk('liquidation-attachments')->delete($attachment->path);
         $attachment->delete();
         return response()->json(['success' => true]);
+    }
+
+    public function index(Request $request)
+    {
+        if($request->ajax() && $request->has('draw')){
+            $pcls = PettyCashLiquidations::query();
+            return DataTables::of($pcls)
+                ->addColumn('action',fn($data) => view($this->folder.'dt-actions')->with(['data' => $data]))
+                ->addColumn('attachments_view',fn($data) => view($this->folder.'dt-attachments')->with(['data' => $data]))
+                ->editColumn('status',fn($data) => view($this->folder.'dt-status')->with(['data' => $data]))
+
+                ->escapeColumns([])
+                ->setRowId('uuid')
+                ->toJson();
+        }
+        return view($this->folder.'index');
     }
 }
