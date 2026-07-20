@@ -225,6 +225,7 @@ function mark_required(target_form, response){
                 $("#"+form_id+" ."+replaced).append("<span class='warning-message small text-danger'> "+item+" </span>");
             }
         }
+
         $("#"+form_id+" ."+replaced).addClass('has-error');
     });
 }

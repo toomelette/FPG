@@ -207,9 +207,11 @@ function remove_loading_btn(target_form){
 function unmark_required(target_form){
     form_id = $(target_form[0]).attr('id');
     $("#"+form_id+" .has-error:not(.except)").each(function(){
-        $(this).removeClass('has-error');
         $(this).children("span.warning-message").remove();
-
+        $(this).removeClass('has-error');
+    });
+    $("#"+form_id+" span.warning-message").each(function(){
+        $(this).remove();
     });
 
 
@@ -247,6 +249,7 @@ function mark_required(target_form, response){
                 $("#"+form_id+" ."+replaced).append("<span class='warning-message small text-danger'> "+item+" </span>");
             }
         }
+
         $("#"+form_id+" ."+replaced).addClass('has-error');
         $("#"+form_id+" .form-control[name='"+replaced+"']").addClass('is-invalid');
     });

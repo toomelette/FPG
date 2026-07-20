@@ -73,6 +73,10 @@
             introJs().start();
             window.history.pushState({}, document.title, "/{{Request::path()}}")
         @endif
+        $(".fi").each(function (){
+            $(this).closest('.file-input').addClass($(this).attr('name').replace('[','').replace(']',''));
+        })
+
     })
 
     $(document).ready(function (){

@@ -30,7 +30,15 @@ class PettyCashLiquidationsFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'date' => 'required|date_format:Y-m-d',
+            'total_amount' => 'required|gt:0',
+            'attachments' => ['required', 'array', 'min:1'],
+            'attachments.*' => [
+                'required',
+                'file',
+                'mimes:jpg,jpeg,png,pdf',
+                'max:20480'
+            ],
         ];
     }
 }

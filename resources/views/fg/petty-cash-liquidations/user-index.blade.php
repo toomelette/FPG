@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="col-md-9">
-            <input id="input-b3" name="attachments[]" type="file" class="file" multiple
+            <input id="attachments" name="attachments[]" type="file" class="file fi" multiple
                    data-show-upload="false" data-show-caption="true" data-msg-placeholder="Select {files} for upload...">
         </div>
     </div>
@@ -46,6 +46,7 @@
         <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>
     </x-slot:footer>
 </x-adminkit.html.modal-template>
+    <x-adminkit.html.modal id="edit-petty-cash-liquidations-modal" size="lg"/>
 @endsection
 
 @section('scripts')
@@ -128,8 +129,8 @@
                     {!! __html::token_header() !!}
                 },
                 success: function (res) {
-                    //active = res.uuid;
-                    //pettyCashLiquidationsTbl.draw(false);
+                    active = res.uuid;
+                    pettyCashLiquidationsTbl.draw(false);
                     succeed(form,true,true);
                 },
                 error: function (res) {
@@ -138,5 +139,24 @@
             })
         })
 
+        $("body").on("click",".edit-petty-cash-liquidations-btn",function () {
+            let btn = $(this);
+            load_modal2(btn);
+            let uri = '{{route("petty-cash-liquidations.edit","slug")}}';
+            uri = uri.replace('slug',btn.attr('data'));
+            $.ajax({
+                url : uri,
+                type: 'GET',
+                headers: {
+                    {!! __html::token_header() !!}
+                },
+                success: function (res) {
+                    populate_modal2(btn,res);
+                },
+                error: function (res) {
+                    populate_modal2_error(res);
+                }
+            })
+        })
     </script>
 @endsection

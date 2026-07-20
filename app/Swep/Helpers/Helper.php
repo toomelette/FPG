@@ -976,4 +976,27 @@ class Helper
         // Join with comma and space
         return implode(', ', $uppercased);
     }
+
+    public static function krajeeFileType($mimeOrExt)
+    {
+        $mimeOrExt = strtolower($mimeOrExt);
+
+        if (Str::startsWith($mimeOrExt, 'image/')) {
+            return 'image';
+        }
+
+        if ($mimeOrExt === 'application/pdf') {
+            return 'pdf';
+        }
+
+        if (Str::startsWith($mimeOrExt, 'video/')) {
+            return 'video';
+        }
+
+        if (Str::startsWith($mimeOrExt, 'audio/')) {
+            return 'audio';
+        }
+
+        return 'object'; // fallback
+    }
 }

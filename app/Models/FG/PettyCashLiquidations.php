@@ -5,6 +5,7 @@ namespace App\Models\FG;
 use App\Models\Scopes\FG\ProjectIdScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use function Symfony\Component\Translation\t;
 
 class PettyCashLiquidations extends Model
@@ -29,11 +30,16 @@ class PettyCashLiquidations extends Model
             $a->created_at = \Carbon::now();
             $a->project_id = \Auth::user()->project_id;
         });
+
+        static::deleting(function ($pcl) {
+            $pcl->attachments->each->delete();
+        });
     }
 
     protected static function booted()
     {
         static::addGlobalScope(new ProjectIdScope());
+
     }
 
     /*Relationships*/

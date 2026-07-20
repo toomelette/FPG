@@ -29,13 +29,58 @@ class PettyCashLiquidationController extends Controller
                     'attachments'
                 ]);
             return DataTables::of($pettyCashLiquidations)
-                ->addColumn('action', fn($data) => view($this->folder.'dt-actions')->with(['data' => $data]))
+                ->addColumn('action', fn($data) => view($this->folder.'dt-user-actions')->with(['data' => $data]))
                 ->addColumn('attachments_view', fn($data) => view($this->folder.'dt-attachments')->with(['data' => $data]))
                 ->escapeColumns([])
                 ->setRowId('uuid')
                 ->toJson();
         }
         return view($this->folder.'user-index');
+    }
+    public function edit($uuid)
+    {
+        $pcl = PettyCashLiquidations::query()
+            ->with(['attachments'])
+            ->findOrFail($uuid);
+        return view($this->folder.'user-edit')->with([
+            'pcl' => $pcl,
+        ]);
+    }
+
+    public function update($uuid,PettyCashLiquidationsFormRequest $request)
+    {
+        $pettyCash = PettyCashLiquidations::query()->findOrFail($uuid);
+        $pettyCash->date = $request->date;
+        $pettyCash->total_amount = $request->total_amount;
+
+        $savedFiles = [];
+        if($request->hasFile('attachments')){
+            foreach ($request->file('attachments') as $attachment){
+                $mime = $attachment->getMimeType();
+                $size = $attachment->getSize();
+
+                $filename = Str::uuid().'.'.$attachment->getClientOriginalExtension();
+                $path = Storage::disk('liquidation-attachments')
+                    ->putFileAs('',$attachment,$filename);
+                $savedFiles[] = [
+                    'path' => $path,
+                    'file_type' => strtolower($attachment->getClientOriginalExtension()),
+                    'mime_type' => $mime,
+                    'size' => $size,
+                    'original_filename' => $attachment->getClientOriginalName(),
+                ];
+            }
+        }
+
+        try {
+            DB::transaction(function () use($pettyCash,$savedFiles){
+                $pettyCash->save();
+                $pettyCash->attachments()->createMany($savedFiles);
+            });
+        }catch (\Exception $exception){
+            abort(503,$exception->getMessage());
+        }
+        return $pettyCash->only('uuid');
     }
 
     public function store(PettyCashLiquidationsFormRequest $request)
@@ -48,12 +93,17 @@ class PettyCashLiquidationController extends Controller
         $savedFiles = [];
         if($request->hasFile('attachments')){
             foreach ($request->file('attachments') as $attachment){
+                $mime = $attachment->getMimeType();
+                $size = $attachment->getSize();
+
                 $filename = Str::uuid().'.'.$attachment->getClientOriginalExtension();
                 $path = Storage::disk('liquidation-attachments')
                     ->putFileAs('',$attachment,$filename);
                 $savedFiles[] = [
                     'path' => $path,
-                    'file_type' => $attachment->getClientOriginalExtension(),
+                    'file_type' => strtolower($attachment->getClientOriginalExtension()),
+                    'mime_type' => $mime,
+                    'size' => $size,
                     'original_filename' => $attachment->getClientOriginalName(),
                 ];
             }
@@ -91,5 +141,31 @@ class PettyCashLiquidationController extends Controller
             'Content-Type' => $mime,
             'Content-Disposition' => 'inline; filename="'.$attachment->original_filename.'"'
         ]);
+    }
+
+    public function destroy($uuid,Request $request)
+    {
+        if($request->has('deleteAttachment')){
+            return $this->deleteAttachment($request->key);
+        }
+        $pettyCash = PettyCashLiquidations::query()->findOrFail($uuid);
+
+        try {
+            DB::transaction(function () use ($pettyCash) {
+                $pettyCash->delete();
+            });
+        }catch (\Exception $e){
+            abort(503,$e->getMessage());
+        }
+        return  1;
+    }
+
+    public function deleteAttachment($encryptedId)
+    {
+        $id = Crypt::decryptString($encryptedId);
+        $attachment = PettyCashLiquidationAttachments::query()->findOrFail($id);
+        Storage::disk('liquidation-attachments')->delete($attachment->path);
+        $attachment->delete();
+        return response()->json(['success' => true]);
     }
 }
