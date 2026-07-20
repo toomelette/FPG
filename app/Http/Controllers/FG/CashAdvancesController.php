@@ -113,6 +113,7 @@ class CashAdvancesController extends Controller
             $cas = CashAdvances::query();
             return DataTables::of($cas)
                 ->addColumn('action',fn($data) => view($this->folder.'dt-actions')->with(['data' => $data]))
+                ->editColumn('requested_by',fn($data) => view($this->folder.'dt-requested-by')->with(['data' => $data]))
                 ->escapeColumns([])
                 ->setRowId('uuid')
                 ->toJson();

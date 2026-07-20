@@ -45,7 +45,11 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/'),
+            'root' => base_path('../fpg-storage'),
+        ],
+        'liquidation-attachments' => [
+            'driver' => 'local',
+            'root' => base_path('../fpg-storage/liquidation-attachments'),
         ],
 
         'symlinks' => [
@@ -53,10 +57,7 @@ return [
             'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/').'symlinks',
         ],
 
-        'hr_request_attachments' => [
-            'driver' => 'local',
-            'root' => env('STORAGE_LOCATION','/home/swep_afd_storage/').'HR/HRRequestsAttachments',
-        ],
+
 
         'service_records_attachments' => [
             'driver' => 'local',

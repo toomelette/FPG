@@ -235,6 +235,9 @@ Route::group([
     Route::get('/cash-advances/my',[\App\Http\Controllers\FG\CashAdvancesController::class,'userIndex'])->name('cash-advances.my');
     Route::get('/cash-advances/reports',[\App\Http\Controllers\FG\CashAdvancesController::class,'reports'])->name('cash-advances.reports');
     Route::resource('cash-advances',\App\Http\Controllers\FG\CashAdvancesController::class);
+    Route::get('/petty-cash-liquidations/my',[\App\Http\Controllers\FG\PettyCashLiquidationController::class,'userIndex'])->name('petty-cash-liquidations.my');
+    Route::resource('petty-cash-liquidations',\App\Http\Controllers\FG\PettyCashLiquidationController::class);
+
 
     //ACCOUNTING
     Route::get('/cash-disbursements/{uuid}/print',[\App\Http\Controllers\FG\CashDisbursementsController::class,'print'])->name('cash-disbursements.print');
