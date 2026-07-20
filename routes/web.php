@@ -55,8 +55,8 @@ Route::group([
     Route::patch('/profile/update_password', [\App\Http\Controllers\ProfileController::class,'updatePassword'])->name('profile.update_password');
     Route::delete('/profile/signOutDevice', [\App\Http\Controllers\ProfileController::class,'signOutDevice'])->name('profile.sign_out_device');
 
-    Route::get('/ajax/{for}','AjaxController@get')->name('ajax.get');
-    Route::post('/ajaxPost/{for}','AjaxPostController@post')->name('ajax.post');
+    Route::get('/dashboard/ajax/{for}','AjaxController@get')->name('dashboard.ajax.get');
+    Route::post('/dashboard/ajaxPost/{for}','AjaxPostController@post')->name('dashboard.ajax.post');
 
 });
 
