@@ -148,9 +148,8 @@ class UserService extends BaseService{
 
         $user_id = $user->user_id;
         $data = [];
+        $submenu_data = [];
         if(!empty($request->submenus)){
-            $submenu_data = [];
-
             foreach ($request->submenus as $menu_id=>$submenus){
                 array_push($data,[
                     'menu_id' => $menu_id,
