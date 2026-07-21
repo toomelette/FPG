@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>FILPOWER GROUP & MARKETING CORPORATION</title>
-    <meta property="og:title" content="SRA Web Portal - HRRS"/>
+    <meta property="og:title" content="FILPOWER GROUP & MARKETING CORP"/>
     <meta property="og:image" content="{{asset('/images/og-image.png')}}"/>
     <meta property="og:image:type" content="image/png">
     <meta property="og:description" content="Filpower Group Accounting System"/>
