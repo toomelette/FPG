@@ -49,7 +49,7 @@
                             <tr id="details-{{$detail->id}}" data-id="{{$detail->id}}">
 
                                 <td class="align-top">
-                                    <x-forms.select :select-only="true" :auto-class="true" class="select2-ajax-auto-populate" :s2-id="$detail->stock_uuid ?? $detail->description" :s2-text="$detail->stock->name" :s2-url='route("dashboard.ajax.get","stocks")' label="A" name="details[{{$detail->id}}][description]" cols="12"/>
+                                    <x-forms.select :select-only="true" :auto-class="true" class="select2-ajax-auto-populate" :s2-id="$detail->stock_uuid ?? $detail->description" :s2-text="$detail?->stock?->name" :s2-url='route("dashboard.ajax.get","stocks")' label="A" name="details[{{$detail->id}}][description]" cols="12"/>
                                 </td>
                                 <td class="align-top">
                                     <x-forms.input type="number" class="compute" step="0.01" :input-only="true" :auto-class="true"  label="Qty" name="details[{{$detail->id}}][qty]" cols="12" :value="$detail->qty"/>
