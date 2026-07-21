@@ -239,6 +239,9 @@ Route::group([
     Route::resource('petty-cash-liquidations',\App\Http\Controllers\FG\PettyCashLiquidationController::class);
 
 
+    Route::get('invoice-reports/{report}/print',[\App\Http\Controllers\FG\InvoiceReportsController::class,'print'])->name('invoice-reports.print');
+    Route::resource('invoice-reports',\App\Http\Controllers\FG\InvoiceReportsController::class);
+
     //ACCOUNTING
     Route::get('/cash-disbursements/{uuid}/print',[\App\Http\Controllers\FG\CashDisbursementsController::class,'print'])->name('cash-disbursements.print');
 
@@ -248,7 +251,6 @@ Route::group([
     Route::resource('chart-of-accounts',\App\Http\Controllers\FG\ChartOfAccountsController::class);
 
     Route::get('accounting-reports/{report}/print',[\App\Http\Controllers\FG\AccountingReports::class,'print'])->name('accounting-reports.print');
-
     Route::resource('accounting-reports',\App\Http\Controllers\FG\AccountingReports::class);
 
 

@@ -1344,11 +1344,13 @@ class Arrays
         return $units;
     }
 
+
     public static function invoiceTypes()
     {
         $units = [
-            'INVOICE1'     => 'INVOICE1',
-            'INVOICE2'    => 'INVOICE2',
+            'CASH'     => 'CASH',
+            'CHARGE'     => 'CHARGE',
+            'BILLING'     => 'BILLING',
         ];
         ksort($units);
         return $units;
