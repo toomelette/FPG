@@ -74,6 +74,11 @@ class UserController extends Controller{
                         'data' => $data,
                     ]);
                 })
+                ->addColumn('project_id_access',function($data){
+                    return view('_su.users.dt-project-id-access')->with([
+                        'data' => $data,
+                    ]);
+                })
                 ->editColumn('last_activity',function ($data){
                     return view('_su.users.dtIsOnline')->with([
                         'data' => $data,

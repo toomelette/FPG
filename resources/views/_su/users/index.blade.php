@@ -16,6 +16,7 @@
                     <th>Employee</th>
                     <th>First</th>
                     <th>Middle</th>
+                    <th>Project ID/Access</th>
                     <th style="width: 50px">Active</th>
                     <th style="width: 50px">Online</th>
                     <th style="width: 80px">Actions</th>
@@ -64,6 +65,7 @@
                 { data : "fullname", name: "employee.lastname" },
                 { data : "employee.firstname" },
                 { data : "employee.middlename" },
+                { data : "project_id_access" },
                 { data : "is_activated" },
                 { data : "last_activity" },
                 { data : "action" }
@@ -77,7 +79,7 @@
                     visible: false,
                 }
             ],
-            order:[[5,'desc']],
+            order:[[6,'desc']],
             responsive: false,
             initComplete: function( settings, json ) {
                 // style_datatable("#"+settings.sTableId);
