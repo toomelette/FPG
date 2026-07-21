@@ -17,11 +17,11 @@
     <link rel="canonical" href="https://demo-basic.adminkit.io/" />
 
     <title>FILPOWER</title>
-    <meta property="og:title" content="SRA Web Portal"/>
+    <meta property="og:title" content="FILPOWER GROUP & MARKETING CORP."/>
     <meta property="og:image" content="{{asset('/images/og-image.png')}}"/>
     <meta property="og:image:type" content="image/png">
     <meta property="og:description" content="HRRS"/>
-    <meta property="og:url" content="https://hrrs.sra.gov.ph/"/>
+    <meta property="og:url" content="https://fpg-accounting.com/"/>
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="628" />
 
