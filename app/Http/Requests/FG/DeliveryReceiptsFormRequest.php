@@ -46,7 +46,7 @@ class DeliveryReceiptsFormRequest extends FormRequest
             'type' => 'required',
             'control_no' => 'required',
             'date' => 'required|date_format:Y-m-d',
-            'invoice_uuid' => 'required|uuid',
+//            'invoice_uuid' => 'required|uuid',
             'details' => 'required',
             'details.*.description' => 'required',
             'details.*.qty' => 'required',
