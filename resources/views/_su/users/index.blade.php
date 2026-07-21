@@ -43,7 +43,7 @@
         </div>
 
         <div class="row mb-2">
-            <x-forms.select label="Project ID" name="project_id" cols="12" :options="[1 => '1 - VIS' , 2 => '2 - LM']"/>
+            <x-forms.select label="Project ID" name="project_id" cols="12" :options="\App\Swep\Helpers\Arrays::projectIds()"/>
         </div>
         <x-slot:footer>
             <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Save</button>

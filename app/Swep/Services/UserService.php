@@ -167,36 +167,20 @@ class UserService extends BaseService{
             }
         }
         $access = [];
-        if(!empty($request->accessToEmployees)){
-
-            foreach ( $request->accessToEmployees as $item){
-                $access[] = [
-                    'user' => $user_id,
-                    'access' => $item,
-                    'for' => 'employees',
-                ];
+        if(!empty($request->project_ids)){
+            foreach ( $request->project_ids as $project_id){
+                $access[] = $project_id;
             }
-
         }
-        if(!empty($request->accessToDocuments)){
-            $access[] = [
-                'user' => $user_id,
-                'access' => $request->accessToDocuments,
-                'for' => 'documents',
-            ];
-        }
-
-
+        $user->project_access = $access;
 
         try {
             DB::transaction(function () use ($user,$data, $submenu_data,$access){
                 $user->update();
                 $user->userMenu()->delete();
                 $user->userSubmenu()->delete();
-                $user->access()->delete();
                 UserMenu::insert($data);
                 UserSubmenu::insert($submenu_data);
-                UserAccess::insert($access);
             });
         }catch (\Exception $e){
             abort(503,$e->getMessage());

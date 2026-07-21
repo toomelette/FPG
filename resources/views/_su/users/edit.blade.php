@@ -40,14 +40,14 @@
                         <div class="row">
                             <div class="col-4">
                                 <x-adminkit.html.alert type="success mb-1" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
-                                    Access to Employees
+                                    Project Access
                                 </x-adminkit.html.alert>
                                 <div class="row">
-                                    @foreach(\App\Swep\Helpers\Arrays::accessToEmployees() as $item)
+                                    @foreach(\App\Swep\Helpers\Arrays::projectIds() as $projectId)
                                         <div class="col-md-6">
                                             <div class="checkbox no-margin" >
                                                 <label>
-                                                    <input type="checkbox" name="accessToEmployees[]" value="{{$item}}" {{(in_array($item, $user->getAccessToEmployees())) ? 'checked' : ''}}> {{$item}}
+                                                    <input type="checkbox" name="project_ids[]" value="{{$projectId}}" {{(in_array($projectId, $user->project_access)) ? 'checked' : ''}}> {{$projectId}}
                                                 </label>
                                             </div>
                                         </div>
