@@ -47,7 +47,7 @@
                                         <div class="col-md-6">
                                             <div class="checkbox no-margin" >
                                                 <label>
-                                                    <input type="checkbox" name="project_ids[]" value="{{$projectId}}" {{(in_array($projectId, $user->project_access)) ? 'checked' : ''}}> {{$projectId}}
+                                                    <input type="checkbox" name="project_ids[]" value="{{$projectId}}" {{(in_array($projectId, $user->project_access ?? [])) ? 'checked' : ''}}> {{$projectId}}
                                                 </label>
                                             </div>
                                         </div>
