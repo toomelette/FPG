@@ -46,6 +46,7 @@ class DeliveryReceiptsController extends Controller
 
     public function store(DeliveryReceiptsFormRequest $request)
     {
+
         $dr = new DeliveryReceipts();
         $dr->uuid = Str::uuid();
         $dr->control_no = $request->control_no;
@@ -54,7 +55,6 @@ class DeliveryReceiptsController extends Controller
         $dr->date = $request->date;
         $dr->terms = $request->terms;
         $dr->remarks = $request->remarks;
-
         $details = collect($request->details)->values();
         try {
             DB::transaction(function () use ($dr,$details){

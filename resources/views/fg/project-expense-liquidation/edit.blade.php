@@ -134,6 +134,8 @@
             let trId = '#'+$select.closest('tr').attr('id');
             let trData = $select.closest('tr').attr('data');
 
+
+
             $select.select2({
                 ajax: {
                     url: function (params){

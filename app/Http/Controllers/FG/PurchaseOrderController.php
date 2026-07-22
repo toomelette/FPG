@@ -25,6 +25,7 @@ class PurchaseOrderController extends Controller
 
     public function store(PurchaseOrdersFormRequest $request)
     {
+
         $po = new PurchaseOrders();
         $po->uuid = Str::uuid();
         $po->control_no = $request->control_no;

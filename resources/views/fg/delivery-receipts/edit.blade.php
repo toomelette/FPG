@@ -53,7 +53,7 @@
                         @forelse($dr->details as $detail)
                             <tr id="details-rand" data-id="{{$detail->id}}">
                                 <td class="align-top">
-                                    <x-forms.select :select-only="true" :auto-class="true" class="select2-ajax-auto-populate"  label="A" name="details[{{$detail->id}}][description]" cols="12" :s2-id="$detail->stock_uuid ?? $detail->description" :s2-text="$detail->description" :s2-url='route("dashboard.ajax.get","stocks")'/>
+                                    <x-forms.select :select-only="true" :auto-class="true" class="select2-ajax-auto-populate allow-new-items"  label="A" name="details[{{$detail->id}}][description]" cols="12" :s2-id="$detail->stock_uuid ?? $detail->description" :s2-text="$detail->description" :s2-url='route("dashboard.ajax.get","stocks")'/>
                                 </td>
                                 <td class="align-top">
                                     <x-forms.input type="number" class="compute" step="0.01" :input-only="true" :auto-class="true"  label="Qty" name="details[{{$detail->id}}][qty]" cols="12" :value="$detail->qty"/>
@@ -165,6 +165,27 @@
                         },
                         placeholder: "Select",
                         allowClear : true,
+                        tags: true,
+
+                        createTag: function (params) {
+                            var term = $.trim(params.term);
+
+                            if (term === '') {
+                                return null;
+                            }
+
+                            return {
+                                id: term,
+                                text: term,
+                                newTag: true
+                            };
+                        },
+                        templateResult: function (data) {
+                            if (data.newTag) {
+                                return $('<span>' + data.text + ' <em style="color:green;" class="small">- NON STOCK</em></span>');
+                            }
+                            return data.text;
+                        },
                     });
                 });
         })
@@ -182,7 +203,7 @@
                 },
                 success: function (res) {
                     succeed(form,false,false);
-                    toast('info','Project preparation successfully updated.','Success');
+                    toast('info','Delivery Receipt successfully saved.','Success');
                 },
                 error: function (res) {
                     errored(form,res);

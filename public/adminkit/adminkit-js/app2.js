@@ -659,7 +659,11 @@ $(".select2-ajax-auto-populate").each(function (){
     let id = $select.data('s2-id');
     let text = $select.data('s2-text');
 
-    $select.select2({
+    if (id && text) {
+        let option = new Option(text, id, true, true);
+        $select.append(option).trigger('change');
+    }
+    let config = {
         ajax: {
             url: url,
             dataType: 'json',
@@ -668,11 +672,30 @@ $(".select2-ajax-auto-populate").each(function (){
 
         placeholder: "Select",
         allowClear : true,
-    });
+    };
 
-    if (id && text) {
-        let option = new Option(text, id, true, true);
-        $select.append(option).trigger('change');
+    if ($select.hasClass('allow-new-items')) {
+        config.tags = true;
+
+        config.createTag = function (params) {
+            var term = $.trim(params.term);
+            if (term === '') return null;
+
+            return {
+                id: term,
+                text: term,
+                newTag: true
+            };
+        };
+
+        config.templateResult = function (data) {
+            if (data.newTag) {
+                return $('<span>' + data.text + ' <em style="color:green;" class="small">- NON STOCK</em></span>');
+            }
+            return data.text;
+        };
     }
+
+    $select.select2(config);
 })
 
