@@ -67,7 +67,9 @@ class SalesInvoiceRequest extends FormRequest
         $rules = [
             'invoice_no' => [
                 'required',
-                Rule::unique('sales_invoices','invoice_no')->ignore($this->route('sales_invoice'),'uuid'),
+                Rule::unique('sales_invoices','invoice_no')
+                    ->where('ref_book',$this->book)
+                    ->ignore($this->route('sales_invoice'),'uuid'),
             ],
             'book' => 'required',
             'date' => 'required|date_format:Y-m-d' ,

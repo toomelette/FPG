@@ -488,7 +488,7 @@ class AjaxController extends Controller
         $arr = [];
         $invoices = SalesInvoice::query()
             ->with(['client'])
-            ->orderBy('remarks');
+            ->orderBy('invoice_no');
         if($request->get('q') != ''){
             $invoices = $invoices
                 ->where(function ($q) use ($request){
@@ -517,7 +517,7 @@ class AjaxController extends Controller
                     $html = '<span class="ms-3 float-end badge bg-'.($color[$invoice->ref_book] ?? 'secondary').'">'.$invoice->ref_book.'</span>';
                     $children[] = [
                         'id'=>$invoice->uuid,
-                        'text' => $invoice->remarks.' - '.$invoice->invoice_no,
+                        'text' => $invoice->invoice_no.' - '.Str::limit($invoice->remarks,50),
                         'html' => $html,
                     ];
                 }
