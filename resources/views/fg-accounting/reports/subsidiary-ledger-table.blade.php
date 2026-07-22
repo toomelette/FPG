@@ -1,4 +1,4 @@
-<table style="width: 100%; font-size: 14px">
+<table style="width: 100%; font-size: 14px" class="tbl-padded">
     <thead>
     <tr>
         <th class="text-center b-bottom">DATE</th>
