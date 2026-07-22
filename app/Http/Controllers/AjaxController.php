@@ -528,7 +528,7 @@ class AjaxController extends Controller
             }
 
         }else{
-            return  [];
+            $arr = [];
         }
 
 //        $request->add_null = true;

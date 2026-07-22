@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\FG;
 
+use App\Models\FG\SalesInvoice;
 use App\Models\FG\Stocks;
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class DeliveryReceiptsFormRequest extends FormRequest
 {
@@ -37,8 +39,8 @@ class DeliveryReceiptsFormRequest extends FormRequest
             ->toArray();
         $this->merge([
             'details' => $details,
-
         ]);
+
     }
     public function rules(): array
     {
@@ -46,12 +48,27 @@ class DeliveryReceiptsFormRequest extends FormRequest
             'type' => 'required',
             'control_no' => 'required',
             'date' => 'required|date_format:Y-m-d',
-//            'invoice_uuid' => 'required|uuid',
+            'invoice_uuid' => 'required',
             'details' => 'required',
             'details.*.description' => 'required',
             'details.*.qty' => 'required',
             'details.*.uom' => 'required',
             'details.*.unit_cost' => 'required',
         ];
+    }
+
+    protected function passedValidation()
+    {
+        if(empty(SalesInvoice::query()->find($this->invoice_uuid))){
+            $this->merge([
+                'invoice_uuid' => null,
+                'temp_name' => $this->invoice_uuid,
+            ]);
+        }else{
+            $this->merge([
+                'invoice_uuid' => $this->invoice_uuid,
+                'temp_name' => null,
+            ]);
+        }
     }
 }

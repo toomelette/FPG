@@ -85,6 +85,29 @@
                     delay : 250,
                     // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
                 },
+                placeholder: "Select",
+                allowClear: true,
+                tags: true,
+
+                createTag: function (params) {
+                    var term = $.trim(params.term);
+
+                    if (term === '') {
+                        return null;
+                    }
+
+                    return {
+                        id: term,
+                        text: term,
+                        newTag: true
+                    };
+                },
+                templateResult: function (data) {
+                    if (data.newTag) {
+                        return $('<span>' + data.text + ' <em style="color:green;" class="small">- User Input</em></span>');
+                    }
+                    return data.text;
+                },
             });
         })
         $("body").on("change keyup",'.compute',function(){

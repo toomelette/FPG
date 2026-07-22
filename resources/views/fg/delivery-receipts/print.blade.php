@@ -15,14 +15,14 @@
         <table style="width: 100%; font-size: 14px" class="">
             <tr>
                 <td style="height: 8mm; width: 25mm"></td>
-                <td class="text-strong">{{$dr->invoice->client->name}}</td>
+                <td class="text-strong">{!! $dr?->invoice?->client?->name?? $dr->temp_name!!}</td>
             </tr>
         </table>
 
         <table style="width: 100%; font-size: 14px" class="">
             <tr>
                 <td style="height: 8mm; width: 10mm"></td>
-                <td class="text-strong" style="width: 97mm">{{$dr->invoice->client->tin}}</td>
+                <td class="text-strong" style="width: 97mm">{!! $dr?->invoice?->client?->tin ?? '&nbsp'!!}</td>
                 <td class="text-strong" style="width: 13mm"></td>
                 <td class="text-strong">{{$dr->terms}}</td>
             </tr>
@@ -31,7 +31,7 @@
         <table style="width: 100%; font-size: 14px" class="">
             <tr>
                 <td style="height: 6mm; width: 20mm"></td>
-                <td class="text-strong" >{{$dr->invoice->client->address}}</td>
+                <td class="text-strong" >{!! $dr?->invoice?->client?->address ?? '&nbsp'!!}</td>
             </tr>
         </table>
 

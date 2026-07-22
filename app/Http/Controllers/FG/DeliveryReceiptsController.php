@@ -43,14 +43,13 @@ class DeliveryReceiptsController extends Controller
     {
         return view($this->folder.'create');
     }
-
     public function store(DeliveryReceiptsFormRequest $request)
     {
-
         $dr = new DeliveryReceipts();
         $dr->uuid = Str::uuid();
         $dr->control_no = $request->control_no;
         $dr->invoice_uuid = $request->invoice_uuid;
+        $dr->temp_name = $request->temp_name;
         $dr->type = $request->type;
         $dr->date = $request->date;
         $dr->terms = $request->terms;
@@ -85,6 +84,7 @@ class DeliveryReceiptsController extends Controller
         $dr = DeliveryReceipts::query()->findOrFail($uuid);
         $dr->control_no = $request->control_no;
         $dr->invoice_uuid = $request->invoice_uuid;
+        $dr->temp_name = $request->temp_name;
         $dr->type = $request->type;
         $dr->date = $request->date;
         $dr->terms = $request->terms;

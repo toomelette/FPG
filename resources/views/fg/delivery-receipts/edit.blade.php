@@ -21,7 +21,14 @@
                         <x-forms.input label="Date" name="date" cols="12" type="date" :value="$dr ?? null"/>
                     </div>
                     <div class="row mb-2">
-                        <x-forms.select label="Project" name="invoice_uuid" cols="12" :options="[]" id="select2-project" :value="$dr ?? null" select2-preselected="{{$dr?->invoice?->remarks.' - '.$dr?->invoice?->invoice_no}}"/>
+
+                        <x-forms.select label="Project"
+                                        name="invoice_uuid"
+                                        cols="12"
+                                        :options="[]"
+                                        id="select2-project"
+                                        :value="$dr->invoice_uuid ?? $dr->temp_name ?? null"
+                                        select2-preselected="{{(empty($dr->invoice_uuid) ? $dr->temp_name : ($dr?->invoice?->invoice_no .' - '. Str::limit($dr?->invoice?->remarks,50) ) )}}"/>
                     </div>
                     <div class="row mb-2">
                         <x-forms.input label="Terms" name="terms" cols="12" :value="$dr ?? null"/>
@@ -135,6 +142,29 @@
                     dataType: 'json',
                     delay : 250,
                     // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+                },
+                placeholder: "Select",
+                allowClear: true,
+                tags: true,
+
+                createTag: function (params) {
+                    var term = $.trim(params.term);
+
+                    if (term === '') {
+                        return null;
+                    }
+
+                    return {
+                        id: term,
+                        text: term,
+                        newTag: true
+                    };
+                },
+                templateResult: function (data) {
+                    if (data.newTag) {
+                        return $('<span>' + data.text + ' <em style="color:green;" class="small">- User Input</em></span>');
+                    }
+                    return data.text;
                 },
             });
         })

@@ -16,6 +16,7 @@
                 <th>Remarks</th>
                 <th style="width: 150px">Total Amount</th>
                 <th style="width: 80px;">Action</th>
+                <th>Temp Name</th>
             </tr>
             </thead>
             <tbody>
@@ -60,7 +61,7 @@
                     }
                 },
                 { data : "action" },
-
+                { data : "temp_name" },
             ],
             buttons : [
                 {!! __js::dt_buttons() !!}
@@ -69,6 +70,15 @@
                 {
                     targets: '_all',
                     class : 'align-top'
+                },
+                {
+                    targets: 3,
+                    render: function (data, type, row, meta) {
+                        if(data){
+                            return data;
+                        }
+                        return row.temp_name;
+                    }
                 },
                 {
                     targets: 6,
@@ -81,6 +91,10 @@
                     orderable : false,
                     searchable : false,
                     class : ''
+                },
+                {
+                    targets : 8,
+                    visible : false
                 },
             ],
             order:[[0,'asc']],
