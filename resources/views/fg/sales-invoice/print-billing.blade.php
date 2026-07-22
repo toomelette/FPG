@@ -75,6 +75,7 @@
                 <td class="text-top">NOTED BY</td>
                 <td style="width: 1%;"></td>
                 <td class="text-top" style="width: 50%;">Received the above merchandise in good order and condition</td>
+                <td style="width: 1%;"></td>
             </tr>
             <tr>
                 <td></td>
@@ -104,7 +105,9 @@
             var maxHeight = 600;
             var tableHeight = $("#table").height();
             var needed = maxHeight - tableHeight;
-            $("#placeholder").css('height',needed+'px');
+            if(tableHeight <= maxHeight){
+                $("#placeholder").css('height',needed+'px');
+            }
             print();
         })
 
