@@ -95,6 +95,27 @@
                         },
                         placeholder: "Select",
                         allowClear : true,
+                        tags: true,
+
+                        createTag: function (params) {
+                            var term = $.trim(params.term);
+
+                            if (term === '') {
+                                return null;
+                            }
+
+                            return {
+                                id: term,
+                                text: term,
+                                newTag: true
+                            };
+                        },
+                        templateResult: function (data) {
+                            if (data.newTag) {
+                                return $('<span>' + data.text + ' <em style="color:green;" class="small">- NON STOCK</em></span>');
+                            }
+                            return data.text;
+                        },
                     });
                 });
         })
