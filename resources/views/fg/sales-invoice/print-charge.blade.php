@@ -42,12 +42,24 @@
         </table>
 
         <table style="width: 100%; font-size: 14px" id="details-tbl" class="">
+            <tr>
+                <td style="width: 24mm;"></td>
+                <td style="width: 18mm;"></td>
+                <td style="width: 81mm;"></td>
+                <td style="width: 25mm;"></td>
+                <td></td>
+            </tr>
+            <tr  id="remove-height">
+                <td colspan="5" style="padding: 5px 25px 15px 25px" class="text-center">
+                    {{$salesInvoice->remarks}}
+                </td>
+            </tr>
             @forelse($salesInvoice->details as $detail)
                 <tr class="details-row">
-                    <td style="width: 24mm;" class="text-center text-top">{{$detail->qty}}</td>
-                    <td style="width: 18mm;" class="text-center text-top">{{$detail->uom}}</td>
-                    <td style="width: 81mm;" class="text-top">{{$detail->description}}</td>
-                    <td style="width: 25mm; padding-bottom: 8mm" class="text-right text-top">{{Helper::toNumber($detail->unit_cost)}}</td>
+                    <td class="text-center text-top">{{$detail->qty}}</td>
+                    <td class="text-center text-top">{{$detail->uom}}</td>
+                    <td class="text-top">{{$detail->description}}</td>
+                    <td style="padding-bottom: 8mm"  class="text-right text-top">{{Helper::toNumber($detail->unit_cost)}}</td>
                     <td class="text-right text-top">{{Helper::toNumber($detail->amount)}}</td>
                 </tr>
             @empty
@@ -90,12 +102,22 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function (){
-            let allowableHeight = 105;
+            //let allowableHeight = 105;
+            let allowableHeight = 396;
             let totalDetailsHeight = 0;
+            let removeHeight = $("#remove-height").innerHeight();
+
+            totalDetailsHeight = $("#details-tbl").innerHeight();
+
+            /*
             $("#details-tbl .details-row").each(function (){
                 totalDetailsHeight = totalDetailsHeight + ($(this).height() * 25.4 / 96)
             })
+            alert(totalDetailsHeight);
             $("#adjuster").css('height',allowableHeight-totalDetailsHeight+'mm');
+            */
+
+            $("#adjuster").css('height',allowableHeight-totalDetailsHeight+'px');
 
             print();
         })
