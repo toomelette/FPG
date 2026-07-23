@@ -21,18 +21,9 @@
         </table>
         <table style="width: 100%; font-size: 14px" class="tbl-bordered tbl-padded">
             <tr>
-                <td rowspan="2" style="width: 65%; vertical-align: top">
-                    <table style="width: 100%; height: 100px">
-                        <tr>
-                            <td>
-                                <span style="font-size: 16px" class="text-strong">{{$salesInvoice->client->name}}</span> <br>
-                                {{$salesInvoice->client->address}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{{$salesInvoice->remarks}}</td>
-                        </tr>
-                    </table>
+                <td rowspan="2" style="width: 65%;">
+                    <span style="font-size: 16px" class="text-strong">{{$salesInvoice->client->name}}</span> <br>
+                    {{$salesInvoice->client->address}}
                 </td>
                 <td style="height: 100px">
                     {{Helper::dateFormat($salesInvoice->date,'F d, Y')}}
@@ -64,7 +55,9 @@
             @empty
             @endforelse
             <tr>
-                <td id="placeholder"></td>
+                <td colspan="5" id="placeholder" style="vertical-align: top; padding-top: 50px" class="text-center">
+                    {{$salesInvoice->remarks}}
+                </td>
             </tr>
             </tbody>
             <tfoot>
