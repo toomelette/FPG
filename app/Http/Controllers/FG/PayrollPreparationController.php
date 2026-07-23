@@ -344,9 +344,17 @@ class PayrollPreparationController extends Controller
     {
         $payrollMaster = PayrollMaster::query()
             ->with([
+                'payrollEmployees'=> function ($payrollEmployees) {
+                    $payrollEmployees->orderBy('saved_data->lastname','asc');
+                },
                 'payrollEmployees.employeeAdjustments',
-                'employeeAdjustments',
-
+                'employeeAdjustments' => function ($employeeAdjustments) {
+                    $employeeAdjustments
+                        ->orderBy('type','desc')
+                        ->orderBy('priority')
+                        ->groupBy('code')
+                    ;
+                },
             ])
             ->findOrFail($uuid);
         $deductionsUsed = $payrollMaster->employeeAdjustments
