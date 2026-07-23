@@ -19,11 +19,20 @@
                 <td class="text-strong text-center b-vertical b-top">BILLING</td>
             </tr>
         </table>
-        <table style="width: 100%; font-size: 14px" class="tbl-bordered">
+        <table style="width: 100%; font-size: 14px" class="tbl-bordered tbl-padded">
             <tr>
-                <td rowspan="2" style="width: 65%;">
-                    {{$salesInvoice->client->name}} <br>
-                    {{$salesInvoice->client->address}}
+                <td rowspan="2" style="width: 65%; vertical-align: top">
+                    <table style="width: 100%; height: 100px">
+                        <tr>
+                            <td>
+                                <span style="font-size: 16px" class="text-strong">{{$salesInvoice->client->name}}</span> <br>
+                                {{$salesInvoice->client->address}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{$salesInvoice->remarks}}</td>
+                        </tr>
+                    </table>
                 </td>
                 <td style="height: 100px">
                     {{Helper::dateFormat($salesInvoice->date,'F d, Y')}}
