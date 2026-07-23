@@ -44,6 +44,11 @@
             </tr>
             </thead>
             <tbody>
+            <tr>
+                <td colspan="5" style="vertical-align: top; padding: 7px 5px" class="text-center">
+                    {{$salesInvoice->remarks}}
+                </td>
+            </tr>
             @forelse($salesInvoice->details as $detail)
                 <tr>
                     <td class="text-center">{{$detail->qty}}</td>
@@ -55,8 +60,8 @@
             @empty
             @endforelse
             <tr>
-                <td colspan="5" id="placeholder" style="vertical-align: top; padding-top: 50px" class="text-center">
-                    {{$salesInvoice->remarks}}
+                <td colspan="5" id="placeholder">
+
                 </td>
             </tr>
             </tbody>
