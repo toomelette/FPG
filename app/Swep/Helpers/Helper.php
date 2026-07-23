@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\MisRequestsNature;
 use App\Models\PPU\RecommendedBudget;
 use App\Models\SuSettings;
+use App\Models\UserSubmenu;
 use Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -1010,5 +1011,22 @@ class Helper
             ->replace('_', ' ')// journal register
             ->title();         // Journal Register
         return $title->toString();
+    }
+
+    public static function canAccess($routeName = null)
+    {
+        if(!$routeName){
+            $routeName = \Route::currentRouteName();
+        }
+        $submenu = UserSubmenu::query()
+            ->with([
+                'submenu'
+            ])
+            ->where('user_id','=',Auth::user()->user_id)
+            ->whereHas('submenu',function ($submenu) use ($routeName){
+                $submenu->where('route','=',$routeName);
+            })
+            ->first();
+        return !empty($submenu);
     }
 }

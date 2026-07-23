@@ -5,11 +5,14 @@
         <x-slot:title>Products</x-slot:title>
     </x-adminkit.html.page-title>
 
+
     <x-adminkit.html.card header-class="pt-3 pb-1" body-class="pt-2">
         <x-slot:title>
             <div class="btn-group float-end">
+                @canAccess('stocks.store')
                 <a href="{{route('stocks.index')}}?maintenance" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="fa fa-gear"></i> Categories/UOM</a>
                 <button class="btn btn-sm btn-primary" data-bs-target="#add-stock-modal" data-bs-toggle="modal"><i class="fa fa-plus"></i> New</button>
+                @endcanAccess
             </div>
         </x-slot:title>
         <table class="table table-bordered table-striped table-hover table-sm" id="stocks-table" style="width: 100% !important">
