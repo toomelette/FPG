@@ -26,8 +26,8 @@
                 <table class="table table-bordered table-striped table-hover table-sm" id="project-expense-liquidation-table" style="width: 100% !important">
                     <thead>
                     <tr class="">
-                        <th>Control No.</th>
-                        <th>Date</th>
+                        <th style="width: 10%;">Control No.</th>
+                        <th style="width: 10%;">Date</th>
                         <th>Remarks</th>
                         <th>Details</th>
                         <th style="width: 80px;">Action</th>

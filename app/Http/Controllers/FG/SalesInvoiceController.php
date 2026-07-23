@@ -148,10 +148,18 @@ class SalesInvoiceController extends Controller
 
         if($request->ajax() && $request->has('liquidationsTable')){
             $expenseLiquidation = ProjectExpenseLiquidation::query()
-                ->with(['details'])
+                ->with([
+                    'details'
+                ])
                 ->whereHas('details',function ($details) use ($uuid){
                     $details->where('sales_invoice_uuid','=',$uuid);
                 })
+                ->withSum(['details as total_debit' => function ($q) use ($uuid) {
+                    $q->where('sales_invoice_uuid', $uuid);
+                }], 'debit')
+                ->withSum(['details as total_credit' => function ($q) use ($uuid) {
+                    $q->where('sales_invoice_uuid', $uuid);
+                }], 'credit')
 //                ->join('project_expense_liquidations', 'project_expense_liquidations.uuid', '=', 'project_expense_liquidation_projects.project_expense_liquidation_uuid')
             ;
 
@@ -162,7 +170,9 @@ class SalesInvoiceController extends Controller
                     ]);
                 })
                 ->addColumn('details',function ($data){
-
+                    return view('fg.project-expense-liquidation.dt-details')->with([
+                        'data' => $data,
+                    ]);
                 })
                 ->escapeColumns([])
                 ->setRowId('uuid')

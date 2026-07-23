@@ -35,8 +35,8 @@
                             <th>Description</th>
                             <th style="width: 100px">Qty</th>
                             <th style="width: 170px">Unit of Meas.</th>
-                            <th style="width: 170px">Unit Cost</th>
-                            <th style="width: 170px">Total Cost</th>
+                            <th style="width: 170px" class="hide-this">Unit Cost</th>
+                            <th style="width: 170px" class="hide-this">Total Cost</th>
                             <th style="width: 50px">
                                 <button type="button" class="btn btn-secondary btn-sm add-btn" template="#details-template">
                                     <i class="fa fa-plus"></i>
@@ -45,17 +45,7 @@
                         </tr>
                         </thead>
                         <tbody>
-
                         </tbody>
-                        <tfoot>
-                        <tr>
-                            <td colspan="4"></td>
-                            <td class="align-top text-strong text-end">
-                                <span id="grandTotal">0.00</span>
-                            </td>
-                            <td></td>
-                        </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>

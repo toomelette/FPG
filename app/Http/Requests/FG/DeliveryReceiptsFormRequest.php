@@ -53,7 +53,7 @@ class DeliveryReceiptsFormRequest extends FormRequest
             'details.*.description' => 'required',
             'details.*.qty' => 'required',
             'details.*.uom' => 'required',
-            'details.*.unit_cost' => 'required',
+            //'details.*.unit_cost' => 'required',
         ];
     }
 

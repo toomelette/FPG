@@ -11,10 +11,10 @@
             <x-forms.select :select-only="true" :auto-class="true"  label="A" :options="\App\Swep\Helpers\Arrays::uoms()" name="details[rand][uom]" cols="12"/>
         </td>
 
-        <td class="align-top">
+        <td class="align-top hide-this">
             <x-forms.input :input-only="true"  :auto-class="true" label="" name="details[rand][unit_cost]" class="text-end autonum-rand compute" cols="12"/>
         </td>
-        <td class="align-top">
+        <td class="align-top hide-this">
             <x-forms.input :input-only="true" :auto-class="true" label="" name="details[rand][amount]" class="text-end" readonly="readonly" cols="12"/>
         </td>
         <td class="align-top">
