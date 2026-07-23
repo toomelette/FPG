@@ -51,6 +51,7 @@ class CollectionsController extends Controller
                         'data' => $data,
                     ]);
                 })
+                ->editColumn('ref_no',fn($data) => view($this->folder.'dt-control-no')->with(['data' => $data]))
                 ->escapeColumns([])
                 ->setRowId('uuid')
                 ->toJson();
