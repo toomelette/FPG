@@ -2,6 +2,7 @@
 
 namespace App\Models\FG;
 
+use App\Models\Scopes\FG\ProjectIdScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -31,6 +32,10 @@ class Journals extends Model
             $a->created_at = \Carbon::now();
             $a->project_id = \Auth::user()->project_id;
         });
+    }
+    protected static function booted()
+    {
+        static::addGlobalScope(new ProjectIdScope());
     }
 
     /*Relationships*/
