@@ -82,6 +82,25 @@
     function modalPlaceholder(){
         return $(".modal_loader").parent('div').html();
     }
+    function getNewControlNo(module){
+        $.ajax({
+            url : '/dashboard/ajax/get-new-control-no',
+            data : {
+                module : module,
+            },
+            type: 'GET',
+            headers: {
+                {!! __html::token_header() !!}
+            },
+            success: function (res) {
+                $("form input[name='control_no']").val(res.newCode);
+            },
+            error: function (res) {
+                console.log(res);
+            }
+        })
+    }
+
     @if(\Illuminate\Support\Facades\Request::has('find'))
         var find = '{{\Illuminate\Support\Facades\Request::get('find')}}';
     @else

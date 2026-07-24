@@ -5,6 +5,7 @@ namespace App\Http\Requests\FG;
 use App\Models\FG\Stocks;
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PurchaseOrdersFormRequest extends FormRequest
 {
@@ -49,7 +50,12 @@ class PurchaseOrdersFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'control_no' => 'required',
+            'control_no' => [
+                'required',
+                'regex:/^'.preg_quote(Helper::shortProjectCode(), '/').'-'.now()->format('y').'\d{5}$/',
+                Rule::unique('purchase_orders','control_no')
+                    ->ignore($this->route('purchase_order'),'uuid'),
+            ],
             'date' => 'required|date_format:Y-m-d' ,
             'remarks' => 'required|string',
             'supplier' => 'required',
@@ -58,6 +64,12 @@ class PurchaseOrdersFormRequest extends FormRequest
             'details.*.qty' => 'required',
             'details.*.uom' => 'required',
             'details.*.unit_cost' => 'required',
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'control_no.regex' => "Control number must be in the format ".Helper::shortProjectCode()."-".now()->format('y')."xxxxx."
         ];
     }
 }

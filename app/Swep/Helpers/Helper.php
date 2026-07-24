@@ -1029,4 +1029,20 @@ class Helper
             ->first();
         return !empty($submenu);
     }
+
+    public static function shortProjectCode($projectCode = null)
+    {
+        $codes = [
+            'BACOLOD' => 'BCD',
+            'ILOILO' => 'ILO',
+            'DUMAGUETE' => 'DUM',
+            'DAVAO' => 'DVO',
+            'MANILA' => 'MNL',
+            'PALAWAN' => 'PLW',
+        ];
+        if($projectCode){
+            return $codes[$projectCode] ?? null;
+        }
+        return $codes[Auth::user()->project_id] ?? null;
+    }
 }

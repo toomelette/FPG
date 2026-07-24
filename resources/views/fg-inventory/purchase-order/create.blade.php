@@ -74,6 +74,7 @@
 
         $(document).ready(function (){
             $(".add-btn").trigger('click');
+            getNewControlNo('{{request()->segment(1)}}');
         });
         $("body").on("click",".add-btn",function (){
             let btn = $(this);
@@ -136,6 +137,7 @@
                     $("#details-table tbody").html('');
                     $(".add-btn").trigger('click');
                     succeed(form,true,true);
+                    getNewControlNo('{{request()->segment(1)}}');
                     toast('success','Receiving Report successfully saved.','Success!');
                 },
                 error: function (res) {

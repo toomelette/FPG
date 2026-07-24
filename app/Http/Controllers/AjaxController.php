@@ -13,14 +13,19 @@ use App\Models\Employee;
 use App\Models\FG\Clients;
 use App\Models\FG\CollectionChecks;
 use App\Models\FG\Collections;
+use App\Models\FG\DeliveryReceipts;
+use App\Models\FG\InventoryTransfers;
 use App\Models\FG\Journals;
 use App\Models\FG\ProjectExpenseLiquidation;
 use App\Models\FG\ProjectExpenseLiquidationDetails;
 use App\Models\FG\Projects;
+use App\Models\FG\PurchaseOrders;
+use App\Models\FG\ReceivingReports;
 use App\Models\FG\SalesInvoice;
 use App\Models\FG\Stocks;
 use App\Models\HRPayPlanitilla;
 use App\Models\PPU\Pap;
+use App\Models\Scopes\FG\ProjectIdScope;
 use App\Models\SSL;
 use App\Swep\Helpers\Helper;
 use App\Swep\Services\Budget\ORSService;
@@ -92,6 +97,9 @@ class AjaxController extends Controller
             return $this->getNewJournalNo($r);
         }
 
+        if($for == 'get-new-control-no'){
+            return $this->getNewControlNo($r);
+        }
 
 
 
@@ -915,5 +923,66 @@ class AjaxController extends Controller
             ->first();
         $last = $journal->control_no ?? 0;
         return $last + 1;
+    }
+
+    private function getNewControlNo()
+    {
+        $request = Request::capture();
+        $shortCode = Helper::shortProjectCode().'-'.Carbon::now()->format('y');
+        $baseNo = 1;
+        switch ($request->module){
+            case 'delivery-receipts':
+                $deliveryReceipts = DeliveryReceipts::query()
+                    ->withoutGlobalScope(new ProjectIdScope())
+                    ->where('control_no','like',$shortCode.'%')
+                    ->orderBy('control_no','desc')
+                    ->first();
+                if($deliveryReceipts){
+                   $baseNo =  Str::of($deliveryReceipts->control_no)->replace($shortCode,'')->toInteger();
+                   $baseNo = $baseNo + 1;
+                }
+                break;
+            case 'purchase-orders':
+                $data = PurchaseOrders::query()
+                    ->withoutGlobalScope(new ProjectIdScope())
+                    ->where('control_no','like',$shortCode.'%')
+                    ->orderBy('control_no','desc')
+                    ->first();
+                if($data){
+                    $baseNo =  Str::of($data->control_no)->replace($shortCode,'')->toInteger();
+                    $baseNo = $baseNo + 1;
+                }
+                break;
+            case 'inventory-transfers':
+                $data = InventoryTransfers::query()
+                    ->withoutGlobalScope(new ProjectIdScope())
+                    ->where('control_no','like',$shortCode.'%')
+                    ->orderBy('control_no','desc')
+                    ->first();
+                if($data){
+                    $baseNo =  Str::of($data->control_no)->replace($shortCode,'')->toInteger();
+                    $baseNo = $baseNo + 1;
+                }
+                break;
+            case 'receiving-report':
+                $data = ReceivingReports::query()
+                    ->withoutGlobalScope(new ProjectIdScope())
+                    ->where('control_no','like',$shortCode.'%')
+                    ->orderBy('control_no','desc')
+                    ->first();
+                if($data){
+                    $baseNo =  Str::of($data->control_no)->replace($shortCode,'')->toInteger();
+                    $baseNo = $baseNo + 1;
+                }
+                break;
+            default:
+                break;
+        }
+        $baseNo = Str::of($baseNo)->padLeft(5,'0')->toString();
+        $newCode = $shortCode.$baseNo;
+        return [
+            'newCode' => $newCode,
+        ];
+        dd(\Illuminate\Support\Facades\Request::getUri());
     }
 }

@@ -6,6 +6,7 @@ use App\Models\FG\Stocks;
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ReceivingReportsFormRequest extends FormRequest
 {
@@ -49,7 +50,12 @@ class ReceivingReportsFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'control_no' => 'required',
+            'control_no' => [
+                'required',
+                'regex:/^'.preg_quote(Helper::shortProjectCode(), '/').'-'.now()->format('y').'\d{5}$/',
+                Rule::unique('receiving_reports','control_no')
+                    ->ignore($this->route('receiving_report'),'uuid'),
+            ],
             'date' => 'required|date_format:Y-m-d' ,
             'remarks' => 'required|string',
             'details' => 'required',

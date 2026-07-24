@@ -65,7 +65,9 @@
     <script src="{{asset('js/fg/delivery-receipt.js')}}"></script>
 
     <script type="text/javascript">
+
         $(document).ready(function (){
+            //getNewControlNo('{{request()->segment(1)}}');
             $(".add-btn").trigger('click');
             autonumGlobalInstances['totalAmountDue'] = 0;
             $("#select2-project").select2({
@@ -165,6 +167,7 @@
                 },
                 success: function (res) {
                     succeed(form,true,false);
+                    //getNewControlNo('{{request()->segment(1)}}');
                     toast('success','Delivery receipt successfully saved.','Success');
                     $("#grandTotal").html('0.00');
                 },

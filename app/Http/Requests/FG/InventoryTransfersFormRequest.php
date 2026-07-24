@@ -6,6 +6,7 @@ use App\Models\FG\Stocks;
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class InventoryTransfersFormRequest extends FormRequest
 {
@@ -75,7 +76,12 @@ class InventoryTransfersFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'control_no' => 'required',
+            'control_no' => [
+                'required',
+                'regex:/^'.preg_quote(Helper::shortProjectCode(), '/').'-'.now()->format('y').'\d{5}$/',
+                Rule::unique('inventory_transfers','control_no')
+                    ->ignore($this->route('inventory_transfer'),'uuid'),
+            ],
             'date' => 'required|date_format:Y-m-d' ,
             'remarks' => 'required|string',
             'transfer_from' => 'required|string',
@@ -86,6 +92,13 @@ class InventoryTransfersFormRequest extends FormRequest
             'details.*.uom' => 'required',
             'details.*.unit_cost' => 'required',
             //'details.*.warehouse' => 'required',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'control_no.regex' => "Control number must be in the format ".Helper::shortProjectCode()."-".now()->format('y')."xxxxx."
         ];
     }
 }

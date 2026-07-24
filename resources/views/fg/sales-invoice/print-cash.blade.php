@@ -4,7 +4,7 @@
     <div style="font-family: Cambria; width: 184mm;">
         <table style="width: 100%; font-size: 14px" class="">
             <tr>
-                <td style="height: 24mm; width: 120mm"></td>
+                <td style="height: 19mm; width: 120mm"></td>
                 <td></td>
             </tr>
             <tr>
@@ -50,9 +50,11 @@
                 <td></td>
             </tr>
             <tr  id="remove-height">
-                <td colspan="5" style="padding: 5px 25px 15px 25px" class="text-center">
+                <td colspan="2"></td>
+                <td style="padding: 5px 25px 15px 25px" class="text-center">
                     {{$salesInvoice->remarks}}
                 </td>
+                <td colspan="2"></td>
             </tr>
 
             @forelse($salesInvoice->details as $detail)
