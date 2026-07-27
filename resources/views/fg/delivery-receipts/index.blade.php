@@ -9,7 +9,7 @@
             <thead>
             <tr class="">
                 <th style="width: 100px;">DR No</th>
-                <th style="width: 100px;">DR Type</th>
+                <th style="width: 100px;">Date</th>
                 <th>Project</th>
                 <th>Client</th>
                 <th>Terms</th>
@@ -40,7 +40,7 @@
             ajax : '{{\Illuminate\Support\Facades\Request::getUri()}}',
             columns : [
                 { data : "control_no" },
-                { data : "type" },
+                { data : "date" },
                 {
                     data : "invoice.remarks",
                     name : "invoice.remarks",
@@ -96,8 +96,17 @@
                     targets : 8,
                     visible : false
                 },
+                {
+                    targets: 1,
+                    render: function (data) {
+                        if(!data){
+                            return  '';
+                        }
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                }
             ],
-            order:[[0,'asc']],
+            order:[[1,'desc'],[0,'desc']],
             responsive : false,
             initComplete : function( settings, json ) {
                 // style_datatable("#"+settings.sTableId);

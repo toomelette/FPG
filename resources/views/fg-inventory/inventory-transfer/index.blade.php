@@ -82,7 +82,7 @@
                 },
 
             ],
-            order:[[0,'asc']],
+            order:[[1,'desc'],[0,'desc']],
             responsive : false,
             initComplete : function( settings, json ) {
                 // style_datatable("#"+settings.sTableId);
