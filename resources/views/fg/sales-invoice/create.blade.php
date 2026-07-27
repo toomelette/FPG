@@ -28,10 +28,10 @@
                         <thead>
                         <tr>
                             <th>Description</th>
-                            <th style="width: 200px">Qty</th>
-                            <th style="width: 200px">Unit of Meas.</th>
-                            <th style="width: 200px">Unit Cost</th>
-                            <th style="width: 200px">Total Cost</th>
+                            <th style="width: 10%">Qty</th>
+                            <th style="width: 15%">Unit of Meas.</th>
+                            <th style="width: 20%">Unit Cost</th>
+                            <th style="width: 20%">Total Cost</th>
                             <th style="width: 50px">
                                 <button type="button" class="btn btn-secondary btn-sm add-btn" template="#details-template">
                                     <i class="fa fa-plus"></i>
@@ -170,6 +170,10 @@
                     errored(form,res);
                 }
             })
+        })
+
+        $("body").on("click",".remove_row_btn",function (){
+            computeTable($("#details-table"))
         })
     </script>
 @endsection

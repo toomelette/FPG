@@ -28,10 +28,10 @@
                         <thead>
                         <tr>
                             <th>Description</th>
-                            <th style="width: 200px">Qty</th>
-                            <th style="width: 200px">Unit of Meas.</th>
-                            <th style="width: 200px">Unit Cost</th>
-                            <th style="width: 200px">Total Cost</th>
+                            <th style="width: 10%">Qty</th>
+                            <th style="width: 15%">Unit of Meas.</th>
+                            <th style="width: 20%">Unit Cost</th>
+                            <th style="width: 20%">Total Cost</th>
                             <th style="width: 50px">
                                 <button type="button" class="btn btn-secondary btn-sm add-btn" template="#details-template">
                                     <i class="fa fa-plus"></i>
@@ -56,7 +56,7 @@
                                         <x-forms.input :input-only="true"  :auto-class="true" label="" name="details[{{$detail->id}}][unit_cost]" class="text-end autonum-{{$detail->id}} compute" cols="12" :value="$detail->unit_cost"/>
                                     </td>
                                     <td class="align-top">
-                                        <x-forms.input :input-only="true" :auto-class="true" label="" name="details[{{$detail->id}}][amount]" class="text-end" readonly="readonly" cols="12" :value="$detail->amount"/>
+                                        <x-forms.input :input-only="true" :auto-class="true" label="" name="details[{{$detail->id}}][amount]" class="text-end" readonly="readonly" cols="12" :value="Helper::toNumber($detail->amount)"/>
                                     </td>
                                     <td class="align-top">
                                         <button type="button" class="btn btn-danger remove_row_btn btn-sm"><i class="fa fa-times"></i></button>
@@ -72,10 +72,10 @@
                         Total Amount
                     </p>
                     <div class="row mt-2">
-                        <x-forms.input label="Tax Base" class="autonum text-end" name="tax_base" cols="12" :value="$salesInvoice ?? null" />
+                        <x-forms.input label="Tax Base" class="autonum text-end autonum-tax-base" name="tax_base" cols="12" :value="$salesInvoice ?? null" />
                     </div>
                     <div class="row mt-2">
-                        <x-forms.input label="VAT" class="autonum text-end" name="vat" cols="12" :value="$salesInvoice ?? null" />
+                        <x-forms.input label="VAT" class="autonum autonum-vat text-end" name="vat" cols="12" :value="$salesInvoice ?? null" />
                     </div>
                     <div class="row mt-2">
                         <x-forms.input label="Total Amount Due" class="autonum-total-amount-due text-end" name="total_amount_due" cols="12" :value="$salesInvoice ?? null" />
@@ -133,6 +133,8 @@
         });
         $(document).ready(function (){
             autonums['totalAmountDue'] = new AutoNumeric('.autonum-total-amount-due',autonum_settings_simple);
+            autonums['taxBase'] = new AutoNumeric('.autonum-tax-base',autonum_settings_simple);
+            autonums['vat'] = new AutoNumeric('.autonum-vat',autonum_settings_simple);
             $("#details-table tbody input[class*='autonum-']").each(function (){
                 let trId = $(this).parents('tr').data('id');
                 autonums[trId] = new AutoNumeric('.autonum-'+trId, autonum_settings_simple);
@@ -186,6 +188,9 @@
                     errored(form,res);
                 }
             })
+        })
+        $("body").on("click",".remove_row_btn",function (){
+            computeTable($("#details-table"))
         })
     </script>
 @endsection
