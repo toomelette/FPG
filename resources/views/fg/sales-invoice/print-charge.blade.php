@@ -121,8 +121,13 @@
 
             $("#adjuster").css('height',allowableHeight-totalDetailsHeight+'px');
 
-            //print();
+            print();
+
         })
+
+        window.onafterprint = function (){
+            window.close();
+        }
 
     </script>
 @endsection

@@ -125,5 +125,8 @@
             print();
         })
 
+        window.onafterprint = function (){
+            window.close();
+        }
     </script>
 @endsection
