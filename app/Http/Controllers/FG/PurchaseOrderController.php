@@ -52,6 +52,7 @@ class PurchaseOrderController extends Controller
             $purchaseOrders = PurchaseOrders::query();
             return DataTables::of($purchaseOrders)
                 ->addColumn('action', fn($data) => view($this->folder.'dt-actions')->with(['data' => $data]))
+                ->editColumn('control_no',fn($data) => view($this->folder.'dt-control-no')->with(['data' => $data]))
                 ->escapeColumns([])
                 ->setRowId('uuid')
                 ->toJson();
