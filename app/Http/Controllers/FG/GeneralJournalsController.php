@@ -75,6 +75,7 @@ class GeneralJournalsController extends Controller
                 ->generalJournals();
             return DataTables::of($journals)
                 ->addColumn('action',fn($data) => view($this->folder.'dt-actions')->with(['data' => $data]))
+                ->editColumn('ref_no',fn($data) => view($this->folder.'dt-control-no')->with(['data' => $data]))
                 ->escapeColumns([])
                 ->setRowId('uuid')
                 ->toJson();
