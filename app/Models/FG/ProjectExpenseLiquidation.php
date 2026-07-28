@@ -17,7 +17,6 @@ class ProjectExpenseLiquidation extends Model
             $a->user_updated = \Auth::user()->user_id ?? null;
             $a->ip_updated = request()->ip();
             $a->updated_at = \Carbon::now();
-            $a->project_id = \Auth::user()->project_id;
         });
 
         static::creating(function ($a){

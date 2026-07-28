@@ -90,7 +90,8 @@
                             return  '';
                         }
                         return $.number(data,2);
-                    }
+                    },
+                    searchable : false,
                 },
 
             ],
