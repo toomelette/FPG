@@ -18,6 +18,7 @@ use App\Models\FG\InventoryTransfers;
 use App\Models\FG\Journals;
 use App\Models\FG\ProjectExpenseLiquidation;
 use App\Models\FG\ProjectExpenseLiquidationDetails;
+use App\Models\FG\ProjectPreparations;
 use App\Models\FG\Projects;
 use App\Models\FG\PurchaseOrders;
 use App\Models\FG\ReceivingReports;
@@ -966,6 +967,17 @@ class AjaxController extends Controller
                 break;
             case 'receiving-report':
                 $data = ReceivingReports::query()
+                    ->withoutGlobalScope(new ProjectIdScope())
+                    ->where('control_no','like',$shortCode.'%')
+                    ->orderBy('control_no','desc')
+                    ->first();
+                if($data){
+                    $baseNo =  Str::of($data->control_no)->replace($shortCode,'')->toInteger();
+                    $baseNo = $baseNo + 1;
+                }
+                break;
+            case 'project-preparation':
+                $data = ProjectPreparations::query()
                     ->withoutGlobalScope(new ProjectIdScope())
                     ->where('control_no','like',$shortCode.'%')
                     ->orderBy('control_no','desc')

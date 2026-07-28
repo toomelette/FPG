@@ -95,6 +95,8 @@
     <script type="text/javascript">
         $(document).ready(function (){
             $(".add-btn").trigger('click');
+            getNewControlNo('{{request()->segment(1)}}');
+
             autonumGlobalInstances['totalAmountDue'] = 0;
             $("#select2-project").select2({
                 ajax: {
@@ -149,6 +151,8 @@
                 },
                 success: function (res) {
                     succeed(form,true,false);
+                    getNewControlNo('{{request()->segment(1)}}');
+
                     toast('success','Project preparation successfully saved.','Success');
                     $("#grandTotal").html('0.00');
                     $("#details-table tbody").html('');
