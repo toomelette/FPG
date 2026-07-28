@@ -36,6 +36,7 @@ class ChargeSalesInvoiceController extends Controller
                         'data' => $data,
                     ]);
                 })
+                ->editColumn('invoice_no',fn($data) => view($this->folder.'dt-control-no')->with(['data' => $data]))
                 ->escapeColumns([])
                 ->setRowId('uuid')
                 ->toJson();
