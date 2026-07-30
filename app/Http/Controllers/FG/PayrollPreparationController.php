@@ -352,7 +352,7 @@ class PayrollPreparationController extends Controller
                     $employeeAdjustments
                         ->orderBy('type','desc')
                         ->orderBy('priority')
-                        ->groupBy('code')
+//                        ->groupBy('code')
                     ;
                 },
             ])
