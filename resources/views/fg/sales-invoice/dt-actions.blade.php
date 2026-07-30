@@ -24,6 +24,15 @@
             <a class="dropdown-item" target="_blank" href="{{route('sales-invoice.print',$data->uuid)}}?summary&excel=true">
                 Excel Summary
             </a>
+            @if($data->status == 'CANCELLED')
+                <button class="dropdown-item cancel-invoice-btn" data="{{$data->uuid}}" data-action="uncancel">
+                    Uncancel Invoice
+                </button>
+            @else
+                <button class="dropdown-item cancel-invoice-btn" data="{{$data->uuid}}" data-action="cancel">
+                    Cancel Invoice
+                </button>
+            @endif
         </ul>
     </div>
 </div>

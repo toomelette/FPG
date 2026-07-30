@@ -40,7 +40,6 @@ class ChargeSalesInvoiceController extends Controller
                 ->escapeColumns([])
                 ->setRowId('uuid')
                 ->toJson();
-
         }
         return view($this->folder.'index')->with([
             'book' => 'CHARGE'

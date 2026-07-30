@@ -4,6 +4,9 @@
         <th class="b-bottom">Date</th>
         <th class="b-bottom">Invoice #</th>
         <th class="b-bottom">Ref Book</th>
+        @if(filled($request->stations))
+            <th class="b-bottom">Station</th>
+        @endif
         <th class="b-bottom">Client</th>
         <th class="b-bottom">Details</th>
         <th class="b-bottom">Amount</th>
@@ -15,6 +18,9 @@
             <td>{{Helper::dateFormat($salesInvoice->date,'m/d/Y')}}</td>
             <td>{{$salesInvoice->invoice_no}}</td>
             <td>{{$salesInvoice->ref_book}}</td>
+            @if(filled($request->stations))
+                <td>{{$salesInvoice->project_id}}</td>
+            @endif
             <td>{{$salesInvoice?->client?->name}}</td>
             <td>{{$salesInvoice->remarks}}</td>
             <td class="text-right">{{Helper::toNumber($salesInvoice->total_amount_due)}}</td>
@@ -25,6 +31,9 @@
         <th class="b-top">TOTAL</th>
         <th class="b-top"></th>
         <th class="b-top"></th>
+        @if(filled($request->stations))
+            <th class="b-top"></th>
+        @endif
         <th class="b-top"></th>
         <th class="b-top"></th>
         <th class="b-top text-right">

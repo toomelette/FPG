@@ -27,7 +27,7 @@
 <link type="text/css" rel="stylesheet" href="{{asset('template/plugins/IntroJs/introjs.css')}}">
 <link type="text/css" rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css')}}">
 
-<link type="text/css" rel="stylesheet" href="{{asset('adminkit/adminkit-css/app2.css')}}?{{Carbon::now()->format('Y-m-d:H')}}">
+<link type="text/css" rel="stylesheet" href="{{asset('adminkit/adminkit-css/app2.css')}}?{{Str::random()}}">
 
 {{-- Calendar--}}
 <link type="text/css" rel="stylesheet" href="{{asset('template/bower_components/fullcalendar/dist/fullcalendar.min.css')}}">

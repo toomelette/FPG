@@ -21,6 +21,12 @@
             @if(blank($request->date_from) && blank($request->date_to))
                 Until {{now()->format('M. d, Y')}}
             @endif
+
+            @if(filled($request->stations))
+                <br>
+                STATIONS: <b>{{implode(', ',$request->stations)}}</b>
+            @endif
+
         </p>
         @include('fg.invoice-reports.sales-invoice-summary-table')
     </div>

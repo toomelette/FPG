@@ -801,3 +801,8 @@ tr.color-change td {
     text-decoration: line-through;
     opacity: 0.6; /* optional: makes it look "disabled" */
 }
+
+.text-strike{
+    text-decoration: line-through;
+    opacity: 0.8; /* optional faded look */
+}

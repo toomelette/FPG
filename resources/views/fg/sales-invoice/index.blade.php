@@ -33,6 +33,7 @@
 @endsection
 
 @section('scripts')
+    <script src="{{asset('js/fg/sales-invoice-index.js')}}"></script>
     <script type="text/javascript">
         let active = '';
         projectExpenseLiquidationTbl = $("#sales-invoice-table").DataTable({
@@ -111,8 +112,15 @@
                 if(active != ''){
                     $("#"+settings.sTableId+" #"+active).addClass('table-success');
                 }
+            },
+            createdRow: function (row, data, dataIndex) {
+                if (data.status === 'CANCELLED') { // your condition
+                    $('td:not(:last-child)', row).addClass('text-strike');
+                }
             }
         })
+
+
 
     </script>
 @endsection

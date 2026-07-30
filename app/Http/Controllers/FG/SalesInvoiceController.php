@@ -10,6 +10,7 @@ use App\Models\FG\ProjectExpenseLiquidation;
 use App\Models\FG\ProjectExpenseLiquidationProjects;
 use App\Models\FG\SalesInvoice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
@@ -96,10 +97,34 @@ class SalesInvoiceController extends Controller
         ]);
     }
 
+    private function cancel($request,$si)
+    {
+        if($request->action == 'cancel'){
+            $si->status = 'CANCELLED';
+        }
+        if($request->action == 'uncancel'){
+            $si->status = null;
+        }
+        $si->status_at = now();
+        $si->status_by = Auth::user()->user_id;
+        try {
+            DB::transaction(function () use ($si){
+                $si->save();
+            });
+
+        }catch (\Exception $exception){
+            abort(503,$exception->getMessage());
+        }
+        return $si->only('uuid');
+    }
     public function update(SalesInvoiceRequest $request,$uuid)
     {
         $si = SalesInvoice::query()
             ->findOrFail($uuid);
+
+        if($request->has('cancel')){
+            return  $this->cancel($request,$si);
+        }
         $si->invoice_no = $request->invoice_no;
         $si->date = $request->date;
         $si->client_uuid = $request->client_uuid;

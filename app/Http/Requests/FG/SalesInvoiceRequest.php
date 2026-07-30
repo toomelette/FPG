@@ -64,6 +64,10 @@ class SalesInvoiceRequest extends FormRequest
     public function rules(): array
     {
 
+        if($this->has('cancel')){
+            return  [];
+        }
+
         $rules = [
             'invoice_no' => [
                 'required',

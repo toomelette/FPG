@@ -41,6 +41,13 @@ class InvoiceReportsController extends Controller
         if(filled($request->ref_book)){
             $salesInvoices = $salesInvoices->where('ref_book','=',$request->ref_book);
         }
+        if(filled($request->stations)){
+            $salesInvoices = $salesInvoices->where(function ($w) use ($request){
+                foreach ($request->stations as $station){
+                    $w->orWhere('project_id','=',$station);
+                }
+            });
+        }
 
         $salesInvoices = $salesInvoices
             ->orderBy('date')

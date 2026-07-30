@@ -32,6 +32,8 @@
                                 <div class="row mb-2">
                                     <x-forms.input label="Date From" name="date_from" cols="2" type="date"/>
                                     <x-forms.input label="Date To" name="date_to" cols="2" type="date"/>
+                                    <x-forms.select label="Stations" name="stations[]" cols="3" :options="\App\Swep\Helpers\Arrays::projectIds()" multiple/>
+
                                     <x-forms.select label="Invoice Type" name="ref_book" cols="2" :options="\App\Swep\Helpers\Arrays::invoiceTypes()"/>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
