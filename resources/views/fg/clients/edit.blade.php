@@ -12,7 +12,14 @@
 
 @section('modal-body')
     <div class="row">
-        <x-forms.input label="Account No." name="account_no" cols="5" :value="$client ?? null"/>
+        <div class="form-group  col-md-5 account_no  ">
+            <label for="">Account No.:</label>
+            <div class="input-group">
+                <span class="input-group-text">11000-</span>
+                <input type="text" class="form-control" name="account_no" id="account-update" value="{{Str::of($client->account_no)->replace('11000-','')}}" placeholder="Account No." autocomplete="off">
+            </div>
+        </div>
+
         <x-forms.input label="Client Name" name="name" cols="7" :value="$client ?? null"/>
     </div>
     <div class="row mt-2">

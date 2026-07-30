@@ -29,14 +29,30 @@ class ClientFormRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => 'required',
-            'account_no' => [
-                'required',
-                'regex:/^11000\-\d{4}$/', // exactly 4 digits
-                Rule::unique('clients','account_no'),
-                Rule::unique('subsidiary_accounts','account_code')
-            ],
-        ];
+
+        if($this->getMethod() == 'POST'){
+            $rules = [
+                'name' => 'required',
+                'account_no' => [
+                    'required',
+                    'regex:/^11000\-\d{4}$/', // exactly 4 digits
+                    Rule::unique('clients','account_no')
+                        ->ignore($this->route('client'),'uuid'),
+                    Rule::unique('subsidiary_accounts','account_code')
+                        ->ignore($this->route('client'),'account_code')
+                ],
+            ];
+        }else{
+            $rules = [
+                'name' => 'required',
+                'account_no' => [
+                    'required',
+                    'regex:/^11000\-\d{4}$/', // exactly 4 digits
+                    Rule::unique('clients','account_no')
+                        ->ignore($this->route('client'),'uuid'),
+                ],
+            ];
+        }
+        return $rules;
     }
 }
