@@ -19,6 +19,7 @@
                 <th>Amount</th>
                 <th>Collections</th>
                 <th style="width: 80px;">Action</th>
+                <th>UUID</th>
             </tr>
             </thead>
             <tbody>
@@ -58,6 +59,7 @@
                     name : 'distributions_sum_amount'
                 },
                 { data : "action" },
+                { data : "uuid" },
             ],
             buttons : [
                 {!! __js::dt_buttons() !!}
@@ -94,6 +96,10 @@
                     },
                     searchable : false,
                 },
+                {
+                    targets: 7,
+                    visible : false,
+                }
 
             ],
             order:[[1,'desc'],[0,'desc']],
@@ -120,6 +126,9 @@
             }
         })
 
+        $(document).ready(function (){
+            findDt(projectExpenseLiquidationTbl)
+        })
 
 
     </script>
