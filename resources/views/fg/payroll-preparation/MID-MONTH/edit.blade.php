@@ -112,6 +112,8 @@
         </x-slot:title>
 
         <a href="{{route('payroll-preparation.print',[$payrollMaster->uuid,'payroll-summary'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 print-btn-dialog"> <i class="fa fa-print"></i> Payroll Summary</a>
+        <a href="{{route('payroll-preparation.print',[$payrollMaster->uuid,'payroll-summary'])}}?excel=true" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2"> <i class="fa fa-file-excel"></i> Excel Payroll Summary</a>
+
         <a href="{{route('payroll-preparation.print',[$payrollMaster->uuid,'payslips'])}}" target="_blank" class="btn btn-outline-primary btn-sm col-12 mb-2 print-btn-dialog"> <i class="fa fa-print"></i> Payslips</a>
 
         <hr>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\FG;
 
+use App\Exports\GenericExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hru\PayrollPreparationFormRequest;
 use App\Models\Employee;
@@ -10,11 +11,13 @@ use App\Models\FG\PayrollEmployeeAdjustments;
 use App\Models\FG\PayrollEmployees;
 use App\Models\FG\PayrollMaster;
 use App\Models\FG\PayrollTemplate;
+use App\Swep\Helpers\Helper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
 
 class PayrollPreparationController extends Controller
@@ -342,6 +345,7 @@ class PayrollPreparationController extends Controller
 
     private function payrollSummary($uuid)
     {
+        $request = Request::capture();
         $payrollMaster = PayrollMaster::query()
             ->with([
                 'payrollEmployees'=> function ($payrollEmployees) {
@@ -374,11 +378,29 @@ class PayrollPreparationController extends Controller
             ->keys()
         ;
 
-        return view('fg.payroll-preparation.MID-MONTH.payroll')->with([
+        $tdFirstWidth = 15;
+        $tdLastWidth = 10;
+        $headers = $incentivesUsed->count() + $deductionsUsed->count();
+        $eachWidth = (100 - $tdFirstWidth - $tdLastWidth) / $headers;
+
+        $params = [
             'payrollMaster' => $payrollMaster,
             'deductionsUsed' => $deductionsUsed,
             'incentivesUsed' => $incentivesUsed,
-        ]);
+            'eachWidth' => $eachWidth,
+        ];
+        if($request->has('excel') && $request->excel == 'true'){
+            $params['eachWidth'] = 200;
+            return Excel::download(
+                new GenericExport(
+                    'fg.payroll-preparation.MID-MONTH.table-payroll-summary',
+                    $params,
+                    'Payroll Summary'
+                ),
+                Helper::makeTitle(__FUNCTION__).' '.$payrollMaster->date.'.xlsx',
+            );
+        }
+        return view('fg.payroll-preparation.MID-MONTH.payroll')->with($params);
     }
 
     private function payslips($uuid)
