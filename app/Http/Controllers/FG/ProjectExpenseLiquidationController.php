@@ -24,7 +24,8 @@ class ProjectExpenseLiquidationController extends Controller
         if($request->ajax() && $request->has('draw')){
             $projectExpenseLiquidations = ProjectExpenseLiquidation::query()
                 ->with([
-                    'details', 'projects.salesInvoice.client'
+                    'details.salesInvoice',
+                    'projects.salesInvoice.client'
                 ]);
             return DataTables::of($projectExpenseLiquidations)
                 ->addColumn('action',function ($data){
@@ -33,10 +34,7 @@ class ProjectExpenseLiquidationController extends Controller
                     ]);
                 })
                 ->editColumn('control_no',fn($data) => view($this->folder.'dt-control-no')->with(['data' => $data]))
-
-                ->addColumn('details',function ($data){
-
-                })
+                ->addColumn('details',fn($data) => view($this->folder.'dt-details')->with(['data' => $data]))
                 ->addColumn('projects_view',function ($data){
                     return view($this->folder.'dt-projects-view')->with([
                         'data' => $data
