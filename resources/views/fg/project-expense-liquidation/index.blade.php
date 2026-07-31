@@ -13,7 +13,6 @@
                 <th style="width: 10%">Control No.</th>
                 <th style="width: 10%">Date</th>
                 <th>Remarks</th>
-                <th  style="width: 30%">Project</th>
                 <th>Details</th>
                 <th style="width: 80px;">Action</th>
             </tr>
@@ -41,8 +40,6 @@
                 { data : "control_no" },
                 { data : "date" },
                 { data : "remarks" },
-                { data : "projects_view" },
-
                 { data : "details" },
                 { data : "action" },
             ],
@@ -66,7 +63,7 @@
                     }
                 },
                 {
-                    targets : 5,
+                    targets : 4,
                     orderable : false,
                     class : ''
                 },

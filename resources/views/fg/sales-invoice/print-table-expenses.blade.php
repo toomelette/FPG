@@ -17,7 +17,7 @@
     @endforelse
     <tr>
         <th colspan="2" class="b-top">TOTAL</th>
-        <th class="text-right b-top">{{Helper::toNumber($liquidationDetail->sum('debit') - $liquidationDetail->sum('credit'))}}</th>
+        <th class="text-right b-top">{{Helper::toNumber($liquidationDetails->sum('debit') - $liquidationDetails->sum('credit'))}}</th>
     </tr>
     </tbody>
 </table>

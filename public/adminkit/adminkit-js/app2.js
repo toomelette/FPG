@@ -699,3 +699,16 @@ $(".select2-ajax-auto-populate").each(function (){
     $select.select2(config);
 })
 
+function findDt(table){
+
+    const params = new URLSearchParams(window.location.search);
+    const search = params.get('find'); // "john"
+    if(find !== ''){
+        active = search;
+        table.search(search).draw();
+        setTimeout(function (){
+            active = ''
+        },500);
+        table.search('');
+    }
+}

@@ -175,7 +175,9 @@ class SalesInvoiceController extends Controller
         if($request->ajax() && $request->has('liquidationsTable')){
             $expenseLiquidation = ProjectExpenseLiquidation::query()
                 ->with([
-                    'details'
+                    'details' => function ($details) use($uuid) {
+                        $details->where('sales_invoice_uuid','=',$uuid);
+                    }
                 ])
                 ->whereHas('details',function ($details) use ($uuid){
                     $details->where('sales_invoice_uuid','=',$uuid);
@@ -196,7 +198,7 @@ class SalesInvoiceController extends Controller
                     ]);
                 })
                 ->addColumn('details',function ($data){
-                    return view('fg.project-expense-liquidation.dt-details')->with([
+                    return view('fg.sales-invoice.dt-pel-details')->with([
                         'data' => $data,
                     ]);
                 })
@@ -286,10 +288,10 @@ class SalesInvoiceController extends Controller
                 'client',
                 'details',
                 'preparations.details',
+                'liquidationDetails',
                 'liquidationDetails.liquidation',
             ])
             ->findOrFail($uuid);
-
         $liquidationDetails = $si->liquidationDetails->sortBy('date');
 
         $preparations = $si->preparations->sortBy('date');
