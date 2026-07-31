@@ -40,10 +40,6 @@ class CheckUserStatus{
                 $this->session->flush();
                 return redirect('/');
             }
-            if($user?->employee?->is_active == 'INACTIVE'){
-                $user->is_activated = 0;
-                $user->save();
-            }
 
             /*
             if($this->auth->user()->is_activated == false){
