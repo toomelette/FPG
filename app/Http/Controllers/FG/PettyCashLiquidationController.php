@@ -34,7 +34,6 @@ class PettyCashLiquidationController extends Controller
                 ->addColumn('action', fn($data) => view($this->folder.'dt-user-actions')->with(['data' => $data]))
                 ->addColumn('attachments_view', fn($data) => view($this->folder.'dt-attachments')->with(['data' => $data]))
                 ->editColumn('status',fn($data) => view($this->folder.'dt-status')->with(['data' => $data]))
-
                 ->escapeColumns([])
                 ->setRowId('uuid')
                 ->toJson();
@@ -237,7 +236,7 @@ class PettyCashLiquidationController extends Controller
                 ->addColumn('action',fn($data) => view($this->folder.'dt-actions')->with(['data' => $data]))
                 ->addColumn('attachments_view',fn($data) => view($this->folder.'dt-attachments')->with(['data' => $data]))
                 ->editColumn('status',fn($data) => view($this->folder.'dt-status')->with(['data' => $data]))
-
+                ->editColumn('date',fn($data) => view($this->folder.'dt-date')->with(['data' => $data]))
                 ->escapeColumns([])
                 ->setRowId('uuid')
                 ->toJson();

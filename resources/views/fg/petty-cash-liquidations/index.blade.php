@@ -10,7 +10,7 @@
         <table class="table table-bordered table-striped table-hover table-sm" id="pcl-table" style="width: 100% !important">
             <thead>
             <tr class="">
-                <th>Date</th>
+                <th style="width: 15%;">Date</th>
                 <th>Station</th>
                 <th>Attachments</th>
                 <th>Amount</th>
@@ -58,15 +58,6 @@
                     targets : 4,
                     orderable : false,
                     class : ''
-                },
-                {
-                    targets : 0,
-                    render: function (data) {
-                        if(!data){
-                            return  '';
-                        }
-                        return moment(data).format('MM/DD/YYYY');
-                    }
                 },
                 {
                     targets : 3,
