@@ -165,6 +165,9 @@
                         .ready(function (){
                             $("#details-table .add-btn").trigger('click');
                         })
+                    @if($book == 'BILLING')
+                    getNewControlNo('{{request()->segment(1)}}','invoice_no');
+                    @endif
                 },
                 error: function (res) {
                     errored(form,res);
@@ -176,4 +179,11 @@
             computeTable($("#details-table"))
         })
     </script>
+    @if($book == 'BILLING')
+    <script type="text/javascript">
+        $(document).ready(function (){
+            getNewControlNo('{{request()->segment(1)}}','invoice_no');
+        })
+    </script>
+    @endif
 @endsection

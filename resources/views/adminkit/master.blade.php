@@ -82,7 +82,7 @@
     function modalPlaceholder(){
         return $(".modal_loader").parent('div').html();
     }
-    function getNewControlNo(module){
+    function getNewControlNo(module,name = 'control_no'){
         $.ajax({
             url : '/dashboard/ajax/get-new-control-no',
             data : {
@@ -93,7 +93,7 @@
                 {!! __html::token_header() !!}
             },
             success: function (res) {
-                $("form input[name='control_no']").val(res.newCode);
+                $("form input[name='"+name+"']").val(res.newCode);
             },
             error: function (res) {
                 console.log(res);

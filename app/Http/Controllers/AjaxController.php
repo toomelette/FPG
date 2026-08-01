@@ -987,6 +987,20 @@ class AjaxController extends Controller
                     $baseNo = $baseNo + 1;
                 }
                 break;
+            case 'billing':
+                $shortCode = Helper::shortProjectCode().'-'.Carbon::now()->format('Y');
+
+                $data = SalesInvoice::query()
+                    ->withoutGlobalScope(new ProjectIdScope())
+                    ->where('invoice_no','like',$shortCode.'%')
+                    ->where('ref_book','=','BILLING')
+                    ->orderBy('invoice_no','desc')
+                    ->first();
+                if($data){
+                    $baseNo =  Str::of($data->invoice_no)->replace($shortCode,'')->toInteger();
+                    $baseNo = $baseNo + 1;
+                }
+                break;
             default:
                 break;
         }

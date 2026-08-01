@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\FG;
 
+use App\Models\FG\SalesInvoice;
 use App\Models\FG\Stocks;
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
@@ -67,6 +68,10 @@ class SalesInvoiceRequest extends FormRequest
         if($this->has('cancel')){
             return  [];
         }
+        if($this->getMethod() == 'PATCH' || $this->getMethod() == 'PUT'){
+            $si = SalesInvoice::query()->findOrFail($this->route('sales_invoice'));
+            $this->book = $si->ref_book;
+        }
 
         $rules = [
             'invoice_no' => [
@@ -86,6 +91,13 @@ class SalesInvoiceRequest extends FormRequest
             'total_amount_due' => 'required',
         ];
 
+        if($this->book == 'BILLING'){
+            $rules['invoice_no'][] =
+                'regex:/^'.preg_quote(Helper::shortProjectCode(), '/').'-'.now()->format('Y').'\d{5}$/'
+            ;
+        }
+
+
         if($this->getMethod() == 'PATCH' || $this->getMethod() == 'PUT'){
             unset($rules['book']);
         }
@@ -96,6 +108,8 @@ class SalesInvoiceRequest extends FormRequest
     {
         return [
             'details.required' => 'At least one row in DETAILS is required',
+            'invoice_no.regex' => "Control number must be in the format ".Helper::shortProjectCode()."-".now()->format('Y')."xxxxx."
         ];
     }
+
 }
