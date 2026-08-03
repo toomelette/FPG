@@ -92,4 +92,12 @@ class SalesInvoice extends Model
     {
         $builder->where('ref_book','=','BILLING');
     }
+
+    public function scopeExcludeCancelled(Builder $builder)
+    {
+        $builder->where(function ($q){
+            $q->where('status','!=','CANCELLED')
+            ->orWhereNull('status');
+        });
+    }
 }

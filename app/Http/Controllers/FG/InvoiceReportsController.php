@@ -30,7 +30,8 @@ class InvoiceReportsController extends Controller
             ->with([
 //                'details',
                 'client',
-            ]);
+            ])
+            ->excludeCancelled();
 
         if(filled($request->date_from)){
             $salesInvoices = $salesInvoices->where('date','>=',$request->date_from);
