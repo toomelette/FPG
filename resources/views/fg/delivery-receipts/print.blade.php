@@ -1,6 +1,15 @@
 @extends('printables.print_layouts.print_layout_main')
 
 @section('wrapper')
+    <style>
+        @media print {
+            @page {
+                size: Letter portrait; /* or portrait */
+            }
+
+        }
+    </style>
+
     <div style="font-family: Cambria; width: 184mm;">
         <table style="width: 100%; font-size: 14px" class="">
             <tr>
@@ -95,7 +104,7 @@
             })
             $("#adjuster").css('height',allowableHeight-totalDetailsHeight+'mm');
 
-            //print();
+            print();
         })
 
     </script>
