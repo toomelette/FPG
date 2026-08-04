@@ -9,17 +9,19 @@
             </tr>
             <tr>
                 <td style="height: 6mm; width: 120mm"></td>
-                <td>{{\App\Swep\Helpers\Helper::dateFormat($dr->date,'m/d/Y')}}</td>
+                <td>&nbsp;</td>
             </tr>
         </table>
-        <table style="width: 100%; font-size: 14px" class="">
+        <table style="width: 100%; font-size: 14px">
             <tr>
                 <td style="height: 8mm; width: 25mm"></td>
-                <td class="text-strong">{!! $dr?->invoice?->client?->name?? $dr->temp_name!!}</td>
+                <td class="text-strong" style="width: 520px">{!! $dr?->invoice?->client?->name?? $dr->temp_name!!}</td>
+                <td class="text-strong" >{{\App\Swep\Helpers\Helper::dateFormat($dr->date,'m/d/Y')}}</td>
+
             </tr>
         </table>
 
-        <table style="width: 100%; font-size: 14px" class="">
+        <table style="width: 100%; font-size: 14px">
             <tr>
                 <td style="height: 8mm; width: 10mm"></td>
                 <td class="text-strong" style="width: 97mm">{!! $dr?->invoice?->client?->tin ?? '&nbsp'!!}</td>
@@ -44,8 +46,8 @@
         <table style="width: 100%; font-size: 14px;" id="details-tbl" class="">
             @forelse($dr->details as $detail)
                 <tr class="details-row">
-                    <td style="width: 37mm;padding-top: 5px" class="text-center text-top">{{$detail->qty}}</td>
-                    <td style="width: 43mm;padding-top: 5px" class="text-center text-top">{{$detail->uom}}</td>
+                    <td style="width: 30mm;padding-top: 5px" class="text-center text-top">{{$detail->qty}}</td>
+                    <td style="width: 20mm;padding-top: 5px" class="text-center text-top">{{$detail->uom}}</td>
                     <td style="padding-top: 5px" class="text-top">{{$detail->description}}</td>
                 </tr>
             @empty
@@ -93,7 +95,7 @@
             })
             $("#adjuster").css('height',allowableHeight-totalDetailsHeight+'mm');
 
-            print();
+            //print();
         })
 
     </script>
