@@ -22,8 +22,8 @@
                 <td>{{$salesInvoice->project_id}}</td>
             @endif
             <td>{{$salesInvoice?->client?->name}}</td>
-            <td>{{$salesInvoice->remarks}}</td>
-            <td class="text-right">{{Helper::toNumber($salesInvoice->total_amount_due)}}</td>
+            <td>{{$salesInvoice->status == 'CANCELLED' ? 'C A N C E L L E D' : $salesInvoice->remarks}}</td>
+            <td class="text-right">{{Helper::toNumber($salesInvoice->status == 'CANCELLED' ? 0 : $salesInvoice->total_amount_due,2,'-')}}</td>
         </tr>
     @empty
     @endforelse
@@ -37,7 +37,7 @@
         <th class="b-top"></th>
         <th class="b-top"></th>
         <th class="b-top text-right">
-            {{Helper::toNumber($salesInvoices->sum('total_amount_due'))}}
+            {{Helper::toNumber($salesInvoices->where('status','!=','CANCELLED')->sum('total_amount_due'))}}
         </th>
 
     </tr>
