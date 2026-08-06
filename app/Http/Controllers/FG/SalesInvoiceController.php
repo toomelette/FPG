@@ -59,14 +59,28 @@ class SalesInvoiceController extends Controller
 
     public function index(Request $request)
     {
+
         if($request->ajax() && $request->has('draw')){
             $salesInvoices = SalesInvoice::query()
                 ->with([
                     'client',
                     'details',
                 ])
-                ->withSum('distributions','amount')
-                ->cashInvoices();
+                ->withSum('distributions','amount');
+
+            switch ($request->path()){
+                case 'sales-invoice':
+                    $salesInvoices = $salesInvoices->cashInvoices();
+                    break;
+                case 'charge-sales-invoice':
+                    $salesInvoices = $salesInvoices->chargeInvoices();
+                    break;
+                case 'billing':
+                    $salesInvoices = $salesInvoices->billings();
+                    break;
+                default:
+                    break;
+            }
             return DataTables::of($salesInvoices)
                 ->addColumn('action',function ($data){
                     return view($this->folder.'dt-actions')->with([
