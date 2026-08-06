@@ -48,11 +48,18 @@
 
         <table style="width: 100%" class="">
             <tr>
-                <td style="height: 13mm"></td>
+                <td style="height: 6mm"></td>
             </tr>
         </table>
 
         <table style="width: 100%; font-size: 14px;" id="details-tbl" class="">
+            <tr>
+                <td></td>
+                <td></td>
+                <td>{{$dr->remarks}}</td>
+                <td></td>
+                <td></td>
+            </tr>
             @forelse($dr->details as $detail)
                 <tr class="details-row">
                     <td style="width: 30mm;padding-top: 5px" class="text-center text-top">{{$detail->qty}}</td>
