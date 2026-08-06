@@ -86,13 +86,29 @@
                     class : ''
                 },
                 {
-                    targets: [4,5],
+                    targets: [4],
                     class : 'text-end',
-                    render: function (data) {
+                    render: function (data,type,row,meta) {
                         if(!data){
                             return  '';
                         }
                         return $.number(data,2);
+                    },
+                    searchable : false,
+                },
+                {
+                    targets: [5],
+                    class : 'text-end',
+                    render: function (data,type,row,meta) {
+                        if(!data){
+                            return  '';
+                        }
+                        if(data === row.total_amount_due){
+                            return '<span class="text-success">'+$.number(data,2)+'</span>';
+                        }else{
+                            return $.number(data,2);
+                        }
+
                     },
                     searchable : false,
                 },
