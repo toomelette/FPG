@@ -29,6 +29,7 @@ class BillingController extends Controller
                     'client',
                     'details',
                 ])
+                ->withSum('distributions','amount')
                 ->billings();
             return DataTables::of($salesInvoices)
                 ->addColumn('action',function ($data){

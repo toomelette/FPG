@@ -66,21 +66,9 @@ class SalesInvoiceController extends Controller
                     'client',
                     'details',
                 ])
-                ->withSum('distributions','amount');
+                ->withSum('distributions','amount')
+                ->cashInvoices();
 
-            switch ($request->path()){
-                case 'sales-invoice':
-                    $salesInvoices = $salesInvoices->cashInvoices();
-                    break;
-                case 'charge-sales-invoice':
-                    $salesInvoices = $salesInvoices->chargeInvoices();
-                    break;
-                case 'billing':
-                    $salesInvoices = $salesInvoices->billings();
-                    break;
-                default:
-                    break;
-            }
             return DataTables::of($salesInvoices)
                 ->addColumn('action',function ($data){
                     return view($this->folder.'dt-actions')->with([

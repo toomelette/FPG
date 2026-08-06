@@ -29,6 +29,7 @@ class ChargeSalesInvoiceController extends Controller
                     'client',
                     'details',
                 ])
+                ->withSum('distributions','amount')
                 ->chargeInvoices();
             return DataTables::of($salesInvoices)
                 ->addColumn('action',function ($data){
