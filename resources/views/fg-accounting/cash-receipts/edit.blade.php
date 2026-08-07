@@ -36,8 +36,15 @@
                         <x-forms.input label="Bank" name="bank" cols="6" :value="$journal ?? null"/>
                         <x-forms.input label="Check No." name="check_no" cols="6" :value="$journal ?? null"/>
                     </div>
-                    <div class="row mt-2">
+                    <div class="row mt-2 mb-2">
                         <x-forms.input label="Check Amount" name="check_amount" cols="6" class="autonum text-end" :value="$journal ?? null"/>
+                    </div>
+                    <x-adminkit.html.alert type="warning" :dismissible="false" :with-icon="false" body-class="p-1 text-center text-strong">
+                        Cash
+                    </x-adminkit.html.alert>
+
+                    <div class="row mt-2 mb-2">
+                        <x-forms.input label="Cash Amount" name="cash_amount" cols="6" class="autonum text-end" :value="$journal ?? null"/>
                     </div>
                 </div>
                 <div class="col-md-8">

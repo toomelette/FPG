@@ -83,6 +83,8 @@ class CashReceiptsController extends Controller
             return DataTables::of($journals)
                 ->addColumn('action',fn($data) => view($this->folder.'dt-actions')->with(['data' => $data]))
                 ->editColumn('control_no',fn($data) => view($this->folder.'dt-control-no')->with(['data' => $data]))
+                ->editColumn('check_amount',fn($data) => view($this->folder.'dt-check-amount')->with(['data' => $data]))
+
                 ->escapeColumns([])
                 ->setRowId('uuid')
                 ->toJson();

@@ -34,6 +34,7 @@ class CashReceiptsFormRequest extends FormRequest
         $this->merge([
             'entries' => $entries->toArray(),
             'check_amount' => Helper::sanitizeAutonum($this->check_amount) * 1,
+            'cash_amount' => Helper::sanitizeAutonum($this->cash_amount) * 1,
             'subsidiary_ledgers' => $subsidiaryLedgers,
         ]);
     }

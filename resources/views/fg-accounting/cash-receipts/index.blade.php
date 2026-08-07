@@ -12,8 +12,8 @@
                 <th>Date</th>
                 <th>Payor</th>
                 <th>Remarks</th>
-                <th>Bank Details</th>
-                <th>Amount</th>
+                <th>Check Details</th>
+                <th>Cash Amount</th>
                 <th style="width: 80px;">Action</th>
             </tr>
             </thead>
@@ -49,9 +49,9 @@
                 },
                 { data : "counterparty" },
                 { data : "remarks" },
-                { data : "bank" },
+                { data : "check_amount" },
                 {
-                    data : "check_amount",
+                    data : "cash_amount",
                     render: function (data) {
                         if(!data){
                             return  '';
@@ -70,7 +70,7 @@
                     class : 'align-top'
                 },
                 {
-                    targets : 5,
+                    targets : [4,5],
                     class : 'text-end'
                 },
                 {

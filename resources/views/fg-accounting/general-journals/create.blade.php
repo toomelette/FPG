@@ -155,6 +155,7 @@
                     $(".add-btn").trigger('click');
                     subsidiaryLedgers = {};
                     newJournalNo();
+                    compute($("#entries-table"));
                 },
                 error: function (res) {
                     errored(form,res);

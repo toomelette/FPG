@@ -169,7 +169,7 @@
                     $("#entries-table tbody").html('');
                     $(".add-btn").trigger('click');
                     subsidiaryLedgers = {};
-
+                    compute($('#entries-table'));
                 },
                 error: function (res) {
                     errored(form,res);
