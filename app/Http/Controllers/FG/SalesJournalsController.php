@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\FG;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\FG\GeneralJournalsFormRequest;
+use App\Http\Requests\FG\SalesJournalsFormRequest;
 use App\Models\FG\JournalEntriesSubsidiary;
 use App\Models\FG\Journals;
 use Illuminate\Http\Request;
@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
-class GeneralJournalsController extends Controller
+class SalesJournalsController extends Controller
 {
     public function __construct(
-        private $folder = 'fg-accounting.general-journals.',
-        private $book = 'GENERAL JOURNAL',
+        private $folder = 'fg-accounting.sales-journals.',
+        private $book = 'SALES JOURNAL',
     )
     {
     }
@@ -25,7 +25,7 @@ class GeneralJournalsController extends Controller
         return view($this->folder.'create');
     }
 
-    public function store(GeneralJournalsFormRequest $request)
+    public function store(SalesJournalsFormRequest $request)
     {
         $journal = new Journals();
         $journal->book = $this->book;
@@ -72,7 +72,7 @@ class GeneralJournalsController extends Controller
     {
         if($request->ajax() && $request->has('draw')){
             $journals = Journals::query()
-                ->generalJournals();
+                ->salesJournals();
             return DataTables::of($journals)
                 ->addColumn('action',fn($data) => view($this->folder.'dt-actions')->with(['data' => $data]))
                 ->editColumn('control_no',fn($data) => view($this->folder.'dt-control-no')->with(['data' => $data]))
@@ -88,18 +88,18 @@ class GeneralJournalsController extends Controller
     {
         $journal = Journals::query()
             ->with(['entries.chartOfAccount'])
-            ->generalJournals()
+            ->salesJournals()
             ->findOrFail($uuid);
         return view($this->folder.'edit')->with([
             'journal' => $journal,
         ]);
     }
 
-    public function update(GeneralJournalsFormRequest $request,$uuid)
+    public function update(SalesJournalsFormRequest $request,$uuid)
     {
 
         $journal = Journals::query()
-            ->generalJournals()
+            ->salesJournals()
             ->findOrFail($uuid);
         $journal->control_no = $request->control_no;
         $journal->date = $request->date;
@@ -143,7 +143,7 @@ class GeneralJournalsController extends Controller
     public function destroy($uuid)
     {
         $journal = Journals::query()
-            ->generalJournals()
+            ->salesJournals()
             ->findOrFail($uuid);
 
         try {

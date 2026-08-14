@@ -77,5 +77,9 @@ class Journals extends Model
         $builder->where('book','=','GENERAL JOURNAL');
     }
 
+    public function scopeSalesJournals(Builder $builder)
+    {
+        $builder->where('book','=','SALES JOURNAL');
+    }
 
 }

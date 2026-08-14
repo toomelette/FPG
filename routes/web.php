@@ -248,6 +248,9 @@ Route::group([
     Route::resource('cash-disbursements',\App\Http\Controllers\FG\CashDisbursementsController::class);
     Route::resource('cash-receipts',\App\Http\Controllers\FG\CashReceiptsController::class);
     Route::resource('general-journals',\App\Http\Controllers\FG\GeneralJournalsController::class);
+    Route::resource('sales-journals',\App\Http\Controllers\FG\SalesJournalsController::class);
+
+
     Route::resource('chart-of-accounts',\App\Http\Controllers\FG\ChartOfAccountsController::class);
 
     Route::get('accounting-reports/{report}/print',[\App\Http\Controllers\FG\AccountingReports::class,'print'])->name('accounting-reports.print');

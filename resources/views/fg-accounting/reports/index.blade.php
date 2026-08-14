@@ -19,6 +19,9 @@
                     <a class="list-group-item list-group-item-action list-group-primary" data-bs-toggle="list" href="#general-journal-register" role="tab" aria-selected="false" tabindex="-1">
                         General Journal Register
                     </a>
+                    <a class="list-group-item list-group-item-action list-group-primary" data-bs-toggle="list" href="#sales-journal-register" role="tab" aria-selected="false" tabindex="-1">
+                        Sales Journal Register
+                    </a>
                     <a class="list-group-item list-group-item-action list-group-primary" data-bs-toggle="list" href="#general-ledger" role="tab" aria-selected="false" tabindex="-1">
                         General Ledger
                     </a>
@@ -103,6 +106,32 @@
                             <form class="report-form" target="{{route('accounting-reports.print','journal-register')}}">
                                 <div class="row mb-2">
                                     <x-forms.input label="Book" name="book" cols="2" value="GENERAL JOURNAL" container-class="hide-this" readonly="readonly"/>
+                                    <x-forms.input label="Date From" name="date_from" cols="2" type="date"/>
+                                    <x-forms.input label="Date To" name="date_to" cols="2" type="date"/>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> Generate Report</button>
+                                <hr>
+                            </form>
+                            <div class="btn-group float-end">
+                                <a type="button" target="_blank" class="btn btn-sm btn-outline-secondary mb-2 excel-btn hide-this"><i class="fa fa-file-excel"></i> Excel</a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mb-2 print-btn"><i class="fa fa-print"></i> Print</button>
+                            </div>
+                            <div class="embed-responsive">
+                                <iframe height="600" class="embed-responsive-item" src="" style="padding: 10px"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="sales-journal-register" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Sales Journal Register</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            <form class="report-form" target="{{route('accounting-reports.print','journal-register')}}">
+                                <div class="row mb-2">
+                                    <x-forms.input label="Book" name="book" cols="2" value="SALES JOURNAL" container-class="hide-this" readonly="readonly"/>
                                     <x-forms.input label="Date From" name="date_from" cols="2" type="date"/>
                                     <x-forms.input label="Date To" name="date_to" cols="2" type="date"/>
                                 </div>

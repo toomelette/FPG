@@ -44,6 +44,9 @@ class AccountingReports extends Controller
         if($request->book == 'GENERAL JOURNAL'){
             $journals = $journals->generalJournals();
         }
+        if($request->book == 'SALES JOURNAL'){
+            $journals = $journals->salesJournals();
+        }
 
         if(filled($request->date_from)){
             $journals = $journals->where('date','>=',$request->date_from);
