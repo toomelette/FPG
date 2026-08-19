@@ -91,9 +91,10 @@ class SalesInvoiceRequest extends FormRequest
             'total_amount_due' => 'required',
         ];
 
+
         if($this->book == 'BILLING'){
             $rules['invoice_no'][] =
-                'regex:/^'.preg_quote(Helper::shortProjectCode(), '/').'-'.now()->format('Y').'\d{5}$/'
+                'regex:/^'.preg_quote(Helper::shortProjectCode(Auth::user()->project_id), '/').'-'.now()->format('Y').'\d{5}$/'
             ;
         }
 

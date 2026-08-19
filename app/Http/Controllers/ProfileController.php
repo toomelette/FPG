@@ -141,6 +141,7 @@ class ProfileController extends Controller{
         if (! $request->hasValidSignature()) {
             abort(403, 'Invalid or expired link.');
         }
+
         $request->employeeList = Auth::user()->employee->slug;
         return $this->monthlyPayrollService->printPayslips($request->payrollMasterSlug,$request);
 
