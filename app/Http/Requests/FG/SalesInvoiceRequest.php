@@ -6,6 +6,7 @@ use App\Models\FG\SalesInvoice;
 use App\Models\FG\Stocks;
 use App\Swep\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -94,7 +95,7 @@ class SalesInvoiceRequest extends FormRequest
 
         if($this->book == 'BILLING'){
             $rules['invoice_no'][] =
-                'regex:/^'.preg_quote(Helper::shortProjectCode(Auth::user()->project_id), '/').'-'.now()->format('Y').'\d{5}$/'
+                'regex:/^'.preg_quote(Helper::shortProjectCode(Auth::user()->project_id), '/').'-'.Carbon::parse($this->date)->format('Y').'\d{5}$/'
             ;
         }
 
@@ -109,7 +110,7 @@ class SalesInvoiceRequest extends FormRequest
     {
         return [
             'details.required' => 'At least one row in DETAILS is required',
-            'invoice_no.regex' => "Control number must be in the format ".Helper::shortProjectCode()."-".now()->format('Y')."xxxxx."
+            'invoice_no.regex' => "Control number must be in the format ".Helper::shortProjectCode()."-".Carbon::parse($this->date)->format('Y')."xxxxx."
         ];
     }
 
