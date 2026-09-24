@@ -109,6 +109,11 @@
                 if(active != ''){
                     $("#"+settings.sTableId+" #"+active).addClass('table-success');
                 }
+            },
+            createdRow: function (row, data, dataIndex) {
+                if (data.status === 'CANCELLED') { // your condition
+                    $('td:not(:last-child)', row).addClass('text-strike');
+                }
             }
         })
 

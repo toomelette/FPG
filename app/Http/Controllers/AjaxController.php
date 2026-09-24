@@ -523,10 +523,10 @@ class AjaxController extends Controller
                 $children = [];
                 foreach ($invoices as $invoice){
 
-                    $html = '<span class="ms-3 float-end badge bg-'.($color[$invoice->ref_book] ?? 'secondary').'">'.$invoice->ref_book.'</span>';
+                    $html = '<span class="ms-3 float-end badge bg-'.($color[$invoice->ref_book] ?? 'secondary').'">'.$invoice->ref_book.'</span> ';
                     $children[] = [
                         'id'=>$invoice->uuid,
-                        'text' => $invoice->invoice_no.' - '.Str::limit($invoice->remarks,50),
+                        'text' => ($invoice->status ? $invoice->status.' - ' : '') . $invoice->invoice_no.' - '.Str::limit($invoice->remarks,50),
                         'html' => $html,
                     ];
                 }
