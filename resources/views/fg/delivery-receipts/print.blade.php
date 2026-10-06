@@ -56,7 +56,10 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td>{{$dr->remarks}}</td>
+                <td>
+                    {{$dr->remarks}}
+                    {!! filled($dr->remarks) ? '<br><br>' : '' !!}
+                </td>
                 <td></td>
                 <td></td>
             </tr>

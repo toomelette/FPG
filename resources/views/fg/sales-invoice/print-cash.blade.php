@@ -53,6 +53,7 @@
                 <td colspan="2"></td>
                 <td style="padding: 5px 25px 15px 25px" class="text-center">
                     {{$salesInvoice->remarks}}
+                    {!! filled($salesInvoice->remarks) ? '<br><br>' : '' !!}
                 </td>
                 <td colspan="2"></td>
             </tr>

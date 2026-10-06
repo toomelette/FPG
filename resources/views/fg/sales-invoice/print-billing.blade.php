@@ -47,6 +47,7 @@
             <tr>
                 <td colspan="5" style="vertical-align: top; padding: 7px 5px" class="text-center">
                     {{$salesInvoice->remarks}}
+                    {!! filled($salesInvoice->remarks) ? '<br><br>' : '' !!}
                 </td>
             </tr>
             @forelse($salesInvoice->details as $detail)
