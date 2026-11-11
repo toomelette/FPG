@@ -32,3 +32,16 @@
 {{-- Calendar--}}
 <link type="text/css" rel="stylesheet" href="{{asset('template/bower_components/fullcalendar/dist/fullcalendar.min.css')}}">
 <link rel="stylesheet" href="{{asset('adminkit/adminkit-plugins/datatables-ext/RowGroup-1.1.1/css/rowGroup.bootstrap.min.css')}}">
+
+<!-- Luckysheet CSS -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/luckysheet@2.1.12/dist/plugins/css/pluginsCss.css">
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/luckysheet@2.1.12/dist/plugins/plugins.css">
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/luckysheet@2.1.12/dist/css/luckysheet.css">
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/luckysheet@2.1.12/dist/assets/iconfont/iconfont.css">

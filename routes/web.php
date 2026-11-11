@@ -3,10 +3,11 @@
 /** Auth **/
 
 use App\Swep\Helpers\Helper;
+use Illuminate\Http\Request;
 use Rats\Zkteco\Lib\ZKTeco;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\HRU\Employees\ServiceRecordController;
-
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
 //PUBLIC ROUTES
@@ -332,4 +333,119 @@ Route::get('testWs',function (){
     event(new \App\Events\HrRequest\NewRequest($rr));
 });
 
+Route::get('/excel',function (){
+    return view('fg.costing.test-lucky');
+});
+
+Route::get('/excel-read',function (){
+
+    $disk = Storage::disk('local');
+
+    $xlsPath = 'test.xls';
+    $xlsxPath = 'test.xlsx';
+
+    $originalPath = $disk->path($xlsPath);
+
+    if (!file_exists($originalPath)) {
+        abort(404, 'Excel file not found.');
+    }
+
+    // Convert only if XLSX does not already exist.
+    if (!$disk->exists($xlsxPath)) {
+
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($originalPath);
+
+        $tempPath = tempnam(sys_get_temp_dir(), 'excel_');
+
+        try {
+            $writer = new Xlsx($spreadsheet);
+            $writer->save($tempPath);
+
+            $disk->put($xlsxPath, file_get_contents($tempPath));
+
+            $spreadsheet->disconnectWorksheets();
+
+        } finally {
+            if (file_exists($tempPath)) {
+                unlink($tempPath);
+            }
+        }
+    }
+
+    // Serve the converted XLSX.
+    return response()->file(
+        $disk->path($xlsxPath),
+        [
+            'Content-Type' =>
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ]
+    );
+});
+
+Route::post('/excel-save',function (Request $request){
+    $request->validate([
+        'sheets' => ['required', 'array'],
+    ]);
+
+    $filePath = 'test.xlsx';
+
+    $path = Storage::disk('local')->path($filePath);
+
+    $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
+
+    foreach ($request->sheets as $sheetData) {
+
+        $worksheet = $spreadsheet->getSheetByName($sheetData['name']);
+
+        if (!$worksheet) {
+            continue;
+        }
+
+        foreach ($sheetData['celldata'] ?? [] as $cell) {
+
+            $coordinate = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::
+                stringFromColumnIndex($cell['c'] + 1)
+                . ($cell['r'] + 1);
+
+            $value = $cell['v'] ?? null;
+
+            if (is_array($value) && !empty($value['f'])) {
+                $formula = $value['f'];
+
+                $worksheet->setCellValue(
+                    $coordinate,
+                    str_starts_with($formula, '=') ? $formula : '=' . $formula
+                );
+            } else {
+                $worksheet->setCellValue(
+                    $coordinate,
+                    is_array($value) ? ($value['v'] ?? null) : $value
+                );
+            }
+        }
+    }
+
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+    $tempPath = tempnam(sys_get_temp_dir(), 'excel_');
+
+    try {
+        $writer->save($tempPath);
+
+        Storage::disk('local')->put(
+            $filePath,
+            file_get_contents($tempPath)
+        );
+
+    } finally {
+        if (file_exists($tempPath)) {
+            unlink($tempPath);
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Excel saved successfully.'
+    ]);
+});
 
