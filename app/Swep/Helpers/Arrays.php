@@ -1448,6 +1448,8 @@ class Arrays
             'DAVAO' => 'DAVAO',
             'PALAWAN' => 'PALAWAN',
             'MANILA' => 'MANILA',
+            'ZAMBOANGA' => 'ZAMBOANGA',
+
         ];
     }
 

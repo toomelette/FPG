@@ -51,6 +51,12 @@ return [
             'driver' => 'local',
             'root' => base_path('../fpg-storage/liquidation-attachments'),
         ],
+        'costing-excels' => [
+            'driver' => 'local',
+            'root' => base_path('../fpg-storage/costing-excels'),
+        ],
+
+
 
         'symlinks' => [
             'driver' => 'local',

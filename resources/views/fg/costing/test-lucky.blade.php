@@ -103,7 +103,21 @@
 
 
                 const sheets = luckysheet.getAllSheets();
+                console.log('ALL SHEETS:', sheets);
 
+                sheets.forEach(sheet => {
+                    console.log('SHEET:', sheet.name);
+                    console.log('CELLDATA:', sheet.celldata);
+
+                    sheet.celldata?.forEach(cell => {
+                        if (cell.v && typeof cell.v === 'object') {
+                            console.log(
+                                `Cell ${cell.r},${cell.c}:`,
+                                cell.v
+                            );
+                        }
+                    });
+                });
                 const response = await fetch(
                         @json('/excel-save'),
                     {

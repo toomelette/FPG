@@ -74,6 +74,7 @@ $(document).ready(function($){
     $(".tree_active").parents('li').addClass('active');
     $(".tree_active").parents('.treeview-menu').slideDown();
 
+    /*
     $.fn.modal.Constructor.prototype.enforceFocus = function () {
         var $modalElement = this.$element;
         $(document).on('focusin.modal', function (e) {
@@ -86,7 +87,7 @@ $(document).ready(function($){
             }
         })
     };
-
+    */
 });
 
 
@@ -549,6 +550,24 @@ function toast(type,message,heading = null,hideAfter = 5000) {
         loaderBg: '#9EC600',  // Background color of the toast loader
     });
 }
+
+
+function toastW(type, message, heading = null, hideAfter = 5000) {
+    window.adminJQuery.toast({
+        text: message,
+        heading: heading,
+        icon: type,
+        showHideTransition: 'slide',
+        allowToastClose: true,
+        hideAfter: hideAfter,
+        stack: 5,
+        position: 'bottom-right',
+        textAlign: 'left',
+        loader: false,
+        loaderBg: '#9EC600',
+    });
+}
+
 
 function makeId(length) {
     let result = '';

@@ -1,6 +1,24 @@
 {{--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />--}}
 {{--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />--}}
 
+<!-- Luckysheet CSS -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/luckysheet@2.1.12/dist/plugins/css/pluginsCss.css">
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/luckysheet@2.1.12/dist/plugins/plugins.css">
+
+
+{{--<link rel="stylesheet"--}}
+{{--      href="https://cdn.jsdelivr.net/npm/luckysheet@2.1.12/dist/css/luckysheet.css">--}}
+<link rel="stylesheet"
+      href="{{asset('css/luckysheet/luckysheet.css')}}">
+
+<link rel="stylesheet"
+      href="{{asset('css/luckysheet/iconfont.css')}}">
+
+
+
 <link href="{{asset('adminkit/adminkit-plugins/select2/select2.css')}}" rel="stylesheet">
 <link href="{{asset('adminkit/adminkit-plugins/select2/bootstrap-5-theme.css')}}" rel="stylesheet">
 
@@ -32,16 +50,3 @@
 {{-- Calendar--}}
 <link type="text/css" rel="stylesheet" href="{{asset('template/bower_components/fullcalendar/dist/fullcalendar.min.css')}}">
 <link rel="stylesheet" href="{{asset('adminkit/adminkit-plugins/datatables-ext/RowGroup-1.1.1/css/rowGroup.bootstrap.min.css')}}">
-
-<!-- Luckysheet CSS -->
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/luckysheet@2.1.12/dist/plugins/css/pluginsCss.css">
-
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/luckysheet@2.1.12/dist/plugins/plugins.css">
-
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/luckysheet@2.1.12/dist/css/luckysheet.css">
-
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/luckysheet@2.1.12/dist/assets/iconfont/iconfont.css">

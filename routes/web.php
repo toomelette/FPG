@@ -202,6 +202,7 @@ Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
     Route::delete('/photo/{slug}','EmployeeController@deletePhoto')->name('employee.photo');
 
 
+
 });
 Route::group([
     'middleware' => [
@@ -275,6 +276,12 @@ Route::group([
     Route::get('payroll-preparation/{uuid}/{type}/print',[\App\Http\Controllers\FG\PayrollPreparationController::class,'print'])->name('payroll-preparation.print');
     Route::resource('payroll-preparation',\App\Http\Controllers\FG\PayrollPreparationController::class);
     Route::resource('payroll-adjustments',\App\Http\Controllers\FG\PayrollAdjustmentsController::class);
+
+    //Costing
+    Route::get('/costing-folder/{parent_folder}/children',[\App\Http\Controllers\FG\CostingFolderController::class,'children'])->name('costing-folder.children');
+    Route::resource('costing-folder',\App\Http\Controllers\FG\CostingFolderController::class);
+    Route::resource('costing',\App\Http\Controllers\FG\CostingController::class);
+
 });
 /** ADMIN LEVEL ROUTES REQUIRING PROJECT ID **/
 Route::group(['prefix'=>'dashboard', 'as' => 'dashboard.',
@@ -387,11 +394,13 @@ Route::post('/excel-save',function (Request $request){
         'sheets' => ['required', 'array'],
     ]);
 
+
     $filePath = 'test.xlsx';
 
     $path = Storage::disk('local')->path($filePath);
 
     $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
+
 
     foreach ($request->sheets as $sheetData) {
 
@@ -403,27 +412,81 @@ Route::post('/excel-save',function (Request $request){
 
         foreach ($sheetData['celldata'] ?? [] as $cell) {
 
+            if (!isset($cell['r'], $cell['c'])) {
+                continue;
+            }
+
             $coordinate = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::
                 stringFromColumnIndex($cell['c'] + 1)
                 . ($cell['r'] + 1);
 
             $value = $cell['v'] ?? null;
 
+            // Set cell value or formula
             if (is_array($value) && !empty($value['f'])) {
+
                 $formula = $value['f'];
 
                 $worksheet->setCellValue(
                     $coordinate,
                     str_starts_with($formula, '=') ? $formula : '=' . $formula
                 );
+
             } else {
+
                 $worksheet->setCellValue(
                     $coordinate,
                     is_array($value) ? ($value['v'] ?? null) : $value
                 );
             }
+
+            // Apply cell formatting
+            if (!is_array($value)) {
+                continue;
+            }
+
+            $font = [];
+
+            if (isset($value['ff'])) {
+                $font['name'] = $value['ff'];
+            }
+
+            if (isset($value['fs'])) {
+                $font['size'] = $value['fs'];
+            }
+
+            if (isset($value['bl'])) {
+                $font['bold'] = (bool) $value['bl'];
+            }
+
+            if (isset($value['it'])) {
+                $font['italic'] = (bool) $value['it'];
+            }
+
+            if (isset($value['un'])) {
+                $font['underline'] = $value['un']
+                    ? \PhpOffice\PhpSpreadsheet\Style\Font::UNDERLINE_SINGLE
+                    : \PhpOffice\PhpSpreadsheet\Style\Font::UNDERLINE_NONE;
+            }
+
+            if (isset($value['cl'])) {
+                $font['strikethrough'] = (bool) $value['cl'];
+            }
+
+            if (isset($value['fc'])) {
+                $font['color'] = [
+                    'rgb' => strtoupper(ltrim($value['fc'], '#')),
+                ];
+            }
+
+            if (!empty($font)) {
+                $worksheet->getStyle($coordinate)->applyFromArray([
+                    'font' => $font,
+                ]);
+            }
         }
     }
+
 
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 

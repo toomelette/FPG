@@ -1040,6 +1040,7 @@ class Helper
             'MANILA' => 'MNL',
             'PALAWAN' => 'PLW',
             'CEBU' => 'CEB',
+            'ZAMBOANGA' => 'ZAM',
         ];
         if($projectCode){
             return $codes[$projectCode] ?? null;
