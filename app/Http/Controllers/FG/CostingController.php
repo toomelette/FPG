@@ -118,6 +118,9 @@ class CostingController extends Controller
     public function edit($uuid,Request $request)
     {
         $costing = Costings::query()->findOrFail($uuid);
+        if($request->has('download')){
+            return  $this->download($request,$costing);
+        }
         if($request->has('read-excel')){
             return  $this->readExcel($costing);
         }
@@ -125,6 +128,29 @@ class CostingController extends Controller
         return view('fg.costing.edit')->with([
             'costing' => $costing,
         ]);
+    }
+
+    public function download(Request $request,Costings $costing)
+    {
+        $disk = Storage::disk('costing-excels');
+
+        $xlsxPath = $costing->folder_uuid . '/' . $costing->excel_path;
+
+        $originalPath = $disk->path($xlsxPath);
+
+        if (!$disk->exists($xlsxPath)) {
+            abort(404, 'Excel file not found.');
+        }
+
+        $filename = pathinfo($costing->excel_path, PATHINFO_FILENAME) . '.xlsx';
+
+        return response()->download(
+            $originalPath,
+            $costing->description.'.xlsx',
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ]
+        );
     }
 
     public function update($uuid,Request $request)

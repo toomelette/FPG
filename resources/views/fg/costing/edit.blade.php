@@ -9,9 +9,15 @@
                     <x-forms.input label="" name="description" id="description" cols="12" :input-only="true" :value="$costing->description"/>
                 </div>
                 <div class="col-md-6">
-                    <button type="button" id="saveExcel" class="btn btn-primary btn-sm float-end">
-                        <i class="fa fa-check"></i> Save Changes
-                    </button>
+                    <div class="btn-group float-end">
+                        <a  type="button" href="{{route('costing.edit',$costing->uuid)}}?download"
+                            class="btn btn-outline-secondary btn-sm edit-costing-btn">
+                            <i class="fa fa-download"></i>
+                        </a>
+                        <button type="button" id="saveExcel" class="btn btn-primary btn-sm">
+                            <i class="fa fa-check"></i> Save Changes
+                        </button>
+                    </div>
                 </div>
             </div>
         </x-slot:title>
