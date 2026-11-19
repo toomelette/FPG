@@ -14,11 +14,13 @@ function compute($tr){
 function computeTable($table){
 
     let grandTotal = 0;
+    let  wtax = sanitizeAutonum($("body").find('input[name="wtax"]').val());
+
     $table.find('input[name*="amount"]').each(function (){
         let totalCost = sanitizeAutonum($(this).val());
         grandTotal = grandTotal + totalCost;
     });
-    autonums['totalAmountDue'].set(grandTotal);
+    autonums['totalAmountDue'].set(grandTotal - wtax);
     autonums['taxBase'].set(grandTotal / 1.12);
-    autonums['vat'].set(grandTotal/1.12 * 0.12);
+    autonums['vat'].set((grandTotal/1.12 * 0.12));
 }

@@ -43,6 +43,7 @@ class SalesInvoiceController extends Controller
         $si->remarks = $request->remarks;
         $si->tax_base = $request->tax_base;
         $si->vat = $request->vat;
+        $si->wtax = $request->wtax;
         $si->total_amount_due = $request->total_amount_due;
 
         try {
@@ -134,6 +135,7 @@ class SalesInvoiceController extends Controller
         $si->remarks = $request->remarks;
         $si->tax_base = $request->tax_base;
         $si->vat = $request->vat;
+        $si->wtax = $request->wtax;
         $si->total_amount_due = $request->total_amount_due;
 
 

@@ -79,20 +79,33 @@
 
         <table style="width: 100%; font-size: 14px" id="details-tbl" class="">
             <tr>
-                <td style="width: 39mm; height: 11mm" class="text-center text-top"></td>
+                <td style="width: 39mm; height: 5mm" class="text-center text-top"></td>
+                <td style="width: 30mm;" class="text-top"></td>
+                <td style="width: 50mm;" class="text-top"></td>
+                <td style="width: 27mm;" class="text-right text-top"></td>
+                <td class="text-right">{{Helper::toNumber($salesInvoice->details->sum('amount'))}}</td>
+            </tr>
+            <tr>
+                <td style="width: 39mm; height: 7.3333mm" class="text-center text-top"></td>
                 <td style="width: 30mm;" class="text-top"></td>
                 <td style="width: 50mm;" class="text-top"></td>
                 <td style="width: 27mm;" class="text-right text-top"></td>
                 <td class="text-right">{{Helper::toNumber($salesInvoice->tax_base)}}</td>
             </tr>
             <tr>
-                <td style="width: 39mm; height: 11mm" class="text-center text-top"></td>
+                <td style="width: 39mm; height: 7.3333mm" class="text-center text-top"></td>
                 <td style="width: 30mm;" class="text-top"></td>
                 <td style="width: 50mm;" class="text-top"></td>
                 <td style="width: 27mm;" class="text-right text-top"></td>
                 <td class="text-right">{{Helper::toNumber($salesInvoice->vat)}}</td>
             </tr>
-
+            <tr>
+                <td style="width: 39mm; height: 7.3333mm" class="text-center text-top"></td>
+                <td style="width: 30mm;" class="text-top"></td>
+                <td style="width: 50mm;" class="text-top"></td>
+                <td style="width: 27mm;" class="text-right text-top"></td>
+                <td class="text-right">{{Helper::toNumber($salesInvoice->wtax)}}</td>
+            </tr>
 
             <tr>
                 <td style="height: 8mm" class="text-center text-top" colspan="4"></td>
@@ -107,7 +120,7 @@
     <script type="text/javascript">
         $(document).ready(function (){
             //let allowableHeight = 105;
-            let allowableHeight = 396;
+            let allowableHeight = 376;
             let totalDetailsHeight = 0;
             let removeHeight = $("#remove-height").innerHeight();
 

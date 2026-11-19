@@ -59,6 +59,7 @@ class SalesInvoiceRequest extends FormRequest
             'inventory_ledger' => $inventoryLedger,
             'tax_base' => Helper::sanitizeAutonum($this->tax_base),
             'vat' => Helper::sanitizeAutonum($this->vat),
+            'wtax' => Helper::sanitizeAutonum($this->wtax),
             'total_amount_due' => Helper::sanitizeAutonum($this->total_amount_due),
         ]);
     }

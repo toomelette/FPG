@@ -78,6 +78,9 @@
                         <x-forms.input label="VAT" class="autonum autonum-vat text-end" name="vat" cols="12" :value="$salesInvoice ?? null" />
                     </div>
                     <div class="row mt-2">
+                        <x-forms.input label="Withholding Tax" class="autonum-wtax text-end compute-input" name="wtax" cols="12" :value="$salesInvoice ?? null"/>
+                    </div>
+                    <div class="row mt-2">
                         <x-forms.input label="Total Amount Due" class="autonum-total-amount-due text-end" name="total_amount_due" cols="12" :value="$salesInvoice ?? null" />
                     </div>
                 </div>
@@ -135,6 +138,7 @@
             autonums['totalAmountDue'] = new AutoNumeric('.autonum-total-amount-due',autonum_settings_simple);
             autonums['taxBase'] = new AutoNumeric('.autonum-tax-base',autonum_settings_simple);
             autonums['vat'] = new AutoNumeric('.autonum-vat',autonum_settings_simple);
+            autonums['wtax'] = new AutoNumeric('.autonum-wtax',autonum_settings_simple);
             $("#details-table tbody input[class*='autonum-']").each(function (){
                 let trId = $(this).parents('tr').data('id');
                 autonums[trId] = new AutoNumeric('.autonum-'+trId, autonum_settings_simple);
@@ -144,6 +148,9 @@
 
         $("body").on("change keyup",'.compute',function(){
             compute($(this).closest('tr'));
+        });
+        $("body").on("change keyup",'.compute-input',function(){
+            compute($("#details-table"));
         });
         $("body").on("click",".add-btn",function (){
             let btn = $(this);
