@@ -51,7 +51,7 @@
             </tr>
             <tr  id="remove-height">
                 <td colspan="2"></td>
-                <td style="padding: 5px 25px 15px 25px" class="text-center">
+                <td style="padding: 5px 25px 15px 25px; white-space: pre-line" class="text-center">
                     {{$salesInvoice->remarks}}
                     {!! filled($salesInvoice->remarks) ? '<br><br>' : '' !!}
                 </td>

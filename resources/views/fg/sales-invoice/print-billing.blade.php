@@ -45,7 +45,7 @@
             </thead>
             <tbody>
             <tr>
-                <td colspan="5" style="vertical-align: top; padding: 7px 5px" class="text-center">
+                <td colspan="5" style="vertical-align: top; padding: 7px 5px; white-space: pre-line" class="text-center">
                     {{$salesInvoice->remarks}}
                     {!! filled($salesInvoice->remarks) ? '<br><br>' : '' !!}
                 </td>
